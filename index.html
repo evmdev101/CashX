@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CashX — Treasury-Backed Token on PulseChain</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:       #0c0a0f;
+      --surface:  #131018;
+      --surface2: #1a1624;
+      --border:   rgba(155,109,255,0.11);
+      --border2:  rgba(155,109,255,0.24);
+      --blue:     #4f8ef7;
+      --purple:   #9b6dff;
+      --pink:     #e040fb;
+      --grad:     linear-gradient(135deg,#4f8ef7 0%,#9b6dff 52%,#e040fb 100%);
+      --grad-btn: linear-gradient(135deg,#3b6fd4,#7c3aed);
+      --text:     #ede8f5;
+      --muted:    #6b5f82;
+      --muted2:   #3a3050;
+      --green:    #4ade80;
+      --glow-p:   rgba(155,109,255,0.14);
+      --glow-b:   rgba(79,142,247,0.12);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden}
+
+    /* grain overlay */
+    body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:999;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity:0.5}
+
+    /* ── NAV ── */
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;padding:0 48px;
+      display:flex;align-items:center;justify-content:space-between;
+      background:rgba(12,10,15,0.88);backdrop-filter:blur(20px);
+      border-bottom:1px solid var(--border)}
+    .nav-logo{font-family:'Clash Display',sans-serif;font-weight:700;font-size:1.35rem;
+      letter-spacing:-0.02em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      text-decoration:none}
+    .nav-links{display:flex;align-items:center;gap:0}
+    .nav-links a{font-family:'Space Mono',monospace;font-size:0.7rem;letter-spacing:0.07em;
+      text-transform:uppercase;color:var(--text);text-decoration:none;padding:8px 18px;
+      border-right:1px solid var(--border);transition:color 0.2s}
+    .nav-links a:first-child{border-left:1px solid var(--border)}
+    .nav-links a:hover{color:var(--purple)}
+    .nav-right{display:flex;align-items:center;gap:0;margin-left:20px}
+    .nav-learn{font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.08em;
+      text-transform:uppercase;text-decoration:none;padding:7px 16px;
+      border:1px solid var(--border2);color:var(--purple);transition:all 0.2s;margin-right:10px}
+    .nav-learn::before{content:'▶ ';font-size:0.52rem;opacity:0.7}
+    .nav-learn:hover{background:var(--purple);color:#fff;border-color:var(--purple)}
+    .nav-trade{font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:0.06em;
+      text-transform:uppercase;text-decoration:none;padding:9px 20px;
+      background:var(--grad-btn);color:#fff;transition:opacity 0.2s}
+    .nav-trade:hover{opacity:0.85}
+
+    /* ── SHARED ── */
+    .sec-tag{font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:0.14em;
+      text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;display:block;margin-bottom:14px}
+    .sec-h{font-family:'Clash Display',sans-serif;font-weight:700;
+      font-size:clamp(2.2rem,3.5vw,3.2rem);letter-spacing:-0.03em;line-height:1.02;margin-bottom:16px}
+    .sec-p{color:var(--muted);font-size:0.97rem;line-height:1.8}
+    .grad-text{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+    .btn-sharp{font-family:'Space Mono',monospace;font-size:0.66rem;letter-spacing:0.08em;
+      text-transform:uppercase;padding:11px 24px;text-decoration:none;
+      display:inline-block;transition:all 0.2s;cursor:pointer;border:none}
+    .btn-filled{background:var(--grad-btn);color:#fff}
+    .btn-filled:hover{opacity:0.85}
+    .btn-outline{background:transparent;color:var(--text);border:1px solid var(--border2)}
+    .btn-outline:hover{border-color:var(--purple);color:var(--purple)}
+
+    section{position:relative;z-index:2}
+
+    /* fade-in on scroll */
+    .fade{opacity:0;transform:translateY(22px);transition:opacity 0.55s ease,transform 0.55s ease}
+    .fade.visible{opacity:1;transform:none}
+
+    /* ── HERO ── */
+    .hero{min-height:100vh;padding:100px 80px 80px;display:grid;
+      grid-template-columns:1fr 1fr;gap:60px;align-items:center;overflow:hidden}
+    .blob{position:absolute;border-radius:50%;pointer-events:none}
+    .blob-1{width:560px;height:560px;bottom:-100px;right:-80px;
+      background:radial-gradient(circle,var(--glow-p) 0%,transparent 68%)}
+    .blob-2{width:400px;height:400px;top:80px;left:-100px;
+      background:radial-gradient(circle,var(--glow-b) 0%,transparent 68%)}
+    .hero-left{position:relative;z-index:2}
+    .home-badge{display:inline-flex;align-items:center;gap:8px;margin-bottom:24px;
+      background:rgba(155,109,255,0.1);border:1px solid rgba(155,109,255,0.25);
+      padding:5px 14px;font-family:'Space Mono',monospace;font-size:0.6rem;
+      color:var(--purple);letter-spacing:0.12em;text-transform:uppercase}
+    .home-badge::before{content:'';width:6px;height:6px;border-radius:50%;
+      background:var(--pink);animation:blink 2s infinite;flex-shrink:0}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:0.25}}
+    .hero-title{font-family:'Clash Display',sans-serif;font-weight:700;
+      font-size:clamp(3rem,5vw,5.5rem);line-height:0.93;letter-spacing:-0.03em;margin-bottom:22px}
+    .hero-sub{color:var(--muted);font-size:1rem;line-height:1.78;max-width:420px;margin-bottom:32px}
+    .hero-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:40px}
+    .hero-stats{display:flex;gap:0;border:1px solid var(--border)}
+    .hstat{padding:14px 22px;border-right:1px solid var(--border)}
+    .hstat:last-child{border-right:none}
+    .hstat-lbl{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--muted);
+      letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px}
+    .hstat-val{font-family:'Clash Display',sans-serif;font-weight:700;font-size:1.1rem;
+      letter-spacing:-0.02em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .hero-img-wrap{position:relative;z-index:2;display:flex;justify-content:center;align-items:flex-end}
+    .hero-img-wrap img{width:100%;max-width:480px;display:block;
+      filter:drop-shadow(0 0 60px rgba(155,109,255,0.3));
+      animation:float 6s ease-in-out infinite}
+    .hero-img-placeholder{width:100%;max-width:480px;height:460px;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;border:1px dashed var(--border2);
+      gap:12px;margin:0 auto}
+    .hero-img-placeholder span:first-child{font-size:3rem;opacity:0.3}
+    .hero-img-placeholder span:last-child{font-family:'Space Mono',monospace;font-size:0.58rem;
+      color:var(--muted2);letter-spacing:0.08em}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+
+    /* ── TICKER ── */
+    .ticker{border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+      background:var(--surface);overflow:hidden;padding:12px 0;position:relative;z-index:2}
+    .ticker-track{display:flex;gap:0;white-space:nowrap;animation:tick 28s linear infinite}
+    @keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+    .ticker-item{font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);
+      padding:0 32px;border-right:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;gap:8px}
+    .ticker-item span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
+    .ticker-dot{color:rgba(155,109,255,0.3);padding:0 16px;border-right:none;font-size:0.5rem}
+
+    /* ── STATS BAR ── */
+    .stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+      background:var(--border);position:relative;z-index:2}
+    .sbar-cell{background:var(--bg);padding:40px 28px;text-align:center}
+    .sbar-val{font-family:'Clash Display',sans-serif;font-weight:700;font-size:2.6rem;
+      letter-spacing:-0.03em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      display:block;margin-bottom:6px}
+    .sbar-lbl{font-family:'Space Mono',monospace;font-size:0.56rem;color:var(--muted);
+      letter-spacing:0.12em;text-transform:uppercase}
+
+    /* ── HOW IT WORKS ── */
+    .section-wrap{padding:100px 80px}
+    .section-header{margin-bottom:56px}
+    .flow-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);margin-bottom:32px}
+    .flow-card{background:var(--bg);padding:36px 24px;position:relative;overflow:hidden;transition:background 0.2s}
+    .flow-card:hover{background:var(--surface)}
+    .flow-card::before{content:attr(data-n);position:absolute;top:-10px;right:12px;
+      font-family:'Clash Display',sans-serif;font-weight:700;font-size:5rem;
+      background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      opacity:0.07;line-height:1;pointer-events:none}
+    .fc-icon{font-size:1.8rem;margin-bottom:16px;display:block}
+    .fc-title{font-family:'Clash Display',sans-serif;font-weight:600;font-size:1rem;margin-bottom:10px;letter-spacing:-0.01em}
+    .fc-desc{font-size:0.83rem;color:var(--muted);line-height:1.7}
+    .loop-row{display:flex;align-items:stretch;gap:0;border:1px solid var(--border);background:var(--surface);overflow:hidden}
+    .loop-box{flex:1;padding:18px 14px;text-align:center;border-right:1px solid var(--border)}
+    .loop-box:last-child{border-right:none}
+    .lb-lbl{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--muted);
+      letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px}
+    .lb-val{font-family:'Clash Display',sans-serif;font-weight:600;font-size:0.9rem;
+      background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .loop-arrow{display:flex;align-items:center;padding:0 4px;color:var(--purple);font-size:1rem;flex-shrink:0}
+
+    /* ── TOKENOMICS ── */
+    .toko-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+    .toko-cards{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+    .toko-card{background:var(--bg);padding:32px 22px;position:relative;overflow:hidden;transition:background 0.2s}
+    .toko-card:hover{background:var(--surface)}
+    .toko-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)}
+    .toko-num{font-family:'Clash Display',sans-serif;font-weight:700;font-size:2.4rem;
+      letter-spacing:-0.03em;background:var(--grad);-webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;display:block;margin-bottom:6px}
+    .toko-lbl{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);
+      letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;display:block}
+    .toko-desc{font-size:0.82rem;color:var(--muted);line-height:1.6}
+    .burn-vis{border:1px solid var(--border);padding:28px 24px;background:var(--surface)}
+    .bv-lbl{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);
+      letter-spacing:0.12em;text-transform:uppercase;margin-bottom:20px}
+    .bv-row{margin-bottom:14px}
+    .bv-labels{display:flex;justify-content:space-between;margin-bottom:5px}
+    .bv-rl{font-family:'Space Mono',monospace;font-size:0.56rem;color:var(--muted)}
+    .bv-track{height:6px;background:var(--muted2);overflow:hidden}
+    .bv-fill{height:6px;background:var(--grad);width:0;transition:width 1.6s ease}
+
+    /* ── TREASURY ── */
+    .treas-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+    .treas-facts{display:flex;flex-direction:column;gap:12px}
+    .tf-row{display:flex;align-items:flex-start;gap:14px;padding:16px 18px;
+      border:1px solid var(--border);background:var(--surface)}
+    .tf-icon{font-size:1.2rem;flex-shrink:0;margin-top:1px}
+    .tf-title{font-weight:600;font-size:0.9rem;margin-bottom:3px}
+    .tf-desc{font-size:0.82rem;color:var(--muted);line-height:1.6}
+    .treas-cycle{border:1px solid var(--border);background:var(--surface);padding:24px}
+    .tc-title{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);
+      letter-spacing:0.12em;text-transform:uppercase;margin-bottom:18px}
+    .cycle-step{display:flex;gap:14px;align-items:flex-start;padding:13px 0;border-bottom:1px solid var(--border)}
+    .cycle-step:last-child{border-bottom:none}
+    .cs-n{font-family:'Clash Display',sans-serif;font-weight:700;font-size:1.4rem;
+      background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      line-height:1;flex-shrink:0;width:28px}
+    .cs-lbl{font-weight:600;font-size:0.88rem;margin-bottom:2px}
+    .cs-desc{font-size:0.8rem;color:var(--muted);line-height:1.6}
+    .phase-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+    .phase-card{padding:14px 16px;border:1px solid var(--border);background:var(--bg)}
+    .pc-lbl{font-family:'Space Mono',monospace;font-size:0.54rem;color:var(--muted);
+      letter-spacing:0.08em;text-transform:uppercase;margin-bottom:5px}
+    .pc-val{font-size:0.84rem;font-weight:500;color:var(--text)}
+
+    /* ── ECOSYSTEM ── */
+    .eco-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+    .lp-table{width:100%;border-collapse:collapse}
+    .lp-table th{font-family:'Space Mono',monospace;font-size:0.54rem;color:var(--muted);
+      letter-spacing:0.1em;text-transform:uppercase;padding:10px 14px;text-align:left;
+      border-bottom:1px solid var(--border)}
+    .lp-table td{padding:11px 14px;font-size:0.84rem;border-bottom:1px solid var(--border)}
+    .lp-table tr:last-child td{border-bottom:none}
+    .lp-table tr:hover td{background:var(--surface)}
+    .lp-pair{font-weight:600;font-family:'Space Mono',monospace;font-size:0.72rem;
+      background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .lp-a a{color:var(--blue);text-decoration:none;font-family:'Space Mono',monospace;font-size:0.6rem}
+    .lp-a a:hover{text-decoration:underline}
+    .badge{font-family:'Space Mono',monospace;font-size:0.52rem;padding:2px 7px;display:inline-block}
+    .badge-blue{background:rgba(79,142,247,0.1);color:var(--blue);border:1px solid rgba(79,142,247,0.2)}
+    .badge-green{background:rgba(74,222,128,0.08);color:#4ade80;border:1px solid rgba(74,222,128,0.2)}
+    .farm-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .farm-card{background:var(--surface);border:1px solid var(--border);padding:20px;
+      position:relative;overflow:hidden;transition:border-color 0.2s,transform 0.2s}
+    .farm-card:hover{border-color:rgba(155,109,255,0.35);transform:translateY(-2px)}
+    .farm-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)}
+    .farm-icon{font-size:1.3rem;margin-bottom:10px;display:block}
+    .farm-name{font-weight:700;font-size:0.92rem;margin-bottom:5px}
+    .farm-desc{font-size:0.8rem;color:var(--muted);line-height:1.6;margin-bottom:12px}
+    .farm-link{font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.07em;
+      text-transform:uppercase;color:var(--purple);text-decoration:none;
+      border:1px solid var(--border2);padding:6px 12px;display:inline-block;transition:all 0.2s}
+    .farm-link:hover{background:var(--purple);color:#fff;border-color:var(--purple)}
+    .sub-heading{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);
+      letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14px}
+    .wallet-note{padding:14px 18px;background:rgba(79,142,247,0.05);border:1px solid rgba(79,142,247,0.15);
+      font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);line-height:1.7;margin-top:20px}
+    .wn-addr{color:var(--blue);word-break:break-all;display:block;margin-top:6px}
+
+    /* ── HOW TO BUY ── */
+    .htb-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
+    .steps{display:flex;flex-direction:column}
+    .step{display:grid;grid-template-columns:48px 1fr;gap:20px;align-items:flex-start;
+      padding:24px 0;border-bottom:1px solid var(--border)}
+    .step:last-child{border-bottom:none}
+    .step-n{font-family:'Clash Display',sans-serif;font-weight:700;font-size:2rem;
+      letter-spacing:-0.03em;background:var(--grad);-webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;line-height:1;padding-top:2px}
+    .step-title{font-weight:600;font-size:0.95rem;margin-bottom:5px}
+    .step-desc{color:var(--muted);font-size:0.85rem;line-height:1.75}
+    .step-desc a{color:var(--blue);text-decoration:none}
+    .step-desc a:hover{text-decoration:underline}
+    .htb-right{display:flex;flex-direction:column;gap:14px}
+    .contract-panel{border:1px solid var(--border);padding:22px;background:var(--surface)}
+    .cp-lbl{font-family:'Space Mono',monospace;font-size:0.54rem;color:var(--muted);
+      letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px}
+    .cp-addr{font-family:'Space Mono',monospace;font-size:0.66rem;color:var(--text);
+      word-break:break-all;margin-bottom:12px;line-height:1.6}
+    .cp-copy{font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.08em;
+      text-transform:uppercase;padding:10px;background:var(--grad-btn);color:#fff;
+      border:none;cursor:pointer;width:100%;transition:opacity 0.2s}
+    .cp-copy:hover{opacity:0.82}
+    .links-panel{border:1px solid var(--border);background:var(--surface)}
+    .lrow{display:flex;align-items:center;justify-content:space-between;
+      padding:12px 18px;border-bottom:1px solid var(--border)}
+    .lrow:last-child{border-bottom:none}
+    .lrow-lbl{font-size:0.85rem;color:var(--muted)}
+    .lrow a{font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.06em;
+      color:var(--purple);text-decoration:none;border:1px solid var(--border2);
+      padding:5px 12px;transition:all 0.2s}
+    .lrow a:hover{background:var(--purple);color:#fff;border-color:var(--purple)}
+    .slippage-note{border:1px solid rgba(155,109,255,0.2);padding:16px 18px;background:rgba(155,109,255,0.04)}
+    .sn-lbl{font-family:'Space Mono',monospace;font-size:0.54rem;color:var(--purple);
+      letter-spacing:0.1em;text-transform:uppercase;margin-bottom:5px}
+    .sn-txt{font-size:0.82rem;color:var(--muted);line-height:1.65}
+
+    /* ── DASHBOARD CTA ── */
+    .dash-cta{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+      padding:80px 80px;display:flex;align-items:center;justify-content:space-between;gap:40px}
+    .dash-cta-left{}
+    .dash-features{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:24px;max-width:480px}
+    .df{padding:10px 14px;border:1px solid var(--border);background:var(--bg);
+      font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);
+      letter-spacing:0.05em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+    .df::before{content:'→';color:var(--purple)}
+    .dash-cta-right{flex-shrink:0;text-align:center}
+    .dash-cta-right p{font-family:'Space Mono',monospace;font-size:0.56rem;color:var(--muted2);margin-top:8px}
+
+    /* ── CTA BANNER ── */
+    .cta-banner{padding:80px;background:linear-gradient(135deg,rgba(79,142,247,0.08),rgba(155,109,255,0.08));
+      border-top:1px solid var(--border);display:flex;align-items:center;
+      justify-content:space-between;gap:40px}
+    .cb-title{font-family:'Clash Display',sans-serif;font-weight:700;
+      font-size:clamp(2rem,3vw,2.8rem);letter-spacing:-0.03em;margin-bottom:8px}
+    .cb-sub{color:var(--muted);font-size:0.95rem}
+    .cb-btns{display:flex;gap:12px;flex-wrap:wrap;align-items:center;flex-shrink:0}
+
+    /* ── FOOTER ── */
+    footer{padding:20px 48px;border-top:1px solid var(--border);background:var(--surface);
+      display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .footer-logo{font-family:'Clash Display',sans-serif;font-weight:700;font-size:1.1rem;
+      letter-spacing:-0.02em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .footer-note{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--muted2);
+      letter-spacing:0.04em;text-align:center}
+    .footer-links{display:flex;gap:0}
+    .footer-links a{font-family:'Space Mono',monospace;font-size:0.56rem;color:var(--muted);
+      text-decoration:none;padding:5px 12px;border-right:1px solid var(--border);
+      letter-spacing:0.06em;text-transform:uppercase;transition:color 0.2s}
+    .footer-links a:first-child{border-left:1px solid var(--border)}
+    .footer-links a:hover{color:var(--purple)}
+
+    /* section divider */
+    .divider{height:1px;background:var(--border);position:relative;z-index:2}
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:1024px){
+      .hero{padding:100px 48px 80px;gap:40px}
+      .section-wrap{padding:80px 48px}
+      .dash-cta{padding:60px 48px}
+      .cta-banner{padding:60px 48px}
+      nav{padding:0 24px}
+      footer{padding:16px 24px}
+    }
+    @media(max-width:700px){
+      .nav-links{display:none}
+    }
+    @media(max-width:860px){
+      .hero{grid-template-columns:1fr;padding:90px 28px 60px}
+      .hero-img-wrap{display:none}
+      .treas-grid,.eco-grid,.htb-grid,.toko-grid{grid-template-columns:1fr}
+      .flow-grid{grid-template-columns:1fr 1fr}
+      .section-wrap{padding:60px 28px}
+      .dash-cta{flex-direction:column;padding:60px 28px}
+      .cta-banner{flex-direction:column;padding:60px 28px}
+    }
+    @media(max-width:560px){
+      .flow-grid,.toko-cards,.farm-grid{grid-template-columns:1fr}
+      .stats-bar{grid-template-columns:1fr 1fr}
+      .hero-stats{flex-wrap:wrap}
+      .loop-row{flex-wrap:wrap}
+      nav{padding:0 16px}
+      .nav-learn{display:none}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">CashX</a>
+  <div class="nav-links">
+    <a href="#how-it-works">How It Works</a>
+    <a href="#tokenomics">Tokenomics</a>
+    <a href="#treasury">Treasury</a>
+    <a href="#ecosystem">Ecosystem</a>
+    <a href="#buy">How to Buy</a>
+  </div>
+  <div class="nav-right">
+    <a class="nav-learn" href="dashboard.html" style="margin-right:10px">📊 Live Dashboard</a>
+    <a class="nav-learn" href="https://www.youtube.com/watch?v=UefZfzeoU_M" target="_blank">Learn More</a>
+    <a class="nav-trade" href="https://pulsex.com" target="_blank">Trade $CASHX</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="hero-left fade">
+    <div class="home-badge">Live on PulseChain · Treasury Active</div>
+    <h1 class="hero-title">
+      The Treasury<br><span class="grad-text">Buy &amp; Burn</span><br>Does The<br><span class="grad-text">Work For You!</span>
+    </h1>
+    <p class="hero-sub">$CASHX is a utility token backed by a self-compounding treasury on PulseChain. SAC funds generate yield from day one — buying $CASHX off the market and burning it permanently. No end date.</p>
+    <div class="hero-ctas">
+      <a class="btn-sharp btn-filled" href="https://pulsex.com" target="_blank">Buy $CASHX</a>
+      <a class="btn-sharp btn-outline" href="https://t.me/+Ruw3dQPRTv00NDRl" target="_blank">Join Telegram</a>
+      <a class="btn-sharp btn-outline" href="https://www.youtube.com/watch?v=UefZfzeoU_M" target="_blank">▶ Learn More</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat">
+        <div class="hstat-lbl">Supply</div>
+        <div class="hstat-val">3.7B</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-lbl">Buy / Sell Tax</div>
+        <div class="hstat-val">4 / 4%</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-lbl">Network</div>
+        <div class="hstat-val">PLS</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-lbl">Burns</div>
+        <div class="hstat-val">Repeat. No End Date</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-img-wrap fade" style="transition-delay:0.15s">
+    <img id="mascot-img" alt="CashX mascot" style="width:100%;max-width:480px;filter:drop-shadow(0 0 60px rgba(155,109,255,0.3));animation:float 6s ease-in-out infinite;margin:0 auto;display:block"/>
+  </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <div class="ticker-item">$CASHX <span>LIVE</span></div>
+    <div class="ticker-item ticker-dot">✦</div>
+    <div class="ticker-item">PULSECHAIN <span>NATIVE</span></div>
+    <div class="ticker-item ticker-dot">✦</div>
+    <div class="ticker-item">3,700,000,000 <span>SUPPLY</span></div>
+    <div class="ticker-item ticker-dot">✦</div>
+    <div class="ticker-item">COMMUNITY <span>FIRST</span></div>
+    <div class="ticker-item ticker-dot">✦</div>
+    <div class="ticker-item">CONTRACT <span>VERIFIED</span></div>
+    <div class="ticker-item ticker-dot">✦</div>
+    <div class="ticker-item">SAC FUNDED <span>COMMUNITY LAUNCH</span></div>
+    <div class="ticker-item ticker-dot">✦</div>
+    <div class="ticker-item">BURNS <span>ACTIVE</span></div>
+    <div class="ticker-item ticker-dot">✦</div>
+    <!-- duplicate for seamless loop -->
+    <div class="ticker-item">$CASHX <span>LIVE</span></div>
+    <div class="ticker-item ticker-dot">✦</div>
+    <div class="ticker-item">PULSECHAIN <span>NATIVE</span></div>
+    <div class="ticker-item ticker-dot">✦</div>
+    <div class="ticker-item">3,700,000,000 <span>SUPPLY</span></div>
+    <div class="ticker-item ticker-dot">✦</div>
+    <div class="ticker-item">COMMUNITY <span>FIRST</span></div>
+    <div class="ticker-item ticker-dot">✦</div>
+    <div class="ticker-item">CONTRACT <span>VERIFIED</span></div>
+    <div class="ticker-item ticker-dot">✦</div>
+    <div class="ticker-item">SAC FUNDED <span>COMMUNITY LAUNCH</span></div>
+    <div class="ticker-item ticker-dot">✦</div>
+    <div class="ticker-item">BURNS <span>ACTIVE</span></div>
+    <div class="ticker-item ticker-dot">✦</div>
+  </div>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="sbar-cell fade">
+    <span class="sbar-val">3.7B</span>
+    <span class="sbar-lbl">Total Supply</span>
+  </div>
+  <div class="sbar-cell fade" style="transition-delay:0.1s">
+    <span class="sbar-val">4%</span>
+    <span class="sbar-lbl">Buy Tax</span>
+  </div>
+  <div class="sbar-cell fade" style="transition-delay:0.2s">
+    <span class="sbar-val">4%</span>
+    <span class="sbar-lbl">Sell Tax</span>
+  </div>
+  <div class="sbar-cell fade" style="transition-delay:0.3s">
+    <span class="sbar-val">∞</span>
+    <span class="sbar-lbl">Burn Duration</span>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- HOW IT WORKS -->
+<section class="section-wrap" id="how-it-works">
+  <div class="section-header fade">
+    <span class="sec-tag">// The CashX Engine</span>
+    <h2 class="sec-h">A Simple,<br>Relentless Loop.</h2>
+    <p class="sec-p" style="max-width:560px">The SAC funds the treasury. The treasury compounds. Revenue buys $CASHX off the market and burns it permanently. Every cycle, supply shrinks. Every cycle, buy pressure grows. The machine runs itself.</p>
+  </div>
+
+  <div class="flow-grid">
+    <div class="flow-card fade" data-n="01">
+      <span class="fc-icon">🏦</span>
+      <div class="fc-title">SAC Funds Treasury</div>
+      <div class="fc-desc">Community sacrifice builds the initial treasury. All proceeds deploy into yield-generating DeFi positions on PulseChain from day one — not held idle.</div>
+    </div>
+    <div class="flow-card fade" style="transition-delay:0.1s" data-n="02">
+      <span class="fc-icon">📈</span>
+      <div class="fc-title">Treasury Compounds</div>
+      <div class="fc-desc">Yield is reinvested to grow the treasury over time. During PulseChain bull runs, positions rotate to stablecoins to lock gains — identical to OINK's proven strategy.</div>
+    </div>
+    <div class="flow-card fade" style="transition-delay:0.2s" data-n="03">
+      <span class="fc-icon">🔥</span>
+      <div class="fc-title">Buy &amp; Burn</div>
+      <div class="fc-desc">Treasury revenue purchases $CASHX from the open market and sends it to the burn address permanently. Reduced supply against consistent demand creates sustained price pressure.</div>
+    </div>
+    <div class="flow-card fade" style="transition-delay:0.3s" data-n="04">
+      <span class="fc-icon">♾️</span>
+      <div class="fc-title">Repeat. No End Date.</div>
+      <div class="fc-desc">The cycle runs indefinitely. As the treasury compounds and circulating supply decreases, each burn cycle has greater relative impact. Low cap at launch — massive room to run.</div>
+    </div>
+  </div>
+
+  <div class="loop-row fade">
+    <div class="loop-box"><div class="lb-lbl">SAC Capital</div><div class="lb-val">Treasury</div></div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-box"><div class="lb-lbl">DeFi Yield</div><div class="lb-val">Compound</div></div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-box"><div class="lb-lbl">Revenue</div><div class="lb-val">Buy $CASHX</div></div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-box"><div class="lb-lbl">Send to 0x0</div><div class="lb-val">🔥 Burn</div></div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-box" style="border-color:rgba(155,109,255,0.3);background:rgba(155,109,255,0.05)">
+      <div class="lb-lbl">Forever</div><div class="lb-val">♾️</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TOKENOMICS -->
+<section class="section-wrap" id="tokenomics">
+  <div class="toko-grid">
+    <div>
+      <div class="fade">
+        <span class="sec-tag">// Tokenomics</span>
+        <h2 class="sec-h">Designed<br>to Deflate.</h2>
+        <p class="sec-p">Fixed supply. Continuous burns. A tax structure that works against sell pressure. Every mechanic points in one direction — shrinking supply and growing treasury.</p>
+      </div>
+      <div class="toko-cards" style="margin-top:32px">
+        <div class="toko-card fade">
+          <span class="toko-num">3.7B</span>
+          <span class="toko-lbl">Max Supply</span>
+          <div class="toko-desc">Hard cap. No minting after launch. Supply only ever goes down.</div>
+        </div>
+        <div class="toko-card fade" style="transition-delay:0.1s">
+          <span class="toko-num">4%</span>
+          <span class="toko-lbl">Buy Tax</span>
+          <div class="toko-desc">Applied on every purchase. Funds treasury operations and buy-and-burn cycle.</div>
+        </div>
+        <div class="toko-card fade" style="transition-delay:0.2s">
+          <span class="toko-num">4%</span>
+          <span class="toko-lbl">Sell Tax</span>
+          <div class="toko-desc">Applied on every sale. Redirected into buy-and-burn — working against sell pressure in real time.</div>
+        </div>
+        <div class="toko-card fade" style="transition-delay:0.3s">
+          <span class="toko-num">∞</span>
+          <span class="toko-lbl">Burn Duration</span>
+          <div class="toko-desc">No expiry. Burns accelerate as treasury compounds and supply shrinks.</div>
+        </div>
+      </div>
+    </div>
+    <div class="fade" style="transition-delay:0.15s">
+      <img src="tokenomics.svg" alt="CashX tokenomics flow" style="width:100%;border:1px solid rgba(155,109,255,0.15)"/></div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TREASURY -->
+<section class="section-wrap" id="treasury">
+  <div class="fade" style="margin-bottom:48px">
+    <span class="sec-tag">// Treasury Strategy</span>
+    <h2 class="sec-h">The Machine That<br>Never Stops.</h2>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:32px">
+
+    <!-- CYCLE — full width -->
+    <div class="fade">
+      <div class="treas-cycle">
+        <div class="tc-title">// Treasury Cycle</div>
+        <div class="cycle-step"><div class="cs-n">1</div><div><div class="cs-lbl">SAC Closes → Treasury Funded</div><div class="cs-desc">All sacrifice proceeds move to the treasury. Capital is ready to deploy immediately at launch.</div></div></div>
+        <div class="cycle-step"><div class="cs-n">2</div><div><div class="cs-lbl">Capital Deployed into DeFi</div><div class="cs-desc">Funds enter yield-generating positions across PulseChain — Emit, Actuator, Tru2Farms and more.</div></div></div>
+        <div class="cycle-step"><div class="cs-n">3</div><div><div class="cs-lbl">Yield Harvested</div><div class="cs-desc">Generated yield is harvested. A portion compounds the treasury base. The rest goes to buy-and-burn.</div></div></div>
+        <div class="cycle-step"><div class="cs-n">4</div><div><div class="cs-lbl">Treasury Buys $CASHX</div><div class="cs-desc">Harvested yield is used to buy $CASHX directly on the open market — creating real buy pressure.</div></div></div>
+        <div class="cycle-step"><div class="cs-n">5</div><div><div class="cs-lbl">Tokens Burned Permanently</div><div class="cs-desc">Purchased tokens sent to the burn address. Circulating supply decreases. Return to step 3 — indefinitely.</div></div></div>
+      </div>
+    </div>
+
+    <!-- 3 FACT CARDS — full width row -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border)">
+      <div class="tf-row fade">
+        <div class="tf-icon">🏦</div>
+        <div><div class="tf-title">Active From Day One</div>
+        <div class="tf-desc">SAC proceeds deploy immediately into yield-generating DeFi positions. No vesting, no waiting — the treasury starts working the moment it's funded.</div></div>
+      </div>
+      <div class="tf-row fade">
+        <div class="tf-icon">📊</div>
+        <div><div class="tf-title">Stablecoin Strategy at Highs</div>
+        <div class="tf-desc">When PulseChain runs, treasury positions rotate to stablecoins to lock in gains. Capital is redeployed at strategic entries — compounding the base before the next burn cycle.</div></div>
+      </div>
+      <div class="tf-row fade">
+        <div class="tf-icon">🔥</div>
+        <div><div class="tf-title">Manual Buy &amp; Burn</div>
+        <div class="tf-desc">Burns are executed manually by the team. Revenue from yield is used to buy $CASHX on the open market, creating real buy pressure, then burned permanently.</div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ECOSYSTEM -->
+<section class="section-wrap" id="ecosystem">
+  <div class="fade" style="margin-bottom:48px">
+    <span class="sec-tag">// Ecosystem</span>
+    <h2 class="sec-h">Where $CASHX Lives<br>&amp; Works.</h2>
+  </div>
+  <div class="eco-grid">
+    <div class="fade">
+      <div class="sub-heading">Liquidity Pools</div>
+      <table class="lp-table">
+        <thead>
+          <tr><th>Pair</th><th>DEX</th><th>Status</th><th>Links</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="lp-pair">CASHX / WPLS</div><div style="font-size:0.72rem;color:var(--muted);margin-top:2px">Primary pair</div></td>
+            <td><span class="badge badge-blue">PulseX V2</span></td>
+            <td><span class="badge badge-green">● Active</span></td>
+            <td class="lp-a"><a href="https://dexscreener.com/pulsechain/0xda942580cee2a69c5fc74109090816157730c64d" target="_blank">Chart</a> · <a href="https://www.swap.win/?token=0x4c450b3c2b89a2dabe5a3ee39ff475134a30d665" target="_blank">Trade</a></td>
+          </tr>
+          <tr>
+            <td><div class="lp-pair">CashX / WPLS</div><div style="font-size:0.72rem;color:var(--muted);margin-top:2px">Legacy pair</div></td>
+            <td><span class="badge badge-blue">PulseX V1</span></td>
+            <td><span class="badge badge-green">● Active</span></td>
+            <td class="lp-a"><a href="https://liquidity-pools.vercel.app/0x4c450b3c2b89a2dabe5a3ee39ff475134a30d665" target="_blank">View All</a></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top:10px;font-family:'Space Mono',monospace;font-size:0.56rem;color:var(--muted)">
+        All LP data: <a href="https://liquidity-pools.vercel.app/0x4c450b3c2b89a2dabe5a3ee39ff475134a30d665" target="_blank" style="color:var(--blue);text-decoration:none">liquidity-pools.vercel.app →</a>
+      </div>
+      <div class="sub-heading" style="margin-top:32px">Treasury Wallet</div>
+      <div class="wallet-note">
+        <div style="color:var(--text);margin-bottom:6px">Track treasury farm positions on Hocus Pocus — paste wallet into "Impersonate address" then click "Staked".</div>
+        <span class="wn-addr">0xeda3aa737947337b425227dB8174519f623C041f</span>
+        <div style="margin-top:12px">
+          <button onclick="copyAndOpenHP()" style="font-family:'Space Mono',monospace;font-size:0.56rem;letter-spacing:0.07em;text-transform:uppercase;padding:8px 14px;background:var(--grad-btn);color:#fff;border:none;cursor:pointer;transition:opacity 0.2s" onmouseover="this.style.opacity='0.82'" onmouseout="this.style.opacity='1'">Copy Wallet &amp; Open Hocus Pocus →</button>
+        </div>
+      </div>
+    </div>
+    <div class="fade" style="transition-delay:0.15s">
+      <div class="sub-heading">Treasury Yield Farms</div>
+      <div class="farm-grid">
+        <div class="farm-card">
+          <span class="farm-icon">⚡</span>
+          <div class="farm-name">Emit Farm</div>
+          <div class="farm-desc">Primary yield platform. NFT holders get zero deposit/withdraw fees.</div>
+          <a class="farm-link" href="https://emit.farm/farms" target="_blank">Open →</a>
+        </div>
+        <div class="farm-card">
+          <span class="farm-icon">🌱</span>
+          <div class="farm-name">Tru2Farms</div>
+          <div class="farm-desc">Secondary farming platform. Also supports fee-free NFT holders.</div>
+          <a class="farm-link" href="https://trufarms.io/farms" target="_blank">Open →</a>
+        </div>
+        <div class="farm-card">
+          <span class="farm-icon">🎯</span>
+          <div class="farm-name">Actuator Finance</div>
+          <div class="farm-desc">High APR HEX single-stake, backed 1:1 on redemption day.</div>
+          <a class="farm-link" href="https://app.actuator.finance/farms" target="_blank">Open →</a>
+        </div>
+        <div class="farm-card">
+          <span class="farm-icon">🔮</span>
+          <div class="farm-name">Hocus Pocus</div>
+          <div class="farm-desc">Track treasury positions: paste wallet into "Impersonate address", then click "Staked".</div>
+          <a class="farm-link" href="https://app.hocuspocus.finance/farms" target="_blank">Open →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- HOW TO BUY -->
+<section class="section-wrap" id="buy">
+  <div class="fade" style="margin-bottom:48px">
+    <span class="sec-tag">// How to Buy</span>
+    <h2 class="sec-h">Get $CASHX<br>in 4 Steps.</h2>
+  </div>
+  <div class="htb-grid">
+    <div class="steps fade">
+      <div class="step">
+        <div class="step-n">01</div>
+        <div><div class="step-title">Set Up a PulseChain Wallet</div>
+        <div class="step-desc">Install <a href="https://metamask.io" target="_blank">MetaMask</a> or Rabby Wallet. Add the PulseChain network: Chain ID <strong>369</strong>, RPC <a href="https://rpc.pulsechain.com" target="_blank">rpc.pulsechain.com</a>.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n">02</div>
+        <div><div class="step-title">Get PLS</div>
+        <div class="step-desc">Bridge assets from Ethereum via the <a href="https://bridge.pulsechain.com" target="_blank">official PulseChain bridge</a>, or buy PLS directly on a supported exchange.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n">03</div>
+        <div><div class="step-title">Open PulseX</div>
+        <div class="step-desc">Go to <a href="https://pulsex.com" target="_blank">pulsex.com</a> and connect your wallet.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-n">04</div>
+        <div><div class="step-title">Swap for $CASHX</div>
+        <div class="step-desc">Paste the contract address into the token search and swap your PLS. Set slippage to at least <strong style="color:var(--purple)">5%</strong> to account for the 4% tax.</div></div>
+      </div>
+    </div>
+
+    <div class="htb-right fade" style="transition-delay:0.15s">
+      <div class="contract-panel">
+        <div class="cp-lbl">Contract Address · PRC-20 · PulseChain</div>
+        <div class="cp-addr">0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665</div>
+        <button class="cp-copy" onclick="copyAddr(this)">Copy Contract Address</button>
+      </div>
+      <div class="links-panel">
+        <div class="lrow"><span class="lrow-lbl">Trade on PulseX</span><a href="https://pulsex.com" target="_blank">Open →</a></div>
+        <div class="lrow"><span class="lrow-lbl">Chart on DexScreener</span><a href="https://dexscreener.com/pulsechain/0xda942580cee2a69c5fc74109090816157730c64d" target="_blank">Open →</a></div>
+        <div class="lrow"><span class="lrow-lbl">Block Explorer</span><a href="https://scan.pulsechain.com/token/0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665" target="_blank">Open →</a></div>
+        <div class="lrow"><span class="lrow-lbl">Telegram Community</span><a href="https://t.me/+Ruw3dQPRTv00NDRl" target="_blank">Join →</a></div>
+      </div>
+      <div class="slippage-note">
+        <div class="sn-lbl">⚠ Slippage</div>
+        <div class="sn-txt">$CASHX has a 4% buy and 4% sell tax. Set your slippage tolerance to at least 5% or your transaction will fail.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- DASHBOARD CTA -->
+<div class="dash-cta">
+  <div class="dash-cta-left fade">
+    <span class="sec-tag">// Live Dashboard</span>
+    <h2 class="sec-h" style="font-size:clamp(1.8rem,2.8vw,2.6rem)">Real-Time Treasury<br>&amp; Burn Data.</h2>
+    <p class="sec-p" style="max-width:440px">Live treasury balance, burn tracker, price data, and market stats — all pulled directly from PulseChain. Auto-refreshes every 60 seconds.</p>
+    <div class="dash-features">
+      <div class="df">Treasury PLS Balance</div>
+      <div class="df">Total Supply Burned</div>
+      <div class="df">Live Price &amp; Market Cap</div>
+      <div class="df">Holder Count</div>
+      <div class="df">Burn Event Feed</div>
+      <div class="df">Dead Address Tracker</div>
+    </div>
+  </div>
+  <div class="dash-cta-right fade" style="transition-delay:0.15s">
+    <a class="btn-sharp btn-filled" href="dashboard.html" style="font-size:0.75rem;padding:14px 40px">Open Live Dashboard →</a>
+    <p>Opens in same tab · Auto-refreshes every 60s</p>
+  </div>
+</div>
+
+<!-- CTA BANNER -->
+<div class="cta-banner">
+  <div class="fade">
+    <div class="cb-title">Join the CashX<br><span class="grad-text">Community Today.</span></div>
+    <div class="cb-sub">Treasury active. Burns ongoing. PulseChain native.</div>
+  </div>
+  <div class="cb-btns fade" style="transition-delay:0.15s">
+    <a class="btn-sharp btn-filled" href="https://www.swap.win/?token=0x4c450b3c2b89a2dabe5a3ee39ff475134a30d665" target="_blank">Buy $CASHX</a>
+    <a class="btn-sharp btn-outline" href="https://t.me/+Ruw3dQPRTv00NDRl" target="_blank">Join Telegram</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">CashX</div>
+  <div class="footer-note">$CASHX IS A UTILITY TOKEN ON PULSECHAIN · NOT FINANCIAL ADVICE · DYOR</div>
+  <div class="footer-links">
+    <a href="https://t.me/+Ruw3dQPRTv00NDRl" target="_blank">Telegram</a>
+    <a href="https://dexscreener.com/pulsechain/0xda942580cee2a69c5fc74109090816157730c64d" target="_blank">DexScreener</a>
+    <a href="https://scan.pulsechain.com/token/0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665" target="_blank">Explorer</a>
+    <a href="https://www.youtube.com/watch?v=UefZfzeoU_M" target="_blank">Learn More</a>
+  </div>
+</footer>
+
+<script>
+
+ 
+const MASCOT_SRC = 'cashx_character.jpg';
+// ─────────────────────────────────────────
+document.getElementById('mascot-img').src = MASCOT_SRC;
+
+  // Scroll fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){ e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade').forEach(el => observer.observe(el));
+
+  // Animate burn bars when they scroll into view
+  const barObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        e.target.querySelectorAll('.bv-fill').forEach((bar, i) => {
+          const w = bar.dataset.w || '0';
+          setTimeout(() => { bar.style.width = w + '%'; }, i * 180);
+        });
+        barObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  document.querySelectorAll('.burn-vis').forEach(el => barObserver.observe(el));
+
+  // Copy contract address
+  function copyAddr(btn) {
+    navigator.clipboard.writeText('0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665');
+    const o = btn.textContent; btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = o, 1800);
+  }
+
+  // Copy treasury wallet and open Hocus Pocus
+  function copyAndOpenHP() {
+    navigator.clipboard.writeText('0xeda3aa737947337b425227dB8174519f623C041f').then(() => {
+      window.open('https://app.hocuspocus.finance/farms', '_blank');
+    }).catch(() => {
+      window.open('https://app.hocuspocus.finance/farms', '_blank');
+    });
+  }
+
+  // Nav background on scroll
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    nav.style.background = window.scrollY > 20
+      ? 'rgba(12,10,15,0.97)'
+      : 'rgba(12,10,15,0.88)';
+  });
+</script>
+</body>
+</html>

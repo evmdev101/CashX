@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CashX — Live Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:      #12101a;
+      --surface: #1a1726;
+      --surface2: #221e30;
+      --border:  rgba(155,109,255,0.18);
+      --border2: rgba(155,109,255,0.32);
+      --purple:  #9b6dff;
+      --blue:    #4f8ef7;
+      --pink:    #e040fb;
+      --grad:    linear-gradient(135deg,#4f8ef7 0%,#9b6dff 52%,#e040fb 100%);
+      --text:    #ede8f5;
+      --muted:   #8878a8;
+      --muted2:  #524870;
+      --green:   #4ade80;
+      --red:     #f87171;
+      --amber:   #fbbf24;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.5;display:flex;flex-direction:column;min-height:100vh;overflow-x:hidden}
+
+    /* HEADER */
+    header{height:56px;padding:0 28px;flex-shrink:0;border-bottom:1px solid var(--border);background:rgba(18,16,26,0.94);backdrop-filter:blur(18px);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+    .h-left{display:flex;align-items:center;gap:16px}
+    .h-home{font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:5px 10px;border:1px solid var(--border2);transition:all 0.2s}
+    .h-home:hover{color:var(--purple);border-color:var(--purple)}
+    .h-logo{font-family:'Clash Display',sans-serif;font-weight:700;font-size:1.15rem;letter-spacing:-0.02em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .h-tag{font-family:'Space Mono',monospace;font-size:0.56rem;color:var(--muted);letter-spacing:0.07em;padding:3px 9px;border:1px solid var(--border);display:flex;align-items:center;gap:6px}
+    .live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2s infinite;flex-shrink:0}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+    .h-right{display:flex;align-items:center;gap:10px}
+    .last-up{font-family:'Space Mono',monospace;font-size:0.56rem;color:var(--muted2)}
+    .rbtn{font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.07em;text-transform:uppercase;padding:6px 14px;background:transparent;border:1px solid var(--border2);color:var(--purple);cursor:pointer;transition:all 0.2s}
+    .rbtn:hover{background:var(--purple);color:#fff}
+    .rbtn:disabled{opacity:0.3;cursor:default}
+
+    /* MAIN */
+    main{flex:1;padding:16px 28px;display:flex;flex-direction:column;gap:14px;max-width:1440px;width:100%;margin:0 auto}
+
+    /* STAT CARDS */
+    .cards{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--border)}
+    .card{background:var(--bg);padding:16px 14px;position:relative;overflow:hidden}
+    .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)}
+    .card-lbl{font-family:'Space Mono',monospace;font-size:0.54rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:7px;display:flex;align-items:center;gap:5px}
+    .card-val{font-family:'Clash Display',sans-serif;font-weight:700;font-size:1.45rem;letter-spacing:-0.03em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:block;line-height:1;min-height:1.75rem}
+    .card-sub{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--muted2);margin-top:5px}
+    .card-link{text-decoration:none;color:inherit;display:block}
+    .card-link:hover .card-lbl{color:var(--purple)}
+    .ld{color:var(--muted2);font-size:0.62rem;font-family:'Space Mono',monospace;animation:pulse 1.4s infinite}
+    @keyframes pulse{0%,100%{opacity:0.3}50%{opacity:1}}
+    .err{color:var(--red);font-size:0.75rem;font-family:'Space Mono',monospace;-webkit-text-fill-color:var(--red)}
+
+    /* BOTTOM GRID */
+    .bottom{display:grid;grid-template-columns:280px 1fr 280px;gap:14px;min-height:0;align-items:stretch}
+    .panel{background:var(--surface);border:1px solid var(--border);display:flex;flex-direction:column;min-height:0;overflow:hidden}
+    .panel-head{padding:12px 16px;border-bottom:1px solid var(--border);flex-shrink:0;font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;display:flex;align-items:center;gap:7px}
+    .panel-body{padding:14px;flex:1;display:flex;flex-direction:column;gap:8px;overflow:hidden}
+
+    /* BURN GAUGE */
+    .gauge-wrap{display:flex;flex-direction:column;align-items:center;padding:4px 0 8px;flex-shrink:0}
+    
+    .g-track{fill:none;stroke:var(--muted2);stroke-width:13}
+    .g-fill{fill:none;stroke-width:13;stroke-linecap:round;stroke-dasharray:540;stroke-dashoffset:540;transition:stroke-dashoffset 1.6s cubic-bezier(.4,0,.2,1);transform-origin:center;transform:rotate(-90deg);stroke:url(#burnGrad)}
+    .g-pct{font-family:'Clash Display',sans-serif;font-weight:700;font-size:2.2rem;letter-spacing:-0.04em;fill:url(#gTextGrad)}
+    .g-lbl{font-family:'Space Mono',monospace;font-size:0.56rem;letter-spacing:0.1em;fill:var(--muted);text-transform:uppercase}
+    .g-sub{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);text-align:center;line-height:1.65;margin-top:2px}
+
+    .bstat{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:var(--surface2);border:1px solid var(--border)}
+    .bstat-l{font-family:'Space Mono',monospace;font-size:0.55rem;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase}
+    .bstat-v{font-family:'Clash Display',sans-serif;font-weight:600;font-size:0.78rem;letter-spacing:-0.02em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+    .sbar-wrap{margin-top:2px}
+    .sbar-labels{display:flex;justify-content:space-between;margin-bottom:4px}
+    .sbar-lbl{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--muted)}
+    .sbar{height:5px;overflow:hidden}
+    .sbar-bg{background:var(--muted2)}
+    .sbar-fill{height:5px;background:var(--grad);transition:width 1.4s ease;width:0%}
+    .sbar-remain{background:rgba(155,109,255,0.12)}
+
+    .manual-note{display:flex;align-items:center;gap:7px;padding:7px 10px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.18);font-family:'Space Mono',monospace;font-size:0.55rem;color:var(--amber);letter-spacing:0.05em;flex-shrink:0}
+
+    /* STATUS BADGE — no burns yet */
+    .status-badge{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:rgba(79,142,247,0.06);border:1px solid rgba(79,142,247,0.2);flex-shrink:0}
+    .sb-dot{width:8px;height:8px;border-radius:50%;background:var(--amber);flex-shrink:0;margin-top:2px;animation:blink 2s infinite}
+    .sb-title{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--amber);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:3px}
+    .sb-desc{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--muted);line-height:1.5}
+
+    /* MARKET PANEL */
+    .price-hero{font-family:'Clash Display',sans-serif;font-weight:700;font-size:2rem;letter-spacing:-0.04em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:block;margin-bottom:4px}
+    .ch-badge{font-family:'Space Mono',monospace;font-size:0.66rem;padding:2px 8px;display:inline-block;margin-bottom:12px}
+    .badge-up{color:var(--green);background:rgba(74,222,128,0.1)}
+    .badge-dn{color:var(--red);background:rgba(248,113,113,0.1)}
+    .badge-neu{color:var(--muted);background:rgba(107,95,130,0.1)}
+
+    .mkt-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+    .mg{background:var(--bg);padding:10px 12px}
+    .mg-l{font-family:'Space Mono',monospace;font-size:0.56rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px}
+    .mg-v{font-family:'Clash Display',sans-serif;font-weight:600;font-size:0.85rem;letter-spacing:-0.02em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+    .cta-row{display:flex;gap:8px;flex-shrink:0}
+    .cta-buy{flex:1;padding:10px;background:linear-gradient(135deg,#3b6fd4,#7c3aed);color:#fff;font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.07em;text-transform:uppercase;text-align:center;text-decoration:none;display:block;transition:opacity 0.2s}
+    .cta-buy:hover{opacity:0.85}
+    .cta-chart{flex:1;padding:10px;background:var(--surface2);border:1px solid var(--border2);color:var(--purple);font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.07em;text-transform:uppercase;text-align:center;text-decoration:none;display:block;transition:all 0.2s}
+    .cta-chart:hover{background:rgba(155,109,255,0.1)}
+
+    .contract-box{background:var(--surface2);border:1px solid var(--border);padding:10px 12px;flex-shrink:0}
+    .cb-l{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:5px}
+    .cb-addr{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--text);word-break:break-all;margin-bottom:8px;line-height:1.5}
+    .cb-copy{font-family:'Space Mono',monospace;font-size:0.56rem;letter-spacing:0.07em;text-transform:uppercase;padding:7px;background:var(--grad);color:#fff;border:none;cursor:pointer;width:100%;transition:opacity 0.2s}
+    .cb-copy:hover{opacity:0.82}
+
+    /* TREASURY PANEL */
+    .trow{display:flex;align-items:center;justify-content:space-between;padding:9px 11px;background:var(--surface2);border:1px solid var(--border);flex-shrink:0}
+    .tr-l{font-family:'Space Mono',monospace;font-size:0.54rem;color:var(--muted);letter-spacing:0.07em;text-transform:uppercase;margin-bottom:2px}
+    .tr-a{font-family:'Space Mono',monospace;font-size:0.52rem}
+    .tr-a a{color:var(--blue);text-decoration:none}
+    .tr-a a:hover{text-decoration:underline}
+    .tr-v{font-family:'Clash Display',sans-serif;font-weight:600;font-size:0.88rem;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;flex-shrink:0;margin-left:10px;text-align:right}
+
+    .activity-note{padding:10px 12px;background:rgba(79,142,247,0.05);border:1px solid rgba(79,142,247,0.15);flex-shrink:0}
+    .an-title{font-family:'Space Mono',monospace;font-size:0.54rem;color:var(--blue);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px}
+    .an-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;font-family:'Space Mono',monospace;font-size:0.54rem;color:var(--muted)}
+    .an-row:last-child{margin-bottom:0}
+    .an-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+    .dot-green{background:var(--green)}
+    .dot-amber{background:var(--amber)}
+    .dot-red{background:var(--red)}
+
+    /* BURN FEED */
+    .feed-head{font-family:'Space Mono',monospace;font-size:0.56rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;display:flex;align-items:center;gap:6px;flex-shrink:0}
+    .feed-scroll{overflow-y:auto;max-height:440px;min-height:80px}
+    .feed-scroll::-webkit-scrollbar{width:3px}
+    .feed-scroll::-webkit-scrollbar-track{background:transparent}
+    .feed-scroll::-webkit-scrollbar-thumb{background:var(--muted2);border-radius:2px}
+    .feed-scroll::-webkit-scrollbar-thumb:hover{background:var(--purple)}
+    .btx{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+    .btx:last-child{border-bottom:none}
+    .btx-a{color:var(--pink);white-space:nowrap;font-family:'Space Mono',monospace;font-size:0.6rem}
+    .btx-t{color:var(--muted2);white-space:nowrap;font-family:'Space Mono',monospace;font-size:0.56rem;display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+    .btx-tx{color:var(--muted2);font-family:'Space Mono',monospace;font-size:0.5rem;text-decoration:none}
+    .btx-tx:hover{color:var(--blue)}
+    .no-data{font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--muted);text-align:center;padding:20px 0;line-height:1.9}
+
+    /* LINKS */
+    .links{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);flex-shrink:0}
+    .link-btn{display:block;padding:10px;background:var(--bg);color:var(--muted);text-decoration:none;font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.06em;text-transform:uppercase;text-align:center;transition:all 0.2s}
+    .link-btn:hover{background:var(--surface2);color:var(--purple)}
+    .link-btn span{display:block;font-size:0.48rem;color:var(--muted2);margin-top:2px;text-transform:none;letter-spacing:0}
+
+    /* ADDRESS CONTEXT MENU */
+    .addr-chip{color:var(--blue);cursor:pointer;font-family:'Space Mono',monospace;font-size:0.58rem;text-decoration:none}
+    .addr-chip:hover{color:var(--purple);text-decoration:underline}
+    #addr-menu{position:fixed;z-index:9999;background:var(--surface);border:1px solid var(--border2);min-width:210px;padding:6px 0;display:none;box-shadow:0 8px 32px rgba(0,0,0,0.55)}
+    #addr-menu.open{display:block}
+    .am-addr{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--muted);padding:7px 14px 5px;border-bottom:1px solid var(--border);word-break:break-all;line-height:1.5}
+    .am-item{display:block;width:100%;padding:7px 14px;background:none;border:none;color:var(--text);font-family:'Space Mono',monospace;font-size:0.58rem;text-align:left;cursor:pointer;text-decoration:none;letter-spacing:0.04em;transition:background 0.15s,color 0.15s}
+    .am-item:hover{background:var(--surface2);color:var(--purple)}
+    .am-sep{height:1px;background:var(--border);margin:4px 0}
+    .am-copy{color:var(--pink)}
+    .am-copy:hover{color:var(--pink)}
+
+    @media(max-width:1100px){.bottom{grid-template-columns:1fr 1fr}.cards{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:800px){main{padding:12px 14px}.bottom{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr 1fr}.feed-scroll{max-height:140px}.links{grid-template-columns:1fr 1fr}}
+    @media(max-width:480px){.cards{grid-template-columns:1fr 1fr}.card-val{font-size:1.1rem}.h-tag{display:none}header{padding:0 14px}}
+
+    /* DOUBLE RING */
+    .g-track2{fill:none;stroke:rgba(155,109,255,0.15);stroke-width:8}
+    .g-fill2{fill:none;stroke-width:8;stroke-linecap:round;
+      stroke-dasharray:339;stroke-dashoffset:339;
+      transition:stroke-dashoffset 1.8s cubic-bezier(.4,0,.2,1);
+      transform-origin:center;transform:rotate(-90deg);
+      stroke:url(#burnGrad2)}
+    .g-ring-lbl{font-family:'Space Mono',monospace;font-size:0.44rem;
+      letter-spacing:0.08em;fill:var(--muted);text-transform:uppercase}
+
+    /* SPLIT SOURCE BAR */
+    .src-bar-wrap{flex-shrink:0}
+    .src-bar-title{font-family:'Space Mono',monospace;font-size:0.56rem;
+      color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px}
+    .src-bar{display:flex;height:10px;overflow:hidden;gap:1px;margin-bottom:8px}
+    .src-seg{height:10px;transition:width 1.2s ease;min-width:0}
+    .seg-treasury{background:linear-gradient(90deg,#4f8ef7,#9b6dff)}
+    .seg-tax{background:linear-gradient(90deg,#9b6dff,#e040fb)}
+    .seg-community{background:linear-gradient(90deg,#e040fb,#ff6b9d)}
+    .src-legend{display:flex;gap:14px;flex-wrap:wrap}
+    .src-leg-item{display:flex;align-items:center;gap:5px;
+      font-family:'Space Mono',monospace;font-size:0.5rem;color:var(--muted)}
+    .src-leg-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+    /* BUYBACK FLOW */
+    .flow-mini{display:flex;align-items:center;gap:0;flex-shrink:0}
+    .flow-node{flex:1;padding:8px 6px;background:var(--surface2);
+      border:1px solid var(--border);text-align:center}
+    .fn-lbl{font-family:'Space Mono',monospace;font-size:0.46rem;
+      color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:3px}
+    .fn-val{font-family:'Clash Display',sans-serif;font-weight:600;font-size:0.78rem;
+      background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      white-space:nowrap}
+    .flow-arrow{font-size:0.7rem;color:var(--purple);padding:0 3px;flex-shrink:0}
+
+
+    /* ── DUAL FLASK GAUGES ── */
+    .flasks-row{display:flex;gap:12px;flex-shrink:0}
+    .flask-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px}
+    .flask-title{font-family:'Space Mono',monospace;font-size:0.54rem;
+      color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;text-align:center}
+    .flask-outer{width:100%;height:140px;border:1px solid var(--border2);
+      background:var(--surface2);position:relative;overflow:hidden}
+    .flask-fill{position:absolute;bottom:0;left:0;right:0;height:0%;
+      transition:height 1.8s cubic-bezier(.4,0,.2,1);display:flex;align-items:flex-end}
+    .flask-fill-buy{background:linear-gradient(180deg,rgba(79,142,247,0.6) 0%,rgba(79,142,247,0.9) 100%)}
+    .flask-fill-burn{background:linear-gradient(180deg,rgba(224,64,251,0.6) 0%,rgba(224,64,251,0.9) 100%)}
+    /* animated shimmer on fill */
+    .flask-fill::after{content:'';position:absolute;top:0;left:-100%;width:200%;height:8px;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);
+      animation:shimmer 2.5s infinite}
+    @keyframes shimmer{0%{transform:translateX(0)}100%{transform:translateX(50%)}}
+    /* wave on top of liquid */
+    .flask-wave{position:absolute;top:-6px;left:0;right:0;height:12px;
+      background:inherit;opacity:0.5;border-radius:50% 50% 0 0;
+      animation:wave 2s ease-in-out infinite alternate}
+    @keyframes wave{0%{transform:scaleX(1.02) translateY(-2px)}100%{transform:scaleX(0.98) translateY(2px)}}
+    .flask-number{position:absolute;inset:0;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;gap:2px;pointer-events:none}
+    .flask-val{font-family:'Clash Display',sans-serif;font-weight:700;font-size:1.1rem;
+      letter-spacing:-0.03em;color:#fff;text-shadow:0 0 20px rgba(0,0,0,0.8);
+      transition:all 0.3s}
+    .flask-sub{font-family:'Space Mono',monospace;font-size:0.48rem;
+      color:rgba(255,255,255,0.7);letter-spacing:0.06em;text-transform:uppercase}
+    .flask-pct{font-family:'Space Mono',monospace;font-size:0.6rem;
+      color:var(--muted);text-align:center}
+
+    /* ── 3 BURN SOURCE BOXES ── */
+    .burn-sources{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;
+      background:var(--border);flex-shrink:0}
+    .bs-box{padding:10px 8px;background:var(--surface2);text-align:center;
+      position:relative;overflow:hidden}
+    .bs-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+    .bs-box-treasury::before{background:linear-gradient(90deg,#4f8ef7,#9b6dff)}
+    .bs-box-tax::before{background:linear-gradient(90deg,#9b6dff,#e040fb)}
+    .bs-box-community::before{background:linear-gradient(90deg,#e040fb,#ff6b9d)}
+    .bs-box-lbl{font-family:'Space Mono',monospace;font-size:0.5rem;
+      color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px}
+    .bs-box-val{font-family:'Clash Display',sans-serif;font-weight:700;font-size:0.9rem;
+      background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+    /* ── BUYBACK FLOW ── */
+    .flow-mini{display:flex;align-items:center;gap:0;flex-shrink:0}
+    .flow-node{flex:1;padding:7px 5px;background:var(--surface2);
+      border:1px solid var(--border);text-align:center}
+    .fn-lbl{font-family:'Space Mono',monospace;font-size:0.44rem;
+      color:var(--muted);letter-spacing:0.07em;text-transform:uppercase;margin-bottom:2px}
+    .fn-val{font-family:'Clash Display',sans-serif;font-weight:600;font-size:0.72rem;
+      background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      white-space:nowrap}
+    .flow-arrow{font-size:0.65rem;color:var(--purple);padding:0 3px;flex-shrink:0}
+
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="h-left">
+    <a class="h-home" href="cashx_home.html">← Home</a>
+    <a class="h-logo" href="cashx_home.html" style="text-decoration:none;cursor:pointer">CashX</a>
+    <div class="h-tag"><span class="live-dot"></span>Live Dashboard</div>
+  </div>
+  <div class="h-right">
+    <span class="last-up" id="last-up">—</span>
+    <button class="rbtn" id="rbtn" onclick="load()">↻ Refresh</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- STAT CARDS -->
+  <div class="cards">
+    <div class="card">
+      <div class="card-lbl"><span class="live-dot"></span>Price</div>
+      <span class="card-val" id="c-price"><span class="ld">···</span></span>
+      <div class="card-sub" id="c-ch">24h change</div>
+    </div>
+    <div class="card">
+      <div class="card-lbl"><span class="live-dot"></span>24h Change</div>
+      <span class="card-val" id="c-ch2"><span class="ld">···</span></span>
+      <div class="card-sub">price change</div>
+    </div>
+    <div class="card">
+      <a class="card-link" href="https://scan.pulsechain.com/token/0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665" target="_blank">
+        <div class="card-lbl">🔥 Total Burned</div>
+        <span class="card-val" id="c-burned"><span class="ld">···</span></span>
+        <div class="card-sub" id="c-bpct">% of supply</div>
+      </a>
+    </div>
+    <div class="card">
+      <a class="card-link" href="https://scan.pulsechain.com/address/0xeda3aa737947337b425227dB8174519f623C041f" target="_blank">
+        <div class="card-lbl"><span class="live-dot"></span>Treasury (PLS)</div>
+        <span class="card-val" id="c-treas"><span class="ld">···</span></span>
+        <div class="card-sub" id="c-treas-usd">live from chain</div>
+      </a>
+    </div>
+    <div class="card">
+      <a class="card-link" href="https://scan.pulsechain.com/token/0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665?tab=holders" target="_blank">
+        <div class="card-lbl"><span class="live-dot"></span>Holders</div>
+        <span class="card-val" id="c-holders"><span class="ld">···</span></span>
+        <div class="card-sub" id="c-txs">transfers</div>
+      </a>
+    </div>
+    <div class="card">
+      <a class="card-link" href="https://scan.pulsechain.com/address/0x0000000000000000000000000000000000000000?tab=token_transfers" target="_blank">
+        <div class="card-lbl">🏦 Treasury Burned</div>
+        <span class="card-val" id="c-dead"><span class="ld">···</span></span>
+        <div class="card-sub" id="c-dead-count">exact · on-chain</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- BOTTOM -->
+  <div class="bottom">
+
+    <!-- LEFT: MARKET + CONTRACT -->
+    <div class="panel">
+      <div class="panel-head"><span class="live-dot"></span>Market Data</div>
+      <div class="panel-body">
+
+
+
+        <div>
+          <span class="price-hero" id="p-price">—</span>
+          <span class="ch-badge badge-neu" id="p-ch">—</span>
+          <div id="cors-note" style="font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--muted2);margin-top:-8px;margin-bottom:8px;display:none">
+            Price data requires a hosted domain — working locally is expected.
+          </div>
+        </div>
+
+        <div class="mkt-grid">
+          <div class="mg"><div class="mg-l">Market Cap</div><div class="mg-v" id="p-mcap">—</div></div>
+          <div class="mg"><div class="mg-l">24h Volume</div><div class="mg-v" id="p-vol">—</div></div>
+          <div class="mg"><div class="mg-l">Liquidity</div><div class="mg-v" id="p-liq">—</div></div>
+          <div class="mg"><div class="mg-l">1h Change</div><div class="mg-v" id="p-1h">—</div></div>
+          <div class="mg"><div class="mg-l">5m Change</div><div class="mg-v" id="p-5m">—</div></div>
+          <div class="mg"><div class="mg-l">Fixed Supply</div><div class="mg-v">3.7B</div></div>
+          <div class="mg"><div class="mg-l">Buy / Sell Tax</div><div class="mg-v">4 / 4%</div></div>
+          <div class="mg"><div class="mg-l">Treasury PLS</div><div class="mg-v" id="p-tpls">—</div></div>
+          <div class="mg"><div class="mg-l">Holders</div><div class="mg-v" id="p-holders">—</div></div>
+          <div class="mg"><div class="mg-l">24h Buys / Sells</div><div class="mg-v" id="p-txs">—</div></div>
+        </div>
+
+        <div class="cta-row">
+          <a class="cta-buy" href="https://www.swap.win/?token=0x4c450b3c2b89a2dabe5a3ee39ff475134a30d665" target="_blank">Buy $CASHX</a>
+          <a class="cta-chart" href="https://dexscreener.com/pulsechain/0xda942580cee2a69c5fc74109090816157730c64d" target="_blank">Live Chart</a>
+        </div>
+
+        <div class="contract-box">
+          <div class="cb-l">Contract · PRC-20 · PulseChain</div>
+          <div class="cb-addr"><span class="addr-chip" data-addr="0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665" onclick="amOpen(event,this.dataset.addr)">0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665</span></div>
+          <button class="cb-copy" onclick="copyAddr(this)">Copy Contract Address</button>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:12px 12px;background:rgba(155,109,255,0.06);border:1px solid var(--border2);margin-top:2px;flex:1">
+          <span style="width:7px;height:7px;border-radius:50%;background:var(--purple);flex-shrink:0;animation:blink 2s infinite;margin-top:3px"></span>
+          <div>
+            <div style="font-family:'Space Mono',monospace;font-size:0.56rem;color:var(--purple);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px">Burns Active — Treasury Farming</div>
+            <div style="font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--muted);line-height:1.7">Farming yield buys $CASHX on the open market and sends it to the dead address — permanently reducing supply. Burns are executed manually by the team.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CENTRE: BURN TRACKER -->
+    <div class="panel" style="display:flex;flex-direction:column">
+      <div class="panel-head">🔥 Burn Tracker</div>
+      <div class="panel-body" style="justify-content:space-between">
+
+        <!-- CIRCLE GAUGE -->
+        <div class="gauge-wrap">
+          <svg class="gauge-svg" viewBox="0 0 200 200" style="width:min(100%,260px);height:auto;display:block;margin:0 auto">
+            <defs>
+              <linearGradient id="burnGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#4f8ef7"/>
+                <stop offset="50%" stop-color="#9b6dff"/>
+                <stop offset="100%" stop-color="#e040fb"/>
+              </linearGradient>
+              <linearGradient id="gTextGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#4f8ef7"/>
+                <stop offset="100%" stop-color="#e040fb"/>
+              </linearGradient>
+            </defs>
+            <circle class="g-track" cx="100" cy="100" r="86"/>
+            <circle class="g-fill" id="g-fill" cx="100" cy="100" r="86"/>
+            <text class="g-pct" id="sp-pct" x="100" y="96" text-anchor="middle" dominant-baseline="middle">0%</text>
+            <text class="g-lbl" x="100" y="118" text-anchor="middle">SUPPLY BURNED</text>
+          </svg>
+          <div style="font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);text-align:center;margin-top:4px" id="sp-sub">Loading...</div>
+        </div>
+        <span id="flask-burn" style="display:none"></span>
+        <span id="flask-burn-val" style="display:none"></span>
+        <span id="flask-burn-pct" style="display:none"></span>
+        <span id="flask-buy" style="display:none"></span>
+        <span id="flask-buy-val" style="display:none"></span>
+        <span id="flask-buy-pct" style="display:none"></span>
+
+        <!-- BURN SOURCE BOXES — on-chain verified only -->
+        <div class="burn-sources" style="grid-template-columns:1fr 1fr">
+          <div class="bs-box bs-box-treasury">
+            <div class="bs-box-lbl">🔥 Total Burned</div>
+            <div class="bs-box-val" id="src-treasury">—</div>
+            <div style="font-family:'Space Mono',monospace;font-size:0.48rem;color:var(--muted);margin-top:3px">incl. community burns</div>
+          </div>
+          <div class="bs-box bs-box-community">
+            <div class="bs-box-lbl">📦 Remaining Supply</div>
+            <div class="bs-box-val" id="src-community">—</div>
+          </div>
+        </div>
+        <span id="src-tax" style="display:none"></span>
+
+        <!-- BUYBACK FLOW -->
+        <div style="font-family:'Space Mono',monospace;font-size:0.54rem;letter-spacing:0.1em;text-transform:uppercase;flex-shrink:0;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 8px rgba(155,109,255,0.7))">Buyback Pipeline</div>
+        <div class="flow-mini">
+          <div class="flow-node">
+            <div class="fn-lbl">Farming Yield</div>
+            <div class="fn-val" id="flow-yield">PLS →</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node">
+            <div class="fn-lbl">Buys $CASHX</div>
+            <div class="fn-val">PulseX</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node" style="border-color:rgba(224,64,251,0.3)">
+            <div class="fn-lbl">Treasury Burned</div>
+            <div class="fn-val" id="flow-burn">🔥 Burn</div>
+          </div>
+        </div>
+
+        <!-- SUPPLY BARS -->
+        <div class="sbar-wrap" style="flex-shrink:0">
+          <div class="sbar-labels">
+            <span class="sbar-lbl">Total Burned</span>
+            <span class="sbar-lbl" id="s-pct">0%</span>
+          </div>
+          <div class="sbar sbar-bg"><div class="sbar-fill" id="s-fill"></div></div>
+          <div class="sbar-labels" style="margin-top:5px">
+            <span class="sbar-lbl">Remaining Supply</span>
+            <span class="sbar-lbl" id="s-rpct">100%</span>
+          </div>
+          <div class="sbar sbar-remain"><div class="sbar-fill" id="s-rfill" style="width:100%"></div></div>
+        </div>
+
+        <!-- hidden elements kept for JS compat -->
+        <span id="bs-burned" style="display:none"></span>
+        <span id="bs-dead" style="display:none"></span>
+        <span id="bs-remain" style="display:none"></span>
+        <span id="g-sub" style="display:none"></span>
+        <span id="g-pct" style="display:none"></span>
+
+        <div class="manual-note">✋ Treasury burns are executed manually by the team</div>
+      </div>
+    </div>
+
+    <!-- RIGHT: TREASURY + BURN FEED -->
+    <div class="panel">
+      <div class="panel-head">🏦 Treasury &amp; Burns</div>
+      <div class="panel-body">
+
+        <a href="https://scan.pulsechain.com/address/0xeda3aa737947337b425227db8174519f623c041f" target="_blank" class="trow" style="text-decoration:none;">
+          <div>
+            <div class="tr-l">Treasury Wallet (Deployer)</div>
+            <div class="tr-a"><span class="addr-chip" data-addr="0xeda3aa737947337b425227dB8174519f623C041f" onclick="amOpen(event,this.dataset.addr)">0xeda3…C041f</span></div>
+          </div>
+          <div class="tr-v" id="t-pls">— PLS</div>
+        </a>
+
+
+
+        <div class="activity-note">
+          <div class="an-title">Current Activity</div>
+          <div class="an-row"><span class="an-dot dot-green"></span>addLiquidityETH — active</div>
+          <div class="an-row"><span class="an-dot dot-green"></span>deposit — active</div>
+          <div class="an-row"><span class="an-dot dot-green"></span>Buybacks — active</div>
+          <div class="an-row"><span class="an-dot dot-green"></span>Burns — active</div>
+        </div>
+
+        <div class="feed-head"><span class="live-dot"></span>Burn Events</div>
+        <div class="feed-scroll" id="burn-feed">
+          <div class="no-data">🔥<br>No burn events yet<br><br>Burns occur when the treasury buys $CASHX on the open market and sends it to the zero address.<br><span style="color:var(--muted2);font-size:0.52rem">Check back after the first buyback</span></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- LINKS -->
+  <div class="links">
+    <a class="link-btn" href="https://www.swap.win/?token=0x4c450b3c2b89a2dabe5a3ee39ff475134a30d665" target="_blank">Trade $CASHX<span>swap.win</span></a>
+    <a class="link-btn" href="https://dexscreener.com/pulsechain/0xda942580cee2a69c5fc74109090816157730c64d" target="_blank">Live Chart<span>dexscreener.com</span></a>
+    <a class="link-btn" href="https://scan.pulsechain.com/token/0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665" target="_blank">Explorer<span>scan.pulsechain.com</span></a>
+    <a class="link-btn" href="https://t.me/+Ruw3dQPRTv00NDRl" target="_blank">Telegram<span>Join Community</span></a>
+  </div>
+
+</main>
+
+<script>
+  const CONTRACT  = '0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665';
+  const DEAD      = '0x000000000000000000000000000000000000dead';
+  const ZERO      = '0x0000000000000000000000000000000000000000';
+  const TREASURY  = '0xeda3aa737947337b425227dB8174519f623C041f';
+  const PAIR      = '0xda942580cee2a69c5fc74109090816157730c64d';
+  const RPC       = 'https://rpc.pulsechain.com';
+  const EXPLORER  = 'https://api.scan.pulsechain.com/api/v2';
+  const SUPPLY    = 3_700_000_000;
+
+  const SEL = {
+    balanceOf: '0x70a08231',
+  };
+
+  const $   = id => document.getElementById(id);
+  const set = (id,v) => { const e=$(id); if(e) e.textContent=v };
+  const setHTML = (id,v) => { const e=$(id); if(e) e.innerHTML=v };
+  const setErr = id => setHTML(id,'<span class="err">⚠</span>');
+
+  function fmtN(n,d=2){
+    if(n===null||n===undefined||isNaN(n))return'—';
+    if(n>=1e9)return(n/1e9).toFixed(d)+'B';
+    if(n>=1e6)return(n/1e6).toFixed(d)+'M';
+    if(n>=1e3)return(n/1e3).toFixed(d)+'K';
+    return n.toFixed(d);
+  }
+  function fmtUSD(n){
+    if(!n||isNaN(n))return'—';
+    if(n>=1e9)return'$'+(n/1e9).toFixed(2)+'B';
+    if(n>=1e6)return'$'+(n/1e6).toFixed(2)+'M';
+    if(n>=1e3)return'$'+(n/1e3).toFixed(2)+'K';
+    return'$'+n.toFixed(4);
+  }
+  function fmtPrice(p){
+    if(!p||isNaN(p))return'—';
+    if(p<0.000001)return'$'+p.toExponential(3);
+    if(p<0.01)return'$'+p.toFixed(8);
+    return'$'+p.toFixed(4);
+  }
+  function ago(ts){
+    const d=Math.floor(Date.now()/1000)-ts;
+    if(d<60)return d+'s ago';
+    if(d<3600)return Math.floor(d/60)+'m ago';
+    if(d<86400)return Math.floor(d/3600)+'h ago';
+    return Math.floor(d/86400)+'d ago';
+  }
+
+  async function rpcCall(method,params){
+    const r=await fetch(RPC,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({jsonrpc:'2.0',method,params,id:1})});
+    return(await r.json()).result;
+  }
+
+  function setGauge(pct, deadPct){
+    const pctStr = pct < 0.0001 ? '0.00%' : pct.toFixed(4) + '%';
+    set('sp-pct', pctStr); set('g-pct', pctStr);
+  }
+
+  function setFlasks(totalBurned, deadBurned, supply){
+    const pct = Math.min(totalBurned / supply * 100, 100);
+    // Circle r=86, circ=540
+    const circ = 540;
+    const offset = circ * (1 - pct / 100);
+    const fill = $('g-fill');
+    if(fill) fill.style.strokeDashoffset = offset;
+    set('sp-pct', pct < 0.001 ? '0%' : pct.toFixed(4) + '%');
+    set('sp-sub', fmtN(totalBurned,2) + ' CASHX burned · ' + fmtN(supply-totalBurned,2) + ' remaining');
+  }
+
+  function setSources(totalBurned, deadBurned, tTotal){
+    // Dead address total = verified on-chain (all burns regardless of source)
+    // Remaining supply = verified on-chain via totalSupply()
+    set('src-treasury',  fmtN(deadBurned, 2) + ' CASHX');
+    set('src-community', fmtN(totalBurned > 0 ? 3_700_000_000 - totalBurned : 3_700_000_000, 2) + ' CASHX');
+    set('flow-burn', fmtN(tTotal||0, 2) + ' 🔥');
+  }
+
+  async function load(){
+    const btn=$('rbtn'); if(btn)btn.disabled=true;
+
+    // 1. DexScreener
+    try{
+      const r=await fetch('https://api.dexscreener.com/latest/dex/pairs/pulsechain/'+PAIR);
+      const d=await r.json();
+      const p=d.pairs?.[0];
+      if(p){
+        const price=parseFloat(p.priceUsd||0);
+        const mcap=parseFloat(p.fdv||p.marketCap||0);
+        const h24=parseFloat(p.priceChange?.h24||0);
+        const ps=fmtPrice(price);
+        set('c-price',ps); set('p-price',ps);
+        set('c-mcap',fmtUSD(mcap)); set('p-mcap',fmtUSD(mcap));
+        set('p-vol',fmtUSD(parseFloat(p.volume?.h24||0)));
+        set('p-liq',fmtUSD(parseFloat(p.liquidity?.usd||0)));
+        set('p-5m',(parseFloat(p.priceChange?.m5||0)>=0?'+':'')+parseFloat(p.priceChange?.m5||0).toFixed(2)+'%');
+        set('p-1h',(parseFloat(p.priceChange?.h1||0)>=0?'+':'')+parseFloat(p.priceChange?.h1||0).toFixed(2)+'%');
+        const buys=p.txns?.h24?.buys||0, sells=p.txns?.h24?.sells||0;
+        if(buys||sells) set('p-txs', buys+' / '+sells);
+        const ct=(h24>=0?'+':'')+h24.toFixed(2)+'% (24h)';
+        set('c-ch',ct); set('c-ch2',ct);
+        const badge=$('p-ch');
+        if(badge){badge.textContent=ct;badge.className='ch-badge '+(h24>0?'badge-up':h24<0?'badge-dn':'badge-neu')}
+      }
+    }catch(e){
+      console.warn('DS:',e);
+      setErr('c-price'); setErr('p-price'); setErr('c-mcap');
+      set('c-ch','price data unavailable');
+      const note=document.getElementById('cors-note');
+      if(note) note.style.display='block';
+    }
+
+    // 2. Treasury PLS balance
+    try{
+      const raw=await rpcCall('eth_getBalance',[TREASURY,'latest']);
+      const pls=parseInt(raw,16)/1e18;
+      // Get PLS price from DexScreener pair (WPLS/USDC) for accurate USD calc
+      let plsUsd = 0.0000107; // fallback
+      try {
+        const plsR = await fetch('https://api.dexscreener.com/latest/dex/pairs/pulsechain/0x6753560538eca67617a9ce605178f788be7e524e');
+        const plsD = await plsR.json();
+        if(plsD.pairs?.[0]?.priceUsd) plsUsd = parseFloat(plsD.pairs[0].priceUsd);
+      } catch(e2){}
+      const plsUsdVal = (pls * plsUsd);
+      set('c-treas', fmtN(pls,2)+' PLS');
+      set('c-treas-usd', plsUsdVal > 0 ? '≈ '+fmtUSD(plsUsdVal) : 'deployer wallet');
+      set('t-pls', fmtN(pls,2)+' PLS');
+      set('p-tpls', fmtN(pls,2)+' PLS');
+    }catch(e){console.warn('Treasury PLS:',e);setErr('c-treas');set('c-treas-usd','fetch failed');setErr('t-pls');setErr('p-tpls')}
+
+
+    // 4. Total burned = SUPPLY - totalSupply() (contract burns reduce supply directly)
+    try{
+      const raw=await rpcCall('eth_call',[{to:CONTRACT,data:'0x18160ddd'},'latest']);
+      const currentSupply=parseInt(raw,16)/1e18;
+      const burned=Math.max(SUPPLY-currentSupply,0);
+      const pct=(burned/SUPPLY*100);
+      set('c-burned',fmtN(burned,2)+' CASHX');
+      set('c-bpct',pct.toFixed(6)+'% of supply');
+      set('bs-burned',fmtN(burned,2)+' CASHX');
+      set('bs-remain',fmtN(SUPPLY-burned,2)+' CASHX');
+      set('s-pct',pct.toFixed(4)+'%');
+      set('s-rpct',(100-pct).toFixed(4)+'%');
+      window._totalBurned = burned;
+      window._totalBurnedPct = pct;
+      setGauge(pct, 0);
+      const sf=$('s-fill'); if(sf)sf.style.width=Math.max(pct,0.1)+'%';
+      const sr=$('s-rfill'); if(sr)sr.style.width=(100-pct)+'%';
+      set('g-sub',burned>0
+        ?fmtN(burned,2)+' CASHX burned permanently · '+fmtN(SUPPLY-burned,2)+' remaining'
+        :'Awaiting first burn — treasury deploying');
+    }catch(e){console.warn('Burned:',e);setErr('c-burned');set('c-bpct','data unavailable');setErr('bs-burned');setErr('bs-remain')}
+
+    // 5. Explorer: holders
+    try{
+      const r=await fetch(EXPLORER+'/tokens/'+CONTRACT);
+      const t=await r.json();
+      if(t.holders){
+        const h=parseInt(t.holders).toLocaleString();
+        set('c-holders',h); set('p-holders',h);
+      }
+      const rawTx = t.transfer_count ?? t.transfers_count;
+      if(rawTx){
+        const txCount=parseInt(rawTx).toLocaleString();
+        set('c-txs',txCount+' transfers');
+        set('p-txs',txCount);
+      }
+    }catch(e){console.warn('Explorer:',e);setErr('c-holders');set('c-txs','fetch failed')}
+
+    // 6. Zero address burns — transfers to 0x000...0000 (excluding initial mint from zero)
+    (async()=>{
+      try{
+        let total=0, treasuryTotal=0, count=0;
+        let url=EXPLORER+'/addresses/'+ZERO+'/token-transfers?token='+CONTRACT+'&filter=to&limit=50';
+        while(url){
+          const r=await fetch(url);
+          const t=await r.json();
+          for(const tx of (t.items||[])){
+            // skip the initial mint (from = zero address)
+            if((tx.from?.hash||'').toLowerCase()===ZERO) continue;
+            const v=parseFloat(tx.total?.value||tx.value||0)/1e18;
+            if(!isNaN(v)){
+              total+=v; count++;
+              if((tx.from?.hash||'').toLowerCase()===TREASURY.toLowerCase())
+                treasuryTotal+=v;
+            }
+          }
+          const np=t.next_page_params;
+          url=np?EXPLORER+'/addresses/'+ZERO+'/token-transfers?token='+CONTRACT+'&filter=to&limit=50&'+new URLSearchParams(np).toString():null;
+          set('c-dead',fmtN(treasuryTotal,2)+' CASHX');
+          set('c-dead-count',count+' burn event'+(count!==1?'s':''));
+          set('bs-dead',fmtN(total,2)+' CASHX');
+          // Update flasks and source boxes
+          const tb = window._totalBurned || total;
+          setFlasks(tb, total, SUPPLY);
+          setSources(tb, total, treasuryTotal);
+          set('flow-buy', fmtN(total,2)+' CASHX');
+        }
+      }catch(e){console.warn('Zero burns:',e);setErr('c-dead');set('c-dead-count','fetch failed')}
+    })();
+
+    // 7. Burn feed (burns go to zero address on this contract)
+    try{
+      const r=await fetch(EXPLORER+'/addresses/'+ZERO+'/token-transfers?token='+CONTRACT+'&filter=to&limit=50');
+      const t=await r.json();
+      const items=(t.items||[]).filter(tx=>(tx.from?.hash||'').toLowerCase()!==ZERO);
+      if(items.length>0){
+        setHTML('burn-feed',items.map(tx=>{
+          const amt=parseFloat(tx.total?.value||0)/1e18;
+          const hash=tx.tx_hash||'';
+          const from=tx.from?.hash||'';
+          const validHash=hash.startsWith('0x')&&hash.length===66;
+          const ts=tx.timestamp?Math.floor(new Date(tx.timestamp).getTime()/1000):0;
+          const isTreasury = from.toLowerCase() === TREASURY.toLowerCase();
+          const sourceEmoji = isTreasury ? '🏦' : '🌐';
+          const addrEl=from
+            ?`${sourceEmoji} <span class="addr-chip" data-addr="${from}" onclick="amOpen(event,this.dataset.addr)">${from.slice(0,10)}…${from.slice(-6)}</span>`
+            :'—';
+          const txEl=validHash
+            ?`<a class="btx-tx" href="https://scan.pulsechain.com/tx/${hash}" target="_blank">tx ↗</a>`
+            :'';
+          return`<div class="btx">
+            <div class="btx-h">${addrEl}</div>
+            <div class="btx-a">🔥 ${fmtN(amt,0)}</div>
+            <div class="btx-t">${ts?ago(ts):'—'}${txEl}</div>
+          </div>`;
+        }).join(''));
+      }else{
+        setHTML('burn-feed','<div class="no-data">🔥<br>No burn events yet<br><br>Burns occur when the treasury buys $CASHX on the open market and sends it to the zero address.<br><span style="color:var(--muted2);font-size:0.52rem">Check back after the first buyback</span></div>');
+      }
+    }catch(e){setHTML('burn-feed','<div class="no-data">Could not load feed.</div>')}
+
+    set('last-up','Updated '+new Date().toLocaleTimeString());
+    if(btn)btn.disabled=false;
+  }
+
+  function copyAddr(btn){
+    navigator.clipboard.writeText('0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665');
+    const o=btn.textContent;btn.textContent='Copied!';
+    setTimeout(()=>btn.textContent=o,1800);
+  }
+
+  // ADDRESS CONTEXT MENU
+  let menuAddr = '';
+  const getMenu = () => document.getElementById('addr-menu');
+
+  function openAddrMenu(e, addr) {
+    e.preventDefault();
+    e.stopPropagation();
+    const menu = getMenu();
+    menuAddr = addr;
+    document.getElementById('am-display').textContent = addr.slice(0,10)+'…'+addr.slice(-6);
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const mw = 220, mh = 280;
+    let x = e.clientX, y = e.clientY;
+    if(x + mw > vw) x = vw - mw - 8;
+    if(y + mh > vh) y = vh - mh - 8;
+    menu.style.left = x+'px';
+    menu.style.top  = y+'px';
+    menu.classList.add('open');
+  }
+
+  function closeAddrMenu(){ getMenu().classList.remove('open'); }
+
+  document.addEventListener('click', e => {
+    const menu = getMenu();
+    if(menu && !menu.contains(e.target)) closeAddrMenu();
+  });
+
+  document.querySelectorAll('[data-addr]').forEach(el => {
+    el.addEventListener('click', e => openAddrMenu(e, el.dataset.addr));
+  });
+
+  window.amOpen = openAddrMenu;
+
+  window.amGo = function(tpl) {
+    window.open(tpl.replace('{a}', menuAddr), '_blank');
+    closeAddrMenu();
+  };
+
+  window.amCopy = function() {
+    navigator.clipboard.writeText(menuAddr);
+    const btn = document.getElementById('am-copy-btn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = 'Copy Address'; closeAddrMenu(); }, 1200);
+  };
+
+  load();
+  setInterval(load,60000);
+</script>
+
+<div id="addr-menu">
+  <div class="am-addr" id="am-display"></div>
+  <a class="am-item" onclick="amGo('https://scan.mypinata.cloud/ipfs/bafybeienxyoyrhn5tswclvd3gdjy5mtkkwmu37aqtml6onbf7xnb3o22pe/#/address/{a}')">🔍 PulseScan</a>
+  <a class="am-item" onclick="amGo('https://otter.pulsechain.com/address/{a}')">🦦 Otterscan</a>
+  <a class="am-item" onclick="amGo('https://scan.gigatheminter.com/address/{a}')">⚡ Gigascan</a>
+  <div class="am-sep"></div>
+  <button class="am-item am-copy" id="am-copy-btn" onclick="amCopy()">Copy Address</button>
+</div>
+</body>
+</html>
