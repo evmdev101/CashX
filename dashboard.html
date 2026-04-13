@@ -356,7 +356,7 @@
         </div>
 
         <div class="cta-row">
-          <a class="cta-buy" href="https://www.swap.win/?token=0x4c450b3c2b89a2dabe5a3ee39ff475134a30d665" target="_blank">Buy $CASHX</a>
+          <a class="cta-buy" href="https://pulsex.com" target="_blank">Buy $CASHX</a>
           <a class="cta-chart" href="https://dexscreener.com/pulsechain/0xda942580cee2a69c5fc74109090816157730c64d" target="_blank">Live Chart</a>
         </div>
 
@@ -712,9 +712,17 @@
 
     // 7. Burn feed (burns go to zero address on this contract)
     try{
-      const r=await fetch(EXPLORER+'/addresses/'+ZERO+'/token-transfers?token='+CONTRACT+'&filter=to&limit=50');
-      const t=await r.json();
-      const items=(t.items||[]).filter(tx=>(tx.from?.hash||'').toLowerCase()!==ZERO);
+      let allItems=[];
+      let url=EXPLORER+'/addresses/'+ZERO+'/token-transfers?token='+CONTRACT+'&filter=to&limit=50';
+      while(url){
+        const r=await fetch(url);
+        const t=await r.json();
+        const page=(t.items||[]).filter(tx=>(tx.from?.hash||'').toLowerCase()!==ZERO);
+        allItems=allItems.concat(page);
+        const np=t.next_page_params;
+        url=np?EXPLORER+'/addresses/'+ZERO+'/token-transfers?token='+CONTRACT+'&filter=to&limit=50&'+new URLSearchParams(np).toString():null;
+      }
+      const items=allItems;
       if(items.length>0){
         setHTML('burn-feed',items.map(tx=>{
           const amt=parseFloat(tx.total?.value||0)/1e18;
