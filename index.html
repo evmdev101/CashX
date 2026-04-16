@@ -4,66 +4,74 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CashX — Treasury-Backed Token on PulseChain</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet"/>
-  <style>
-    :root {
-      --bg:       #0c0a0f;
-      --surface:  #131018;
-      --surface2: #1a1624;
-      --border:   rgba(155,109,255,0.11);
-      --border2:  rgba(155,109,255,0.24);
-      --blue:     #4f8ef7;
-      --purple:   #9b6dff;
-      --pink:     #e040fb;
-      --grad:     linear-gradient(135deg,#4f8ef7 0%,#9b6dff 52%,#e040fb 100%);
-      --grad-btn: linear-gradient(135deg,#3b6fd4,#7c3aed);
-      --text:     #ede8f5;
-      --muted:    #6b5f82;
-      --muted2:   #3a3050;
-      --green:    #4ade80;
-      --glow-p:   rgba(155,109,255,0.14);
-      --glow-b:   rgba(79,142,247,0.12);
-    }
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&family=Michroma&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:       #0a0e1a;
+  --surface:  #0f1422;
+  --surface2: #151b2e;
+  --border:   rgba(255,160,50,0.13);
+  --border2:  rgba(255,160,50,0.28);
+  --blue:     #00d4ff;
+  --purple:   #c855f7;
+  --pink:     #ff4ecd;
+  --grad:     linear-gradient(135deg,#ffa032 0%,#c855f7 52%,#00d4ff 100%);
+  --grad-btn: linear-gradient(135deg,#e8890c,#c855f7);
+  --text:     #f0ece0;
+  --muted:    #7a8599;
+  --muted2:   #2a3348;
+  --green:    #39ff7e;
+  --glow-p:   rgba(200,85,247,0.18);
+  --glow-b:   rgba(255,160,50,0.15);
+}
+
+
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
-    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden}
+    body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden}
+
 
     /* grain overlay */
     body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:999;
       background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
       opacity:0.5}
 
-    /* ── NAV ── */
-    nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;padding:0 48px;
-      display:flex;align-items:center;justify-content:space-between;
-      background:rgba(12,10,15,0.88);backdrop-filter:blur(20px);
-      border-bottom:1px solid var(--border)}
-    .nav-logo{font-family:'Clash Display',sans-serif;font-weight:700;font-size:1.35rem;
-      letter-spacing:-0.02em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
-      text-decoration:none}
-    .nav-links{display:flex;align-items:center;gap:0}
-    .nav-links a{font-family:'Space Mono',monospace;font-size:0.7rem;letter-spacing:0.07em;
-      text-transform:uppercase;color:var(--text);text-decoration:none;padding:8px 18px;
-      border-right:1px solid var(--border);transition:color 0.2s}
-    .nav-links a:first-child{border-left:1px solid var(--border)}
-    .nav-links a:hover{color:var(--purple)}
-    .nav-right{display:flex;align-items:center;gap:0;margin-left:20px}
-    .nav-learn{font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.08em;
-      text-transform:uppercase;text-decoration:none;padding:7px 16px;
-      border:1px solid var(--border2);color:var(--purple);transition:all 0.2s;margin-right:10px}
-    .nav-learn::before{content:'▶ ';font-size:0.52rem;opacity:0.7}
-    .nav-learn:hover{background:var(--purple);color:#fff;border-color:var(--purple)}
-    .nav-trade{font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:0.06em;
-      text-transform:uppercase;text-decoration:none;padding:9px 20px;
-      background:var(--grad-btn);color:#fff;transition:opacity 0.2s}
-    .nav-trade:hover{opacity:0.85}
+   /* ── NAV ── */
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;height:72px;padding:0 90px 0 280px;
+    display:flex;align-items:center;justify-content:space-between;
+    background:rgba(6, 8, 14, 0.75);backdrop-filter:blur(24px);
+    border-bottom:none}
+    .nav-logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:3.4rem;
+    letter-spacing:-0.02em;text-transform:uppercase;
+    background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    text-decoration:none;line-height:1}
+    .nav-links{display:flex;align-items:center;gap:36px}
+
+    .nav-links a{font-family:'Michroma',sans-serif;font-weight:400;font-size:0.65rem;letter-spacing:3px;
+      letter-spacing:0.12em;text-transform:uppercase;color:rgba(240,236,224,0.55);text-decoration:none;
+      transition:color 0.2s;border:none;padding:0}
+    .nav-links a:hover{color:#b929d6}
+    .nav-right{display:flex;align-items:center;gap:20px}
+    .nav-dash{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:1.1rem;letter-spacing:0.12em;
+    text-transform:uppercase;color:var(--muted);text-decoration:none;
+    transition:color 0.2s}
+    .nav-icon:hover{color:#b929d6;filter:drop-shadow(0 0 6px rgba(255,160,50,0.5))}
+    .nav-dash-btn{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;
+        letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;
+        padding:10px 22px;color:#fff;
+        background:linear-gradient(135deg,#ff2244,#9b1dff,#1a44ff);
+        transition:opacity 0.2s;white-space:nowrap}
+.nav-dash-btn:hover{opacity:0.95}
+
+    .nav-icon{display:flex;align-items:center;justify-content:center;
+    opacity:0.85;transition:opacity 0.2s;text-decoration:none}
+    
 
     /* ── SHARED ── */
-    .sec-tag{font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:0.14em;
-      text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;display:block;margin-bottom:14px}
-    .sec-h{font-family:'Clash Display',sans-serif;font-weight:700;
+.sec-tag{font-family:'Michroma',sans-serif;font-size:0.75rem;letter-spacing:0.2em;
+  text-transform:uppercase;color:var(--purple);display:block;margin-bottom:14px;
+  text-shadow:0 0 10px rgba(155,109,255,0.8),0 0 20px rgba(155,109,255,0.4)}
+    .sec-h{font-family:'Barlow Condensed',sans-serif;font-weight:700;
       font-size:clamp(2.2rem,3.5vw,3.2rem);letter-spacing:-0.03em;line-height:1.02;margin-bottom:16px}
     .sec-p{color:var(--muted);font-size:0.97rem;line-height:1.8}
     .grad-text{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
@@ -82,94 +90,152 @@
     .fade{opacity:0;transform:translateY(22px);transition:opacity 0.55s ease,transform 0.55s ease}
     .fade.visible{opacity:1;transform:none}
 
-    /* ── HERO ── */
-    .hero{min-height:100vh;padding:100px 80px 80px;display:grid;
-      grid-template-columns:1fr 1fr;gap:60px;align-items:center;overflow:hidden}
-    .blob{position:absolute;border-radius:50%;pointer-events:none}
-    .blob-1{width:560px;height:560px;bottom:-100px;right:-80px;
-      background:radial-gradient(circle,var(--glow-p) 0%,transparent 68%)}
-    .blob-2{width:400px;height:400px;top:80px;left:-100px;
-      background:radial-gradient(circle,var(--glow-b) 0%,transparent 68%)}
-    .hero-left{position:relative;z-index:2}
-    .home-badge{display:inline-flex;align-items:center;gap:8px;margin-bottom:24px;
-      background:rgba(155,109,255,0.1);border:1px solid rgba(155,109,255,0.25);
-      padding:5px 14px;font-family:'Space Mono',monospace;font-size:0.6rem;
-      color:var(--purple);letter-spacing:0.12em;text-transform:uppercase}
-    .home-badge::before{content:'';width:6px;height:6px;border-radius:50%;
-      background:var(--pink);animation:blink 2s infinite;flex-shrink:0}
-    @keyframes blink{0%,100%{opacity:1}50%{opacity:0.25}}
-    .hero-title{font-family:'Clash Display',sans-serif;font-weight:700;
-      font-size:clamp(3rem,5vw,5.5rem);line-height:0.93;letter-spacing:-0.03em;margin-bottom:22px}
-    .hero-sub{color:var(--muted);font-size:1rem;line-height:1.78;max-width:420px;margin-bottom:32px}
-    .hero-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:40px}
-    .hero-stats{display:flex;gap:0;border:1px solid var(--border)}
-    .hstat{padding:14px 22px;border-right:1px solid var(--border)}
-    .hstat:last-child{border-right:none}
-    .hstat-lbl{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--muted);
-      letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px}
-    .hstat-val{font-family:'Clash Display',sans-serif;font-weight:700;font-size:1.1rem;
-      letter-spacing:-0.02em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-    .hero-img-wrap{position:relative;z-index:2;display:flex;justify-content:center;align-items:flex-end}
-    .hero-img-wrap img{width:100%;max-width:480px;display:block;
-      filter:drop-shadow(0 0 60px rgba(155,109,255,0.3));
-      animation:float 6s ease-in-out infinite}
-    .hero-img-placeholder{width:100%;max-width:480px;height:460px;display:flex;flex-direction:column;
-      align-items:center;justify-content:center;border:1px dashed var(--border2);
-      gap:12px;margin:0 auto}
-    .hero-img-placeholder span:first-child{font-size:3rem;opacity:0.3}
-    .hero-img-placeholder span:last-child{font-family:'Space Mono',monospace;font-size:0.58rem;
-      color:var(--muted2);letter-spacing:0.08em}
-    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 
-    /* ── TICKER ── */
-    .ticker{border-top:1px solid var(--border);border-bottom:1px solid var(--border);
-      background:var(--surface);overflow:hidden;padding:12px 0;position:relative;z-index:2}
-    .ticker-track{display:flex;gap:0;white-space:nowrap;animation:tick 28s linear infinite}
-    @keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-    .ticker-item{font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);
-      padding:0 32px;border-right:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;gap:8px}
-    .ticker-item span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
-    .ticker-dot{color:rgba(155,109,255,0.3);padding:0 16px;border-right:none;font-size:0.5rem}
 
-    /* ── STATS BAR ── */
-    .stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
-      background:var(--border);position:relative;z-index:2}
-    .sbar-cell{background:var(--bg);padding:40px 28px;text-align:center}
-    .sbar-val{font-family:'Clash Display',sans-serif;font-weight:700;font-size:2.6rem;
-      letter-spacing:-0.03em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
-      display:block;margin-bottom:6px}
-    .sbar-lbl{font-family:'Space Mono',monospace;font-size:0.56rem;color:var(--muted);
-      letter-spacing:0.12em;text-transform:uppercase}
+/* ── HERO ── */
+
+.hero{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  text-align:center;position:relative;overflow:hidden;padding:120px 40px 80px;
+  background:url('hero2-bg.png') center center / cover no-repeat;
+}
+
+.hero::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;
+  height:200px;pointer-events:none;z-index:3;
+  background:linear-gradient(to bottom, transparent 0%, var(--bg) 100%);
+}
+
+.hero-content{position:relative;z-index:2;display:flex;flex-direction:column;
+  align-items:center;max-width:800px;margin:0 auto}
+.home-badge{display:inline-flex;align-items:center;gap:10px;margin-bottom:24px;
+  background:transparent;border:none;padding:0;
+  font-family:'Michroma',sans-serif;font-size:0.85rem;
+  color:#ffffff;letter-spacing:0.15em;text-transform:uppercase}
+.badge-dot{width:10px;height:10px;border-radius:50%;
+  background:#ff2222;animation:blink 2s infinite;flex-shrink:0;
+  box-shadow:0 0 8px rgba(255,30,30,0.8)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+.hero-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;
+  font-size:clamp(5rem,12vw,10rem);line-height:0.9;letter-spacing:-0.02em;
+  text-transform:uppercase;margin-bottom:24px;color:#ffffff}
+.hero-sub-name{display:block;font-size:0.22em;letter-spacing:0.15em;
+  text-transform:uppercase;font-weight:600;margin-bottom:8px;
+  background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  opacity:0.7}
+.hero-tagline{font-family:'Barlow',sans-serif;font-size:1.15rem;color:var(--muted);
+  line-height:1.7;max-width:520px;margin-bottom:36px}
+.hero-tax-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:40px}
+.tax-chip{font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.06em;
+  padding:8px 16px;border:1px solid var(--border2);color:var(--text);
+  background:rgba(255,160,50,0.05);white-space:nowrap}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+
+.hero-social-links{display:flex;gap:40px;justify-content:center;flex-wrap:wrap;margin-top:48px}
+
+.hero-social-btn{position:relative;display:flex;flex-direction:column;align-items:center;
+  gap:10px;padding:24px 36px;border:none;background:transparent;
+  color:rgba(255,255,255,0.9);text-decoration:none;font-family:'Michroma',sans-serif;
+  font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;transition:all 0.3s}
+
+.hero-social-btn:hover{color:#ffa032;filter:drop-shadow(0 0 10px rgba(255,160,50,0.3))}
+
+.money-ring{position:absolute;width:90px;height:90px;top:50%;left:50%;
+  transform:translate(-50%,-50%);pointer-events:none}
+
+.money-ring span{position:absolute;font-size:14px;width:100%;height:100%;
+  display:flex;align-items:flex-start;justify-content:center;
+  animation:spin-ring 4s linear infinite;transform-origin:center center}
+
+.money-ring span:nth-child(1){animation-delay:0s;    transform:rotate(0deg)}
+.money-ring span:nth-child(2){animation-delay:-0.5s; transform:rotate(45deg)}
+.money-ring span:nth-child(3){animation-delay:-1s;   transform:rotate(90deg)}
+.money-ring span:nth-child(4){animation-delay:-1.5s; transform:rotate(135deg)}
+.money-ring span:nth-child(5){animation-delay:-2s;   transform:rotate(180deg)}
+.money-ring span:nth-child(6){animation-delay:-2.5s; transform:rotate(225deg)}
+.money-ring span:nth-child(7){animation-delay:-3s;   transform:rotate(270deg)}
+.money-ring span:nth-child(8){animation-delay:-3.5s; transform:rotate(315deg)}
+
+@keyframes spin-ring{
+  from{transform:rotate(var(--r,0deg))}
+  to{transform:rotate(calc(var(--r,0deg) + 360deg))}
+}
+
+.money-ring span:nth-child(1){--r:0deg}
+.money-ring span:nth-child(2){--r:45deg}
+.money-ring span:nth-child(3){--r:90deg}
+.money-ring span:nth-child(4){--r:135deg}
+.money-ring span:nth-child(5){--r:180deg}
+.money-ring span:nth-child(6){--r:225deg}
+.money-ring span:nth-child(7){--r:270deg}
+.money-ring span:nth-child(8){--r:315deg}
+
+
+/* ── FOUNDER ── */
+.founder-section{max-width:1100px;margin:0 auto;padding:40px 48px 100px;
+  display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+  
+.founder-img-wrap{position:relative;border-radius:16px;}
+.founder-img{width:100%;max-width:480px;object-position:top center;display:block;
+  filter:drop-shadow(0 0 60px rgba(155,109,255,0.6));
+  animation:founder-float 6s ease-in-out infinite;
+  margin:0 auto; border-radius: 16px;}
+@keyframes founder-float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-12px)}
+}
+.founder-img-fade{position:absolute;inset:0;
+  background:linear-gradient(to right, transparent 60%, var(--bg) 100%)}
+.founder-text{display:flex;flex-direction:column;justify-content:center;padding:0}
+.founder-tag{font-family:'Michroma',sans-serif;font-size:0.75rem;letter-spacing:0.2em;
+  text-transform:uppercase;color:var(--purple);display:block;margin-bottom:20px;
+  text-shadow:0 0 10px rgba(155,109,255,0.8),0 0 20px rgba(155,109,255,0.4)}
+.founder-name{font-family:'Barlow Condensed',sans-serif;font-weight:800;
+  font-size:clamp(3rem,5vw,5rem);text-transform:uppercase;letter-spacing:-0.01em;
+  line-height:0.95;margin-bottom:8px;
+  background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.founder-handle{font-family:'Space Mono',monospace;font-size:0.65rem;color:#ffa032;
+  letter-spacing:0.06em;margin-bottom:32px;opacity:0.8}
+.founder-bio{color:var(--muted);font-family:'Barlow',sans-serif;font-size:1rem;
+  line-height:1.8;margin-bottom:16px}
+.founder-link{font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.08em;
+  text-transform:uppercase;color:#ffa032;text-decoration:none;margin-top:16px;
+  display:inline-block;border-bottom:1px solid rgba(255,160,50,0.3);
+  padding-bottom:2px;transition:all 0.2s}
+.founder-link:hover{color:#fff;border-bottom-color:#fff}
+
+.section-outer{width:100%;padding:100px 0;position:relative}
+.section-inner{max-width:1100px;margin:0 auto;padding:0 48px}
 
     /* ── HOW IT WORKS ── */
-    .section-wrap{padding:100px 80px}
+    .section-wrap{padding:100px 40px;max-width:1100px;margin:0 auto;width:100%}
     .section-header{margin-bottom:56px}
     .flow-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);margin-bottom:32px}
     .flow-card{background:var(--bg);padding:36px 24px;position:relative;overflow:hidden;transition:background 0.2s}
     .flow-card:hover{background:var(--surface)}
     .flow-card::before{content:attr(data-n);position:absolute;top:-10px;right:12px;
-      font-family:'Clash Display',sans-serif;font-weight:700;font-size:5rem;
+      font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:5rem;
       background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
       opacity:0.07;line-height:1;pointer-events:none}
     .fc-icon{font-size:1.8rem;margin-bottom:16px;display:block}
-    .fc-title{font-family:'Clash Display',sans-serif;font-weight:600;font-size:1rem;margin-bottom:10px;letter-spacing:-0.01em}
+    .fc-title{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:1rem;margin-bottom:10px;letter-spacing:-0.01em}
     .fc-desc{font-size:0.83rem;color:var(--muted);line-height:1.7}
     .loop-row{display:flex;align-items:stretch;gap:0;border:1px solid var(--border);background:var(--surface);overflow:hidden}
     .loop-box{flex:1;padding:18px 14px;text-align:center;border-right:1px solid var(--border)}
     .loop-box:last-child{border-right:none}
     .lb-lbl{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--muted);
       letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px}
-    .lb-val{font-family:'Clash Display',sans-serif;font-weight:600;font-size:0.9rem;
+    .lb-val{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:0.9rem;
       background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
     .loop-arrow{display:flex;align-items:center;padding:0 4px;color:var(--purple);font-size:1rem;flex-shrink:0}
 
     /* ── TOKENOMICS ── */
-    .toko-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
-    .toko-cards{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+    .toko-grid{display:flex;flex-direction:column;gap:32px}
+    .toko-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)}
     .toko-card{background:var(--bg);padding:32px 22px;position:relative;overflow:hidden;transition:background 0.2s}
     .toko-card:hover{background:var(--surface)}
     .toko-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)}
-    .toko-num{font-family:'Clash Display',sans-serif;font-weight:700;font-size:2.4rem;
+    .toko-num{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:2.4rem;
       letter-spacing:-0.03em;background:var(--grad);-webkit-background-clip:text;
       -webkit-text-fill-color:transparent;display:block;margin-bottom:6px}
     .toko-lbl{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);
@@ -197,7 +263,7 @@
       letter-spacing:0.12em;text-transform:uppercase;margin-bottom:18px}
     .cycle-step{display:flex;gap:14px;align-items:flex-start;padding:13px 0;border-bottom:1px solid var(--border)}
     .cycle-step:last-child{border-bottom:none}
-    .cs-n{font-family:'Clash Display',sans-serif;font-weight:700;font-size:1.4rem;
+    .cs-n{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.4rem;
       background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
       line-height:1;flex-shrink:0;width:28px}
     .cs-lbl{font-weight:600;font-size:0.88rem;margin-bottom:2px}
@@ -248,7 +314,7 @@
     .step{display:grid;grid-template-columns:48px 1fr;gap:20px;align-items:flex-start;
       padding:24px 0;border-bottom:1px solid var(--border)}
     .step:last-child{border-bottom:none}
-    .step-n{font-family:'Clash Display',sans-serif;font-weight:700;font-size:2rem;
+    .step-n{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:2rem;
       letter-spacing:-0.03em;background:var(--grad);-webkit-background-clip:text;
       -webkit-text-fill-color:transparent;line-height:1;padding-top:2px}
     .step-title{font-weight:600;font-size:0.95rem;margin-bottom:5px}
@@ -280,8 +346,9 @@
     .sn-txt{font-size:0.82rem;color:var(--muted);line-height:1.65}
 
     /* ── DASHBOARD CTA ── */
-    .dash-cta{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);
-      padding:80px 80px;display:flex;align-items:center;justify-content:space-between;gap:40px}
+    .dash-cta{background:var(--bg);
+      padding:80px;display:flex;align-items:center;justify-content:space-between;gap:40px;
+      max-width:1200px;margin:0 auto;width:100%;padding:80px 120px}
     .dash-cta-left{}
     .dash-features{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:24px;max-width:480px}
     .df{padding:10px 14px;border:1px solid var(--border);background:var(--bg);
@@ -291,19 +358,10 @@
     .dash-cta-right{flex-shrink:0;text-align:center}
     .dash-cta-right p{font-family:'Space Mono',monospace;font-size:0.56rem;color:var(--muted2);margin-top:8px}
 
-    /* ── CTA BANNER ── */
-    .cta-banner{padding:80px;background:linear-gradient(135deg,rgba(79,142,247,0.08),rgba(155,109,255,0.08));
-      border-top:1px solid var(--border);display:flex;align-items:center;
-      justify-content:space-between;gap:40px}
-    .cb-title{font-family:'Clash Display',sans-serif;font-weight:700;
-      font-size:clamp(2rem,3vw,2.8rem);letter-spacing:-0.03em;margin-bottom:8px}
-    .cb-sub{color:var(--muted);font-size:0.95rem}
-    .cb-btns{display:flex;gap:12px;flex-wrap:wrap;align-items:center;flex-shrink:0}
-
     /* ── FOOTER ── */
     footer{padding:20px 48px;border-top:1px solid var(--border);background:var(--surface);
       display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
-    .footer-logo{font-family:'Clash Display',sans-serif;font-weight:700;font-size:1.1rem;
+    .footer-logo{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.1rem;
       letter-spacing:-0.02em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
     .footer-note{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--muted2);
       letter-spacing:0.04em;text-align:center}
@@ -346,179 +404,107 @@
       nav{padding:0 16px}
       .nav-learn{display:none}
     }
+
   </style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav>
-  <a class="nav-logo" href="#">CashX</a>
+  <a class="nav-logo" href="#home">CASHX</a>
   <div class="nav-links">
-    <a href="#how-it-works">How It Works</a>
     <a href="#tokenomics">Tokenomics</a>
     <a href="#treasury">Treasury</a>
-    <a href="#ecosystem">Ecosystem</a>
-    <a href="#buy">How to Buy</a>
+    <a href="#buy">How To Buy</a>
   </div>
   <div class="nav-right">
-    <a class="nav-learn" href="dashboard.html" style="margin-right:10px">📊 Live Dashboard</a>
-    <a class="nav-learn" href="https://www.youtube.com/watch?v=UefZfzeoU_M" target="_blank">Learn More</a>
-    <a class="nav-trade" href="https://pulsex.com" target="_blank">Trade $CASHX</a>
+    <a href="https://t.me/+Ruw3dQPRTv00NDRl" target="_blank" class="nav-icon" aria-label="Telegram">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 14.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z" fill="white"/>
+        
+      </svg>
+    </a>
+    <a href="https://x.com/TomkiwMich70997" target="_blank" class="nav-icon" aria-label="X">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="white"/>
+      
+      </svg>
+   <a href="https://dexscreener.com/pulsechain/0xda942580cee2a69c5fc74109090816157730c64d" target="_blank" class="nav-icon" aria-label="DexScreener" style="color:white">
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" fill-rule="evenodd" viewBox="0 0 252 300">
+    <path d="M151.818 106.866c9.177-4.576 20.854-11.312 32.545-20.541 2.465 5.119 2.735 9.586 1.465 13.193-.9 2.542-2.596 4.753-4.826 6.512-2.415 1.901-5.431 3.285-8.765 4.033-6.326 1.425-13.712.593-20.419-3.197m1.591 46.886l12.148 7.017c-24.804 13.902-31.547 39.716-39.557 64.859-8.009-25.143-14.753-50.957-39.556-64.859l12.148-7.017a5.95 5.95 0 003.84-5.845c-1.113-23.547 5.245-33.96 13.821-40.498 3.076-2.342 6.434-3.518 9.747-3.518s6.671 1.176 9.748 3.518c8.576 6.538 14.934 16.951 13.821 40.498a5.95 5.95 0 003.84 5.845zM126 0c14.042.377 28.119 3.103 40.336 8.406 8.46 3.677 16.354 8.534 23.502 14.342 3.228 2.622 5.886 5.155 8.814 8.071 7.897.273 19.438-8.5 24.796-16.709-9.221 30.23-51.299 65.929-80.43 79.589-.012-.005-.02-.012-.029-.018-5.228-3.992-11.108-5.988-16.989-5.988s-11.76 1.996-16.988 5.988c-.009.005-.017.014-.029.018-29.132-13.66-71.209-49.359-80.43-79.589 5.357 8.209 16.898 16.982 24.795 16.709 2.929-2.915 5.587-5.449 8.814-8.071C69.31 16.94 77.204 12.083 85.664 8.406 97.882 3.103 111.959.377 126 0m-25.818 106.866c-9.176-4.576-20.854-11.312-32.544-20.541-2.465 5.119-2.735 9.586-1.466 13.193.901 2.542 2.597 4.753 4.826 6.512 2.416 1.901 5.432 3.285 8.766 4.033 6.326 1.425 13.711.593 20.418-3.197"></path>
+    <path d="M197.167 75.016c6.436-6.495 12.107-13.684 16.667-20.099l2.316 4.359c7.456 14.917 11.33 29.774 11.33 46.494l-.016 26.532.14 13.754c.54 33.766 7.846 67.929 24.396 99.193l-34.627-27.922-24.501 39.759-25.74-24.231L126 299.604l-41.132-66.748-25.739 24.231-24.501-39.759L0 245.25c16.55-31.264 23.856-65.427 24.397-99.193l.14-13.754-.016-26.532c0-16.721 3.873-31.578 11.331-46.494l2.315-4.359c4.56 6.415 10.23 13.603 16.667 20.099l-2.01 4.175c-3.905 8.109-5.198 17.176-2.156 25.799 1.961 5.554 5.54 10.317 10.154 13.953 4.48 3.531 9.782 5.911 15.333 7.161 3.616.814 7.3 1.149 10.96 1.035-.854 4.841-1.227 9.862-1.251 14.978L53.2 160.984l25.206 14.129a41.926 41.926 0 015.734 3.869c20.781 18.658 33.275 73.855 41.861 100.816 8.587-26.961 21.08-82.158 41.862-100.816a41.865 41.865 0 015.734-3.869l25.206-14.129-32.665-18.866c-.024-5.116-.397-10.137-1.251-14.978 3.66.114 7.344-.221 10.96-1.035 5.551-1.25 10.854-3.63 15.333-7.161 4.613-3.636 8.193-8.399 10.153-13.953 3.043-8.623 1.749-17.689-2.155-25.799l-2.01-4.175z"></path>
+  </svg>
+</a>
+
+  <a href="https://www.youtube.com/watch?v=UefZfzeoU_M" target="_blank" class="nav-icon" aria-label="YouTube" style="color:white">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+  </svg>
+</a>
+
+    <a href="dashboard.html" class="nav-dash-btn">Open Live Dashboard →</a>
   </div>
 </nav>
 
+
 <!-- HERO -->
-<section class="hero">
-  <div class="blob blob-1"></div>
-  <div class="blob blob-2"></div>
-  <div class="hero-left fade">
-    <div class="home-badge">Live on PulseChain · Treasury Active</div>
-    <h1 class="hero-title">
-      The Treasury<br><span class="grad-text">Buy &amp; Burn</span><br>Does The<br><span class="grad-text">Work For You!</span>
-    </h1>
-    <p class="hero-sub">$CASHX is a utility token backed by a self-compounding treasury on PulseChain. SAC funds generate yield from day one — buying $CASHX off the market and burning it permanently. No end date.</p>
-    <div class="hero-ctas">
-      <a class="btn-sharp btn-filled" href="https://pulsex.com" target="_blank">Buy $CASHX</a>
-      <a class="btn-sharp btn-outline" href="https://t.me/+Ruw3dQPRTv00NDRl" target="_blank">Join Telegram</a>
-      <a class="btn-sharp btn-outline" href="https://www.youtube.com/watch?v=UefZfzeoU_M" target="_blank">▶ Learn More</a>
-    </div>
-    <div class="hero-stats">
-      <div class="hstat">
-        <div class="hstat-lbl">Supply</div>
-        <div class="hstat-val">3.7B</div>
-      </div>
-      <div class="hstat">
-        <div class="hstat-lbl">Buy / Sell Tax</div>
-        <div class="hstat-val">4 / 4%</div>
-      </div>
-      <div class="hstat">
-        <div class="hstat-lbl">Network</div>
-        <div class="hstat-val">PLS</div>
-      </div>
-      <div class="hstat">
-        <div class="hstat-lbl">Burns</div>
-        <div class="hstat-val">Repeat. No End Date</div>
-      </div>
-    </div>
+<section class="hero" id="home">
+  <div class="hero-content">
+    <div class="home-badge"><span class="badge-dot"></span> LIVE ON PULSECHAIN</div>
+  <!-- <p class="hero-welcome">Welcome to</p> -->
+  <h1 class="hero-title">CASHX</h1>
+  <div class="hero-social-links">
+    <a href="https://t.me/+Ruw3dQPRTv00NDRl" target="_blank" class="hero-social-btn">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/>
+      </svg>
+    </a>
+    <a href="https://x.com/TomkiwMich70997" target="_blank" class="hero-social-btn">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.261 5.636 5.903-5.636zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+      </svg>
+    </a>
+   <a href="https://dexscreener.com/pulsechain/0xda942580cee2a69c5fc74109090816157730c64d" target="_blank" class="hero-social-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" fill-rule="evenodd" viewBox="0 0 252 300">
+    <path d="M151.818 106.866c9.177-4.576 20.854-11.312 32.545-20.541 2.465 5.119 2.735 9.586 1.465 13.193-.9 2.542-2.596 4.753-4.826 6.512-2.415 1.901-5.431 3.285-8.765 4.033-6.326 1.425-13.712.593-20.419-3.197m1.591 46.886l12.148 7.017c-24.804 13.902-31.547 39.716-39.557 64.859-8.009-25.143-14.753-50.957-39.556-64.859l12.148-7.017a5.95 5.95 0 003.84-5.845c-1.113-23.547 5.245-33.96 13.821-40.498 3.076-2.342 6.434-3.518 9.747-3.518s6.671 1.176 9.748 3.518c8.576 6.538 14.934 16.951 13.821 40.498a5.95 5.95 0 003.84 5.845zM126 0c14.042.377 28.119 3.103 40.336 8.406 8.46 3.677 16.354 8.534 23.502 14.342 3.228 2.622 5.886 5.155 8.814 8.071 7.897.273 19.438-8.5 24.796-16.709-9.221 30.23-51.299 65.929-80.43 79.589-.012-.005-.02-.012-.029-.018-5.228-3.992-11.108-5.988-16.989-5.988s-11.76 1.996-16.988 5.988c-.009.005-.017.014-.029.018-29.132-13.66-71.209-49.359-80.43-79.589 5.357 8.209 16.898 16.982 24.795 16.709 2.929-2.915 5.587-5.449 8.814-8.071C69.31 16.94 77.204 12.083 85.664 8.406 97.882 3.103 111.959.377 126 0m-25.818 106.866c-9.176-4.576-20.854-11.312-32.544-20.541-2.465 5.119-2.735 9.586-1.466 13.193.901 2.542 2.597 4.753 4.826 6.512 2.416 1.901 5.432 3.285 8.766 4.033 6.326 1.425 13.711.593 20.418-3.197"></path>
+    <path d="M197.167 75.016c6.436-6.495 12.107-13.684 16.667-20.099l2.316 4.359c7.456 14.917 11.33 29.774 11.33 46.494l-.016 26.532.14 13.754c.54 33.766 7.846 67.929 24.396 99.193l-34.627-27.922-24.501 39.759-25.74-24.231L126 299.604l-41.132-66.748-25.739 24.231-24.501-39.759L0 245.25c16.55-31.264 23.856-65.427 24.397-99.193l.14-13.754-.016-26.532c0-16.721 3.873-31.578 11.331-46.494l2.315-4.359c4.56 6.415 10.23 13.603 16.667 20.099l-2.01 4.175c-3.905 8.109-5.198 17.176-2.156 25.799 1.961 5.554 5.54 10.317 10.154 13.953 4.48 3.531 9.782 5.911 15.333 7.161 3.616.814 7.3 1.149 10.96 1.035-.854 4.841-1.227 9.862-1.251 14.978L53.2 160.984l25.206 14.129a41.926 41.926 0 015.734 3.869c20.781 18.658 33.275 73.855 41.861 100.816 8.587-26.961 21.08-82.158 41.862-100.816a41.865 41.865 0 015.734-3.869l25.206-14.129-32.665-18.866c-.024-5.116-.397-10.137-1.251-14.978 3.66.114 7.344-.221 10.96-1.035 5.551-1.25 10.854-3.63 15.333-7.161 4.613-3.636 8.193-8.399 10.153-13.953 3.043-8.623 1.749-17.689-2.155-25.799l-2.01-4.175z"></path>
+  </svg>
+</a>
+
+  <a href="https://www.youtube.com/watch?v=UefZfzeoU_M" target="_blank" class="hero-social-btn">
+  <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+  </svg>
+</a>
+
   </div>
-  <div class="hero-img-wrap fade" style="transition-delay:0.15s">
-    <img id="mascot-img" alt="CashX mascot" style="width:100%;max-width:480px;filter:drop-shadow(0 0 60px rgba(155,109,255,0.3));animation:float 6s ease-in-out infinite;margin:0 auto;display:block"/>
+</div>
+</section>
+
+
+<!-- FOUNDER -->
+<section class="founder-section">
+    <img src="cashx_character.png" alt="Cash Money — Founder of CashX" class="founder-img"/> 
   </div>
+  <div class="founder-text">
+    <span class="founder-tag">// The Founder</span>
+    <h2 class="founder-name">Cash Money</h2>
+    <p class="founder-handle">@BigWhalePLSX on X · PulseChain Native</p>
+    <p class="founder-bio">CashX was born on PulseChain — dropped by the community, for the community. Cash Money, known across PulseChain as Big Whale PLSX, launched $CASHX as a deflationary token with a simple mission: reward holders by making the supply smaller every day.</p>
+    <p class="founder-bio">The project kicked off with a sacrifice phase run entirely through Telegram — and the community showed up. Every trade since has fed the treasury. Every burn has reduced the supply. The future of CashX runs on one engine: Cash Money and the community behind him.</p>
+    <a href="https://x.com/TomkiwMich70997" target="_blank" class="founder-link">Follow on X →</a>
   </div>
 </section>
 
-<!-- TICKER -->
-<div class="ticker" aria-hidden="true">
-  <div class="ticker-track">
-    <div class="ticker-item">$CASHX <span>LIVE</span></div>
-    <div class="ticker-item ticker-dot">✦</div>
-    <div class="ticker-item">PULSECHAIN <span>NATIVE</span></div>
-    <div class="ticker-item ticker-dot">✦</div>
-    <div class="ticker-item">3,700,000,000 <span>SUPPLY</span></div>
-    <div class="ticker-item ticker-dot">✦</div>
-    <div class="ticker-item">COMMUNITY <span>FIRST</span></div>
-    <div class="ticker-item ticker-dot">✦</div>
-    <div class="ticker-item">CONTRACT <span>VERIFIED</span></div>
-    <div class="ticker-item ticker-dot">✦</div>
-    <div class="ticker-item">SAC FUNDED <span>COMMUNITY LAUNCH</span></div>
-    <div class="ticker-item ticker-dot">✦</div>
-    <div class="ticker-item">BURNS <span>ACTIVE</span></div>
-    <div class="ticker-item ticker-dot">✦</div>
-    <!-- duplicate for seamless loop -->
-    <div class="ticker-item">$CASHX <span>LIVE</span></div>
-    <div class="ticker-item ticker-dot">✦</div>
-    <div class="ticker-item">PULSECHAIN <span>NATIVE</span></div>
-    <div class="ticker-item ticker-dot">✦</div>
-    <div class="ticker-item">3,700,000,000 <span>SUPPLY</span></div>
-    <div class="ticker-item ticker-dot">✦</div>
-    <div class="ticker-item">COMMUNITY <span>FIRST</span></div>
-    <div class="ticker-item ticker-dot">✦</div>
-    <div class="ticker-item">CONTRACT <span>VERIFIED</span></div>
-    <div class="ticker-item ticker-dot">✦</div>
-    <div class="ticker-item">SAC FUNDED <span>COMMUNITY LAUNCH</span></div>
-    <div class="ticker-item ticker-dot">✦</div>
-    <div class="ticker-item">BURNS <span>ACTIVE</span></div>
-    <div class="ticker-item ticker-dot">✦</div>
-  </div>
-</div>
 
-<!-- STATS BAR -->
-<div class="stats-bar">
-  <div class="sbar-cell fade">
-    <span class="sbar-val">3.7B</span>
-    <span class="sbar-lbl">Total Supply</span>
-  </div>
-  <div class="sbar-cell fade" style="transition-delay:0.1s">
-    <span class="sbar-val">4%</span>
-    <span class="sbar-lbl">Buy Tax</span>
-  </div>
-  <div class="sbar-cell fade" style="transition-delay:0.2s">
-    <span class="sbar-val">4%</span>
-    <span class="sbar-lbl">Sell Tax</span>
-  </div>
-  <div class="sbar-cell fade" style="transition-delay:0.3s">
-    <span class="sbar-val">∞</span>
-    <span class="sbar-lbl">Burn Duration</span>
-  </div>
-</div>
-
-<div class="divider"></div>
-
-<!-- HOW IT WORKS -->
-<section class="section-wrap" id="how-it-works">
-  <div class="section-header fade">
-    <span class="sec-tag">// The CashX Engine</span>
-    <h2 class="sec-h">A Simple,<br>Relentless Loop.</h2>
-    <p class="sec-p" style="max-width:560px">The SAC funds the treasury. The treasury compounds. Revenue buys $CASHX off the market and burns it permanently. Every cycle, supply shrinks. Every cycle, buy pressure grows. The machine runs itself.</p>
-  </div>
-
-  <div class="flow-grid">
-    <div class="flow-card fade" data-n="01">
-      <span class="fc-icon">🏦</span>
-      <div class="fc-title">SAC Funds Treasury</div>
-      <div class="fc-desc">Community sacrifice builds the initial treasury. All proceeds deploy into yield-generating DeFi positions on PulseChain from day one — not held idle.</div>
-    </div>
-    <div class="flow-card fade" style="transition-delay:0.1s" data-n="02">
-      <span class="fc-icon">📈</span>
-      <div class="fc-title">Treasury Compounds</div>
-      <div class="fc-desc">Yield is reinvested to grow the treasury over time. During PulseChain bull runs, positions rotate to stablecoins to lock gains — identical to OINK's proven strategy.</div>
-    </div>
-    <div class="flow-card fade" style="transition-delay:0.2s" data-n="03">
-      <span class="fc-icon">🔥</span>
-      <div class="fc-title">Buy &amp; Burn</div>
-      <div class="fc-desc">Treasury revenue purchases $CASHX from the open market and sends it to the burn address permanently. Reduced supply against consistent demand creates sustained price pressure.</div>
-    </div>
-    <div class="flow-card fade" style="transition-delay:0.3s" data-n="04">
-      <span class="fc-icon">♾️</span>
-      <div class="fc-title">Repeat. No End Date.</div>
-      <div class="fc-desc">The cycle runs indefinitely. As the treasury compounds and circulating supply decreases, each burn cycle has greater relative impact. Low cap at launch — massive room to run.</div>
-    </div>
-  </div>
-
-  <div class="loop-row fade">
-    <div class="loop-box"><div class="lb-lbl">SAC Capital</div><div class="lb-val">Treasury</div></div>
-    <div class="loop-arrow">→</div>
-    <div class="loop-box"><div class="lb-lbl">DeFi Yield</div><div class="lb-val">Compound</div></div>
-    <div class="loop-arrow">→</div>
-    <div class="loop-box"><div class="lb-lbl">Revenue</div><div class="lb-val">Buy $CASHX</div></div>
-    <div class="loop-arrow">→</div>
-    <div class="loop-box"><div class="lb-lbl">Send to 0x0</div><div class="lb-val">🔥 Burn</div></div>
-    <div class="loop-arrow">→</div>
-    <div class="loop-box" style="border-color:rgba(155,109,255,0.3);background:rgba(155,109,255,0.05)">
-      <div class="lb-lbl">Forever</div><div class="lb-val">♾️</div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
 
 <!-- TOKENOMICS -->
-<section class="section-wrap" id="tokenomics">
+<section class="section-wrap" id="tokenomics" style="scroll-margin-top:90px">
   <div class="toko-grid">
     <div>
-      <div class="fade">
-        <span class="sec-tag">// Tokenomics</span>
-        <h2 class="sec-h">Designed<br>to Deflate.</h2>
+      <div class="fade" style="text-align:center;max-width:600px;margin:0 auto">
+        <span class="sec-tag" style="font-size:1.2rem;letter-spacing:0.2em">// Tokenomics</span>
+        
         <p class="sec-p">Fixed supply. Continuous burns. A tax structure that works against sell pressure. Every mechanic points in one direction — shrinking supply and growing treasury.</p>
       </div>
       <div class="toko-cards" style="margin-top:32px">
@@ -544,15 +530,11 @@
         </div>
       </div>
     </div>
-    <div class="fade" style="transition-delay:0.15s">
-      <img src="tokenomics.svg" alt="CashX tokenomics flow" style="width:100%;border:1px solid rgba(155,109,255,0.15)"/></div>
-    </div>
 </section>
 
-<div class="divider"></div>
 
 <!-- TREASURY -->
-<section class="section-wrap" id="treasury">
+<section class="section-wrap" id="treasury" style="scroll-margin-top:90px">
   <div class="fade" style="margin-bottom:48px">
     <span class="sec-tag">// Treasury Strategy</span>
     <h2 class="sec-h">The Machine That<br>Never Stops.</h2>
@@ -560,7 +542,7 @@
 
   <div style="display:flex;flex-direction:column;gap:32px">
 
-    <!-- CYCLE — full width -->
+  
     <div class="fade">
       <div class="treas-cycle">
         <div class="tc-title">// Treasury Cycle</div>
@@ -572,7 +554,7 @@
       </div>
     </div>
 
-    <!-- 3 FACT CARDS — full width row -->
+    
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border)">
       <div class="tf-row fade">
         <div class="tf-icon">🏦</div>
@@ -594,7 +576,6 @@
   </div>
 </section>
 
-<div class="divider"></div>
 
 <!-- ECOSYSTEM -->
 <section class="section-wrap" id="ecosystem">
@@ -668,10 +649,10 @@
   </div>
 </section>
 
-<div class="divider"></div>
+
 
 <!-- HOW TO BUY -->
-<section class="section-wrap" id="buy">
+<section class="section-wrap" id="buy" style="scroll-margin-top:90px">
   <div class="fade" style="margin-bottom:48px">
     <span class="sec-tag">// How to Buy</span>
     <h2 class="sec-h">Get $CASHX<br>in 4 Steps.</h2>
@@ -720,10 +701,10 @@
   </div>
 </section>
 
-<div class="divider"></div>
 
 <!-- DASHBOARD CTA -->
-<div class="dash-cta">
+<div style="background:var(--bg);padding: 0">
+  <div class="dash-cta">
   <div class="dash-cta-left fade">
     <span class="sec-tag">// Live Dashboard</span>
     <h2 class="sec-h" style="font-size:clamp(1.8rem,2.8vw,2.6rem)">Real-Time Treasury<br>&amp; Burn Data.</h2>
@@ -743,17 +724,6 @@
   </div>
 </div>
 
-<!-- CTA BANNER -->
-<div class="cta-banner">
-  <div class="fade">
-    <div class="cb-title">Join the CashX<br><span class="grad-text">Community Today.</span></div>
-    <div class="cb-sub">Treasury active. Burns ongoing. PulseChain native.</div>
-  </div>
-  <div class="cb-btns fade" style="transition-delay:0.15s">
-    <a class="btn-sharp btn-filled" href="https://www.swap.win/?token=0x4c450b3c2b89a2dabe5a3ee39ff475134a30d665" target="_blank">Buy $CASHX</a>
-    <a class="btn-sharp btn-outline" href="https://t.me/+Ruw3dQPRTv00NDRl" target="_blank">Join Telegram</a>
-  </div>
-</div>
 
 <!-- FOOTER -->
 <footer>
@@ -769,10 +739,6 @@
 
 <script>
 
- 
-const MASCOT_SRC = 'cashx_character.jpg';
-// ─────────────────────────────────────────
-document.getElementById('mascot-img').src = MASCOT_SRC;
 
   // Scroll fade-in
   const observer = new IntersectionObserver((entries) => {
@@ -816,9 +782,11 @@ document.getElementById('mascot-img').src = MASCOT_SRC;
   const nav = document.querySelector('nav');
   window.addEventListener('scroll', () => {
     nav.style.background = window.scrollY > 20
-      ? 'rgba(12,10,15,0.97)'
-      : 'rgba(12,10,15,0.88)';
+      ? 'rgba(6,6,15,0.97)'
+      : 'rgba(6,6,15,0.75)';
   });
+
+
 </script>
 </body>
 </html>
