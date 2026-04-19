@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CashX — Treasury-Backed Token on PulseChain</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&family=Michroma&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&family=Michroma&family=Bebas+Neue&display=swap" rel="stylesheet"/>
 <style>
 :root {
   --bg:       #0a0e1a;
@@ -41,11 +41,11 @@
     display:flex;align-items:center;justify-content:space-between;
     background:rgba(6, 8, 14, 0.75);backdrop-filter:blur(24px);
     border-bottom:none}
-    .nav-logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:3.4rem;
-    letter-spacing:-0.02em;text-transform:uppercase;
+    .nav-logo{font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:3.4rem;
+    letter-spacing:0.05em;text-transform:uppercase;
     background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
     text-decoration:none;line-height:1}
-    .nav-links{display:flex;align-items:center;gap:36px}
+    .nav-links{display:flex;align-items:center;gap:36px;position:absolute;left:50%;transform:translateX(-50%)}
 
     .nav-links a{font-family:'Michroma',sans-serif;font-weight:400;font-size:0.65rem;letter-spacing:3px;
       letter-spacing:0.12em;text-transform:uppercase;color:rgba(240,236,224,0.55);text-decoration:none;
@@ -55,7 +55,7 @@
     .nav-dash{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:1.1rem;letter-spacing:0.12em;
     text-transform:uppercase;color:var(--muted);text-decoration:none;
     transition:color 0.2s}
-    .nav-icon:hover{color:#b929d6;filter:drop-shadow(0 0 6px rgba(255,160,50,0.5))}
+    .nav-icon:hover{opacity:1;background:rgba(255,255,255,0.85)!important}
     .nav-dash-btn{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;
         letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;
         padding:10px 22px;color:#fff;
@@ -64,7 +64,8 @@
 .nav-dash-btn:hover{opacity:0.95}
 
     .nav-icon{display:flex;align-items:center;justify-content:center;
-    opacity:0.85;transition:opacity 0.2s;text-decoration:none}
+    width:36px;height:36px;border-radius:50%;background:#fff;color:#000;
+    opacity:1;transition:opacity 0.2s,background 0.2s;text-decoration:none;flex-shrink:0}
     
 
     /* ── SHARED ── */
@@ -96,7 +97,7 @@
 
 .hero{
   min-height:100vh;display:flex;align-items:center;justify-content:center;
-  text-align:center;position:relative;overflow:hidden;padding:120px 40px 80px;
+  text-align:center;position:relative;overflow:hidden;padding:90px 40px 120px;
   background:url('hero2-bg.png') center center / cover no-repeat;
 }
 
@@ -108,7 +109,7 @@
 
 .hero-content{position:relative;z-index:2;display:flex;flex-direction:column;
   align-items:center;max-width:800px;margin:0 auto}
-.home-badge{display:inline-flex;align-items:center;gap:10px;margin-bottom:24px;
+.home-badge{display:inline-flex;align-items:center;gap:10px;margin-bottom:16px;
   background:transparent;border:none;padding:0;
   font-family:'Michroma',sans-serif;font-size:0.85rem;
   color:#ffffff;letter-spacing:0.15em;text-transform:uppercase}
@@ -116,29 +117,35 @@
   background:#ff2222;animation:blink 2s infinite;flex-shrink:0;
   box-shadow:0 0 8px rgba(255,30,30,0.8)}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
-.hero-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;
-  font-size:clamp(5rem,12vw,10rem);line-height:0.9;letter-spacing:-0.02em;
-  text-transform:uppercase;margin-bottom:24px;color:#ffffff}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-weight:400;
+  font-size:clamp(5rem,12vw,10rem);line-height:0.9;letter-spacing:0.05em;
+  text-transform:uppercase;margin-bottom:10px;color:#ffffff}
 .hero-sub-name{display:block;font-size:0.22em;letter-spacing:0.15em;
   text-transform:uppercase;font-weight:600;margin-bottom:8px;
   background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
   opacity:0.7}
 .hero-tagline{font-family:'Barlow',sans-serif;font-size:1.15rem;color:var(--muted);
   line-height:1.7;max-width:520px;margin-bottom:36px}
+  .hero-cta-row{display:flex;gap:12px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.btn-pill{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:999px;font-family:'Barlow',sans-serif;font-weight:600;font-size:1rem;text-decoration:none;transition:all 0.2s;background:linear-gradient(135deg,#5a1a8a,#7e28b8);color:#fff;box-shadow:0 4px 20px rgba(100,40,160,0.4)}
+.btn-pill:hover{background:linear-gradient(135deg,#6a20a0,#9b30d9);transform:translateY(-1px)}
 .hero-tax-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:40px}
 .tax-chip{font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.06em;
   padding:8px 16px;border:1px solid var(--border2);color:var(--text);
   background:rgba(255,160,50,0.05);white-space:nowrap}
 .hero-ctas{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
 
-.hero-social-links{display:flex;gap:40px;justify-content:center;flex-wrap:wrap;margin-top:48px}
+.hero-banner-placeholder{width:460px;max-width:90%;height:auto;border-radius:18px;background:none;border:none;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;overflow:hidden;animation:banner-float 3.5s ease-in-out infinite;box-shadow:0 0 18px rgba(155,109,255,0.6),0 0 40px rgba(155,109,255,0.35),0 0 70px rgba(155,109,255,0.15)}
+@keyframes banner-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.hero-banner-img{width:100%;height:100%;object-fit:cover;border-radius:14px;display:block}
+.hero-social-links{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-top:14px}
 
 .hero-social-btn{position:relative;display:flex;flex-direction:column;align-items:center;
-  gap:10px;padding:24px 36px;border:none;background:transparent;
-  color:rgba(255,255,255,0.9);text-decoration:none;font-family:'Michroma',sans-serif;
+  gap:10px;padding:16px;border:none;background:#fff;border-radius:50%;
+  color:#000;text-decoration:none;font-family:'Michroma',sans-serif;
   font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;transition:all 0.3s}
 
-.hero-social-btn:hover{color:#ffa032;filter:drop-shadow(0 0 10px rgba(255,160,50,0.3))}
+.hero-social-btn:hover{background:rgba(255,255,255,0.85);transform:scale(1.08)}
 
 .money-ring{position:absolute;width:90px;height:90px;top:50%;left:50%;
   transform:translate(-50%,-50%);pointer-events:none}
@@ -418,31 +425,29 @@
     <a href="#buy">How To Buy</a>
   </div>
   <div class="nav-right">
-    <a href="https://t.me/+Ruw3dQPRTv00NDRl" target="_blank" class="nav-icon" aria-label="Telegram">
+    <a href="https://t.me/+Ruw3dQPRTv00NDRl" target="_blank" class="nav-icon" aria-label="Telegram" >
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 14.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z" fill="white"/>
-        
+        <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z" fill="black"/>
       </svg>
     </a>
     <a href="https://x.com/TomkiwMich70997" target="_blank" class="nav-icon" aria-label="X">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="white"/>
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="black"/>
       
       </svg>
-   <a href="https://dexscreener.com/pulsechain/0xda942580cee2a69c5fc74109090816157730c64d" target="_blank" class="nav-icon" aria-label="DexScreener" style="color:white">
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" fill-rule="evenodd" viewBox="0 0 252 300">
+   <a href="https://dexscreener.com/pulsechain/0xda942580cee2a69c5fc74109090816157730c64d" target="_blank" class="nav-icon" aria-label="DexScreener">
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" fill-rule="evenodd" viewBox="0 0 252 300">
     <path d="M151.818 106.866c9.177-4.576 20.854-11.312 32.545-20.541 2.465 5.119 2.735 9.586 1.465 13.193-.9 2.542-2.596 4.753-4.826 6.512-2.415 1.901-5.431 3.285-8.765 4.033-6.326 1.425-13.712.593-20.419-3.197m1.591 46.886l12.148 7.017c-24.804 13.902-31.547 39.716-39.557 64.859-8.009-25.143-14.753-50.957-39.556-64.859l12.148-7.017a5.95 5.95 0 003.84-5.845c-1.113-23.547 5.245-33.96 13.821-40.498 3.076-2.342 6.434-3.518 9.747-3.518s6.671 1.176 9.748 3.518c8.576 6.538 14.934 16.951 13.821 40.498a5.95 5.95 0 003.84 5.845zM126 0c14.042.377 28.119 3.103 40.336 8.406 8.46 3.677 16.354 8.534 23.502 14.342 3.228 2.622 5.886 5.155 8.814 8.071 7.897.273 19.438-8.5 24.796-16.709-9.221 30.23-51.299 65.929-80.43 79.589-.012-.005-.02-.012-.029-.018-5.228-3.992-11.108-5.988-16.989-5.988s-11.76 1.996-16.988 5.988c-.009.005-.017.014-.029.018-29.132-13.66-71.209-49.359-80.43-79.589 5.357 8.209 16.898 16.982 24.795 16.709 2.929-2.915 5.587-5.449 8.814-8.071C69.31 16.94 77.204 12.083 85.664 8.406 97.882 3.103 111.959.377 126 0m-25.818 106.866c-9.176-4.576-20.854-11.312-32.544-20.541-2.465 5.119-2.735 9.586-1.466 13.193.901 2.542 2.597 4.753 4.826 6.512 2.416 1.901 5.432 3.285 8.766 4.033 6.326 1.425 13.711.593 20.418-3.197"></path>
     <path d="M197.167 75.016c6.436-6.495 12.107-13.684 16.667-20.099l2.316 4.359c7.456 14.917 11.33 29.774 11.33 46.494l-.016 26.532.14 13.754c.54 33.766 7.846 67.929 24.396 99.193l-34.627-27.922-24.501 39.759-25.74-24.231L126 299.604l-41.132-66.748-25.739 24.231-24.501-39.759L0 245.25c16.55-31.264 23.856-65.427 24.397-99.193l.14-13.754-.016-26.532c0-16.721 3.873-31.578 11.331-46.494l2.315-4.359c4.56 6.415 10.23 13.603 16.667 20.099l-2.01 4.175c-3.905 8.109-5.198 17.176-2.156 25.799 1.961 5.554 5.54 10.317 10.154 13.953 4.48 3.531 9.782 5.911 15.333 7.161 3.616.814 7.3 1.149 10.96 1.035-.854 4.841-1.227 9.862-1.251 14.978L53.2 160.984l25.206 14.129a41.926 41.926 0 015.734 3.869c20.781 18.658 33.275 73.855 41.861 100.816 8.587-26.961 21.08-82.158 41.862-100.816a41.865 41.865 0 015.734-3.869l25.206-14.129-32.665-18.866c-.024-5.116-.397-10.137-1.251-14.978 3.66.114 7.344-.221 10.96-1.035 5.551-1.25 10.854-3.63 15.333-7.161 4.613-3.636 8.193-8.399 10.153-13.953 3.043-8.623 1.749-17.689-2.155-25.799l-2.01-4.175z"></path>
   </svg>
 </a>
 
-  <a href="https://www.youtube.com/watch?v=UefZfzeoU_M" target="_blank" class="nav-icon" aria-label="YouTube" style="color:white">
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+  <a href="https://www.youtube.com/watch?v=UefZfzeoU_M" target="_blank" class="nav-icon" aria-label="YouTube">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
     <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
   </svg>
 </a>
 
-    <a href="dashboard.html" class="nav-dash-btn">Open Live Dashboard →</a>
   </div>
 </nav>
 
@@ -450,13 +455,16 @@
 <!-- HERO -->
 <section class="hero" id="home">
   <div class="hero-content">
+    <!-- Banner placeholder — swap src for your image when ready -->
+    <div class="hero-banner-placeholder">
+      <img src="welcome-banner2.png" alt="Welcome to CashX" class="hero-banner-img"/>
+    </div>
+    <h1 class="hero-title">CASH<span style="background:linear-gradient(135deg,#9b30d9,#d44dff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">X</span></h1>
     <div class="home-badge"><span class="badge-dot"></span> LIVE ON PULSECHAIN</div>
-  <!-- <p class="hero-welcome">Welcome to</p> -->
-  <h1 class="hero-title">CASHX</h1>
   <div class="hero-social-links">
-    <a href="https://t.me/+Ruw3dQPRTv00NDRl" target="_blank" class="hero-social-btn">
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/>
+    <a href="https://t.me/+Ruw3dQPRTv00NDRl" target="_blank" class="hero-social-btn" >
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+        <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z" fill="black"/>
       </svg>
     </a>
     <a href="https://x.com/TomkiwMich70997" target="_blank" class="hero-social-btn">
@@ -478,13 +486,18 @@
 </a>
 
   </div>
+  <div class="hero-cta-row">
+  <a href="dashboard.html" class="btn-pill btn-pill-primary">
+    Burn Tracker
+  </a>
+</div>
 </div>
 </section>
 
 
 <!-- FOUNDER -->
 <section class="founder-section">
-    <img src="cashx_character.png" alt="Cash Money — Founder of CashX" class="founder-img"/> 
+    <img src="cashx_character2.png" alt="Cash Money — Founder of CashX" class="founder-img"/> 
   </div>
   <div class="founder-text">
     <span class="founder-tag">// The Founder</span>
@@ -702,11 +715,11 @@
 </section>
 
 
-<!-- DASHBOARD CTA -->
+<!-- Burn Tracker CTA -->
 <div style="background:var(--bg);padding: 0">
   <div class="dash-cta">
   <div class="dash-cta-left fade">
-    <span class="sec-tag">// Live Dashboard</span>
+    <span class="sec-tag">// Burn Tracker</span>
     <h2 class="sec-h" style="font-size:clamp(1.8rem,2.8vw,2.6rem)">Real-Time Treasury<br>&amp; Burn Data.</h2>
     <p class="sec-p" style="max-width:440px">Live treasury balance, burn tracker, price data, and market stats — all pulled directly from PulseChain. Auto-refreshes every 60 seconds.</p>
     <div class="dash-features">
@@ -719,7 +732,7 @@
     </div>
   </div>
   <div class="dash-cta-right fade" style="transition-delay:0.15s">
-    <a class="btn-sharp btn-filled" href="dashboard.html" style="font-size:0.75rem;padding:14px 40px">Open Live Dashboard →</a>
+    <a class="btn-sharp btn-filled" href="dashboard.html" style="font-size:0.75rem;padding:14px 40px">Burn Tracker →</a>
     <p>Opens in same tab · Auto-refreshes every 60s</p>
   </div>
 </div>
