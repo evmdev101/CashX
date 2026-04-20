@@ -6,6 +6,7 @@
   <title>CashX — Live Burn Tracker</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
   <link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     :root {
       --bg:      #0a0f1e;
@@ -142,11 +143,18 @@
     .feed-scroll::-webkit-scrollbar-track{background:transparent}
     .feed-scroll::-webkit-scrollbar-thumb{background:var(--muted2);border-radius:2px}
     .feed-scroll::-webkit-scrollbar-thumb:hover{background:var(--purple)}
-    .btx{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:8px 0}
-    .btx-a{color:var(--text);white-space:nowrap;font-family:'Space Mono',monospace;font-size:0.85rem}
-    .btx-t{color:var(--muted2);white-space:nowrap;font-family:'Space Mono',monospace;font-size:0.56rem;display:flex;flex-direction:column;align-items:flex-end;gap:3px}
-    .btx-tx{color:var(--muted2);font-family:'Space Mono',monospace;font-size:0.5rem;text-decoration:none}
-    .btx-tx:hover{color:var(--blue)}
+    .btx-table-head{display:grid;grid-template-columns:50px 1.6fr 1.2fr 1fr;gap:0;padding:8px 16px;border-bottom:1px solid var(--border);background:var(--surface2);flex-shrink:0}
+    .btx-th{font-family:'Space Mono',monospace;font-size:0.62rem;color:#fff;letter-spacing:0.08em;text-transform:uppercase}
+    .btx{display:grid;grid-template-columns:50px 1.6fr 1.2fr 1fr;gap:0;align-items:center;padding:9px 16px;border-bottom:1px solid var(--border);transition:background 0.15s}
+    .btx:last-child{border-bottom:none}
+    .btx:hover{background:var(--surface2)}
+    .btx-type{font-size:0.85rem}
+    .btx-from{font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--blue)}
+    .btx-a{color:#fff;font-family:'DM Sans',sans-serif;font-weight:300;font-size:1rem}
+    .btx-time{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted2)}
+    .btx-tx{font-family:'Space Mono',monospace;font-size:0.58rem;text-align:right}
+    .btx-tx a{color:var(--purple);text-decoration:none;padding:3px 7px;border:1px solid rgba(155,109,255,0.3);transition:all 0.2s}
+    .btx-tx a:hover{background:rgba(155,109,255,0.15);border-color:var(--purple)}
     .no-data{font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--muted);text-align:center;padding:20px 0;line-height:1.9}
 
     /* LINKS */
@@ -327,6 +335,15 @@
     .medal-2::before{content:'🥈 '}
     .medal-3::before{content:'🥉 '}
 
+    /* BURN ACTIVITY CHART */
+    .chart-toggle-row{display:flex;align-items:center;justify-content:space-between;flex-shrink:0;margin-bottom:12px}
+    .chart-title{font-family:'Space Mono',monospace;font-size:0.85rem;color:#fff;letter-spacing:0.1em;text-transform:uppercase;display:flex;align-items:center;gap:7px}
+    .chart-toggles{display:flex;gap:4px}
+    .chart-btn{font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;padding:5px 12px;background:transparent;border:1px solid var(--border2);color:var(--muted);cursor:pointer;transition:all 0.2s;border-radius:4px}
+    .chart-btn.active{background:var(--purple);color:#fff;border-color:var(--purple)}
+    .chart-btn:hover:not(.active){color:var(--purple);border-color:var(--purple)}
+    .chart-wrap{position:relative;height:220px;width:100%}
+
     /* BURN DETAIL MODAL */
     #burn-modal{position:fixed;inset:0;z-index:9998;display:none;align-items:center;justify-content:center;padding:20px}
     #burn-modal.open{display:flex}
@@ -417,7 +434,7 @@
     <!-- Supply Burned Panel -->
     <div class="panel" style="display:flex;flex-direction:column">
       <div class="panel-head">🔥 Supply Burned</div>
-      <div class="panel-body" style="justify-content:center;gap:16px;padding-top:6px">
+      <div class="panel-body" style="justify-content:flex-start;gap:12px;padding:8px 14px 14px">
         <div style="display:flex;align-items:center;justify-content:center;gap:20px;padding:0">
           <div style="text-align:right">
             <div style="font-family:'DM Sans',sans-serif;font-weight:300;font-size:0.85rem;color:#fff;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px">🔥 Total Burned</div>
@@ -543,10 +560,34 @@
     </div>
   </div>
 
-  <!-- ROW 4: BURN FEED FULL WIDTH -->
+  <!-- ROW 4: BURN ACTIVITY CHART -->
+  <div class="panel">
+    <div class="panel-body">
+      <div class="chart-toggle-row">
+        <div class="chart-title"><span class="live-dot"></span>Burn Activity</div>
+        <div class="chart-toggles">
+          <button class="chart-btn active" onclick="switchChart('24H',this)">24H</button>
+          <button class="chart-btn" onclick="switchChart('7D',this)">7D</button>
+          <button class="chart-btn" onclick="switchChart('30D',this)">30D</button>
+          <button class="chart-btn" onclick="switchChart('ALL',this)">All</button>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="burn-chart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 5: BURN FEED FULL WIDTH -->
   <div class="panel">
     <div class="panel-head"><span class="live-dot"></span>Burn Events</div>
-    <div class="panel-body" style="padding:0 14px 14px">
+    <div class="panel-body" style="padding:0;gap:0">
+      <div class="btx-table-head">
+        <div class="btx-th">Type</div>
+        <div class="btx-th">From</div>
+        <div class="btx-th">Amount</div>
+        <div class="btx-th">Time</div>
+      </div>
       <div class="feed-scroll" id="burn-feed" style="max-height:280px">
         <div class="no-data">🔥<br>No burn events yet</div>
       </div>
@@ -633,8 +674,8 @@
   const EXPLORER  = 'https://api.scan.pulsechain.com/api/v2';
   const SUPPLY    = 3_700_000_000;
 
-  // TAB SWITCHING
-  let cachedBurnsData = [];
+ 
+  let cachedBurnsData = [];  
   let cachedPrice = 0;
 
   function switchTab(tab, btn) {
@@ -781,6 +822,7 @@
     return(await r.json()).result;
   }
 
+
   function setGauge(pct, deadPct){
     const pctStr = pct < 0.0001 ? '0.00%' : pct.toFixed(4) + '%';
     set('sp-pct', pctStr); set('g-pct', pctStr);
@@ -798,8 +840,6 @@
   }
 
   function setSources(totalBurned, deadBurned, tTotal){
-    // Dead address total = verified on-chain (all burns regardless of source)
-    // Remaining supply = verified on-chain via totalSupply()
    set('src-treasury',  Math.floor(deadBurned).toLocaleString());
 set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 3_700_000_000).toLocaleString());
     set('flow-burn', fmtN(tTotal||0, 2) + ' 🔥');
@@ -951,6 +991,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
       if(document.getElementById('view-top-burns').style.display !== 'none') {
         renderTopBurns(items, cachedPrice);
       }
+      renderBurnChart(items, currentChartRange);
       // Latest burns
 const latestTreasury = items.find(tx => (tx.from?.hash||'').toLowerCase() === TREASURY.toLowerCase());
 const latestCommunity = items.find(tx => (tx.from?.hash||'').toLowerCase() !== TREASURY.toLowerCase());
@@ -979,16 +1020,17 @@ if(items.length>0){
           const ts=tx.timestamp?Math.floor(new Date(tx.timestamp).getTime()/1000):0;
           const isTreasury = from.toLowerCase() === TREASURY.toLowerCase();
           const sourceEmoji = isTreasury ? '🏦' : '🌐';
-          const addrEl=from
-            ?`${sourceEmoji} <span class="addr-chip" data-addr="${from}" onclick="amOpen(event,this.dataset.addr)">${from.slice(0,10)}…${from.slice(-6)}</span>`
+          const fromEl=from
+            ?`<span class="addr-chip" data-addr="${from}" onclick="amOpen(event,this.dataset.addr)">${from.slice(0,8)}…${from.slice(-5)}</span>`
             :'—';
           const txEl=validHash
-            ?`<a class="btx-tx" href="https://scan.pulsechain.com/tx/${hash}" target="_blank">tx ↗</a>`
-            :'';
+            ?`<a href="https://scan.pulsechain.com/tx/${hash}" target="_blank">tx ↗</a>`
+            :'—';
           return`<div class="btx">
-            <div class="btx-h">${addrEl}</div>
+            <div class="btx-type">${sourceEmoji}</div>
+            <div class="btx-from">${fromEl}</div>
             <div class="btx-a">🔥 ${Math.floor(amt).toLocaleString()}</div>
-            <div class="btx-t">${ts?ago(ts):'—'}${txEl}</div>
+            <div class="btx-time">${ts?ago(ts):'—'}</div>
           </div>`;
         }).join(''));
       }else{
@@ -1082,6 +1124,104 @@ if(items.length>0){
   }
 
   document.addEventListener('keydown', e => { if(e.key==='Escape') closeBurnModal(); });
+
+  // BURN ACTIVITY CHART
+  let burnChart = null;
+  let currentChartRange = '24H';
+
+  function switchChart(range, btn) {
+    currentChartRange = range;
+    document.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    if (cachedBurnsData.length > 0) renderBurnChart(cachedBurnsData, range);
+  }
+
+  function renderBurnChart(items, range) {
+    const now = Date.now();
+    const cutoffs = { '24H': now - 86400000, '7D': now - 7*86400000, '30D': now - 30*86400000, 'ALL': 0 };
+    const cutoff = cutoffs[range] || 0;
+
+    const filtered = items
+      .filter(tx => tx.timestamp && new Date(tx.timestamp).getTime() >= cutoff)
+      .sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+    // Group into buckets
+    const buckets = {};
+    filtered.forEach(tx => {
+      const d = new Date(tx.timestamp);
+      let key;
+      if (range === '24H') {
+        d.setMinutes(0,0,0); key = d.toISOString();
+      } else {
+        d.setHours(0,0,0,0); key = d.toISOString();
+      }
+      const amt = parseFloat(tx.total?.value||0)/1e18;
+      buckets[key] = (buckets[key]||0) + amt;
+    });
+
+    const sorted = Object.entries(buckets).sort((a,b) => new Date(a[0])-new Date(b[0]));
+    const labels = sorted.map(([k]) => {
+      const d = new Date(k);
+      if (range === '24H') return d.toLocaleTimeString('en-US',{hour:'numeric',hour12:true});
+      return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    });
+    const data = sorted.map(([,v]) => Math.floor(v));
+
+    const ctx = document.getElementById('burn-chart').getContext('2d');
+    if (burnChart) burnChart.destroy();
+
+    burnChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'CASHX Burned',
+          data,
+          borderColor: '#9b6dff',
+          backgroundColor: 'rgba(155,109,255,0.08)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointBackgroundColor: '#9b6dff',
+          pointHoverRadius: 5,
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#0d1628',
+            borderColor: 'rgba(155,109,255,0.4)',
+            borderWidth: 1,
+            titleColor: '#8878a8',
+            bodyColor: '#fff',
+            titleFont: { family: 'Space Mono', size: 10 },
+            bodyFont: { family: 'DM Sans', size: 13 },
+            callbacks: {
+              label: ctx => ' ' + ctx.parsed.y.toLocaleString() + ' CASHX burned'
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: 'rgba(255,255,255,0.04)' },
+            ticks: { color: '#524870', font: { family: 'Space Mono', size: 9 }, maxRotation: 0 }
+          },
+          y: {
+            grid: { color: 'rgba(255,255,255,0.04)' },
+            ticks: {
+              color: '#524870',
+              font: { family: 'Space Mono', size: 9 },
+              callback: v => v >= 1e6 ? (v/1e6).toFixed(1)+'M' : v >= 1e3 ? (v/1e3).toFixed(0)+'K' : v
+            }
+          }
+        }
+      }
+    });
+  }
 
   load();
   setInterval(load,60000);
