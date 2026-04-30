@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CashX — Live Burn Tracker</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
@@ -54,8 +55,7 @@
     .card-lbl{font-family:'Space Mono',monospace;font-size:0.85rem;color:#fff;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:7px;display:flex;align-items:center;gap:5px}
     .card-val{font-family:'DM Sans',sans-serif;font-weight:300;font-size:1.45rem;letter-spacing:-0.03em;color:#fff;display:block;line-height:1;min-height:1.75rem}
     .card-sub{font-family:'Space Mono',monospace;font-size:0.7rem;color:var(--muted2);margin-top:5px}
-    .card-link{text-decoration:none;color:inherit;display:block}
-    .card-link:hover .card-lbl{color:var(--purple)}
+    .card-link{display:block}
     .ld{color:var(--muted2);font-size:0.62rem;font-family:'Space Mono',monospace;animation:pulse 1.4s infinite}
     @keyframes pulse{0%,100%{opacity:0.3}50%{opacity:1}}
     .err{color:var(--red);font-size:0.75rem;font-family:'Space Mono',monospace;-webkit-text-fill-color:var(--red)}
@@ -406,25 +406,25 @@
       <div class="card-sub">price change</div>
     </div>
     <div class="card">
-      <a class="card-link" href="https://scan.pulsechain.com/token/0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665" target="_blank">
+      <div class="card-link">
         <div class="card-lbl">🔥 Total Burned</div>
         <span class="card-val" id="c-burned"><span class="ld">···</span></span>
         <div class="card-sub" id="c-bpct">% of supply</div>
-      </a>
+      </div>
     </div>
     <div class="card">
-      <a class="card-link" href="https://scan.pulsechain.com/token/0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665?tab=holders" target="_blank">
+      <div class="card-link">
         <div class="card-lbl"><span class="live-dot"></span>Holders</div>
         <span class="card-val" id="c-holders"><span class="ld">···</span></span>
         <div class="card-sub" id="c-txs">transfers</div>
-      </a>
+      </div>
     </div>
     <div class="card">
-      <a class="card-link" href="https://scan.pulsechain.com/address/0x0000000000000000000000000000000000000000?tab=token_transfers" target="_blank">
+      <div class="card-link">
         <div class="card-lbl">🏦 Treasury Burned</div>
         <span class="card-val" id="c-dead"><span class="ld">···</span></span>
         <div class="card-sub" id="c-dead-count">exact · on-chain</div>
-      </a>
+      </div>
     </div>
   </div>
 
