@@ -169,6 +169,9 @@
     /* ADDRESS CONTEXT MENU */
     .addr-chip{color:var(--blue);cursor:pointer;font-family:'Space Mono',monospace;font-size:0.58rem;text-decoration:none}
     .addr-chip:hover{color:var(--purple);text-decoration:underline}
+    .source-emoji{display:inline-block;font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;font-size:1rem;line-height:1;vertical-align:-0.12em;margin-right:4px}
+    .source-emoji.casino{font-size:1.25rem;vertical-align:-0.2em;margin-right:5px}
+    .btx-type .source-emoji{margin-right:0}
     #addr-menu{position:fixed;z-index:9999;background:var(--surface);border:1px solid var(--border2);min-width:210px;padding:6px 0;display:none;box-shadow:0 8px 32px rgba(0,0,0,0.55)}
     #addr-menu.open{display:block}
     .am-addr{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--muted);padding:7px 14px 5px;border-bottom:1px solid var(--border);word-break:break-all;line-height:1.5}
@@ -674,6 +677,12 @@
   const DEAD      = '0x000000000000000000000000000000000000dead';
   const ZERO      = '0x0000000000000000000000000000000000000000';
   const TREASURY  = '0xeda3aa737947337b425227dB8174519f623C041f';
+  const CASINO_CONTRACTS = new Set([
+    '0x15a8c0d554d3ee0971a46d096f698e8cbB8CF07977'.toLowerCase(),
+    '0x953b84786f3bC6Cbc7524471FE1B6b0f61E9ce39'.toLowerCase(),
+    '0x684e6B760FC931BB858b3bf3dFC056e550b13D90'.toLowerCase(),
+    '0x344e72a3F4972154B1dbd014ae936816ef34DF9f'.toLowerCase()
+  ]);
   const PAIR      = '0xda942580cee2a69c5fc74109090816157730c64d';
   const RPC       = 'https://rpc.pulsechain.com';
   const EXPLORER  = 'https://api.scan.pulsechain.com/api/v2';
@@ -682,6 +691,11 @@
  
   let cachedBurnsData = [];  
   let cachedPrice = 0;
+
+  const isTreasuryBurn = addr => (addr||'').toLowerCase() === TREASURY.toLowerCase();
+  const isCasinoBurn = addr => CASINO_CONTRACTS.has((addr||'').toLowerCase());
+  const burnSourceEmoji = addr => isTreasuryBurn(addr) ? '🏦' : isCasinoBurn(addr) ? '🎰' : '🌐';
+  const burnSourceEmojiHTML = addr => `<span class="source-emoji${isCasinoBurn(addr) ? ' casino' : ''}">${burnSourceEmoji(addr)}</span>`;
 
   function switchTab(tab, btn) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -720,7 +734,7 @@
       const from = tx.from?.hash||'';
       const fullTime = tx.timestamp ? (() => { const d = new Date(tx.timestamp); return d.toLocaleDateString('en-US',{month:'2-digit',day:'2-digit',year:'numeric'}) + ' ' + d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',second:'2-digit',hour12:true,timeZone:'America/Los_Angeles'}); })() : '—';
       const validHash = hash.startsWith('0x') && hash.length === 66;
-      const isTreasury = from.toLowerCase() === TREASURY.toLowerCase();
+      const sourceEmoji = burnSourceEmojiHTML(from);
       const usdVal = priceUsd > 0 ? fmtUSD(amt * priceUsd) : '—';
 
       const rankEl = rank <= 3
@@ -728,7 +742,7 @@
         : `<span class="tb-rank">#${rank}</span>`;
 
       const fromEl = from
-        ? `<span class="addr-chip" data-addr="${from}" onclick="amOpen(event,this.dataset.addr)">${isTreasury ? '🏦 ' : ''}${from.slice(0,8)}…${from.slice(-5)}</span>`
+        ? `<span class="addr-chip" data-addr="${from}" onclick="amOpen(event,this.dataset.addr)">${sourceEmoji}${from.slice(0,8)}…${from.slice(-5)}</span>`
         : '—';
 
       const txEl = validHash
@@ -748,7 +762,7 @@
   }
 
   function renderBurnsTable(items, priceUsd) {
-    const treasuryCount = items.filter(tx => (tx.from?.hash||'').toLowerCase() === TREASURY.toLowerCase()).length;
+    const treasuryCount = items.filter(tx => isTreasuryBurn(tx.from?.hash)).length;
     const communityCount = items.length - treasuryCount;
     set('burns-total-count', items.length.toLocaleString());
     set('burns-treasury-count', treasuryCount.toLocaleString());
@@ -763,12 +777,12 @@
       const amt = parseFloat(tx.total?.value||0)/1e18;
       const from = tx.from?.hash||'';
       const to = tx.to?.hash||ZERO;
-      const isTreasury = from.toLowerCase() === TREASURY.toLowerCase();
+      const sourceEmoji = burnSourceEmojiHTML(from);
       const usdVal = priceUsd > 0 ? fmtUSD(amt * priceUsd) : '—';
       const fullTime = tx.timestamp ? (() => { const d = new Date(tx.timestamp); return d.toLocaleDateString('en-US',{month:'2-digit',day:'2-digit',year:'numeric'}) + ' ' + d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',second:'2-digit',hour12:true,timeZone:'America/Los_Angeles'}); })() : '—';
 
       const fromEl = from
-        ? `<span class="addr-chip" data-addr="${from}" onclick="amOpen(event,this.dataset.addr)">${isTreasury ? '🏦 ' : ''}${from.slice(0,8)}…${from.slice(-5)}</span>`
+        ? `<span class="addr-chip" data-addr="${from}" onclick="amOpen(event,this.dataset.addr)">${sourceEmoji}${from.slice(0,8)}…${from.slice(-5)}</span>`
         : '—';
       const toEl = to
         ? `<span class="addr-chip" data-addr="${to}" onclick="amOpen(event,this.dataset.addr)">${to.slice(0,8)}…${to.slice(-5)}</span>`
@@ -957,7 +971,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
             const v=parseFloat(tx.total?.value||tx.value||0)/1e18;
             if(!isNaN(v)){
               total+=v; count++;
-              if((tx.from?.hash||'').toLowerCase()===TREASURY.toLowerCase())
+              if(isTreasuryBurn(tx.from?.hash))
                 treasuryTotal+=v;
             }
           }
@@ -998,8 +1012,8 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
       }
       renderBurnChart(items, currentChartRange);
       // Latest burns
-const latestTreasury = items.find(tx => (tx.from?.hash||'').toLowerCase() === TREASURY.toLowerCase());
-const latestCommunity = items.find(tx => (tx.from?.hash||'').toLowerCase() !== TREASURY.toLowerCase());
+const latestTreasury = items.find(tx => isTreasuryBurn(tx.from?.hash));
+const latestCommunity = items.find(tx => !isTreasuryBurn(tx.from?.hash));
 if(latestTreasury){
   const amt = parseFloat(latestTreasury.total?.value||0)/1e18;
   const ts = latestTreasury.timestamp ? Math.floor(new Date(latestTreasury.timestamp).getTime()/1000) : 0;
@@ -1023,8 +1037,7 @@ if(items.length>0){
           const from=tx.from?.hash||'';
           const validHash=hash.startsWith('0x')&&hash.length===66;
           const ts=tx.timestamp?Math.floor(new Date(tx.timestamp).getTime()/1000):0;
-          const isTreasury = from.toLowerCase() === TREASURY.toLowerCase();
-          const sourceEmoji = isTreasury ? '🏦' : '🌐';
+          const sourceEmoji = burnSourceEmojiHTML(from);
           const fromEl=from
             ?`<span class="addr-chip" data-addr="${from}" onclick="amOpen(event,this.dataset.addr)">${from.slice(0,8)}…${from.slice(-5)}</span>`
             :'—';
