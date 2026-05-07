@@ -28,7 +28,12 @@
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html,body{height:100%}
-    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.5;display:flex;flex-direction:column;min-height:100vh;overflow-x:hidden}
+    body{
+      background:
+        url("dashboard-bg.png") center top / 100% auto fixed no-repeat,
+        var(--bg);
+      color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.5;display:flex;flex-direction:column;min-height:100vh;overflow-x:hidden
+    }
 
     /* HEADER */
     header{height:78px;padding:0 48px;flex-shrink:0;border-bottom:1px solid rgba(155,109,255,0.34);
@@ -49,12 +54,14 @@
     .rbtn:disabled{opacity:0.3;cursor:default}
 
     /* MAIN */
-    main{flex:1;padding:16px 28px;display:flex;flex-direction:column;gap:14px;max-width:1440px;width:100%;margin:0 auto}
+    main{flex:1;padding:16px 28px;display:flex;flex-direction:column;gap:14px;max-width:1440px;width:100%;margin:0 auto;position:relative;z-index:1}
 
     /* STAT CARDS */
     .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;background:transparent}
-    .card{background:var(--surface);padding:20px 18px;position:relative;overflow:hidden;border:1px solid var(--border);border-radius:12px}
-    .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)}
+    .card{background:linear-gradient(145deg,rgba(255,255,255,0.105),rgba(13,22,40,0.64) 48%,rgba(7,9,18,0.72));padding:20px 18px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,0.16);border-radius:12px;box-shadow:0 18px 52px rgba(0,0,0,0.34),inset 0 1px 0 rgba(255,255,255,0.12);backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease}
+    .card::before,.panel::before,.dash-section::before,.chart-frame::before{content:"";position:absolute;inset:0 0 auto 0;height:48%;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,0.13),rgba(255,255,255,0.035) 46%,transparent);opacity:.7}
+    .card::after,.panel::after,.dash-section::after,.chart-frame::after{content:"";position:absolute;inset:-1px;pointer-events:none;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,0.18),transparent 32%,rgba(155,109,255,0.26) 68%,rgba(224,64,251,0.2));opacity:.24;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;-webkit-mask-composite:xor;padding:1px}
+    .card:hover,.panel:hover,.dash-section:hover,.chart-frame:hover{transform:translateY(-5px);border-color:rgba(155,109,255,0.46);box-shadow:0 24px 68px rgba(0,0,0,0.42),0 0 34px rgba(155,109,255,0.18),inset 0 1px 0 rgba(255,255,255,0.16)}
     .card-lbl{font-family:'Space Mono',monospace;font-size:0.85rem;color:#fff;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:7px;display:flex;align-items:center;gap:5px}
     .card-val{font-family:'DM Sans',sans-serif;font-weight:300;font-size:1.45rem;letter-spacing:-0.03em;color:#fff;display:block;line-height:1;min-height:1.75rem}
     .card-sub{font-family:'Space Mono',monospace;font-size:0.7rem;color:var(--muted2);margin-top:5px}
@@ -65,8 +72,7 @@
 
     /* BOTTOM GRID */
 .bottom{display:grid;grid-template-columns:1fr 1.5fr 1fr;gap:14px;min-height:0;align-items:stretch}
-.panel{background:var(--surface);border:1px solid var(--border);display:flex;flex-direction:column;min-height:0;overflow:hidden;border-radius:12px;position:relative}
-.panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad);z-index:1}
+.panel{background:linear-gradient(145deg,rgba(255,255,255,0.09),rgba(13,22,40,0.64) 48%,rgba(7,9,18,0.74));border:1px solid rgba(255,255,255,0.14);display:flex;flex-direction:column;min-height:0;overflow:hidden;border-radius:12px;position:relative;box-shadow:0 18px 52px rgba(0,0,0,0.32),inset 0 1px 0 rgba(255,255,255,0.1);backdrop-filter:blur(18px) saturate(145%);-webkit-backdrop-filter:blur(18px) saturate(145%);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease}
 .panel-head{padding:12px 16px;flex-shrink:0;font-family:'Space Mono',monospace;font-size:0.85rem;color:#fff;letter-spacing:0.1em;text-transform:uppercase;display:flex;align-items:center;gap:7px}
 .panel-body{padding:14px;flex:1;display:flex;flex-direction:column;gap:8px;overflow:hidden}
 
@@ -79,7 +85,7 @@
     .g-lbl{font-family:'Space Mono',monospace;font-size:0.56rem;letter-spacing:0.1em;fill:var(--muted);text-transform:uppercase}
     .g-sub{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);text-align:center;line-height:1.65;margin-top:2px}
 
-    .bstat{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:var(--surface2);border:1px solid var(--border)}
+    .bstat{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:rgba(17,31,53,0.56);border:1px solid rgba(255,255,255,0.1);border-radius:8px}
     .bstat-l{font-family:'Space Mono',monospace;font-size:0.55rem;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase}
     .bstat-v{font-family:'DM Sans',sans-serif;font-weight:300;font-size:0.78rem;letter-spacing:-0.02em;color:#fff}
 
@@ -106,7 +112,7 @@
     .badge-neu{color:var(--muted);background:rgba(107,95,130,0.1)}
 
     .mkt-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;background:transparent;flex:1}
-   .mg{background:var(--bg);padding:10px 12px;display:flex;flex-direction:column;justify-content:center}
+.mg{background:rgba(10,15,30,0.48);padding:10px 12px;display:flex;flex-direction:column;justify-content:center;border:1px solid rgba(255,255,255,0.06)}
     .mg-l{font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px}
     .mg-v{font-family:'DM Sans',sans-serif;font-weight:300;font-size:1.1rem;letter-spacing:-0.02em;color:#fff}
 
@@ -116,21 +122,21 @@
     .cta-chart{flex:1;padding:10px;background:var(--surface2);border:1px solid var(--border2);color:var(--purple);font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.07em;text-transform:uppercase;text-align:center;text-decoration:none;display:block;transition:all 0.2s}
     .cta-chart:hover{background:rgba(155,109,255,0.1)}
 
-    .contract-box{background:var(--surface2);border:1px solid var(--border);padding:10px 12px;flex-shrink:0}
+    .contract-box{background:rgba(17,31,53,0.54);border:1px solid rgba(255,255,255,0.11);padding:10px 12px;flex-shrink:0;border-radius:10px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.08)}
     .cb-l{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:5px}
     .cb-addr{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--text);word-break:break-all;margin-bottom:8px;line-height:1.5}
     .cb-copy{font-family:'Space Mono',monospace;font-size:0.56rem;letter-spacing:0.07em;text-transform:uppercase;padding:7px;background:var(--grad);color:#fff;border:none;cursor:pointer;width:100%;transition:opacity 0.2s}
     .cb-copy:hover{opacity:0.82}
 
     /* TREASURY PANEL */
-    .trow{display:flex;align-items:center;justify-content:space-between;padding:9px 11px;background:var(--surface2);border:1px solid var(--border);flex-shrink:0;border-radius:8px}
+    .trow{display:flex;align-items:center;justify-content:space-between;padding:9px 11px;background:rgba(17,31,53,0.54);border:1px solid rgba(255,255,255,0.1);flex-shrink:0;border-radius:8px}
     .tr-l{font-family:'Space Mono',monospace;font-size:0.54rem;color:var(--muted);letter-spacing:0.07em;text-transform:uppercase;margin-bottom:2px}
     .tr-a{font-family:'Space Mono',monospace;font-size:0.52rem}
     .tr-a a{color:var(--blue);text-decoration:none}
     .tr-a a:hover{text-decoration:underline}
     .tr-v{font-family:'DM Sans',sans-serif;font-weight:300;font-size:1.3rem;color:#fff;flex-shrink:0;margin-left:10px;text-align:right}
 
-    .activity-note{padding:10px 12px;background:rgba(79,142,247,0.05);border:1px solid rgba(79,142,247,0.15);flex-shrink:0}
+    .activity-note{padding:10px 12px;background:rgba(79,142,247,0.08);border:1px solid rgba(79,142,247,0.18);flex-shrink:0;border-radius:10px}
     .an-title{font-family:'Space Mono',monospace;font-size:0.54rem;color:var(--blue);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px}
     .an-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;font-family:'Space Mono',monospace;font-size:0.54rem;color:var(--muted)}
     .an-row:last-child{margin-bottom:0}
@@ -195,8 +201,7 @@
     #view-home.hidden{display:none}
 
     /* BURNS TABLE */
-    .burns-table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;position:relative}
-    .burns-table-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad);z-index:1}
+    .burns-table-wrap{background:linear-gradient(145deg,rgba(255,255,255,0.09),rgba(13,22,40,0.64) 48%,rgba(7,9,18,0.74));border:1px solid rgba(255,255,255,0.14);border-radius:12px;overflow:hidden;position:relative;box-shadow:0 18px 52px rgba(0,0,0,0.32),inset 0 1px 0 rgba(255,255,255,0.1);backdrop-filter:blur(18px) saturate(145%);-webkit-backdrop-filter:blur(18px) saturate(145%)}
     .burns-thead{display:grid;grid-template-columns:1.2fr 1fr 1.6fr 1.6fr 1.4fr;gap:0;padding:12px 20px;border-bottom:1px solid var(--border);background:var(--surface2)}
     .burns-th{font-family:'DM Sans',sans-serif;font-weight:300;font-size:0.85rem;color:#fff;letter-spacing:0.05em;text-transform:uppercase}
     .burns-body{overflow-y:auto;max-height:calc(100vh - 220px)}
@@ -297,10 +302,6 @@
       background:var(--border);flex-shrink:0}
     .bs-box{padding:10px 8px;background:var(--surface2);text-align:center;
       position:relative;overflow:hidden}
-    .bs-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
-    .bs-box-treasury::before{background:linear-gradient(90deg,#4f8ef7,#9b6dff)}
-    .bs-box-tax::before{background:linear-gradient(90deg,#9b6dff,#e040fb)}
-    .bs-box-community::before{background:linear-gradient(90deg,#e040fb,#ff6b9d)}
     .bs-box-lbl{font-family:'Space Mono',monospace;font-size:0.5rem;
       color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px}
     .bs-box-val{font-family:'DM Sans',sans-serif;font-weight:300;font-size:0.9rem;
@@ -312,7 +313,6 @@
     .top-burns-title{font-family:'DM Sans',sans-serif;font-weight:300;font-size:1.6rem;letter-spacing:-0.03em;color:#fff}
     .top-burns-sub{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);letter-spacing:0.06em}
     .tb-table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;position:relative}
-    .tb-table-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad);z-index:1}
     .tb-thead{display:grid;grid-template-columns:56px 1.2fr 1fr 1.6fr 1.2fr;gap:0;padding:12px 20px;border-bottom:1px solid var(--border);background:var(--surface2)}
     .tb-th{font-family:'DM Sans',sans-serif;font-weight:300;font-size:0.85rem;color:#fff;letter-spacing:0.05em;text-transform:uppercase}
     .tb-body{overflow-y:auto;max-height:calc(100vh - 260px)}
@@ -358,7 +358,6 @@
     .bm-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px)}
     .bm-box{position:relative;z-index:1;background:var(--surface);border:1px solid var(--border2);border-radius:16px;width:100%;max-width:620px;overflow:hidden;animation:bm-in 0.2s ease}
     @keyframes bm-in{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-    .bm-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)}
     .bm-head{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
     .bm-title{font-family:'DM Sans',sans-serif;font-weight:300;font-size:1.5rem;color:#fff;letter-spacing:-0.02em}
     .bm-close{background:none;border:1px solid var(--border2);color:var(--muted);font-size:1rem;width:28px;height:28px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
@@ -380,6 +379,43 @@
     .bm-btn-primary:hover{opacity:0.85}
     .bm-btn-secondary{background:var(--surface2);border:1px solid var(--border2);color:var(--purple)}
     .bm-btn-secondary:hover{background:rgba(155,109,255,0.1)}
+
+    /* THREE SECTION DASHBOARD */
+    .section-grid{display:grid;grid-template-columns:1.05fr .95fr .8fr;gap:14px;align-items:stretch}
+.dash-section{background:linear-gradient(145deg,rgba(255,255,255,0.095),rgba(13,22,40,0.66) 48%,rgba(7,9,18,0.75));border:1px solid rgba(255,255,255,0.15);border-radius:16px;overflow:hidden;min-width:0;display:flex;flex-direction:column;position:relative;box-shadow:0 22px 64px rgba(0,0,0,0.36),inset 0 1px 0 rgba(255,255,255,0.12);backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease}
+    .section-head{padding:15px 17px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .section-title{font-family:'Space Mono',monospace;font-size:.82rem;color:#fff;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+    .section-note{font-family:'Space Mono',monospace;font-size:.55rem;color:var(--muted2);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+    .section-body{padding:16px;display:flex;flex-direction:column;gap:14px;flex:1}
+    .burn-layout{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:18px;align-items:center}
+    .section-big{font-family:'DM Sans',sans-serif;font-weight:300;font-size:clamp(2rem,3.2vw,3.35rem);letter-spacing:-.055em;line-height:1;color:#fff}
+    .section-big .ld{font:inherit;color:var(--muted2);letter-spacing:0}
+    .section-sub{font-family:'Space Mono',monospace;font-size:.66rem;color:var(--muted);letter-spacing:.05em;margin-top:9px}
+    .section-gauge svg{width:210px;height:210px;display:block}
+    .section-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .section-stat{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.11);border-radius:10px;padding:11px 12px;min-width:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+    .section-label{font-family:'Space Mono',monospace;font-size:.66rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .section-value{font-family:'DM Sans',sans-serif;font-weight:400;font-size:1.45rem;letter-spacing:-.035em;color:#fff;min-height:1.45rem;line-height:1.08}
+    .section-meta{font-family:'Space Mono',monospace;font-size:.64rem;color:var(--muted2);margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .market-price{font-family:'DM Sans',sans-serif;font-weight:300;font-size:clamp(1.9rem,2.8vw,2.8rem);letter-spacing:-.055em;color:#fff;line-height:1}
+    .activity-list{display:grid;gap:10px}
+    .activity-item{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.11);border-radius:10px;padding:13px;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+    .activity-amount{font-family:'DM Sans',sans-serif;font-weight:300;font-size:1.32rem;color:#fff;letter-spacing:-.03em}
+    .contract-box.compact{padding:12px}
+    .contract-box.compact .cb-copy{margin-top:8px}
+    .dash-section:nth-child(1) .section-stats,
+    .dash-section:nth-child(2) .section-stats{flex:1;align-items:stretch}
+    .dash-section:nth-child(2) .section-stats{grid-template-rows:repeat(3,minmax(0,1fr))}
+    .dash-section:nth-child(1) .section-stat,
+    .dash-section:nth-child(2) .section-stat{display:flex;flex-direction:column;justify-content:center}
+    .dash-section:nth-child(1) .section-stat{min-height:92px}
+    .dash-section:nth-child(2) .section-stat{min-height:0}
+    .chart-frame{width:100%;height:600px;border:1px solid rgba(255,255,255,0.14);border-radius:12px;overflow:hidden;position:relative;background:linear-gradient(145deg,rgba(255,255,255,0.08),rgba(7,9,18,0.72));box-shadow:0 18px 52px rgba(0,0,0,0.32),inset 0 1px 0 rgba(255,255,255,0.1);backdrop-filter:blur(18px) saturate(145%);-webkit-backdrop-filter:blur(18px) saturate(145%);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+    .reveal-card{opacity:0;translate:0 22px;filter:blur(5px);transition:opacity .42s ease,translate .46s cubic-bezier(.2,.8,.2,1),filter .42s ease,transform .18s ease,border-color .18s ease,box-shadow .18s ease;transition-delay:var(--reveal-delay,0ms)}
+    .reveal-card.is-visible{opacity:1;translate:0 0;filter:blur(0)}
+    .reveal-card.has-revealed{transition-delay:0ms}
+    @media(max-width:1180px){.section-grid{grid-template-columns:1fr}.burn-layout{grid-template-columns:minmax(0,1fr) 210px}}
+    @media(max-width:700px){.burn-layout{grid-template-columns:1fr}.section-gauge{display:flex;justify-content:center}.section-stats{grid-template-columns:1fr}.section-head{align-items:flex-start;flex-direction:column}.section-note{white-space:normal}}
 
   </style>
 </head>
@@ -406,51 +442,34 @@
 <div id="view-home" style="display:flex">
 <div style="padding:16px 28px;display:flex;flex-direction:column;gap:14px;max-width:1440px;width:100%;margin:0 auto">
 
-  <!-- ROW 1: STAT CARDS -->
-  <div class="cards">
-    <div class="card">
-      <div class="card-lbl"><span class="live-dot"></span>24h Change</div>
-      <span class="card-val" id="c-ch2"><span class="ld">···</span></span>
-      <div class="card-sub">price change</div>
-    </div>
-    <div class="card">
-      <div class="card-link">
-        <div class="card-lbl">🔥 Total Burned</div>
-        <span class="card-val" id="c-burned"><span class="ld">···</span></span>
-        <div class="card-sub" id="c-bpct">% of supply</div>
+  <!-- THREE SECTION DASHBOARD -->
+  <section class="section-grid">
+    <div class="dash-section">
+      <div class="section-head">
+        <div class="section-title">🔥 Burn Status</div>
+        <div class="section-note" id="c-bpct">% of supply</div>
       </div>
-    </div>
-    <div class="card">
-      <div class="card-link">
-        <div class="card-lbl"><span class="live-dot"></span>Holders</div>
-        <span class="card-val" id="c-holders"><span class="ld">···</span></span>
-        <div class="card-sub" id="c-txs">transfers</div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-link">
-        <div class="card-lbl">🏦 Treasury Burned</div>
-        <span class="card-val" id="c-dead"><span class="ld">···</span></span>
-        <div class="card-sub" id="c-dead-count">exact · on-chain</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ROW 2: SUPPLY BURNED + MARKET DATA -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-
-    <!-- Supply Burned Panel -->
-    <div class="panel" style="display:flex;flex-direction:column">
-      <div class="panel-head">🔥 Supply Burned</div>
-      <div class="panel-body" style="justify-content:flex-start;gap:12px;padding:8px 14px 14px">
-        <div style="display:flex;align-items:center;justify-content:center;gap:20px;padding:0">
-          <div style="text-align:right">
-            <div style="font-family:'DM Sans',sans-serif;font-weight:300;font-size:0.85rem;color:#fff;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px">🔥 Total Burned</div>
-            <div id="src-treasury" style="font-family:'DM Sans',sans-serif;font-weight:300;font-size:1.4rem;color:#fff">—</div>
-            <div style="font-family:'Space Mono',monospace;font-size:0.48rem;color:var(--muted2);margin-top:3px">incl. community</div>
+      <div class="section-body">
+        <div class="burn-layout">
+          <div>
+            <div class="section-label">Total Burned</div>
+            <div class="section-big" id="c-burned"><span class="ld">···</span></div>
+            <div class="section-sub">Permanent supply removed from circulation.</div>
+            <div class="sbar-wrap" style="margin-top:18px">
+              <div class="sbar-labels">
+                <span class="sbar-lbl">Total Burned</span>
+                <span class="sbar-lbl" id="s-pct">0%</span>
+              </div>
+              <div class="sbar sbar-bg"><div class="sbar-fill" id="s-fill"></div></div>
+              <div class="sbar-labels" style="margin-top:7px">
+                <span class="sbar-lbl">Remaining Supply</span>
+                <span class="sbar-lbl" id="s-rpct">100%</span>
+              </div>
+              <div class="sbar sbar-remain"><div class="sbar-fill" id="s-rfill" style="width:100%"></div></div>
+            </div>
           </div>
-          <div style="flex-shrink:0">
-            <svg viewBox="0 0 200 200" style="width:220px;height:220px;display:block">
+          <div class="section-gauge">
+            <svg viewBox="0 0 200 200">
               <defs>
                 <linearGradient id="burnGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stop-color="#ffa032"/>
@@ -467,106 +486,105 @@
               <text x="100" y="118" text-anchor="middle" font-family="'Space Mono',monospace" font-size="8" fill="#8878a8" letter-spacing="2">SUPPLY BURNED</text>
             </svg>
           </div>
-          <div style="text-align:left">
-            <div style="font-family:'DM Sans',sans-serif;font-weight:300;font-size:0.85rem;color:#fff;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px">📦 Remaining</div>
-            <div id="src-community" style="font-family:'DM Sans',sans-serif;font-weight:300;font-size:1.4rem;color:#fff">—</div>
+        </div>
+        <div class="section-stats">
+          <div class="section-stat">
+            <div class="section-label">Treasury Burned</div>
+            <div class="section-value" id="c-dead"><span class="ld">···</span></div>
+            <div class="section-meta" id="c-dead-count">exact · on-chain</div>
+          </div>
+          <div class="section-stat">
+            <div class="section-label">Remaining Supply</div>
+            <div class="section-value" id="src-community">—</div>
+            <div class="section-meta">after all burns</div>
           </div>
         </div>
-        <span id="src-tax" style="display:none"></span>
-        <span id="flask-burn" style="display:none"></span>
-        <span id="flask-burn-val" style="display:none"></span>
-        <span id="flask-burn-pct" style="display:none"></span>
-        <span id="flask-buy" style="display:none"></span>
-        <span id="flask-buy-val" style="display:none"></span>
-        <span id="flask-buy-pct" style="display:none"></span>
-        <div class="sbar-wrap" style="flex-shrink:0">
-          <div class="sbar-labels">
-            <span class="sbar-lbl">Total Burned</span>
-            <span class="sbar-lbl" id="s-pct">0%</span>
-          </div>
-          <div class="sbar sbar-bg"><div class="sbar-fill" id="s-fill"></div></div>
-          <div class="sbar-labels" style="margin-top:5px">
-            <span class="sbar-lbl">Remaining Supply</span>
-            <span class="sbar-lbl" id="s-rpct">100%</span>
-          </div>
-          <div class="sbar sbar-remain"><div class="sbar-fill" id="s-rfill" style="width:100%"></div></div>
-        </div>
-        <span id="bs-burned" style="display:none"></span>
-        <span id="bs-dead" style="display:none"></span>
-        <span id="bs-remain" style="display:none"></span>
-        <span id="g-sub" style="display:none"></span>
-        <span id="g-pct" style="display:none"></span>
       </div>
     </div>
 
-    <!-- Market Data Panel -->
-    <div class="panel">
-      <div class="panel-head"><span class="live-dot"></span>Market Data</div>
-      <div class="panel-body">
+    <div class="dash-section">
+      <div class="section-head">
+        <div class="section-title"><span class="live-dot"></span> Market Status</div>
+        <div class="section-note" id="c-ch2">24h change</div>
+      </div>
+      <div class="section-body">
         <div>
-          <span class="price-hero" id="p-price">—</span>
+          <div class="section-label">Price</div>
+          <div class="market-price" id="p-price">—</div>
           <span class="ch-badge badge-neu" id="p-ch">—</span>
-          <div id="cors-note" style="font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--muted2);margin-top:-8px;margin-bottom:8px;display:none">
+          <div id="cors-note" style="font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--muted2);margin-top:8px;display:none">
             Price data requires a hosted domain — working locally is expected.
           </div>
         </div>
-        <div class="mkt-grid">
-          <div class="mg"><div class="mg-l">Market Cap</div><div class="mg-v" id="p-mcap">—</div></div>
-          <div class="mg"><div class="mg-l">24h Volume</div><div class="mg-v" id="p-vol">—</div></div>
-          <div class="mg"><div class="mg-l">Liquidity</div><div class="mg-v" id="p-liq">—</div></div>
-          <div class="mg"><div class="mg-l">1h Change</div><div class="mg-v" id="p-1h">—</div></div>
-          <div class="mg"><div class="mg-l">5m Change</div><div class="mg-v" id="p-5m">—</div></div>
-          <div class="mg"><div class="mg-l">24h Buys / Sells</div><div class="mg-v" id="p-txs">—</div></div>
+        <div class="section-stats">
+          <div class="section-stat"><div class="section-label">Market Cap</div><div class="section-value" id="p-mcap">—</div></div>
+          <div class="section-stat"><div class="section-label">24h Volume</div><div class="section-value" id="p-vol">—</div></div>
+          <div class="section-stat"><div class="section-label">Liquidity</div><div class="section-value" id="p-liq">—</div></div>
+          <div class="section-stat"><div class="section-label">Buys / Sells</div><div class="section-value" id="p-txs">—</div></div>
+          <div class="section-stat"><div class="section-label">1h Change</div><div class="section-value" id="p-1h">—</div></div>
+          <div class="section-stat"><div class="section-label">5m Change</div><div class="section-value" id="p-5m">—</div></div>
         </div>
-        <div class="contract-box">
+      </div>
+    </div>
+
+    <div class="dash-section">
+      <div class="section-head">
+        <div class="section-title">⚡ Activity</div>
+        <div class="section-note">wallets & latest burns</div>
+      </div>
+      <div class="section-body">
+        <div class="section-stats">
+          <div class="section-stat">
+            <div class="section-label"><span class="live-dot"></span> Holders</div>
+            <div class="section-value" id="c-holders"><span class="ld">···</span></div>
+            <div class="section-meta" id="c-txs">transfers</div>
+          </div>
+          <div class="section-stat">
+            <div class="section-label">Treasury PLS</div>
+            <div class="section-value" id="t-pls">— PLS</div>
+            <div class="section-meta" id="t-pls-usd">—</div>
+          </div>
+        </div>
+        <div class="activity-list">
+          <div class="activity-item">
+            <div class="section-label">Latest Treasury Burn</div>
+            <div class="activity-amount" id="latest-treasury-amt">—</div>
+            <div class="section-meta" id="latest-treasury-time">—</div>
+            <div class="section-meta" id="latest-treasury-addr">—</div>
+          </div>
+          <div class="activity-item">
+            <div class="section-label">Latest Community Burn</div>
+            <div class="activity-amount" id="latest-community-amt">—</div>
+            <div class="section-meta" id="latest-community-time">—</div>
+            <div class="section-meta" id="latest-community-addr">—</div>
+          </div>
+        </div>
+        <div class="contract-box compact">
           <div class="cb-l">Contract · PRC-20 · PulseChain</div>
           <div class="cb-addr"><span class="addr-chip" data-addr="0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665" onclick="amOpen(event,this.dataset.addr)">0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665</span></div>
           <button class="cb-copy" onclick="copyAddr(this)">Copy Contract Address</button>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- ROW 3: TREASURY + LATEST BURNS -->
-  <div style="display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:14px">
+  <span id="src-treasury" style="display:none"></span>
+  <span id="src-tax" style="display:none"></span>
+  <span id="flask-burn" style="display:none"></span>
+  <span id="flask-burn-val" style="display:none"></span>
+  <span id="flask-burn-pct" style="display:none"></span>
+  <span id="flask-buy" style="display:none"></span>
+  <span id="flask-buy-val" style="display:none"></span>
+  <span id="flask-buy-pct" style="display:none"></span>
+  <span id="bs-burned" style="display:none"></span>
+  <span id="bs-dead" style="display:none"></span>
+  <span id="bs-remain" style="display:none"></span>
+  <span id="g-sub" style="display:none"></span>
+  <span id="g-pct" style="display:none"></span>
 
-    <!-- Treasury Wallet -->
-    <div class="panel">
-      <div class="panel-head">🏦 Treasury</div>
-      <div class="panel-body" style="justify-content:center">
-        <a href="https://scan.pulsechain.com/address/0xeda3aa737947337b425227db8174519f623c041f" target="_blank" class="trow" style="text-decoration:none;border-radius:8px">
-          <div>
-            <div class="tr-l">Treasury Wallet</div>
-            <div class="tr-a"><span class="addr-chip" data-addr="0xeda3aa737947337b425227dB8174519f623C041f" onclick="amOpen(event,this.dataset.addr)">0xeda3…C041f</span></div>
-          </div>
-          <div style="text-align:right;flex-shrink:0;margin-left:10px">
-            <div class="tr-v" id="t-pls">— PLS</div>
-            <div style="font-family:'Space Mono',monospace;font-size:0.75rem;color:var(--muted);margin-top:2px" id="t-pls-usd">—</div>
-          </div>
-        </a>
-      </div>
-    </div>
-
-    <!-- Latest Treasury Burn -->
-    <div class="panel">
-      <div class="panel-head">🏦 Latest Treasury Burn</div>
-      <div class="panel-body" style="justify-content:center">
-        <div style="font-family:'DM Sans',sans-serif;font-weight:300;font-size:1.4rem;color:#fff" id="latest-treasury-amt">—</div>
-        <div style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted2);margin-top:4px" id="latest-treasury-time">—</div>
-        <div style="font-family:'Space Mono',monospace;font-size:0.5rem;margin-top:4px" id="latest-treasury-addr">—</div>
-      </div>
-    </div>
-
-    <!-- Latest Community Burn -->
-    <div class="panel">
-      <div class="panel-head">🌐 Latest Community Burn</div>
-      <div class="panel-body" style="justify-content:center">
-        <div style="font-family:'DM Sans',sans-serif;font-weight:300;font-size:1.4rem;color:#fff" id="latest-community-amt">—</div>
-        <div style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted2);margin-top:4px" id="latest-community-time">—</div>
-        <div style="font-family:'Space Mono',monospace;font-size:0.5rem;margin-top:4px" id="latest-community-addr">—</div>
-      </div>
-    </div>
-  </div>
+  <span id="c-ch" style="display:none"></span>
+  <span id="c-mcap" style="display:none"></span>
+  <span id="c-price" style="display:none"></span>
 
   <!-- ROW 4: BURN ACTIVITY CHART -->
   <div class="panel">
@@ -603,7 +621,7 @@
   </div>
 
   <!-- ROW 5: LIVE CHART -->
-  <div style="width:100%;height:600px;border:1px solid var(--border);border-radius:12px;overflow:hidden">
+  <div class="chart-frame">
     <iframe src="https://dexscreener.com/pulsechain/0xda942580cee2a69c5fc74109090816157730c64d?embed=1&theme=dark&trades=0&info=0"
       style="width:100%;height:100%;border:none"
       allowfullscreen>
@@ -1241,6 +1259,31 @@ if(items.length>0){
     });
   }
 
+  function initRevealCards() {
+    const cards = document.querySelectorAll('.dash-section, .panel, .card, .chart-frame, .burns-table-wrap, .tb-table-wrap');
+    cards.forEach((card, index) => {
+      card.classList.add('reveal-card');
+      card.style.setProperty('--reveal-delay', `${Math.min(index % 6, 5) * 40}ms`);
+    });
+
+    if (!('IntersectionObserver' in window)) {
+      cards.forEach(card => card.classList.add('is-visible', 'has-revealed'));
+      return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        setTimeout(() => entry.target.classList.add('has-revealed'), 560);
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -12% 0px' });
+
+    cards.forEach(card => observer.observe(card));
+  }
+
+  initRevealCards();
   load();
   setInterval(load,60000);
 </script>
