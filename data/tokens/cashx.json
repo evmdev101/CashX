@@ -1,0 +1,69 @@
+{
+  "tokenName": "CashX",
+  "symbol": "CASHX",
+  "chain": "PulseChain",
+  "tokenAddress": "0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665",
+  "burnAddress": "0x0000000000000000000000000000000000000000",
+  "secondaryBurnAddresses": [
+    "0x000000000000000000000000000000000000dEaD"
+  ],
+  "sources": [
+    {
+      "address": "0xEda3aa737947337b425227dB8174519f623C041F",
+      "name": "CashX Treasury",
+      "emoji": "🏦",
+      "logo": "./favicon.ico",
+      "type": "treasury"
+    },
+    {
+      "address": "0xda942580cee2a69c5fc74109090816157730c64d",
+      "name": "CashX Treasury",
+      "emoji": "🏦",
+      "logo": "./favicon.ico",
+      "type": "treasury"
+    },
+    {
+      "address": "0x15a8c0d554d3ee0971a46d096f698e8cbB8CF07977",
+      "name": "CashX Casino",
+      "emoji": "🎰",
+      "type": "game"
+    },
+    {
+      "address": "0x15A8C0D554D3e6971A46D696F69e8cBB8CF07977",
+      "name": "CashX Casino",
+      "emoji": "🎰",
+      "type": "game"
+    },
+    {
+      "address": "0x953b84786f3bC6Cbc7524471FE1B6b0f61E9ce39",
+      "name": "CashX Casino",
+      "emoji": "🎰",
+      "type": "game"
+    },
+    {
+      "address": "0x684e6B760FC931BB858b3bf3dFC056e550b13D90",
+      "name": "CashX Casino",
+      "emoji": "🎰",
+      "type": "game"
+    },
+    {
+      "address": "0x344e72a3F4972154B1dbd014ae936816ef34DF9f",
+      "name": "CashX Casino",
+      "emoji": "🎰",
+      "type": "game"
+    },
+    {
+      "address": "0xA1198e47Ac3D89903D7eCFd04a14b8Bfd72d7B03",
+      "name": "Distribution X",
+      "emoji": "❌",
+      "logo": "./distrox.jpg"
+    },
+    {
+      "address": "0x8577f0FB9D709d5BeBd808dDDd0094FbAEc667B4",
+      "name": "BURNX",
+      "emoji": "🔥",
+      "logo": "./BurnX.png",
+      "matchRelatedCashxTransfers": true
+    }
+  ]
+}

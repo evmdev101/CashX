@@ -1,0 +1,24 @@
+{
+  "tokenName": "OINK",
+  "symbol": "OINK",
+  "chain": "PulseChain",
+  "tokenAddress": "0xFAaC6a85C3e123AB2CF7669B1024f146cFef0b38",
+  "burnAddress": "0x0000000000000000000000000000000000000000",
+  "secondaryBurnAddresses": [
+    "0x000000000000000000000000000000000000dEaD"
+  ],
+  "sources": [
+    {
+      "address": "0x5e4b93e3e50efce211fefdde4e635326e89381d6",
+      "name": "OINK",
+      "emoji": "🐷",
+      "type": "treasury"
+    },
+    {
+      "address": "0xd540b89ee52f81be921aa856bb2808a96ba9e3a1",
+      "name": "DEGEN",
+      "emoji": "⚡",
+      "type": "partner-token"
+    }
+  ]
+}

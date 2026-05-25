@@ -1,5 +1,5 @@
 # CashX ($CASHX)
-> PulseChain Community Token — Built by the community, for the community.
+> PulseChain community token with a burn-first casino brand.
 
 **Live Site → [evmdev101.github.io/CashX](https://evmdev101.github.io/CashX/)**
 
@@ -23,22 +23,32 @@ CashX is a community-driven token on PulseChain with a fixed supply, a 4% buy/se
 
 ---
 
-## What's In This Repo
+## Current Structure
 
-| File | Description |
+| Path | Description |
 |---|---|
-| `index.html` | Full landing page |
-| `dashboard.html` | Live data dashboard |
-| `cashx_character.jpg` | Official mascot |
-| `tokenomics.svg` | Tokenomics flow diagram |
+| `index.html` | CashX landing page with original visual layout preserved |
+| `dashboard.html` | Live burn tracker with original visual layout preserved |
+| `app/` | Future page entry scripts |
+| `components/` | Future reusable browser UI modules |
+| `lib/` | PulseChain, contract, config, and burn data services |
+| `utils/` | Formatting helpers |
+| `styles/` | Future shared CashX styles |
+| `public/assets/` | Preserved CashX imagery |
+| `contracts/` | Future Solidity / ABI expansion area |
+| `sections/`, `pages/`, `hooks/` | Future app-growth folders |
 
 ---
 
 ## Data Sources
 
 - **DexScreener API** — price, market cap, volume, liquidity, % changes
-- **PulseChain RPC** — treasury PLS balance, burned supply via `totalSupply()`
+- **PulseChain RPC + ethers.js** — treasury PLS balance, token supply, burn wallet balances
 - **PulseChain Explorer API** — holders, transfer count, burn feed
+
+The current burn tracker is read-only. Public burn stats do not require a wallet connection.
+
+The reusable service files are prepared so future upgrades can move blockchain reads out of inline UI code without changing the current CashX page designs.
 
 ---
 

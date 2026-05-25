@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="CashX logo">
+  <defs>
+    <linearGradient id="cashxGradient" x1="24" y1="22" x2="136" y2="138" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4f8ef7"/>
+      <stop offset="0.52" stop-color="#9b6dff"/>
+      <stop offset="1" stop-color="#e040fb"/>
+    </linearGradient>
+    <filter id="cashxGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feColorMatrix in="blur" values="0 0 0 0 0.55 0 0 0 0 0.22 0 0 0 0 1 0 0 0 0.85 0"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="160" height="160" rx="40" fill="#080b18"/>
+  <rect x="8" y="8" width="144" height="144" rx="34" fill="none" stroke="url(#cashxGradient)" stroke-width="5"/>
+  <g filter="url(#cashxGlow)">
+    <text x="80" y="72" text-anchor="middle" fill="url(#cashxGradient)" font-family="Arial Black, Arial, sans-serif" font-size="40" font-weight="900" letter-spacing="-2">Cash</text>
+    <text x="80" y="116" text-anchor="middle" fill="url(#cashxGradient)" font-family="Arial Black, Arial, sans-serif" font-size="54" font-weight="900" letter-spacing="-3">X</text>
+  </g>
+</svg>

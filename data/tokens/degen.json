@@ -1,0 +1,24 @@
+{
+  "tokenName": "DEGEN Strategy",
+  "symbol": "DEGEN",
+  "chain": "PulseChain",
+  "tokenAddress": "0x3e79130ab714e97ee73f86a56a2427bb1a519896",
+  "burnAddress": "0x0000000000000000000000000000000000000000",
+  "secondaryBurnAddresses": [
+    "0x000000000000000000000000000000000000dEaD"
+  ],
+  "sources": [
+    {
+      "address": "0xd540b89ee52f81be921aa856bb2808a96ba9e3a1",
+      "name": "DEGEN Treasury",
+      "emoji": "⚡",
+      "type": "treasury"
+    },
+    {
+      "address": "0xcbc05ccc8257a085bc55e2ef184e16cd3ecd462a",
+      "name": "OINK",
+      "emoji": "🐷",
+      "type": "partner-token"
+    }
+  ]
+}
