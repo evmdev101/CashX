@@ -3131,7 +3131,7 @@
   async function loadBurnCounts() {
     try {
       const { readAllBurnTransactions } = await getServicesReady();
-      const all = await withTimeout(readAllBurnTransactions(), 8000, 'Burn count request timed out');
+      const all = await withTimeout(readAllBurnTransactions(), 60000, 'Burn count request timed out');
       const allItems = all.map(toDashboardTx);
       if (!summarizeBurnCards(allItems, cachedPrice, { markReady: true, save: true, totalBurned: serviceState?.totalTrackedBurned || serviceState?.supplyBurned || 0 })) {
         throw new Error('No burn transactions returned');
