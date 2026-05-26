@@ -698,8 +698,8 @@
     .card-lbl{font-family:'Space Mono',monospace;font-size:0.85rem;color:#fff;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:7px;display:flex;align-items:center;gap:5px}
     .card-val{font-family:'DM Sans',sans-serif;font-weight:300;font-size:1.45rem;letter-spacing:-0.03em;color:#fff;display:block;line-height:1;min-height:1.75rem}
     .card-sub{font-family:'Space Mono',monospace;font-size:0.7rem;color:var(--muted2);margin-top:5px}
-    .burns-cashx{color:var(--purple);font-size:0.72rem;margin-top:8px}
-    .burns-usd{color:var(--muted);font-size:0.68rem;margin-top:2px}
+    .burns-cashx{color:var(--purple);font-size:0.95rem;margin-top:9px}
+    .burns-usd{color:var(--muted);font-size:0.9rem;margin-top:4px}
     .card-link{display:block}
     .ld{color:var(--muted2);font-size:0.62rem;font-family:'Space Mono',monospace;animation:pulse 1.4s infinite}
     @keyframes pulse{0%,100%{opacity:0.3}50%{opacity:1}}
@@ -874,6 +874,7 @@
     .rv-bal::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--grad);opacity:0.25;border-radius:8px 8px 0 0}
     .rv-tok-name{font-family:'Space Mono',monospace;font-size:0.56rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
     .rv-tok-val{font-family:'DM Sans',sans-serif;font-weight:300;font-size:1.4rem;color:#fff;letter-spacing:-0.02em}
+    .rv-tok-usd{font-family:'Space Mono',monospace;font-size:0.7rem;color:var(--muted);margin-top:7px;letter-spacing:0.02em}
     .rv-tok-muted{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted2)}
     .rv-token-head{display:flex;align-items:center;gap:10px;margin-bottom:9px}
     .rv-token-logo{width:34px;height:34px;border-radius:9px;object-fit:cover;flex:0 0 auto;box-shadow:0 0 0 1px rgba(255,255,255,0.12),0 8px 18px rgba(0,0,0,0.38)}
@@ -1159,6 +1160,7 @@
     .dash-stage > .rv-top .rv-bal{min-height:86px;padding:12px 14px;display:flex;flex-direction:column;justify-content:center;border-color:var(--dash-border);background:var(--dash-panel-soft)}
     .dash-stage > .rv-top .rv-tok-name{margin-bottom:4px}
     .dash-stage > .rv-top .rv-tok-val{font-size:1.25rem}
+    .dash-stage > .rv-top .rv-tok-usd{font-size:0.72rem}
     .dash-stage > .rv-top .rv-token-head{margin-bottom:8px}
     .dash-stage > .rv-top .rv-token-logo{width:36px;height:36px}
     .dash-stage > .rv-top .rv-token-title{font-size:1rem}
@@ -1256,7 +1258,8 @@
     .dash-burn-summary .card{padding:15px 16px;border:1px solid var(--dash-border);background:linear-gradient(145deg,var(--dash-panel),rgba(255,255,255,0.035));box-shadow:var(--dash-shadow)}
     .dash-burn-summary .card-lbl{font-size:0.66rem;color:var(--dash-muted);margin-bottom:9px}
     .dash-burn-summary .card-val{font-size:1.55rem;color:var(--dash-text)}
-    .dash-burn-summary .burns-cashx{color:var(--dash-accent)}
+    .dash-burn-summary .burns-cashx{color:var(--dash-accent);font-size:1rem;line-height:1.2;margin-top:10px}
+    .dash-burn-summary .burns-usd{font-size:0.95rem;line-height:1.2;margin-top:5px}
 
     .dash-data-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
     .dash-top-burns{border:1px solid var(--dash-border);background:linear-gradient(180deg,var(--dash-panel-strong),var(--dash-panel));box-shadow:var(--dash-shadow)}
@@ -1501,6 +1504,7 @@
       text-transform:uppercase;color:var(--muted);margin-bottom:8px}
     .rv-tok-val{font-family:'DM Sans',sans-serif;font-weight:300;font-size:1.45rem;
       color:#fff;letter-spacing:-0.02em;line-height:1}
+    .rv-tok-usd{font-family:'Space Mono',monospace;font-size:0.7rem;color:var(--muted);margin-top:7px;letter-spacing:0.02em}
     .rv-tok-muted{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted2)}
     .rv-token-head{display:flex;align-items:center;gap:10px;margin-bottom:9px}
     .rv-token-logo{width:34px;height:34px;border-radius:9px;object-fit:cover;flex:0 0 auto;box-shadow:0 0 0 1px rgba(255,255,255,0.12),0 8px 18px rgba(0,0,0,0.38)}
@@ -1928,7 +1932,7 @@
     .farm-design-proto .farm-proto-compact .farm-proto-label{font-size:0.72rem;margin-bottom:6px;text-align:center}
     .farm-design-proto .farm-proto-compact .farm-proto-value{text-align:center}
     .farm-design-proto .farm-proto-value{font-size:1rem;color:#e8edf2}
-    .farm-design-proto .farm-proto-value.apr{font-size:0.94rem;color:#18d98b;text-align:center}
+    .farm-design-proto .farm-proto-value.apr{font-size:1.08rem;color:#18d98b;text-align:center}
     .farm-design-proto .farm-apr-wrap{
       position:relative;
       display:inline-flex;
@@ -2664,6 +2668,7 @@
           </div>
           <div class="rv-wallet-label">Amount in wallet</div>
           <div class="rv-tok-val" id="rv-cashx"><span class="rv-tok-muted">—</span></div>
+          <div class="rv-tok-usd" id="rv-cashx-usd">—</div>
         </div>
         <div class="rv-bal">
           <div class="rv-token-head">
@@ -2672,6 +2677,7 @@
           </div>
           <div class="rv-wallet-label">Amount in wallet</div>
           <div class="rv-tok-val" id="rv-distrox"><span class="rv-tok-muted">—</span></div>
+          <div class="rv-tok-usd" id="rv-distrox-usd">—</div>
         </div>
       </div>
     </div>
@@ -3893,9 +3899,13 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
   const PULSE_HEX = '0x171';
   const CASHX_ADDR   = '0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665';
   const DISTROX_ADDR = '0xA1198e47Ac3D89903D7eCFd04a14b8Bfd72d7B03';
+  const NEXION_PRICE_CALCULATOR = '0xC3864afC169C6110cB8f0cCaC4fE1B935951A66F';
   const ERC20_ABI = [
     'function balanceOf(address) view returns (uint256)',
     'function decimals() view returns (uint8)'
+  ];
+  const NEXION_PRICE_ABI = [
+    'function getBatchPrice(address[] tokens) view returns (uint256[])'
   ];
   const DISTX_REWARDS_ABI = [
     'function pendingReflections(address account) view returns (uint256)',
@@ -4087,6 +4097,29 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     return n.toLocaleString('en-US', {maximumFractionDigits:4});
   }
 
+  function fmtWalletUsd(value) {
+    if (!Number.isFinite(value) || value <= 0) return '—';
+    return '≈ $' + value.toLocaleString('en-US', {
+      minimumFractionDigits: value >= 1 ? 2 : 4,
+      maximumFractionDigits: value >= 1 ? 2 : 6
+    });
+  }
+
+  async function fetchWalletTokenPrices() {
+    let cashxPrice = Number(cachedPrice || 0);
+    let distroxPrice = 0;
+    try {
+      const priceC = new ethers.Contract(NEXION_PRICE_CALCULATOR, NEXION_PRICE_ABI, wProvider);
+      const [rawCashxPrice, rawDistroxPrice] = await priceC.getBatchPrice([CASHX_ADDR, DISTROX_ADDR]);
+      const liveCashxPrice = Number(ethers.formatUnits(rawCashxPrice, 18));
+      cashxPrice = liveCashxPrice > 0 ? liveCashxPrice : cashxPrice;
+      distroxPrice = Number(ethers.formatUnits(rawDistroxPrice, 18));
+    } catch(e) {
+      console.warn('Wallet token price fetch failed:', e);
+    }
+    return { cashxPrice, distroxPrice };
+  }
+
   async function connectWallet(selectedProvider = null) {
     walletProvider = selectedProvider || await window.CashXWallets.pickProvider();
     if (!walletProvider) return;
@@ -4178,6 +4211,8 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     const rvDistrox = document.getElementById('rv-distrox');
     if (rvCashx) rvCashx.innerHTML = rvDash;
     if (rvDistrox) rvDistrox.innerHTML = rvDash;
+    set('rv-cashx-usd', '—');
+    set('rv-distrox-usd', '—');
   }
 
   async function fetchBalances() {
@@ -4190,19 +4225,26 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     const rvDistrox = document.getElementById('rv-distrox');
     if (rvCashx) rvCashx.innerHTML = rvLoading;
     if (rvDistrox) rvDistrox.innerHTML = rvLoading;
+    set('rv-cashx-usd', '—');
+    set('rv-distrox-usd', '—');
     try {
       const cashxC   = new ethers.Contract(CASHX_ADDR, ERC20_ABI, wProvider);
       const distroxC = new ethers.Contract(DISTROX_ADDR, ERC20_ABI, wProvider);
-      const [cb, cd, db, dd] = await Promise.all([
+      const [cb, cd, db, dd, prices] = await Promise.all([
         cashxC.balanceOf(wAddr), cashxC.decimals(),
-        distroxC.balanceOf(wAddr), distroxC.decimals()
+        distroxC.balanceOf(wAddr), distroxC.decimals(),
+        fetchWalletTokenPrices()
       ]);
+      const cashxAmount = Number(ethers.formatUnits(cb, cd));
+      const distroxAmount = Number(ethers.formatUnits(db, dd));
       const cashxVal = fmtBal(cb, cd);
       const distroxVal = fmtBal(db, dd);
       document.getElementById('wp-cashx').textContent = cashxVal;
       document.getElementById('wp-distrox').textContent = distroxVal;
       if (rvCashx) rvCashx.textContent = cashxVal;
       if (rvDistrox) rvDistrox.textContent = distroxVal;
+      set('rv-cashx-usd', fmtWalletUsd(cashxAmount * prices.cashxPrice));
+      set('rv-distrox-usd', fmtWalletUsd(distroxAmount * prices.distroxPrice));
     } catch(err) {
       console.error('Balance fetch error:', err);
       const e = '<span class="wp-tok-muted">Error</span>';
@@ -4211,6 +4253,8 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
       const rvErr = '<span class="rv-tok-muted">Error</span>';
       if (rvCashx) rvCashx.innerHTML = rvErr;
       if (rvDistrox) rvDistrox.innerHTML = rvErr;
+      set('rv-cashx-usd', '—');
+      set('rv-distrox-usd', '—');
     }
   }
 
@@ -4785,6 +4829,14 @@ const PULSE_ID     = 369;
     return `$${value.toLocaleString('en-US', { minimumFractionDigits: digits, maximumFractionDigits: digits })}`;
   }
 
+  function fmtWalletUsd(value) {
+    if (!Number.isFinite(value) || value <= 0) return '—';
+    return '≈ $' + value.toLocaleString('en-US', {
+      minimumFractionDigits: value >= 1 ? 2 : 4,
+      maximumFractionDigits: value >= 1 ? 2 : 6
+    });
+  }
+
   function set(id, val) {
     const el = document.getElementById(id);
     if (el) el.textContent = val;
@@ -4809,6 +4861,7 @@ const PULSE_ID     = 369;
     document.getElementById('farms-wallet-connected-btn').style.display = 'none';
     const d = '<span class="rv-tok-muted">—</span>';
     setHTML('rv-cashx', d); setHTML('rv-distrox', d);
+    set('rv-cashx-usd', '—'); set('rv-distrox-usd', '—');
     setHTML('rv-distx-reflect', d); setHTML('rv-cashx-yield', d);
     set('rv-yield-label', 'CASHX Yield');
     renderPlaceholderFarms();
@@ -4883,25 +4936,40 @@ const PULSE_ID     = 369;
     if (!wProvider || !wAddr) return;
     const ld = '<span class="rv-tok-muted">Loading…</span>';
     setHTML('rv-cashx', ld); setHTML('rv-distrox', ld);
+    set('rv-cashx-usd', '—'); set('rv-distrox-usd', '—');
 
     // Fetch each balance independently so one failure doesn't blank both
     const balABI = ['function balanceOf(address owner) view returns (uint256)'];
+    let cashxPrice = Number(cachedPrice || 0);
+    let distroxPrice = 0;
+    try {
+      const priceC = new ethers.Contract(NEXION_LP_CALCULATOR, NEXION_PRICE_ABI, wProvider);
+      const [rawCashxPrice, rawDistroxPrice] = await priceC.getBatchPrice([CASHX_ADDR, DISTROX_ADDR]);
+      const liveCashxPrice = Number(ethers.formatUnits(rawCashxPrice, 18));
+      cashxPrice = liveCashxPrice > 0 ? liveCashxPrice : cashxPrice;
+      distroxPrice = Number(ethers.formatUnits(rawDistroxPrice, 18));
+    } catch(err) {
+      console.warn('Wallet token price fetch failed:', err);
+    }
 
-    const fetchOne = async (addr, id) => {
+    const fetchOne = async (addr, id, usdId, price) => {
       try {
         const c = new ethers.Contract(addr, balABI, wProvider);
         const raw = await c.balanceOf(wAddr);
         // Both CASHX and DISTROX are 18-decimal tokens — no need to call decimals()
+        const amount = Number(ethers.formatUnits(raw, 18));
         set(id, fmtBal(raw, 18));
+        set(usdId, fmtWalletUsd(amount * price));
       } catch(err) {
         console.error(`Balance fetch failed for ${id}:`, err);
         setHTML(id, `<span class="rv-tok-muted" title="${err.message}">Error</span>`);
+        set(usdId, '—');
       }
     };
 
     await Promise.all([
-      fetchOne(CASHX_ADDR,   'rv-cashx'),
-      fetchOne(DISTROX_ADDR, 'rv-distrox'),
+      fetchOne(CASHX_ADDR,   'rv-cashx', 'rv-cashx-usd', cashxPrice),
+      fetchOne(DISTROX_ADDR, 'rv-distrox', 'rv-distrox-usd', distroxPrice),
     ]);
   }
 
