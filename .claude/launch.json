@@ -5,7 +5,8 @@
       "name": "cashx-dashboard",
       "runtimeExecutable": "npx",
       "runtimeArgs": ["serve", "-l", "5500", "."],
-      "port": 5500
+      "port": 5500,
+      "cwd": "."
     }
   ]
 }

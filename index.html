@@ -875,6 +875,11 @@
     .rv-tok-name{font-family:'Space Mono',monospace;font-size:0.56rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
     .rv-tok-val{font-family:'DM Sans',sans-serif;font-weight:300;font-size:1.4rem;color:#fff;letter-spacing:-0.02em}
     .rv-tok-muted{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted2)}
+    .rv-token-head{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+    .rv-token-logo{width:34px;height:34px;border-radius:9px;object-fit:cover;flex:0 0 auto;box-shadow:0 0 0 1px rgba(255,255,255,0.12),0 8px 18px rgba(0,0,0,0.38)}
+    .rv-token-title{font-family:'DM Sans',sans-serif;font-weight:800;font-size:1.02rem;color:#fff;line-height:1}
+    .rv-token-title.cashx{color:#ec62ff}
+    .rv-wallet-label{font-family:'Space Mono',monospace;font-size:0.52rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted2);margin-bottom:4px}
     .rv-divider{height:1px;background:rgba(255,255,255,0.07);margin:18px 0}
     .rv-section-title{font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
     .rv-refresh-btn{font-family:'Space Mono',monospace;font-size:0.52rem;letter-spacing:0.07em;padding:5px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:999px;color:var(--muted);cursor:pointer;transition:all 0.2s}
@@ -1083,6 +1088,23 @@
     .activity-list{display:grid;gap:10px}
     .activity-item{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.11);border-radius:10px;padding:13px;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
     .activity-amount{font-family:'DM Sans',sans-serif;font-weight:300;font-size:1.32rem;color:#fff;letter-spacing:-.03em}
+    .recent-burns-card{border:1px solid rgba(255,255,255,.11);border-radius:10px;background:rgba(255,255,255,.04);overflow:hidden;min-height:0}
+    .recent-burns-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .recent-burns-title{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+    .recent-burns-note{font-family:'Space Mono',monospace;font-size:.54rem;color:var(--muted2);letter-spacing:.06em;text-transform:uppercase}
+    .recent-burns-list{display:grid;max-height:248px;overflow-y:auto;overscroll-behavior:contain}
+    .recent-burns-list::-webkit-scrollbar{width:4px}
+    .recent-burns-list::-webkit-scrollbar-track{background:rgba(255,255,255,.035)}
+    .recent-burns-list::-webkit-scrollbar-thumb{background:rgba(155,109,255,.55);border-radius:999px}
+    .recent-burn-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.055);text-decoration:none;color:inherit}
+    .recent-burn-row:last-child{border-bottom:none}
+    .recent-burn-row:hover{background:rgba(255,255,255,.045)}
+    .recent-burn-id{display:flex;align-items:center;gap:8px;min-width:0;font-family:'Space Mono',monospace;font-size:.62rem;color:var(--dash-accent-3)}
+    .recent-burn-icon{width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:rgba(67,224,164,.12);font-size:.78rem;flex:0 0 auto;overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,.1)}
+    .recent-burn-logo{width:100%;height:100%;object-fit:cover;display:block}
+    .recent-burn-hash{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .recent-burn-amount{font-family:'Space Mono',monospace;font-size:.68rem;font-weight:700;color:#fff;white-space:nowrap}
+    .recent-burn-time{font-family:'Space Mono',monospace;font-size:.56rem;color:var(--muted2);white-space:nowrap}
     .contract-box.compact{padding:12px}
     .contract-box.compact .cb-copy{margin-top:8px}
     .dash-section:nth-child(1) .section-stats,
@@ -1134,9 +1156,13 @@
     .dash-stage > .rv-top .rv-disconnect-btn{padding:4px 10px;font-size:0.48rem}
     .dash-stage > .rv-top .rv-wallet-row{margin:0;min-height:58px;padding:10px 14px;border-color:var(--dash-border);background:var(--dash-panel-soft)}
     .dash-stage > .rv-top .rv-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-    .dash-stage > .rv-top .rv-bal{min-height:58px;padding:10px 14px;display:flex;flex-direction:column;justify-content:center;border-color:var(--dash-border);background:var(--dash-panel-soft)}
+    .dash-stage > .rv-top .rv-bal{min-height:86px;padding:12px 14px;display:flex;flex-direction:column;justify-content:center;border-color:var(--dash-border);background:var(--dash-panel-soft)}
     .dash-stage > .rv-top .rv-tok-name{margin-bottom:4px}
     .dash-stage > .rv-top .rv-tok-val{font-size:1.25rem}
+    .dash-stage > .rv-top .rv-token-head{margin-bottom:8px}
+    .dash-stage > .rv-top .rv-token-logo{width:36px;height:36px}
+    .dash-stage > .rv-top .rv-token-title{font-size:1rem}
+    .dash-stage > .rv-top .rv-wallet-label{font-size:0.5rem}
 
     .dash-hero-shell{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,0.65fr);gap:14px;align-items:stretch}
     .dash-market-strip{grid-column:1 / -1;display:grid;grid-template-columns:1.55fr repeat(5,minmax(0,1fr));gap:8px}
@@ -1208,6 +1234,7 @@
     .dash-section:nth-child(1) .section-body{gap:20px}
     .dash-section:nth-child(1) .burn-layout{grid-template-columns:minmax(0,1fr) 190px;gap:20px}
     .dash-section:nth-child(1) .section-body{justify-content:space-between}
+    .dash-section:nth-child(1) .recent-burns-list{max-height:248px;overflow-y:auto}
     .dash-section:nth-child(1) .section-stats,
     .dash-section:nth-child(2) .section-stats{flex:0 0 auto;align-items:stretch}
     .dash-section:nth-child(2) .section-stats{grid-template-rows:auto}
@@ -1475,6 +1502,11 @@
     .rv-tok-val{font-family:'DM Sans',sans-serif;font-weight:300;font-size:1.45rem;
       color:#fff;letter-spacing:-0.02em;line-height:1}
     .rv-tok-muted{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted2)}
+    .rv-token-head{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+    .rv-token-logo{width:34px;height:34px;border-radius:9px;object-fit:cover;flex:0 0 auto;box-shadow:0 0 0 1px rgba(255,255,255,0.12),0 8px 18px rgba(0,0,0,0.38)}
+    .rv-token-title{font-family:'DM Sans',sans-serif;font-weight:800;font-size:1.02rem;color:#fff;line-height:1}
+    .rv-token-title.cashx{color:#ec62ff}
+    .rv-wallet-label{font-family:'Space Mono',monospace;font-size:0.52rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted2);margin-bottom:5px}
     .rv-divider{height:1px;background:rgba(255,255,255,0.07);margin:20px 0}
     .rv-refresh-btn{font-family:'Space Mono',monospace;font-size:0.52rem;letter-spacing:0.07em;
       padding:5px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);
@@ -1525,7 +1557,7 @@
       text-align:left;transition:color 0.16s,text-shadow 0.16s}
     .farm-rank-row:hover .farm-rank-name{color:#d9c8ff;text-shadow:0 0 12px rgba(155,109,255,0.45)}
     .farm-rank-id{font-family:'Space Mono',monospace;font-size:0.5rem;color:rgba(255,255,255,0.28);margin-left:4px}
-    .farm-rank-value{font-family:'Space Mono',monospace;font-size:0.72rem;font-weight:700;color:#c8b6ff;white-space:nowrap}
+    .farm-rank-value{font-family:'Space Mono',monospace;font-size:1.05rem;font-weight:800;color:#d6c9ff;line-height:1;white-space:nowrap}
     .farm-item.farm-focus{animation:farmFocusPulse 1.6s ease}
     @keyframes farmFocusPulse{
       0%,100%{box-shadow:0 18px 54px rgba(0,0,0,0.38)}
@@ -1806,7 +1838,7 @@
     .farm-proto-value.with-token{display:flex;align-items:center;gap:5px;white-space:nowrap}
     .farm-proto-token{display:inline-flex;align-items:center;gap:4px;font-size:0.68rem;color:#f5f1ff}
     .farm-proto-token .farm-token-logo{width:13px;height:13px;box-shadow:none}
-    .farm-proto-sub{font-family:'Space Mono',monospace;font-size:0.55rem;color:rgba(255,255,255,0.34);margin-top:4px}
+    .farm-proto-sub{font-family:'Space Mono',monospace;font-size:0.9rem;color:rgba(255,255,255,0.58);margin-top:8px}
     .farm-proto-sub .farm-reward-token{margin-right:4px}
     .farm-proto-claim{display:grid;grid-template-columns:1fr;gap:6px}
     .farm-proto-claim .farm-claim-btn{background:#9b6dff;border:none;border-radius:7px;padding:7px 14px}
@@ -1972,12 +2004,37 @@
       color:#18d98b;
       font-weight:700;
     }
-    .farm-design-proto .farm-proto-sub{font-size:0.56rem;color:#788895}
+    .farm-design-proto .farm-proto-sub{
+      font-size:0.82rem;
+      color:#98a7b4;
+      margin-top:8px;
+      line-height:1.15;
+    }
+    .farm-design-proto .farm-balance-value-row{
+      display:flex;
+      align-items:baseline;
+      gap:6px;
+      min-width:0;
+    }
+    .farm-design-proto .farm-balance-value-row .farm-proto-value{min-width:0}
+    .farm-design-proto .farm-balance-max{
+      border:none;
+      background:transparent;
+      color:#aebfcd;
+      font-family:'Space Mono',monospace;
+      font-size:0.66rem;
+      font-weight:700;
+      cursor:pointer;
+      padding:0;
+      line-height:1;
+    }
+    .farm-design-proto .farm-balance-max:hover:not(:disabled){color:#fff}
+    .farm-design-proto .farm-balance-max:disabled{opacity:0.32;cursor:default}
     .farm-design-proto .farm-remaining-usd{
       display:inline-flex;
       align-items:center;
       gap:8px;
-      font-size:0.7rem;
+      font-size:0.82rem;
       color:#8ea0ad;
     }
     .farm-design-proto .farm-remaining-usd .farm-token-logo{
@@ -2011,10 +2068,10 @@
       height:19px;
     }
     .farm-design-proto .farm-rewards-usd{
-      margin-top:4px;
+      margin-top:6px;
       font-family:'Space Mono',monospace;
-      font-size:0.58rem;
-      color:#788895;
+      font-size:0.72rem;
+      color:#8ea0ad;
     }
     .farm-design-proto .farm-claim-btn{
       background:#6d28d9;
@@ -2046,7 +2103,7 @@
     .farm-design-proto .farm-claim-row{margin-top:2px}
     .farm-design-proto .farm-amount-wrap{
       display:grid;
-      grid-template-columns:minmax(0,1fr) 58px;
+      grid-template-columns:minmax(0,1fr);
       gap:8px;
       background:transparent;
       border:none;
@@ -2107,6 +2164,27 @@
       color:#e8edf2;
       background:#18202a;
     }
+    .farm-design-proto .farm-approve-max-btn{
+      width:100%;
+      border:1px solid rgba(143,160,178,0.12);
+      border-radius:6px;
+      background:transparent;
+      color:#f7f9fb;
+      font-family:'DM Sans',sans-serif;
+      font-size:0.82rem;
+      font-weight:800;
+      padding:12px 14px;
+      cursor:pointer;
+      transition:background 0.16s,border-color 0.16s,color 0.16s,opacity 0.16s;
+    }
+    .farm-design-proto .farm-approve-max-btn:hover:not(:disabled){
+      background:#141a21;
+      border-color:rgba(143,160,178,0.34);
+    }
+    .farm-design-proto .farm-approve-max-btn:disabled{
+      opacity:0.36;
+      cursor:default;
+    }
     .farm-design-proto .farm-proto-footer{
       border-top:1px solid rgba(139,161,184,0.09);
       padding-top:10px;
@@ -2118,14 +2196,15 @@
       margin-left:auto;
     }
     .farm-design-proto .farm-footer-time{
-      color:#788895;
-      font-size:0.55rem;
+      color:#9fb0bd;
+      font-size:0.72rem;
       text-align:center;
       white-space:nowrap;
     }
     .farm-design-proto .farm-footer-time strong{
-      color:#c9d3df;
-      font-size:0.6rem;
+      color:#f3f7fb;
+      font-size:0.8rem;
+      font-weight:800;
     }
 
     @media(max-width:800px){
@@ -2579,11 +2658,19 @@
       </div>
       <div class="rv-grid">
         <div class="rv-bal">
-          <div class="rv-tok-name">CASHX</div>
+          <div class="rv-token-head">
+            <img class="rv-token-logo" src="cashx-logo.png" alt="">
+            <div class="rv-token-title cashx">CashX</div>
+          </div>
+          <div class="rv-wallet-label">Amount in wallet</div>
           <div class="rv-tok-val" id="rv-cashx"><span class="rv-tok-muted">—</span></div>
         </div>
         <div class="rv-bal">
-          <div class="rv-tok-name">Distro X</div>
+          <div class="rv-token-head">
+            <img class="rv-token-logo" src="distrox.jpg" alt="">
+            <div class="rv-token-title">DistributionX</div>
+          </div>
+          <div class="rv-wallet-label">Amount in wallet</div>
           <div class="rv-tok-val" id="rv-distrox"><span class="rv-tok-muted">—</span></div>
         </div>
       </div>
@@ -2693,6 +2780,15 @@
               <text id="sp-pct" x="100" y="94" text-anchor="middle" dominant-baseline="middle" font-family="'DM Sans',sans-serif" font-weight="300" font-size="28" fill="url(#gTextGrad)">0%</text>
               <text x="100" y="118" text-anchor="middle" font-family="'Space Mono',monospace" font-size="8" fill="#8878a8" letter-spacing="2">SUPPLY BURNED</text>
             </svg>
+          </div>
+        </div>
+        <div class="recent-burns-card">
+          <div class="recent-burns-head">
+            <div class="recent-burns-title"><span class="live-dot"></span> Recent Burns</div>
+            <div class="recent-burns-note">latest 25</div>
+          </div>
+          <div class="recent-burns-list" id="recent-burn-events">
+            <div class="no-data" style="padding:14px 12px">Loading recent burns…</div>
           </div>
         </div>
         <div class="section-stats">
@@ -2857,6 +2953,7 @@
  
   let cachedBurnsData = [];
   let cachedRecentBurnsData = [];
+  let cachedChartBurnsData = [];
   let cachedPrice = 0;
   let _burnCountsReady = false; // true once loadBurnCounts has populated accurate data
   let serviceState = null;
@@ -2904,9 +3001,13 @@
     }
     if (c['top3-burns-html']) {
       const el = document.getElementById('top3-burns-body');
-      if (el) el.innerHTML = c['top3-burns-html'];
+      if (el && !/could not load burn data|retrying/i.test(c['top3-burns-html'])) el.innerHTML = c['top3-burns-html'];
     }
-    _burnCountsReady = true;
+    if (c['recent-burn-events-html']) {
+      const el = document.getElementById('recent-burn-events');
+      if (el) el.innerHTML = c['recent-burn-events-html'];
+    }
+    _burnCountsReady = !topBurnsNeedsLoad();
   }
 
   function _dashSave() {
@@ -2918,7 +3019,7 @@
         data.text[id] = el.textContent;
         if (id === 'p-ch') data.classes[id] = el.className;
       });
-      ['top3-burns-body','burn-source-rankings','latest-treasury-addr','latest-community-addr'].forEach(id => {
+      ['top3-burns-body','burn-source-rankings','recent-burn-events','latest-treasury-addr','latest-community-addr'].forEach(id => {
         const el = document.getElementById(id);
         if (el) data.html[id] = el.innerHTML;
       });
@@ -2975,6 +3076,13 @@
   const burnSourceIconHTML = source => source.logo
     ? `<img class="source-rank-logo" src="${escapeHTML(source.logo)}" alt="">`
     : `<span class="source-rank-emoji" aria-hidden="true">${escapeHTML(source.emoji || '🔥')}</span>`;
+  const recentBurnSourceIconHTML = source => {
+    const label = escapeHTML(source?.name || 'Community');
+    if(source?.logo) {
+      return `<span class="recent-burn-icon" title="${label}"><img class="recent-burn-logo" src="${escapeHTML(source.logo)}" alt=""></span>`;
+    }
+    return `<span class="recent-burn-icon" title="${label}" aria-hidden="true">${escapeHTML(source?.emoji || '🌐')}</span>`;
+  };
   function renderBurnSourceRankings(items) {
     const groups = new Map();
 
@@ -3057,6 +3165,49 @@
     }).join('');
   }
 
+  function topBurnsNeedsLoad() {
+    const el = document.getElementById('top3-burns-body');
+    if (!el) return false;
+    if (el.querySelector('.btx-row')) return false;
+    const text = (el.textContent || '').trim().toLowerCase();
+    return !text || text.includes('loading') || text.includes('retry') || text.includes('could not') || text.includes('no burns');
+  }
+
+  function shortHash(hash) {
+    const h = String(hash || '');
+    return h ? `${h.slice(0, 8)}...${h.slice(-6)}` : 'pending';
+  }
+
+  function renderRecentBurnEvents(items, limit = 25) {
+    const el = document.getElementById('recent-burn-events');
+    if (!el) return;
+    const recent = [...(items || [])]
+      .filter(tx => tx && tx.timestamp)
+      .sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0))
+      .slice(0, limit);
+
+    if (!recent.length) {
+      el.innerHTML = '<div class="no-data" style="padding:14px 12px">No recent burns found</div>';
+      return;
+    }
+
+    el.innerHTML = recent.map(tx => {
+      const amt = parseFloat(tx.total?.value || 0) / 1e18;
+      const ts = tx.timestamp ? Math.floor(new Date(tx.timestamp).getTime() / 1000) : 0;
+      const hash = tx.tx_hash || '';
+      const href = hash ? `${explorerWeb}/tx/${hash}` : '#';
+      const source = getBurnSource(tx);
+      return `<a class="recent-burn-row" href="${href}" target="_blank" rel="noopener">
+        <span class="recent-burn-id">
+          ${recentBurnSourceIconHTML(source)}
+          <span class="recent-burn-hash">${shortHash(hash)}</span>
+        </span>
+        <span class="recent-burn-amount">🔥 ${fmtN(amt, 0)}</span>
+        <span class="recent-burn-time">${ts ? ago(ts) : '—'}</span>
+      </a>`;
+    }).join('');
+  }
+
   function summarizeBurnCards(items, priceUsd, options = {}) {
     const allItems = (items || []).filter(Boolean);
     if (!allItems.length) return false;
@@ -3106,6 +3257,7 @@
     if (options.save) {
       const rankingsEl = document.getElementById('burn-source-rankings');
       const top3El = document.getElementById('top3-burns-body');
+      const recentEl = document.getElementById('recent-burn-events');
       _bcSave({
         'c-dead': cDeadVal,
         'c-dead-count': cDeadCount,
@@ -3123,6 +3275,7 @@
         'burns-community-usd': p > 0 ? '≈ ' + fmtUSD(communityCashx * p) : '',
         'burn-source-rankings-html': rankingsEl ? rankingsEl.innerHTML : '',
         'top3-burns-html': top3El ? top3El.innerHTML : '',
+        'recent-burn-events-html': recentEl ? recentEl.innerHTML : '',
       });
     }
     return true;
@@ -3142,6 +3295,25 @@
         renderBurnSummaryFallback(serviceState?.totalTrackedBurned || serviceState?.supplyBurned || 0, cachedPrice);
       }
     }
+  }
+
+  let _burnActivityLoadPromise = null;
+  async function loadBurnActivityChart(options = {}) {
+    const force = !!options.force;
+    if (_burnActivityLoadPromise && !force) return _burnActivityLoadPromise;
+    _burnActivityLoadPromise = (async () => {
+      try {
+        const { readAllBurnTransactions } = await getServicesReady();
+        const all = await withTimeout(readAllBurnTransactions(), 60000, 'Burn activity request timed out');
+        cachedChartBurnsData = all.map(toDashboardTx);
+        renderBurnChart(cachedChartBurnsData, currentChartRange);
+      } catch(e) {
+        console.warn('Burn activity chart fetch failed:', e);
+      } finally {
+        _burnActivityLoadPromise = null;
+      }
+    })();
+    return _burnActivityLoadPromise;
   }
 
 
@@ -3329,7 +3501,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
         set('c-txs','');
       }
 
-      renderBurnChart(items, currentChartRange);
+      renderRecentBurnEvents(recentItems.length ? recentItems : items, 25);
       if (!_burnCountsReady) renderTop3Burns(items, cachedPrice);
 
       const latestTreasury = items.find(tx => isTreasuryBurn(tx));
@@ -3373,7 +3545,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
       set('c-ch','data unavailable');
       set('c-treas-usd','RPC fallback failed');
       set('c-bpct','data unavailable');
-      setHTML('top3-burns-body','<div class="no-data" style="padding:24px">Could not load burn data. Retrying…</div>');
+      if (topBurnsNeedsLoad()) setHTML('top3-burns-body','<div class="no-data" style="padding:24px">Could not load burn data. Retrying…</div>');
       set('last-up','Live data unavailable · retrying');
       const note=document.getElementById('cors-note');
       if(note) note.style.display='block';
@@ -3394,7 +3566,8 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     _dashboardLastLoadAt = now;
     _dashboardLoadPromise = load()
       .then(() => {
-        if (force || !_burnCountsReady) return runBurnCounts();
+        loadBurnActivityChart({ force });
+        if (force || !_burnCountsReady || topBurnsNeedsLoad()) return runBurnCounts();
       })
       .finally(() => { _dashboardLoadPromise = null; });
     return _dashboardLoadPromise;
@@ -3488,6 +3661,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
   let burnChart = null;
   let currentChartRange = '24H';
   let chartReadyPromise = null;
+  const CASHX_LAUNCH_TIME_MS = new Date(2026, 3, 10).getTime();
 
   function ensureChartReady() {
     if (window.Chart) return Promise.resolve(true);
@@ -3507,7 +3681,49 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     currentChartRange = range;
     document.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    if (cachedBurnsData.length > 0) renderBurnChart(cachedBurnsData, range);
+    if (cachedChartBurnsData.length > 0) renderBurnChart(cachedChartBurnsData, range);
+    else loadBurnActivityChart();
+  }
+
+  function chartStartOf(date, unit) {
+    const d = new Date(date);
+    if (unit === 'month') d.setDate(1);
+    if (unit === 'hour') d.setMinutes(0, 0, 0);
+    else d.setHours(0, 0, 0, 0);
+    return d;
+  }
+
+  function chartAddUnit(date, unit, amount = 1) {
+    const d = new Date(date);
+    if (unit === 'hour') d.setHours(d.getHours() + amount);
+    else if (unit === 'month') d.setMonth(d.getMonth() + amount);
+    else d.setDate(d.getDate() + amount);
+    return d;
+  }
+
+  function chartBucketKey(date, unit) {
+    const d = chartStartOf(date, unit);
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    if (unit === 'month') return `${y}-${m}`;
+    if (unit === 'hour') return `${y}-${m}-${day} ${String(d.getHours()).padStart(2, '0')}`;
+    return `${y}-${m}-${day}`;
+  }
+
+  function chartBucketLabel(key, unit) {
+    const parts = key.split(/[- ]/).map(Number);
+    const d = unit === 'month'
+      ? new Date(parts[0], parts[1] - 1, 1)
+      : new Date(parts[0], parts[1] - 1, parts[2], unit === 'hour' ? parts[3] : 0);
+    if (unit === 'hour') return d.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true });
+    if (unit === 'month') return d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }
+
+  function chartEventLabel(time) {
+    const d = new Date(time);
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   }
 
   async function renderBurnChart(items, range) {
@@ -3523,27 +3739,33 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
       .filter(tx => tx.timestamp && new Date(tx.timestamp).getTime() >= cutoff)
       .sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp));
 
-    // Group into buckets
-    const buckets = {};
-    filtered.forEach(tx => {
-      const d = new Date(tx.timestamp);
-      let key;
-      if (range === '24H') {
-        d.setMinutes(0,0,0); key = d.toISOString();
-      } else {
-        d.setHours(0,0,0,0); key = d.toISOString();
-      }
-      const amt = parseFloat(tx.total?.value||0)/1e18;
-      buckets[key] = (buckets[key]||0) + amt;
-    });
+    const isAllRange = range === 'ALL';
+    let labels = [];
+    let data = [];
 
-    const sorted = Object.entries(buckets).sort((a,b) => new Date(a[0])-new Date(b[0]));
-    const labels = sorted.map(([k]) => {
-      const d = new Date(k);
-      if (range === '24H') return d.toLocaleTimeString('en-US',{hour:'numeric',hour12:true});
-      return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-    });
-    const data = sorted.map(([,v]) => Math.floor(v));
+    {
+      const unit = range === '24H' ? 'hour' : 'day';
+      const firstBurnAt = filtered.length ? new Date(filtered[0].timestamp).getTime() : now;
+      const lastBurnAt = filtered.length ? new Date(filtered[filtered.length - 1].timestamp).getTime() : now;
+      const start = chartStartOf(isAllRange ? firstBurnAt : cutoff, unit);
+      const end = chartStartOf(isAllRange ? lastBurnAt : now, unit);
+      const bucketKeys = [];
+      const buckets = new Map();
+      for (let d = start; d <= end; d = chartAddUnit(d, unit)) {
+        const key = chartBucketKey(d, unit);
+        bucketKeys.push(key);
+        buckets.set(key, 0);
+      }
+
+      filtered.forEach(tx => {
+        const key = chartBucketKey(tx.timestamp, unit);
+        const amt = parseFloat(tx.total?.value || 0) / 1e18;
+        buckets.set(key, (buckets.get(key) || 0) + (Number.isFinite(amt) ? amt : 0));
+      });
+
+      labels = bucketKeys.map(key => chartBucketLabel(key, unit));
+      data = bucketKeys.map(key => Math.floor(buckets.get(key) || 0));
+    }
 
     const ctx = canvas.getContext('2d');
     if (burnChart) burnChart.destroy();
@@ -3585,7 +3807,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
             titleFont: { family: 'Space Mono', size: 10 },
             bodyFont: { family: 'DM Sans', size: 13 },
             callbacks: {
-              label: ctx => ' ' + ctx.parsed.y.toLocaleString() + ' CASHX burned'
+              label: ctx => ` ${ctx.parsed.y.toLocaleString()} CASHX burned`
             }
           }
         },
@@ -3595,6 +3817,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
             ticks: { color: chartMuted, font: { family: 'Space Mono', size: 9 }, maxRotation: 0 }
           },
           y: {
+            beginAtZero: true,
             grid: { color: 'rgba(255,255,255,0.04)' },
             ticks: {
               color: chartMuted,
@@ -3683,6 +3906,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
   let wProvider = null, wAddr = null, wPanelOpen = false, walletProvider = null;
 
   window.CashXWallets = window.CashXWallets || (() => {
+    const WALLET_PROVIDER_KEY = 'cashx_wallet_provider_v1';
     const eip6963Providers = new Map();
     let activeProvider = null;
     let pendingResolve = null;
@@ -3723,6 +3947,14 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
         'internet-money': '<img src="internetmoneywallet.png" alt="">',
         all: '…'
       }[key] || '…';
+    }
+
+    function rememberWalletKey(key) {
+      try { if (key) localStorage.setItem(WALLET_PROVIDER_KEY, key); } catch(e) {}
+    }
+
+    function clearRememberedProvider() {
+      try { localStorage.removeItem(WALLET_PROVIDER_KEY); } catch(e) {}
     }
 
     async function discoverProviders() {
@@ -3803,10 +4035,22 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
             picker.classList.remove('wp-visible');
             picker.setAttribute('aria-hidden', 'true');
             activeProvider = wallet.provider;
+            rememberWalletKey(wallet.key || walletKey(wallet.name));
             resolve(wallet.provider);
           }, { once: true });
         });
       });
+    }
+
+    async function getRememberedProvider() {
+      let rememberedKey = '';
+      try { rememberedKey = localStorage.getItem(WALLET_PROVIDER_KEY) || ''; } catch(e) {}
+      if (!rememberedKey) return null;
+      const wallets = await discoverProviders();
+      const wallet = wallets.find(item => item.key === rememberedKey && item.provider);
+      if (!wallet) return null;
+      activeProvider = wallet.provider;
+      return wallet.provider;
     }
 
     async function pickProvider() {
@@ -3827,7 +4071,9 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
       pickProvider,
       closePicker,
       getActiveProvider: () => activeProvider,
-      setActiveProvider: provider => { activeProvider = provider; }
+      setActiveProvider: provider => { activeProvider = provider; },
+      getRememberedProvider,
+      clearRememberedProvider
     };
   })();
 
@@ -3851,6 +4097,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     try {
       const accounts = await walletProvider.request({ method: 'eth_requestAccounts' });
       wAddr = accounts[0];
+      window.CashXWallets.setActiveProvider(walletProvider);
       const chainHex = await walletProvider.request({ method: 'eth_chainId' });
       if (parseInt(chainHex, 16) !== PULSE_ID) {
         btn.textContent = orig; btn.style.opacity = '';
@@ -3913,6 +4160,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
 
   function disconnectWallet() {
     window.sharedWalletAddr = null;
+    window.CashXWallets?.clearRememberedProvider?.();
     wProvider = null; wAddr = null; walletProvider = null;
     closePanel();
     document.getElementById('wallet-connect-btn').style.display = '';
@@ -4021,11 +4269,34 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     if (window.FarmsApp?.disconnectWallet) window.FarmsApp.disconnectWallet();
   }
 
+  async function restoreSharedWallet() {
+    const provider = await window.CashXWallets?.getRememberedProvider?.();
+    if (!provider) return false;
+    try {
+      const accounts = await provider.request({ method: 'eth_accounts' });
+      if (!accounts?.length) return false;
+      walletProvider = provider;
+      wAddr = accounts[0];
+      const chainHex = await provider.request({ method: 'eth_chainId' });
+      if (parseInt(chainHex, 16) !== PULSE_ID) return false;
+      wProvider = new ethers.BrowserProvider(provider);
+      onConnected();
+      return true;
+    } catch(e) {
+      console.warn('Wallet restore failed:', e);
+      return false;
+    }
+  }
+
+  window.restoreSharedWallet = restoreSharedWallet;
+
 
   if (window.ethereum) {
     window.ethereum.on('accountsChanged', accs => {
       if (accs.length === 0) { disconnectWallet(); }
       else {
+        walletProvider = walletProvider || window.CashXWallets?.getActiveProvider?.() || window.ethereum;
+        if (walletProvider) wProvider = new ethers.BrowserProvider(walletProvider);
         wAddr = accs[0];
         window.sharedWalletAddr = wAddr;
         const truncAddr = trunc(wAddr);
@@ -4497,6 +4768,12 @@ const PULSE_ID     = 369;
     return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
   }
 
+  function fmtFarmAllowance(raw) {
+    if (typeof raw !== 'bigint' || raw <= 0n) return '0';
+    if (raw > 10n ** 30n) return 'MAX';
+    return fmtFarm(raw);
+  }
+
   function fmtFarmFixed(raw, digits = 2) {
     const n = parseFloat(ethers.formatUnits(raw, 18));
     if (!Number.isFinite(n) || n === 0) return '0';
@@ -4546,6 +4823,7 @@ const PULSE_ID     = 369;
     try {
       const accounts = await walletProvider.request({ method: 'eth_requestAccounts' });
       wAddr = accounts[0];
+      window.CashXWallets?.setActiveProvider?.(walletProvider);
       const chainHex = await walletProvider.request({ method: 'eth_chainId' });
       if (parseInt(chainHex, 16) !== PULSE_ID) {
         btn.textContent = orig; btn.style.opacity = '';
@@ -4594,6 +4872,7 @@ const PULSE_ID     = 369;
 
   function disconnectWallet() {
     window.sharedWalletAddr = null;
+    window.CashXWallets?.clearRememberedProvider?.();
     wProvider = null; wAddr = null; walletProvider = null;
     showDisconnected();
   }
@@ -4878,10 +5157,11 @@ const PULSE_ID     = 369;
         matched.map(async ({ farm, pid }) => {
           try {
             const lpC = new ethers.Contract(farm.lp, LP_ABI, wProvider);
-            const [userInfo, pending, walletLp, totalStaked, poolInfo, token0, token1] = await Promise.all([
+            const [userInfo, pending, walletLp, allowance, totalStaked, poolInfo, token0, token1] = await Promise.all([
               farmC.userInfo(pid, wAddr),
               farmC.pendingReward(pid, wAddr),
               lpC.balanceOf(wAddr).catch(() => 0n),
+              lpC.allowance(wAddr, FARM_CONTRACT).catch(() => 0n),
               lpC.balanceOf(FARM_CONTRACT).catch(() => null),
               farmC.poolInfo(pid).catch(() => null),
               lpC.token0().catch(() => null),
@@ -4889,7 +5169,7 @@ const PULSE_ID     = 369;
             ]);
             const staked = userInfo.amount ?? userInfo[0] ?? 0n;
             const valuation = await fetchNexionValuation(wProvider, farm, poolInfo, totalStaked, staked, pending);
-            return { farm, pid, staked, pending, walletLp, totalStaked, poolInfo, valuation, lpTokens: token0 && token1 ? [token0, token1] : null, countdownEnd: timing.get(pid) || null, error: null };
+            return { farm, pid, staked, pending, walletLp, allowance, totalStaked, poolInfo, valuation, lpTokens: token0 && token1 ? [token0, token1] : null, countdownEnd: timing.get(pid) || null, error: null };
           } catch(err) {
             console.error(`${farm.label} (pid=${pid}) FAILED:`, err.message || err);
             return { farm, pid, staked: 0n, pending: 0n, walletLp: 0n, totalStaked: null, countdownEnd: timing.get(pid) || null, error: err.message || String(err) };
@@ -4932,15 +5212,25 @@ const PULSE_ID     = 369;
     return typeof raw === 'bigint' ? fmtFarm(raw) : null;
   }
 
-  function remainingRewardRawNexion(poolInfo) {
+  function remainingRewardParams(poolInfo) {
     if (!poolInfo) return null;
     const totalReward = poolValue(poolInfo, 'totalRewards', 2);
     const startTime = Number(poolValue(poolInfo, 'startTime', 4) ?? 0);
     const endTime = Number(poolValue(poolInfo, 'endTime', 5) ?? 0);
     if (typeof totalReward !== 'bigint' || !startTime || !endTime || endTime <= startTime) return null;
-    const now = Math.floor(Date.now() / 1000);
-    const secondsLeft = Math.max(endTime - now, 0);
+    return { totalReward, startTime, endTime };
+  }
+
+  function remainingRewardRawFromParams(totalReward, startTime, endTime, nowSec = Math.floor(Date.now() / 1000)) {
+    if (typeof totalReward !== 'bigint' || !startTime || !endTime || endTime <= startTime) return null;
+    const secondsLeft = Math.max(endTime - nowSec, 0);
     return totalReward * BigInt(secondsLeft) / BigInt(endTime - startTime);
+  }
+
+  function remainingRewardRawNexion(poolInfo, nowSec = Math.floor(Date.now() / 1000)) {
+    const params = remainingRewardParams(poolInfo);
+    if (!params) return null;
+    return remainingRewardRawFromParams(params.totalReward, params.startTime, params.endTime, nowSec);
   }
 
   function rawUsd(raw, scaledPrice) {
@@ -4958,6 +5248,7 @@ const PULSE_ID     = 369;
       ]);
       const lpScaledPrice = Number(lpPrice);
       const rewardScaledPrice = Number(rewardPrice);
+      const remainingParams = remainingRewardParams(poolInfo);
       const remainingRaw = remainingRewardRawNexion(poolInfo);
       const stakedValue = rawUsd(totalStaked, lpScaledPrice);
       const remainingValue = rawUsd(remainingRaw, rewardScaledPrice);
@@ -4976,11 +5267,15 @@ const PULSE_ID     = 369;
         totalStakedUsd: fmtUsd(stakedValue, 2),
         remainingRewards: remainingRaw !== null ? fmtFarmFixed(remainingRaw, 2) : null,
         remainingRewardsUsd: fmtUsd(remainingValue, 2),
+        remainingRewardTotal: remainingParams?.totalReward?.toString?.() || '',
+        remainingRewardStart: remainingParams?.startTime || 0,
+        remainingRewardEnd: remainingParams?.endTime || 0,
+        rewardScaledPrice: Number.isFinite(rewardScaledPrice) ? String(rewardScaledPrice) : '',
         userStaked: fmtFarmFixed(staked, 2),
         userStakedUsd: fmtUsd(userStakedValue, 2),
         pending: fmtFarmFixed(pending, 2),
         pendingUsd: fmtUsd(pendingValue, 2),
-        tvl: fmtUsd(tvl, 3)
+        tvl: fmtUsd(tvl, 2)
       };
     } catch (err) {
       console.warn('Nexion valuation unavailable:', err);
@@ -5002,6 +5297,15 @@ const PULSE_ID     = 369;
     return formatCountdown(end - Date.now());
   }
 
+  function liveRemainingRewardsHTML(valuation, fallback) {
+    const total = valuation.remainingRewardTotal || '';
+    const start = Number(valuation.remainingRewardStart || 0);
+    const end = Number(valuation.remainingRewardEnd || 0);
+    const price = valuation.rewardScaledPrice || '';
+    if (!total || !start || !end) return fallback;
+    return `<span data-farm-remaining data-reward-total="${total}" data-reward-start="${start}" data-reward-end="${end}" data-reward-price="${price}">${fallback}</span>`;
+  }
+
   function updateFarmCountdowns() {
     document.querySelectorAll('[data-farm-countdown]').forEach(el => {
       const end = Number(el.dataset.countdownEnd || 0);
@@ -5010,6 +5314,23 @@ const PULSE_ID     = 369;
         return;
       }
       el.textContent = formatCountdown(end - Date.now());
+    });
+
+    document.querySelectorAll('[data-farm-remaining]').forEach(el => {
+      try {
+        const total = BigInt(el.dataset.rewardTotal || '0');
+        const start = Number(el.dataset.rewardStart || 0);
+        const end = Number(el.dataset.rewardEnd || 0);
+        const raw = remainingRewardRawFromParams(total, start, end);
+        if (raw === null) return;
+        el.textContent = fmtFarmFixed(raw, 2);
+
+        const usdEl = el.closest('.farm-proto-metric')?.querySelector('[data-farm-remaining-usd]');
+        const scaledPrice = Number(el.dataset.rewardPrice || 0);
+        if (usdEl && Number.isFinite(scaledPrice) && scaledPrice > 0) {
+          usdEl.textContent = fmtUsd(rawUsd(raw, scaledPrice), 2);
+        }
+      } catch(e) {}
     });
   }
 
@@ -5053,7 +5374,9 @@ const PULSE_ID     = 369;
     const totalStakedSub = valuation.totalStakedUsd || meta.totalStakedUsd || (totalStaked === liveTotalStaked && liveTotalStaked !== '—' ? 'LP tokens staked' : '');
     const liveRemainingRewards = farmRemainingRewards(r.poolInfo);
     const remainingRewards = valuation.remainingRewards || liveRemainingRewards || meta.remainingRewards;
+    const remainingRewardsLiveHTML = liveRemainingRewardsHTML(valuation, remainingRewards);
     const remainingRewardsSub = valuation.remainingRewardsUsd || meta.remainingRewardsUsd || (liveRemainingRewards ? 'DISTROX rewards' : '');
+    const remainingRewardsSubHTML = `<span id="farm-remaining-usd-${r.pid}"${valuation.rewardScaledPrice ? ' data-farm-remaining-usd' : ''}>${remainingRewardsSub}</span>`;
     const yourStakedDisplay = valuation.userStaked || fmtFarm(r.staked);
     const yourStakedSub = valuation.userStakedUsd || meta.userStakedUsd || 'LP tokens';
     const pendingDisplay = valuation.pending || fmtFarm(r.pending);
@@ -5100,14 +5423,12 @@ const PULSE_ID     = 369;
     const footerTimeHTML = isDesignProto
       ? `<span class="farm-footer-time">Time Left: <strong>${countdownHTML}</strong></span>`
       : '';
-    const balanceHTML = isDesignProto
-      ? `<div class="farm-balance-row">
-          <span>Wallet: <span id="farm-wallet-${r.pid}">${fmtFarm(r.walletLp)}</span> LP</span>
-          <button class="farm-staked-max" onclick="farmsFillInput(${r.pid},'staked')" ${r.disconnected ? 'disabled' : ''}>Staked Max</button>
-        </div>`
-      : `<div class="farm-proto-value" style="text-align:center;font-size:0.8rem">
-          Balance: <span id="farm-wallet-${r.pid}">${fmtFarm(r.walletLp)}</span>
-        </div>`;
+    const walletDisplay = fmtFarm(r.walletLp);
+    const walletSub = r.disconnected ? 'Connect wallet' : 'LP in wallet';
+    const stakedMaxDisabled = r.disconnected || r.staked === 0n ? 'disabled' : '';
+    const walletMaxDisabled = r.disconnected || r.walletLp === 0n ? 'disabled' : '';
+    const approveDisabled = r.disconnected || (r.walletLp === 0n && r.staked === 0n) ? 'disabled' : '';
+    const allowanceDisplay = r.allowance !== undefined ? fmtFarmAllowance(r.allowance) : '0';
     return `
       <div class="${cardClass}" id="farm-card-${r.pid}">
         <div class="farm-hdr">
@@ -5127,19 +5448,27 @@ const PULSE_ID     = 369;
             <div class="farm-proto-value">${feesDisplay}</div>
           </div>
           <div class="farm-proto-metric${mainMetricClass}">
-            <div class="farm-proto-label">Total Staked</div>
-            <div class="farm-proto-value long" id="farm-total-staked-${r.pid}">${totalStakedDisplay}</div>
-            <div class="farm-proto-sub">${totalStakedSub}</div>
+            <div class="farm-proto-label">Balance</div>
+            <div class="farm-balance-value-row">
+              <div class="farm-proto-value long" id="farm-wallet-${r.pid}">${walletDisplay}</div>
+              <button class="farm-balance-max" type="button"
+                id="farm-wallet-max-${r.pid}" onclick="farmsFillInput(${r.pid},'wallet')" ${walletMaxDisabled}>[MAX]</button>
+            </div>
+            <div class="farm-proto-sub">${walletSub}</div>
           </div>
           <div class="farm-proto-metric${mainMetricClass}">
             <div class="farm-proto-label">Remaining Rewards</div>
-            <div class="farm-proto-value long">${remainingRewards}</div>
-            <div class="farm-proto-sub"><span class="farm-remaining-usd">${tokenLogoHTML('DISTROX')}<span>${remainingRewardsSub}</span></span></div>
+            <div class="farm-proto-value long" id="farm-remaining-${r.pid}">${remainingRewardsLiveHTML}</div>
+            <div class="farm-proto-sub"><span class="farm-remaining-usd">${tokenLogoHTML('DISTROX')}${remainingRewardsSubHTML}</span></div>
           </div>
           <div class="farm-proto-metric${mainMetricClass}">
-            <div class="farm-proto-label">Balance</div>
-            <div class="farm-proto-value clickable" id="farm-staked-${r.pid}"
-              onclick="farmsFillInput(${r.pid},'staked')" title="Click to fill amount">${yourStakedDisplay}</div>
+            <div class="farm-proto-label">Staked</div>
+            <div class="farm-balance-value-row">
+              <div class="farm-proto-value clickable" id="farm-staked-${r.pid}"
+                onclick="farmsFillInput(${r.pid},'staked')" title="Click to fill amount">${yourStakedDisplay}</div>
+              <button class="farm-balance-max" type="button"
+                id="farm-staked-max-${r.pid}" onclick="farmsFillInput(${r.pid},'staked')" ${stakedMaxDisabled}>[MAX]</button>
+            </div>
             <div class="farm-proto-sub">${yourStakedSub}</div>
           </div>
           <div class="farm-proto-metric${mainMetricClass}${rewardsMetricClass}">
@@ -5160,18 +5489,18 @@ const PULSE_ID     = 369;
 
         <div class="farm-amount-wrap">
           <input class="farm-amount-input" id="farm-input-${r.pid}"
-            type="number" min="0" step="any" placeholder="${r.disconnected ? 'Connect wallet...' : 'Amount'}" ${r.disconnected ? 'disabled' : ''}/>
-          <button class="farm-max-stake" onclick="farmsFillInput(${r.pid},'auto')" ${r.disconnected ? 'disabled' : ''}>Max</button>
+            type="number" min="0" step="any" placeholder="${r.disconnected ? 'Connect wallet...' : 'Amount'}"
+            oninput="farmsUpdateApproveLabel(${r.pid})" ${r.disconnected ? 'disabled' : ''}/>
         </div>
-        ${balanceHTML}
         <div class="farm-proto-actions">
           <button class="farm-stake-btn" id="farm-stake-${r.pid}"
             onclick="farmsStakeFarm(${r.pid})" ${r.disconnected ? 'disabled' : ''}>Stake</button>
           <button class="farm-unstake-btn" id="farm-unstake-${r.pid}"
             onclick="farmsUnstakeFarm(${r.pid})" ${r.disconnected ? 'disabled' : ''}>Unstake</button>
         </div>
+        <button class="farm-approve-max-btn" id="farm-approve-${r.pid}"
+          onclick="farmsApproveFarm(${r.pid})" ${approveDisabled}>Approve <span id="farm-approve-label-${r.pid}">MAX</span></button>
         <div class="farm-proto-footer">
-          <span>View on PulseScan</span>
           ${footerTimeHTML}
           <span>TVL: <strong>${tvlDisplay}</strong></span>
           ${footerRankHTML}
@@ -5249,7 +5578,7 @@ const PULSE_ID     = 369;
                   <div class="farm-amount-wrap">
                     <input class="farm-amount-input" id="farm-input-${r.pid}"
                       type="number" min="0" step="any" placeholder="${r.disconnected ? 'Connect wallet...' : 'Amount'}" ${r.disconnected ? 'disabled' : ''}/>
-                    <button class="farm-max-stake" onclick="farmsFillInput(${r.pid},'auto')" ${r.disconnected ? 'disabled' : ''}>Max</button>
+                    <button class="farm-max-stake" onclick="farmsFillInput(${r.pid},'wallet')" ${r.disconnected ? 'disabled' : ''}>Max</button>
                   </div>
                   <div class="farm-balance-row">
                     <span>Wallet: <span>${fmtFarm(r.walletLp)}</span> LP</span>
@@ -5359,6 +5688,22 @@ const PULSE_ID     = 369;
     const raw = fillSource === 'staked' ? r.staked : r.walletLp;
     input.value = farmInputAmount(raw);
     input.dataset.maxSource = fillSource === 'staked' ? 'staked' : 'wallet';
+    updateApproveLabel(pid);
+  }
+
+  function inputAmountRaw(pid) {
+    const input = document.getElementById(`farm-input-${pid}`);
+    const amountStr = input?.value?.trim();
+    if (!amountStr || Number(amountStr) <= 0) return 0n;
+    try { return ethers.parseUnits(amountStr, 18); } catch { return 0n; }
+  }
+
+  function updateApproveLabel(pid) {
+    const label = document.getElementById(`farm-approve-label-${pid}`);
+    if (!label) return;
+    const input = document.getElementById(`farm-input-${pid}`);
+    const amountStr = input?.value?.trim();
+    label.textContent = amountStr && Number(amountStr) > 0 ? `${amountStr} LP` : 'MAX';
   }
 
   // ── Helpers ────────────────────────────────────────────────────────────────
@@ -5391,6 +5736,63 @@ const PULSE_ID     = 369;
     return Promise.race([tx.wait(), timeout]);
   }
 
+  function scheduleFarmRefresh(pid) {
+    refreshFarmData(pid);
+    [2500, 7000, 15000, 30000, 60000].forEach(delay => {
+      setTimeout(() => {
+        if (wProvider && wAddr && window.location.hash === '#farms') refreshFarmData(pid);
+      }, delay);
+    });
+  }
+
+  function setFarmPendingDom(pid, pending, valuation = null) {
+    const pendingEl = document.getElementById(`farm-pending-${pid}`);
+    const pendingUsdEl = document.getElementById(`farm-pending-usd-${pid}`);
+    const claimBtn = document.getElementById(`farm-btn-${pid}`);
+    const pendingDisplay = valuation?.pending || fmtFarm(pending);
+    const pendingUsd = valuation?.pendingUsd || '$0.00';
+
+    if (pendingEl) {
+      const isProtoCard = document.getElementById(`farm-card-${pid}`)?.classList.contains('farm-design-proto');
+      pendingEl.innerHTML = isProtoCard
+        ? `<span class="farm-rewards-tokenline">${tokenLogoHTML('DISTROX')}<span>${pendingDisplay} DISTROX</span></span>`
+        : rewardTokenValueHTML(pendingDisplay);
+    }
+    if (pendingUsdEl) pendingUsdEl.textContent = pendingUsd;
+    if (claimBtn) claimBtn.disabled = (pending === 0n);
+  }
+
+  function applyClaimedFarmState(pid) {
+    setFarmPendingDom(pid, 0n, { pending: fmtFarm(0n), pendingUsd: '$0.00' });
+    const idx = lastFarmResults.findIndex(r => r.pid === pid);
+    if (idx >= 0) {
+      const valuation = { ...(lastFarmResults[idx].valuation || {}), pending: fmtFarm(0n), pendingUsd: '$0.00' };
+      lastFarmResults[idx] = { ...lastFarmResults[idx], pending: 0n, valuation };
+    }
+  }
+
+  function setFarmRemainingDom(pid, valuation = null, poolInfo = null) {
+    const remainingEl = document.getElementById(`farm-remaining-${pid}`);
+    const usdEl = document.getElementById(`farm-remaining-usd-${pid}`);
+    const liveRemaining = farmRemainingRewards(poolInfo);
+    const remainingDisplay = valuation?.remainingRewards || liveRemaining || '';
+
+    if (remainingEl && remainingDisplay) {
+      remainingEl.innerHTML = liveRemainingRewardsHTML(valuation || {}, remainingDisplay);
+    }
+
+    if (usdEl) {
+      usdEl.textContent = valuation?.remainingRewardsUsd || (liveRemaining ? 'DISTROX rewards' : '');
+      if (valuation?.rewardScaledPrice) usdEl.setAttribute('data-farm-remaining-usd', '');
+      else usdEl.removeAttribute('data-farm-remaining-usd');
+    }
+  }
+
+  function refreshVisibleFarmData() {
+    if (!wProvider || !wAddr || window.location.hash !== '#farms') return;
+    visibleFarmResults().forEach(r => refreshFarmData(r.pid));
+  }
+
   function disableFarmBtns(pid, disabled) {
     ['farm-btn', 'farm-stake', 'farm-unstake'].forEach(prefix => {
       const el = document.getElementById(`${prefix}-${pid}`);
@@ -5401,6 +5803,7 @@ const PULSE_ID     = 369;
   }
 
   setInterval(updateFarmCountdowns, 1000);
+  setInterval(refreshVisibleFarmData, 20000);
 
   async function refreshFarmData(pid) {
     if (!wProvider || !wAddr) return;
@@ -5409,10 +5812,11 @@ const PULSE_ID     = 369;
     try {
       const farmC = new ethers.Contract(FARM_CONTRACT, FARM_ABI, wProvider);
       const lpC   = new ethers.Contract(r.farm.lp, ['function balanceOf(address) view returns (uint256)'], wProvider);
-      const [info, pending, walletLp, totalStaked, poolInfo] = await Promise.all([
+      const [info, pending, walletLp, allowance, totalStaked, poolInfo] = await Promise.all([
         farmC.userInfo(pid, wAddr),
         farmC.pendingReward(pid, wAddr),
         lpC.balanceOf(wAddr).catch(() => 0n),
+        lpC.allowance(wAddr, FARM_CONTRACT).catch(() => 0n),
         lpC.balanceOf(FARM_CONTRACT).catch(() => null),
         farmC.poolInfo(pid).catch(() => null)
       ]);
@@ -5425,22 +5829,23 @@ const PULSE_ID     = 369;
       const pendingUsdEl = document.getElementById(`farm-pending-usd-${pid}`);
       const totalEl = document.getElementById(`farm-total-staked-${pid}`);
       const claimBtn = document.getElementById(`farm-btn-${pid}`);
+      const allowanceEl = document.getElementById(`farm-allowance-${pid}`);
+      const walletMaxBtn = document.getElementById(`farm-wallet-max-${pid}`);
+      const stakedMaxBtn = document.getElementById(`farm-staked-max-${pid}`);
+      const approveBtn = document.getElementById(`farm-approve-${pid}`);
       if (walletEl)  walletEl.textContent  = fmtFarm(walletLp);
       if (stakedEl)  stakedEl.textContent  = valuation?.userStaked || fmtFarm(staked);
-      if (pendingEl) {
-        const nextPending = valuation?.pending || fmtFarm(pending);
-        const isProtoCard = document.getElementById(`farm-card-${pid}`)?.classList.contains('farm-design-proto');
-        pendingEl.innerHTML = isProtoCard
-          ? `<span class="farm-rewards-tokenline">${tokenLogoHTML('DISTROX')}<span>${nextPending} DISTROX</span></span>`
-          : rewardTokenValueHTML(nextPending);
-      }
-      if (pendingUsdEl) pendingUsdEl.textContent = valuation?.pendingUsd || (pendingUsdEl.classList.contains('farm-rewards-usd') ? '$0.00' : '');
+      if (allowanceEl) allowanceEl.textContent = fmtFarmAllowance(allowance);
+      if (walletMaxBtn) walletMaxBtn.disabled = walletLp <= 0n;
+      if (stakedMaxBtn) stakedMaxBtn.disabled = staked <= 0n;
+      if (approveBtn) approveBtn.disabled = walletLp <= 0n && staked <= 0n;
+      setFarmPendingDom(pid, pending, valuation);
+      setFarmRemainingDom(pid, valuation, poolInfo);
       if (totalEl && typeof totalStaked === 'bigint') totalEl.textContent = valuation?.totalStaked || fmtFarm(totalStaked);
-      if (claimBtn)  claimBtn.disabled     = (pending === 0n);
       // Update cached results so fillInput stays correct
       const idx = lastFarmResults.findIndex(r => r.pid === pid);
       if (idx >= 0) {
-        lastFarmResults[idx] = { ...lastFarmResults[idx], staked, pending, walletLp, totalStaked, poolInfo, valuation };
+        lastFarmResults[idx] = { ...lastFarmResults[idx], staked, pending, walletLp, allowance, totalStaked, poolInfo, valuation };
         if (farmStakedOnly && !hasStakedFarm(lastFarmResults[idx])) renderFarmResults(lastFarmResults, true);
       }
     } catch(e) { console.error('refreshFarmData failed:', e); }
@@ -5455,28 +5860,27 @@ const PULSE_ID     = 369;
       setTimeout(() => setFarmStatus(pid, '', false), 3000);
       return;
     }
-    let amount;
-    try { amount = ethers.parseUnits(amountStr, 18); } catch { return; }
-
     const r = lastFarmResults.find(r => r.pid === pid);
     if (!r) return;
+    let amount;
+    try { amount = ethers.parseUnits(amountStr, 18); } catch { return; }
+    if (typeof r.walletLp === 'bigint' && amount > r.walletLp) {
+      setFarmStatus(pid, '✗ Amount is higher than your wallet LP balance. Click Max for wallet max, or Staked Max to unstake.', true);
+      setTimeout(() => setFarmStatus(pid, '', false), 6000);
+      return;
+    }
 
     disableFarmBtns(pid, true);
     setFarmStatus(pid, '', false);
     try {
       const signer  = await wProvider.getSigner();
-      const lpC     = new ethers.Contract(r.farm.lp, LP_ABI, signer);
       const farmC   = new ethers.Contract(FARM_CONTRACT, FARM_ABI, signer);
 
-      // Check & request approval if needed
-      const allowance = await lpC.allowance(wAddr, FARM_CONTRACT);
+      const allowance = typeof r.allowance === 'bigint' ? r.allowance : 0n;
       if (allowance < amount) {
-        const appTx = await lpC.approve(FARM_CONTRACT, ethers.MaxUint256);
-        const approvalReceipt = await waitForFarmTx(appTx, pid, 'Approval submitted');
-        if (!approvalReceipt) {
-          setFarmStatus(pid, '', false);
-          return;
-        }
+        setFarmStatus(pid, '✗ Approve this LP amount before staking.', true);
+        setTimeout(() => setFarmStatus(pid, '', false), 5000);
+        return;
       }
 
       const tx = await farmC.deposit(pid, amount);
@@ -5487,14 +5891,39 @@ const PULSE_ID     = 369;
       }
 
       input.value = '';
+      updateApproveLabel(pid);
       setFarmStatus(pid, '', false);
-      refreshFarmData(pid);
+      scheduleFarmRefresh(pid);
     } catch(err) {
       const reason = err?.reason || err?.shortMessage || err?.message || 'Transaction failed';
       setFarmStatus(pid, `✗ ${reason}`, true);
       setTimeout(() => setFarmStatus(pid, '', false), 6000);
     } finally {
       disableFarmBtns(pid, false);
+    }
+  }
+
+  async function approveFarm(pid) {
+    const r = lastFarmResults.find(r => r.pid === pid);
+    if (!r || !wProvider || !wAddr) return;
+    const approveBtn = document.getElementById(`farm-approve-${pid}`);
+    const amountFromInput = inputAmountRaw(pid);
+    const amount = amountFromInput > 0n ? amountFromInput : ethers.MaxUint256;
+    if (approveBtn) approveBtn.disabled = true;
+    setFarmStatus(pid, '', false);
+    try {
+      const signer = await wProvider.getSigner();
+      const lpC = new ethers.Contract(r.farm.lp, LP_ABI, signer);
+      const tx = await lpC.approve(FARM_CONTRACT, amount);
+      const receipt = await waitForFarmTx(tx, pid, 'Approval submitted');
+      if (!receipt) return;
+      scheduleFarmRefresh(pid);
+    } catch(err) {
+      const reason = err?.reason || err?.shortMessage || err?.message || 'Approval failed';
+      setFarmStatus(pid, `✗ ${reason}`, true);
+      setTimeout(() => setFarmStatus(pid, '', false), 6000);
+    } finally {
+      if (approveBtn) approveBtn.disabled = false;
     }
   }
 
@@ -5507,8 +5936,15 @@ const PULSE_ID     = 369;
       setTimeout(() => setFarmStatus(pid, '', false), 3000);
       return;
     }
+    const r = lastFarmResults.find(r => r.pid === pid);
+    if (!r) return;
     let amount;
     try { amount = ethers.parseUnits(amountStr, 18); } catch { return; }
+    if (typeof r.staked === 'bigint' && amount > r.staked) {
+      setFarmStatus(pid, '✗ Amount is higher than your staked LP balance. Click Staked Max to unstake your full amount.', true);
+      setTimeout(() => setFarmStatus(pid, '', false), 6000);
+      return;
+    }
 
     disableFarmBtns(pid, true);
     setFarmStatus(pid, '', false);
@@ -5524,8 +5960,9 @@ const PULSE_ID     = 369;
       }
 
       input.value = '';
+      updateApproveLabel(pid);
       setFarmStatus(pid, '', false);
-      refreshFarmData(pid);
+      scheduleFarmRefresh(pid);
     } catch(err) {
       const reason = err?.reason || err?.shortMessage || err?.message || 'Transaction failed';
       setFarmStatus(pid, `✗ ${reason}`, true);
@@ -5558,7 +5995,8 @@ const PULSE_ID     = 369;
 
       btn.classList.remove('claiming');
       setFarmStatus(pid, '', false);
-      refreshFarmData(pid);
+      applyClaimedFarmState(pid);
+      scheduleFarmRefresh(pid);
     } catch(err) {
       console.error(`Claim failed for ${label}:`, err);
       btn.classList.remove('claiming');
@@ -5594,6 +6032,8 @@ const PULSE_ID     = 369;
     window.ethereum.on('accountsChanged', accs => {
       if (accs.length === 0) { disconnectWallet(); }
       else {
+        walletProvider = walletProvider || window.CashXWallets?.getActiveProvider?.() || window.ethereum;
+        if (walletProvider) wProvider = new ethers.BrowserProvider(walletProvider);
         wAddr = accs[0];
         set('farms-wc-addr', trunc(wAddr));
         set('rv-addr-display', trunc(wAddr));
@@ -5604,7 +6044,7 @@ const PULSE_ID     = 369;
     });
     window.ethereum.on('chainChanged', () => { disconnectWallet(); showDisconnected(); });
   }
-  return { init, connectWallet, refreshAll, disconnectWallet, copyAddr, copyLp, setFarmView, setStakedFilter, goToFarm, fillInput, stakeFarm, unstakeFarm, claimFarm, toggleTableRow };
+  return { init, connectWallet, refreshAll, disconnectWallet, copyAddr, copyLp, setFarmView, setStakedFilter, goToFarm, fillInput, updateApproveLabel, approveFarm, stakeFarm, unstakeFarm, claimFarm, toggleTableRow };
 })();
 function farmsConnectWallet(){ return window.FarmsApp.connectWallet(); }
 function farmsRefreshAll(){ return window.FarmsApp.refreshAll(); }
@@ -5615,6 +6055,8 @@ function farmsSetFarmView(view){ return window.FarmsApp.setFarmView(view); }
 function farmsSetStakedFilter(checked){ return window.FarmsApp.setStakedFilter(checked); }
 function farmsGoToFarm(lp){ return window.FarmsApp.goToFarm(lp); }
 function farmsFillInput(pid, source){ return window.FarmsApp.fillInput(pid, source); }
+function farmsUpdateApproveLabel(pid){ return window.FarmsApp.updateApproveLabel(pid); }
+function farmsApproveFarm(pid){ return window.FarmsApp.approveFarm(pid); }
 function farmsStakeFarm(pid){ return window.FarmsApp.stakeFarm(pid); }
 function farmsUnstakeFarm(pid){ return window.FarmsApp.unstakeFarm(pid); }
 function farmsClaimFarm(pid, label){ return window.FarmsApp.claimFarm(pid, label); }
@@ -5859,14 +6301,16 @@ function farmsToggleTableRow(pid){ return window.FarmsApp.toggleTableRow(pid); }
       document.body.style.opacity = '1';
       document.body.style.transform = 'none';
       initPromoCarousel();
-      showPage(window.location.hash === '#dashboard' ? 'dashboard' : window.location.hash === '#farms' ? 'farms' : 'home', { updateHash: false, instant: true });
-      setTimeout(() => {
-        if (typeof lsDone === 'function') lsDone();
-        else {
-          const loader = document.getElementById('ls');
-          if (loader) loader.classList.add('ls-out');
-        }
-      }, 650);
+      Promise.resolve(window.restoreSharedWallet?.()).finally(() => {
+        showPage(window.location.hash === '#dashboard' ? 'dashboard' : window.location.hash === '#farms' ? 'farms' : 'home', { updateHash: false, instant: true });
+        setTimeout(() => {
+          if (typeof lsDone === 'function') lsDone();
+          else {
+            const loader = document.getElementById('ls');
+            if (loader) loader.classList.add('ls-out');
+          }
+        }, 650);
+      });
     });
   });
 
