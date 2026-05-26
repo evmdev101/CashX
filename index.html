@@ -1862,7 +1862,12 @@
       background:#080b10;
       border-color:#05070a;
       box-shadow:0 22px 58px rgba(0,0,0,0.48),inset 0 1px 0 rgba(255,255,255,0.035);
+      overflow:visible;
+      position:relative;
+      z-index:0;
     }
+    .farm-item.farm-rich.farm-design-proto:hover,
+    .farm-item.farm-rich.farm-design-proto:focus-within{z-index:20}
     .farm-design-proto .farm-hdr{border-bottom:none;padding-bottom:8px}
     .farm-design-proto .farm-title{gap:13px}
     .farm-design-proto .farm-title > div:first-child{
@@ -2014,6 +2019,57 @@
       margin-top:8px;
       line-height:1.15;
     }
+    .farm-design-proto .farm-staked-label{
+      display:flex;
+      align-items:center;
+      gap:5px;
+    }
+    .farm-design-proto .farm-lp-toggle{
+      border:none;
+      background:transparent;
+      color:#c6d4df;
+      font:inherit;
+      cursor:pointer;
+      padding:0;
+      line-height:1;
+    }
+    .farm-design-proto .farm-lp-toggle:hover,
+    .farm-design-proto .farm-lp-toggle:focus{color:#fff;outline:none}
+    .farm-design-proto .farm-proto-value.clickable{
+      cursor:pointer;
+      transition:color 0.16s;
+    }
+    .farm-design-proto .farm-proto-value.clickable:hover{color:#fff}
+    .farm-design-proto .farm-lp-breakdown{
+      grid-column:1 / -1;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+    }
+    .farm-design-proto .farm-lp-breakdown[hidden]{display:none}
+    .farm-design-proto .farm-lp-token-card{
+      min-height:68px;
+      padding:13px;
+    }
+    .farm-design-proto .farm-lp-token-card .farm-proto-label{
+      display:flex;
+      align-items:center;
+      gap:7px;
+      margin-bottom:9px;
+    }
+    .farm-design-proto .farm-lp-token-card .farm-token-logo,
+    .farm-design-proto .farm-lp-token-card .farm-token-fallback{
+      width:18px;
+      height:18px;
+      box-shadow:none;
+      font-size:0.38rem;
+    }
+    .farm-design-proto .farm-lp-token-card .farm-proto-value{
+      font-size:0.94rem;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
     .farm-design-proto .farm-balance-value-row{
       display:flex;
       align-items:baseline;
@@ -2052,6 +2108,7 @@
       grid-template-columns:1fr;
       gap:6px;
     }
+    .farm-design-proto .farm-proto-metric.farm-proto-rewards{overflow:visible}
     .farm-design-proto .farm-rewards-tokenline{
       display:flex;
       align-items:center;
@@ -2061,6 +2118,87 @@
       font-weight:700;
       color:#e8edf2;
       white-space:nowrap;
+    }
+    .farm-design-proto .farm-reward-projection-wrap{
+      position:relative;
+      display:inline-flex;
+      align-items:center;
+    }
+    .farm-design-proto .farm-reward-chart-btn{
+      width:20px;
+      height:20px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border:1px solid rgba(139,161,184,0.16);
+      border-radius:5px;
+      background:#10151c;
+      color:#b8d2ff;
+      cursor:pointer;
+      padding:0;
+      line-height:1;
+    }
+    .farm-design-proto .farm-reward-chart-btn:hover,
+    .farm-design-proto .farm-reward-chart-btn:focus{border-color:rgba(184,210,255,0.54);outline:none}
+    .farm-design-proto .farm-reward-chart-btn svg{width:14px;height:14px}
+    .farm-design-proto .farm-reward-projection-popover{
+      position:absolute;
+      right:0;
+      bottom:calc(100% + 10px);
+      z-index:25;
+      width:314px;
+      max-width:calc(100vw - 32px);
+      transform:translateY(4px);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity 0.16s,transform 0.16s;
+      background:#030507;
+      border:1px solid rgba(139,161,184,0.22);
+      border-radius:7px;
+      box-shadow:0 18px 42px rgba(0,0,0,0.58);
+      text-align:left;
+      overflow:hidden;
+    }
+    .farm-design-proto .farm-reward-projection-wrap:hover .farm-reward-projection-popover,
+    .farm-design-proto .farm-reward-projection-wrap:focus-within .farm-reward-projection-popover{
+      opacity:1;
+      pointer-events:auto;
+      transform:translateY(0);
+    }
+    .farm-design-proto .farm-reward-projection-title{
+      display:flex;
+      align-items:center;
+      gap:9px;
+      padding:12px;
+      border-bottom:1px solid rgba(139,161,184,0.15);
+      color:#e8edf2;
+      font-family:'DM Sans',sans-serif;
+      font-size:0.82rem;
+      font-weight:700;
+    }
+    .farm-design-proto .farm-reward-projection-title svg{width:18px;height:18px;color:#b8d2ff}
+    .farm-design-proto .farm-reward-projection-lines{
+      display:grid;
+      gap:6px;
+      padding:12px;
+      font-family:'Space Mono',monospace;
+      font-size:0.62rem;
+      color:#e8edf2;
+    }
+    .farm-design-proto .farm-reward-projection-lines div{
+      display:grid;
+      grid-template-columns:62px minmax(0,1fr);
+      gap:8px;
+      align-items:start;
+    }
+    .farm-design-proto .farm-reward-projection-lines span{color:#f4f7fb;font-weight:700}
+    .farm-design-proto .farm-reward-projection-lines strong{
+      color:#39ff7e;
+      font-weight:700;
+      min-width:0;
+      line-height:1.28;
+      white-space:normal;
+      overflow-wrap:anywhere;
     }
     .farm-design-proto .farm-rewards-tokenline .farm-token-logo{
       width:26px;
@@ -2074,8 +2212,10 @@
     .farm-design-proto .farm-rewards-usd{
       margin-top:6px;
       font-family:'Space Mono',monospace;
-      font-size:0.72rem;
-      color:#8ea0ad;
+      font-size:0.9rem;
+      font-weight:700;
+      line-height:1.2;
+      color:#d6e2ec;
     }
     .farm-design-proto .farm-claim-btn{
       background:#6d28d9;
@@ -2228,6 +2368,9 @@
       .nexion-farms-actions,.nexion-farms-staked{margin-left:0;margin-right:0}
       .nav-tabs{gap:5px}
       .nav-tab{font-size:0.68rem;padding:8px 10px;letter-spacing:0.08em}
+    }
+    @media(max-width:420px){
+      .farm-design-proto .farm-lp-breakdown{grid-template-columns:1fr}
     }
 
   /* ── LOADING SCREEN ── */
@@ -3360,16 +3503,16 @@
   }
   function fmtUSD(n){
     if(!n||isNaN(n))return'—';
-    if(n>=1e9)return'$'+(n/1e9).toFixed(2)+'B';
-    if(n>=1e6)return'$'+(n/1e6).toFixed(2)+'M';
-    if(n>=1e3)return'$'+(n/1e3).toFixed(2)+'K';
-    return'$'+n.toFixed(4);
+    if(n>=1e9)return'$'+(n/1e9).toFixed(2)+'B USD';
+    if(n>=1e6)return'$'+(n/1e6).toFixed(2)+'M USD';
+    if(n>=1e3)return'$'+(n/1e3).toFixed(2)+'K USD';
+    return'$'+n.toFixed(4)+' USD';
   }
   function fmtPrice(p){
     if(!p||isNaN(p))return'—';
-    if(p<0.000001)return'$'+p.toExponential(3);
-    if(p<0.01)return'$'+p.toFixed(8);
-    return'$'+p.toFixed(4);
+    if(p<0.000001)return'$'+p.toExponential(3)+' USD';
+    if(p<0.01)return'$'+p.toFixed(8)+' USD';
+    return'$'+p.toFixed(4)+' USD';
   }
   function ago(ts){
     const d=Math.floor(Date.now()/1000)-ts;
@@ -4102,7 +4245,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     return '≈ $' + value.toLocaleString('en-US', {
       minimumFractionDigits: value >= 1 ? 2 : 4,
       maximumFractionDigits: value >= 1 ? 2 : 6
-    });
+    }) + ' USD';
   }
 
   async function fetchWalletTokenPrices() {
@@ -4595,8 +4738,14 @@ const PULSE_ID     = 369;
     'function balanceOf(address owner) view returns (uint256)',
     'function allowance(address owner, address spender) view returns (uint256)',
     'function approve(address spender, uint256 amount) returns (bool)',
+    'function totalSupply() view returns (uint256)',
+    'function getReserves() view returns (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast)',
     'function token0() view returns (address)',
     'function token1() view returns (address)'
+  ];
+  const TOKEN_META_ABI = [
+    'function decimals() view returns (uint8)',
+    'function symbol() view returns (string)'
   ];
   const PULSEX_ADD_V2_URL = 'https://pulsex.mypinata.cloud/ipfs/bafybeiaq4jgcpz4hdzwid6letizdnhijlp6lu5ivcjcp5vbgpgf54jknn4/#/add/V2';
 
@@ -4620,6 +4769,7 @@ const PULSE_ID     = 369;
   let farmStakedOnly = false;
   let publicFarmStatsLoading = false;
   let lastFarmResults = [];
+  const farmLpExpanded = new Set();
   const TOKEN_LOGOS = {
     CASHX: 'cashx-logo.png',
     DISTROX: 'distrox.jpg',
@@ -4711,6 +4861,15 @@ const PULSE_ID     = 369;
     </svg>`;
   }
 
+  function chartIconHTML() {
+    return `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M4 19V5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <path d="M4 19h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <path d="m7 15 3.4-3.4 2.4 2.4L18 8.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M15 8h3v3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`;
+  }
+
   function farmMeta(farm) {
     return { ...FARM_CARD_META_DEFAULT, ...(FARM_CARD_META[farm.label] || {}) };
   }
@@ -4739,6 +4898,12 @@ const PULSE_ID     = 369;
     return Number.isFinite(parsed) ? parsed : null;
   }
 
+  function withUsdLabel(value) {
+    const text = String(value ?? '').trim();
+    if (!text || text === '—' || !text.includes('$') || /\bUSD\b/i.test(text)) return text;
+    return `${text} USD`;
+  }
+
   function farmRankRows(key, formatter) {
     return FARMS.map(farm => {
       const meta = farmMeta(farm);
@@ -4754,7 +4919,7 @@ const PULSE_ID     = 369;
         <div class="farm-rank-row" role="button" tabindex="0" onclick="farmsGoToFarm('${item.farm.lp}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();farmsGoToFarm('${item.farm.lp}')}" title="Go to ${item.farm.name}">
           <div class="farm-rank-pos">${index + 1}</div>
           ${farmRankTitleHTML(item.farm)}
-          <div class="farm-rank-value">${formatter ? formatter(item.value) : item.value}</div>
+          <div class="farm-rank-value">${formatter ? formatter(item.value) : withUsdLabel(item.value)}</div>
         </div>`)
       .join('');
   }
@@ -4824,9 +4989,82 @@ const PULSE_ID     = 369;
     return n.toLocaleString('en-US', { minimumFractionDigits: digits, maximumFractionDigits: digits });
   }
 
+  function formatWholeWithCommas(whole) {
+    const str = String(whole || '0');
+    const sign = str.startsWith('-') ? '-' : '';
+    const body = sign ? str.slice(1) : str;
+    return sign + body.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  function fmtLpComponent(raw, decimals = 18, maxDigits = 8) {
+    if (typeof raw !== 'bigint') return 'Loading';
+    if (raw === 0n) return '0';
+    const value = ethers.formatUnits(raw, decimals);
+    const [whole, fraction = ''] = value.split('.');
+    const trimmed = fraction.slice(0, maxDigits).replace(/0+$/, '');
+    if (!trimmed && whole.replace('-', '') === '0' && /[1-9]/.test(fraction)) {
+      return `< 0.${'0'.repeat(Math.max(0, maxDigits - 1))}1`;
+    }
+    return `${formatWholeWithCommas(whole)}${trimmed ? `.${trimmed}` : ''}`;
+  }
+
+  function prettyFarmSymbol(symbol) {
+    const key = String(symbol || '').trim().toUpperCase();
+    const map = { PHEX: 'pHEX', UPLS: 'uPLS', VOUCHPLS: 'vouchPLS' };
+    return map[key] || key || 'TOKEN';
+  }
+
+  async function fetchTokenMeta(provider, address, fallbackSymbol) {
+    const fallback = prettyFarmSymbol(fallbackSymbol);
+    if (!provider || !address) return { symbol: fallback, decimals: 18 };
+    try {
+      const tokenC = new ethers.Contract(address, TOKEN_META_ABI, provider);
+      const [decimals, symbol] = await Promise.all([
+        tokenC.decimals().catch(() => 18),
+        tokenC.symbol().catch(() => fallback)
+      ]);
+      return {
+        symbol: prettyFarmSymbol(symbol || fallback),
+        decimals: Number(decimals || 18)
+      };
+    } catch(e) {
+      return { symbol: fallback, decimals: 18 };
+    }
+  }
+
+  async function fetchLpBreakdown(provider, farm, lpAmount, token0Address = null, token1Address = null) {
+    if (!provider || typeof lpAmount !== 'bigint') return null;
+    try {
+      const lpC = new ethers.Contract(farm.lp, LP_ABI, provider);
+      const [reserves, totalSupply, token0, token1] = await Promise.all([
+        lpC.getReserves(),
+        lpC.totalSupply(),
+        token0Address ? Promise.resolve(token0Address) : lpC.token0(),
+        token1Address ? Promise.resolve(token1Address) : lpC.token1()
+      ]);
+      if (typeof totalSupply !== 'bigint' || totalSupply <= 0n) return null;
+      const reserve0 = BigInt(reserves.reserve0 ?? reserves[0] ?? 0);
+      const reserve1 = BigInt(reserves.reserve1 ?? reserves[1] ?? 0);
+      const amount0 = reserve0 * lpAmount / totalSupply;
+      const amount1 = reserve1 * lpAmount / totalSupply;
+      const fallbackTokens = farmTokens(farm.name);
+      const [meta0, meta1] = await Promise.all([
+        fetchTokenMeta(provider, token0, fallbackTokens[0]),
+        fetchTokenMeta(provider, token1, fallbackTokens[1])
+      ]);
+      return [
+        { symbol: meta0.symbol, amount: fmtLpComponent(amount0, meta0.decimals), address: token0 },
+        { symbol: meta1.symbol, amount: fmtLpComponent(amount1, meta1.decimals), address: token1 }
+      ];
+    } catch(err) {
+      console.warn(`LP breakdown unavailable for ${farm.label}:`, err);
+      return null;
+    }
+  }
+
   function fmtUsd(value, digits = 2) {
     if (!Number.isFinite(value)) return '—';
-    return `$${value.toLocaleString('en-US', { minimumFractionDigits: digits, maximumFractionDigits: digits })}`;
+    return withUsdLabel(`$${value.toLocaleString('en-US', { minimumFractionDigits: digits, maximumFractionDigits: digits })}`);
   }
 
   function fmtWalletUsd(value) {
@@ -4834,7 +5072,7 @@ const PULSE_ID     = 369;
     return '≈ $' + value.toLocaleString('en-US', {
       minimumFractionDigits: value >= 1 ? 2 : 4,
       maximumFractionDigits: value >= 1 ? 2 : 6
-    });
+    }) + ' USD';
   }
 
   function set(id, val) {
@@ -5236,8 +5474,11 @@ const PULSE_ID     = 369;
               lpC.token1().catch(() => null)
             ]);
             const staked = userInfo.amount ?? userInfo[0] ?? 0n;
-            const valuation = await fetchNexionValuation(wProvider, farm, poolInfo, totalStaked, staked, pending);
-            return { farm, pid, staked, pending, walletLp, allowance, totalStaked, poolInfo, valuation, lpTokens: token0 && token1 ? [token0, token1] : null, countdownEnd: timing.get(pid) || null, error: null };
+            const [valuation, lpBreakdown] = await Promise.all([
+              fetchNexionValuation(wProvider, farm, poolInfo, totalStaked, staked, pending),
+              fetchLpBreakdown(wProvider, farm, staked, token0, token1)
+            ]);
+            return { farm, pid, staked, pending, walletLp, allowance, totalStaked, poolInfo, valuation, lpBreakdown, lpTokens: token0 && token1 ? [token0, token1] : null, countdownEnd: timing.get(pid) || null, error: null };
           } catch(err) {
             console.error(`${farm.label} (pid=${pid}) FAILED:`, err.message || err);
             return { farm, pid, staked: 0n, pending: 0n, walletLp: 0n, totalStaked: null, countdownEnd: timing.get(pid) || null, error: err.message || String(err) };
@@ -5306,6 +5547,61 @@ const PULSE_ID     = 369;
     return Number(ethers.formatUnits(raw, 18)) * scaledPrice / 1e18;
   }
 
+  function formatFarmPoolSharePercent(staked, totalStaked) {
+    if (typeof staked !== 'bigint' || typeof totalStaked !== 'bigint' || totalStaked <= 0n) return '';
+    if (staked === 0n) return '0%';
+    const scaled = staked * 1000000n / totalStaked;
+    if (scaled === 0n) return '<0.0001%';
+    const percent = Number(scaled) / 10000;
+    const digits = percent < 1 ? 3 : 2;
+    return `${percent.toLocaleString('en-US', { minimumFractionDigits: digits, maximumFractionDigits: digits })}%`;
+  }
+
+  function rewardProjectionRaw(r, seconds) {
+    if (typeof r?.staked === 'bigint' && r.staked <= 0n) return 0n;
+    const params = remainingRewardParams(r?.poolInfo);
+    if (!params || typeof r?.staked !== 'bigint' || typeof r?.totalStaked !== 'bigint') return null;
+    if (r.totalStaked <= 0n) return 0n;
+    const nowSec = Math.floor(Date.now() / 1000);
+    if (nowSec >= params.endTime) return 0n;
+    const duration = BigInt(params.endTime - params.startTime);
+    if (duration <= 0n) return null;
+    return params.totalReward * BigInt(seconds) * r.staked / (duration * r.totalStaked);
+  }
+
+  function formatRewardProjection(raw, valuation = {}) {
+    if (raw === null) return 'Loading';
+    const tokenAmount = raw === 0n ? '0.00' : fmtFarmFixed(raw, 2);
+    const scaledPrice = Number(valuation.rewardScaledPrice || 0);
+    const usd = raw === 0n ? '$0.00 USD' : fmtUsd(rawUsd(raw, scaledPrice), 2);
+    return `${tokenAmount} DISTROX (${usd})`;
+  }
+
+  function rewardProjectionRowsHTML(r, valuation = {}) {
+    const periods = [
+      ['Daily:', 86400],
+      ['Weekly:', 604800],
+      ['Monthly:', 2592000],
+      ['Yearly:', 31536000]
+    ];
+    return periods.map(([label, seconds]) => `
+      <div><span>${label}</span><strong>${formatRewardProjection(rewardProjectionRaw(r, seconds), valuation)}</strong></div>
+    `).join('');
+  }
+
+  function rewardProjectionButtonHTML(r, valuation = {}) {
+    return `
+      <span class="farm-reward-projection-wrap">
+        <button class="farm-reward-chart-btn" type="button" title="Rewards projection" aria-label="Rewards projection">
+          ${chartIconHTML()}
+        </button>
+        <span class="farm-reward-projection-popover" role="tooltip">
+          <span class="farm-reward-projection-title">${chartIconHTML()}<span>Rewards Projection</span></span>
+          <span class="farm-reward-projection-lines">${rewardProjectionRowsHTML(r, valuation)}</span>
+        </span>
+      </span>`;
+  }
+
   async function fetchNexionValuation(provider, farm, poolInfo, totalStaked, staked, pending) {
     if (!poolInfo || typeof totalStaked !== 'bigint') return null;
     try {
@@ -5341,6 +5637,7 @@ const PULSE_ID     = 369;
         rewardScaledPrice: Number.isFinite(rewardScaledPrice) ? String(rewardScaledPrice) : '',
         userStaked: fmtFarmFixed(staked, 2),
         userStakedUsd: fmtUsd(userStakedValue, 2),
+        userStakedShare: formatFarmPoolSharePercent(staked, totalStaked),
         pending: fmtFarmFixed(pending, 2),
         pendingUsd: fmtUsd(pendingValue, 2),
         tvl: fmtUsd(tvl, 2)
@@ -5431,6 +5728,56 @@ const PULSE_ID     = 369;
     return `${PULSEX_ADD_V2_URL}/${lpTokens[0]}/${lpTokens[1]}`;
   }
 
+  function farmSafeText(value) {
+    return String(value ?? '').replace(/[&<>"']/g, ch => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[ch]));
+  }
+
+  function fallbackLpBreakdown(farm, amount = 'Loading') {
+    return farmTokens(farm.name).slice(0, 2).map(symbol => ({
+      symbol: prettyFarmSymbol(symbol),
+      amount
+    }));
+  }
+
+  function farmLpBreakdownCardsHTML(items) {
+    return items.slice(0, 2).map(item => {
+      const symbol = prettyFarmSymbol(item.symbol);
+      const logoKey = String(symbol).replace(/[^a-z0-9]/gi, '').toUpperCase();
+      return `
+        <div class="farm-proto-metric farm-lp-token-card">
+          <div class="farm-proto-label">${tokenLogoHTML(logoKey)}<span>${farmSafeText(symbol)}</span></div>
+          <div class="farm-proto-value long">${farmSafeText(item.amount)}</div>
+        </div>`;
+    }).join('');
+  }
+
+  function farmLpBreakdownHTML(r, isOpen) {
+    const fallbackAmount = typeof r.staked === 'bigint' && r.staked === 0n ? '0' : 'Loading';
+    const items = Array.isArray(r.lpBreakdown) && r.lpBreakdown.length
+      ? r.lpBreakdown
+      : fallbackLpBreakdown(r.farm, fallbackAmount);
+    return `<div class="farm-lp-breakdown" id="farm-lp-breakdown-${r.pid}" ${isOpen ? '' : 'hidden'}>${farmLpBreakdownCardsHTML(items)}</div>`;
+  }
+
+  function setFarmLpBreakdownDom(pid, breakdown) {
+    const detail = document.getElementById(`farm-lp-breakdown-${pid}`);
+    if (!detail || !Array.isArray(breakdown) || !breakdown.length) return;
+    detail.innerHTML = farmLpBreakdownCardsHTML(breakdown);
+  }
+
+  function farmStakedSubText(r, valuation = {}) {
+    const meta = farmMeta(r.farm);
+    const base = withUsdLabel(valuation.userStakedUsd || meta.userStakedUsd || 'LP tokens');
+    const share = valuation.userStakedShare || formatFarmPoolSharePercent(r.staked, r.totalStaked);
+    return share && base !== 'LP tokens' ? `${base} (${share})` : base;
+  }
+
   function renderFarmRichCard(r, displayIndex) {
     const isDesignProto = true;
     const meta = farmMeta(r.farm);
@@ -5439,17 +5786,17 @@ const PULSE_ID     = 369;
     const liveTotalStaked = typeof r.totalStaked === 'bigint' ? fmtFarm(r.totalStaked) : '—';
     const totalStaked = valuation.totalStaked || (liveTotalStaked !== '—' ? liveTotalStaked : metaOrLive(meta.totalStaked, liveTotalStaked));
     const totalStakedDisplay = totalStaked === '—' ? 'Loading' : totalStaked;
-    const totalStakedSub = valuation.totalStakedUsd || meta.totalStakedUsd || (totalStaked === liveTotalStaked && liveTotalStaked !== '—' ? 'LP tokens staked' : '');
+    const totalStakedSub = withUsdLabel(valuation.totalStakedUsd || meta.totalStakedUsd || (totalStaked === liveTotalStaked && liveTotalStaked !== '—' ? 'LP tokens staked' : ''));
     const liveRemainingRewards = farmRemainingRewards(r.poolInfo);
     const remainingRewards = valuation.remainingRewards || liveRemainingRewards || meta.remainingRewards;
     const remainingRewardsLiveHTML = liveRemainingRewardsHTML(valuation, remainingRewards);
-    const remainingRewardsSub = valuation.remainingRewardsUsd || meta.remainingRewardsUsd || (liveRemainingRewards ? 'DISTROX rewards' : '');
+    const remainingRewardsSub = withUsdLabel(valuation.remainingRewardsUsd || meta.remainingRewardsUsd || (liveRemainingRewards ? 'DISTROX rewards' : ''));
     const remainingRewardsSubHTML = `<span id="farm-remaining-usd-${r.pid}"${valuation.rewardScaledPrice ? ' data-farm-remaining-usd' : ''}>${remainingRewardsSub}</span>`;
     const yourStakedDisplay = valuation.userStaked || fmtFarm(r.staked);
-    const yourStakedSub = valuation.userStakedUsd || meta.userStakedUsd || 'LP tokens';
+    const yourStakedSub = farmStakedSubText(r, valuation);
     const pendingDisplay = valuation.pending || fmtFarm(r.pending);
-    const pendingSub = valuation.pendingUsd || meta.pendingUsd || '';
-    const tvlDisplay = valuation.tvl || meta.tvl || (liveTotalStaked !== '—' ? 'Live' : 'Loading');
+    const pendingSub = withUsdLabel(valuation.pendingUsd || meta.pendingUsd || '');
+    const tvlDisplay = withUsdLabel(valuation.tvl || meta.tvl || (liveTotalStaked !== '—' ? 'Live' : 'Loading'));
     const feesDisplay = farmFeesHTML(r.poolInfo, meta.fees);
     const aprDisplay = valuation.apr || meta.apr;
     const aprValueHTML = isDesignProto
@@ -5468,10 +5815,10 @@ const PULSE_ID     = 369;
     const rewardsMetricClass = isDesignProto ? ' farm-proto-rewards' : '';
     const rewardsLabel = isDesignProto ? 'Rewards' : 'Pending';
     const pendingValueHTML = isDesignProto
-      ? `<span class="farm-rewards-tokenline">${tokenLogoHTML('DISTROX')}<span>${pendingDisplay} DISTROX</span></span>`
+      ? `<span class="farm-rewards-tokenline">${tokenLogoHTML('DISTROX')}<span>${pendingDisplay} DISTROX</span>${rewardProjectionButtonHTML(r, valuation)}</span>`
       : rewardTokenValueHTML(pendingDisplay);
     const pendingUsdHTML = isDesignProto
-      ? `<div class="farm-rewards-usd" id="farm-pending-usd-${r.pid}">${pendingSub || '$0.00'}</div>`
+      ? `<div class="farm-rewards-usd" id="farm-pending-usd-${r.pid}">${pendingSub || '$0.00 USD'}</div>`
       : `<div class="farm-proto-sub" id="farm-pending-usd-${r.pid}">${pendingSub}</div>`;
     const claimButtonHTML = `<button class="farm-claim-btn" id="farm-btn-${r.pid}"
                 onclick="farmsClaimFarm(${r.pid}, '${r.farm.label}')"
@@ -5497,6 +5844,8 @@ const PULSE_ID     = 369;
     const walletMaxDisabled = r.disconnected || r.walletLp === 0n ? 'disabled' : '';
     const approveDisabled = r.disconnected || (r.walletLp === 0n && r.staked === 0n) ? 'disabled' : '';
     const allowanceDisplay = r.allowance !== undefined ? fmtFarmAllowance(r.allowance) : '0';
+    const lpBreakdownOpen = farmLpExpanded.has(r.pid);
+    const lpToggleText = lpBreakdownOpen ? '[-]' : '[+]';
     return `
       <div class="${cardClass}" id="farm-card-${r.pid}">
         <div class="farm-hdr">
@@ -5530,14 +5879,20 @@ const PULSE_ID     = 369;
             <div class="farm-proto-sub"><span class="farm-remaining-usd">${tokenLogoHTML('DISTROX')}${remainingRewardsSubHTML}</span></div>
           </div>
           <div class="farm-proto-metric${mainMetricClass}">
-            <div class="farm-proto-label">Staked</div>
+            <div class="farm-proto-label farm-staked-label">
+              <span>Staked</span>
+              <button class="farm-lp-toggle" id="farm-lp-toggle-${r.pid}" type="button"
+                aria-expanded="${lpBreakdownOpen ? 'true' : 'false'}"
+                aria-controls="farm-lp-breakdown-${r.pid}"
+                onclick="event.stopPropagation(); farmsToggleLpBreakdown(${r.pid})">${lpToggleText}</button>
+            </div>
             <div class="farm-balance-value-row">
               <div class="farm-proto-value clickable" id="farm-staked-${r.pid}"
                 onclick="farmsFillInput(${r.pid},'staked')" title="Click to fill amount">${yourStakedDisplay}</div>
               <button class="farm-balance-max" type="button"
                 id="farm-staked-max-${r.pid}" onclick="farmsFillInput(${r.pid},'staked')" ${stakedMaxDisabled}>[MAX]</button>
             </div>
-            <div class="farm-proto-sub">${yourStakedSub}</div>
+            <div class="farm-proto-sub" id="farm-staked-sub-${r.pid}">${yourStakedSub}</div>
           </div>
           <div class="farm-proto-metric${mainMetricClass}${rewardsMetricClass}">
             <div class="farm-proto-label">${rewardsLabel}</div>
@@ -5549,6 +5904,7 @@ const PULSE_ID     = 369;
               ${isDesignProto ? '' : claimButtonHTML}
             </div>
           </div>
+          ${farmLpBreakdownHTML(r, lpBreakdownOpen)}
           ${timeLeftMetricHTML}
         </div>
         ${claimRowHTML}
@@ -5624,7 +5980,7 @@ const PULSE_ID     = 369;
               <div class="farm-table-panel">
                 <div class="farm-table-info">
                   <div class="farm-table-info-line">Your Staked: ${fmtFarm(r.staked)}</div>
-                  <div class="farm-table-usd">${r.valuation?.userStakedUsd || '$0.00'}</div>
+                  <div class="farm-table-usd">${withUsdLabel(r.valuation?.userStakedUsd || '$0.00')}</div>
                   <a class="farm-table-scan" href="https://scan.pulsechain.com/address/${r.farm.lp}" target="_blank" rel="noopener">View on PulseScan</a>
                 </div>
                 <div class="farm-table-rewards">
@@ -5633,7 +5989,7 @@ const PULSE_ID     = 369;
                     ${tokenLogoHTML('DISTROX')}
                     <span>DISTROX</span>
                   </div>
-                  <div class="farm-table-usd" style="text-align:center">${r.valuation?.pendingUsd || '$0.00'}</div>
+                  <div class="farm-table-usd" style="text-align:center">${withUsdLabel(r.valuation?.pendingUsd || '$0.00')}</div>
                   <div class="farm-table-claim-row">
                     <button class="farm-claim-btn" id="farm-btn-${r.pid}"
                       onclick="farmsClaimFarm(${r.pid}, '${r.farm.label}')"
@@ -5681,6 +6037,21 @@ const PULSE_ID     = 369;
     document.querySelectorAll('.farm-table-main').forEach(el => el.classList.remove('is-open'));
     detail.hidden = !willOpen;
     row.classList.toggle('is-open', willOpen);
+  }
+
+  function toggleLpBreakdown(pid) {
+    const numericPid = Number(pid);
+    const detail = document.getElementById(`farm-lp-breakdown-${pid}`);
+    const toggle = document.getElementById(`farm-lp-toggle-${pid}`);
+    if (!detail) return;
+    const willOpen = detail.hidden;
+    detail.hidden = !willOpen;
+    if (toggle) {
+      toggle.textContent = willOpen ? '[-]' : '[+]';
+      toggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+    }
+    if (willOpen) farmLpExpanded.add(numericPid);
+    else farmLpExpanded.delete(numericPid);
   }
 
   function hasStakedFarm(r) {
@@ -5813,17 +6184,18 @@ const PULSE_ID     = 369;
     });
   }
 
-  function setFarmPendingDom(pid, pending, valuation = null) {
+  function setFarmPendingDom(pid, pending, valuation = null, farmResult = null) {
     const pendingEl = document.getElementById(`farm-pending-${pid}`);
     const pendingUsdEl = document.getElementById(`farm-pending-usd-${pid}`);
     const claimBtn = document.getElementById(`farm-btn-${pid}`);
     const pendingDisplay = valuation?.pending || fmtFarm(pending);
-    const pendingUsd = valuation?.pendingUsd || '$0.00';
+    const pendingUsd = withUsdLabel(valuation?.pendingUsd || '$0.00');
+    const projectionFarm = farmResult || lastFarmResults.find(r => r.pid === pid);
 
     if (pendingEl) {
       const isProtoCard = document.getElementById(`farm-card-${pid}`)?.classList.contains('farm-design-proto');
       pendingEl.innerHTML = isProtoCard
-        ? `<span class="farm-rewards-tokenline">${tokenLogoHTML('DISTROX')}<span>${pendingDisplay} DISTROX</span></span>`
+        ? `<span class="farm-rewards-tokenline">${tokenLogoHTML('DISTROX')}<span>${pendingDisplay} DISTROX</span>${rewardProjectionButtonHTML(projectionFarm, valuation || projectionFarm?.valuation || {})}</span>`
         : rewardTokenValueHTML(pendingDisplay);
     }
     if (pendingUsdEl) pendingUsdEl.textContent = pendingUsd;
@@ -5831,10 +6203,10 @@ const PULSE_ID     = 369;
   }
 
   function applyClaimedFarmState(pid) {
-    setFarmPendingDom(pid, 0n, { pending: fmtFarm(0n), pendingUsd: '$0.00' });
+    setFarmPendingDom(pid, 0n, { pending: fmtFarm(0n), pendingUsd: '$0.00 USD' });
     const idx = lastFarmResults.findIndex(r => r.pid === pid);
     if (idx >= 0) {
-      const valuation = { ...(lastFarmResults[idx].valuation || {}), pending: fmtFarm(0n), pendingUsd: '$0.00' };
+      const valuation = { ...(lastFarmResults[idx].valuation || {}), pending: fmtFarm(0n), pendingUsd: '$0.00 USD' };
       lastFarmResults[idx] = { ...lastFarmResults[idx], pending: 0n, valuation };
     }
   }
@@ -5850,7 +6222,7 @@ const PULSE_ID     = 369;
     }
 
     if (usdEl) {
-      usdEl.textContent = valuation?.remainingRewardsUsd || (liveRemaining ? 'DISTROX rewards' : '');
+      usdEl.textContent = withUsdLabel(valuation?.remainingRewardsUsd || (liveRemaining ? 'DISTROX rewards' : ''));
       if (valuation?.rewardScaledPrice) usdEl.setAttribute('data-farm-remaining-usd', '');
       else usdEl.removeAttribute('data-farm-remaining-usd');
     }
@@ -5879,7 +6251,7 @@ const PULSE_ID     = 369;
     if (!r) return;
     try {
       const farmC = new ethers.Contract(FARM_CONTRACT, FARM_ABI, wProvider);
-      const lpC   = new ethers.Contract(r.farm.lp, ['function balanceOf(address) view returns (uint256)'], wProvider);
+      const lpC   = new ethers.Contract(r.farm.lp, LP_ABI, wProvider);
       const [info, pending, walletLp, allowance, totalStaked, poolInfo] = await Promise.all([
         farmC.userInfo(pid, wAddr),
         farmC.pendingReward(pid, wAddr),
@@ -5889,10 +6261,15 @@ const PULSE_ID     = 369;
         farmC.poolInfo(pid).catch(() => null)
       ]);
       const staked = info.amount ?? info[0] ?? 0n;
-      const valuation = await fetchNexionValuation(wProvider, r.farm, poolInfo, totalStaked, staked, pending);
+      const lpTokens = Array.isArray(r.lpTokens) ? r.lpTokens : [];
+      const [valuation, lpBreakdown] = await Promise.all([
+        fetchNexionValuation(wProvider, r.farm, poolInfo, totalStaked, staked, pending),
+        fetchLpBreakdown(wProvider, r.farm, staked, lpTokens[0], lpTokens[1])
+      ]);
       // Update DOM
       const walletEl = document.getElementById(`farm-wallet-${pid}`);
       const stakedEl = document.getElementById(`farm-staked-${pid}`);
+      const stakedSubEl = document.getElementById(`farm-staked-sub-${pid}`);
       const pendingEl = document.getElementById(`farm-pending-${pid}`);
       const pendingUsdEl = document.getElementById(`farm-pending-usd-${pid}`);
       const totalEl = document.getElementById(`farm-total-staked-${pid}`);
@@ -5903,17 +6280,19 @@ const PULSE_ID     = 369;
       const approveBtn = document.getElementById(`farm-approve-${pid}`);
       if (walletEl)  walletEl.textContent  = fmtFarm(walletLp);
       if (stakedEl)  stakedEl.textContent  = valuation?.userStaked || fmtFarm(staked);
+      if (stakedSubEl) stakedSubEl.textContent = farmStakedSubText({ ...r, staked, totalStaked }, valuation || {});
       if (allowanceEl) allowanceEl.textContent = fmtFarmAllowance(allowance);
       if (walletMaxBtn) walletMaxBtn.disabled = walletLp <= 0n;
       if (stakedMaxBtn) stakedMaxBtn.disabled = staked <= 0n;
       if (approveBtn) approveBtn.disabled = walletLp <= 0n && staked <= 0n;
-      setFarmPendingDom(pid, pending, valuation);
+      setFarmPendingDom(pid, pending, valuation, { ...r, staked, totalStaked, poolInfo });
       setFarmRemainingDom(pid, valuation, poolInfo);
+      setFarmLpBreakdownDom(pid, lpBreakdown);
       if (totalEl && typeof totalStaked === 'bigint') totalEl.textContent = valuation?.totalStaked || fmtFarm(totalStaked);
       // Update cached results so fillInput stays correct
       const idx = lastFarmResults.findIndex(r => r.pid === pid);
       if (idx >= 0) {
-        lastFarmResults[idx] = { ...lastFarmResults[idx], staked, pending, walletLp, allowance, totalStaked, poolInfo, valuation };
+        lastFarmResults[idx] = { ...lastFarmResults[idx], staked, pending, walletLp, allowance, totalStaked, poolInfo, valuation, lpBreakdown };
         if (farmStakedOnly && !hasStakedFarm(lastFarmResults[idx])) renderFarmResults(lastFarmResults, true);
       }
     } catch(e) { console.error('refreshFarmData failed:', e); }
@@ -6112,7 +6491,7 @@ const PULSE_ID     = 369;
     });
     window.ethereum.on('chainChanged', () => { disconnectWallet(); showDisconnected(); });
   }
-  return { init, connectWallet, refreshAll, disconnectWallet, copyAddr, copyLp, setFarmView, setStakedFilter, goToFarm, fillInput, updateApproveLabel, approveFarm, stakeFarm, unstakeFarm, claimFarm, toggleTableRow };
+  return { init, connectWallet, refreshAll, disconnectWallet, copyAddr, copyLp, setFarmView, setStakedFilter, goToFarm, fillInput, updateApproveLabel, approveFarm, stakeFarm, unstakeFarm, claimFarm, toggleTableRow, toggleLpBreakdown };
 })();
 function farmsConnectWallet(){ return window.FarmsApp.connectWallet(); }
 function farmsRefreshAll(){ return window.FarmsApp.refreshAll(); }
@@ -6129,6 +6508,7 @@ function farmsStakeFarm(pid){ return window.FarmsApp.stakeFarm(pid); }
 function farmsUnstakeFarm(pid){ return window.FarmsApp.unstakeFarm(pid); }
 function farmsClaimFarm(pid, label){ return window.FarmsApp.claimFarm(pid, label); }
 function farmsToggleTableRow(pid){ return window.FarmsApp.toggleTableRow(pid); }
+function farmsToggleLpBreakdown(pid){ return window.FarmsApp.toggleLpBreakdown(pid); }
 </script>
 
 <script>
