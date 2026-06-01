@@ -5,8 +5,16 @@
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CashX — Treasury-Backed Token on PulseChain</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&family=Michroma&family=Bebas+Neue&display=swap" rel="stylesheet"/>
-<link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link rel="preconnect" href="https://api.fontshare.com"/>
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&family=Michroma&family=Bebas+Neue&display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
+<noscript>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&family=Michroma&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap" rel="stylesheet"/>
+</noscript>
 <style>
 :root {
   --bg:       #0a0e1a;
@@ -39,7 +47,7 @@
       opacity:0.5}
 
    /* ── NAV ── */
-    nav{position:fixed;top:0;left:0;right:0;z-index:200;height:78px;padding:0 40px;
+    nav{position:fixed;top:0;left:0;right:0;z-index:3000;height:78px;padding:0 40px;
     display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
     background:linear-gradient(90deg,rgba(7,8,16,0.82),rgba(16,10,28,0.6),rgba(7,8,16,0.82));
     backdrop-filter:blur(22px) saturate(160%);-webkit-backdrop-filter:blur(22px) saturate(160%);
@@ -48,15 +56,16 @@
     .nav-left{display:flex;align-items:center;gap:10px}
     .nav-center{display:flex;align-items:center;justify-content:center}
     .nav-right{display:flex;align-items:center;justify-content:flex-end;gap:10px}
-    .nav-tabs{gap:8px}
-    .nav-tab{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:0.9rem;
-      letter-spacing:0.14em;text-transform:uppercase;text-decoration:none;cursor:pointer;
-      padding:10px 20px;color:rgba(255,255,255,0.72);background:rgba(255,255,255,0.045);
-      border:1px solid rgba(255,255,255,0.12);border-radius:999px;
-      transition:color 0.2s,background 0.2s,border-color 0.2s,box-shadow 0.2s,transform 0.2s;white-space:nowrap}
-    .nav-tab:hover{color:#fff;background:rgba(185,41,214,0.18);border-color:rgba(200,85,247,0.34);transform:translateY(-1px)}
-    .nav-tab.active{color:#fff;background:linear-gradient(135deg,#b929d6,#7c2cff);
-      border-color:rgba(255,255,255,0.18);box-shadow:0 0 24px rgba(185,41,214,0.32)}
+    .nav-tabs{display:flex;align-items:center;gap:8px;padding:8px;
+      min-height:54px;border:1px solid rgba(255,255,255,0.13);border-radius:999px;
+      background:rgba(5,8,19,0.82);box-shadow:inset 0 1px 0 rgba(255,255,255,0.05),0 18px 48px rgba(0,0,0,0.28)}
+    .nav-tab{font-family:'Space Mono',monospace;font-weight:700;font-size:0.76rem;
+      letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;cursor:pointer;
+      padding:12px 24px;color:rgba(232,236,255,0.78);background:transparent;border:1px solid transparent;
+      border-radius:999px;transition:color 0.2s,background 0.2s,border-color 0.2s,box-shadow 0.2s,transform 0.2s;white-space:nowrap}
+    .nav-tab:hover{color:#fff;background:rgba(200,100,255,0.1);border-color:rgba(200,100,255,0.3);transform:translateY(-1px)}
+    .nav-tab.active{color:#fff;background:linear-gradient(180deg,rgba(120,30,160,0.78),rgba(70,10,110,0.9));
+      border-color:rgba(200,100,255,0.78);box-shadow:0 0 0 1px rgba(200,100,255,0.16),0 0 22px rgba(180,80,255,0.45),inset 0 1px 0 rgba(255,255,255,0.16)}
     .nav-logo{font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:3.2rem;
     letter-spacing:0.06em;text-transform:uppercase;
     background:linear-gradient(90deg,#ff8aa8 0%,#d65cff 58%,#35c8ff 100%);
@@ -78,6 +87,9 @@
     box-shadow:0 0 18px rgba(255,255,255,0.08);
     opacity:1;transition:opacity 0.2s,background 0.2s,transform 0.2s;text-decoration:none;flex-shrink:0}
     .nav-icon:hover{transform:translateY(-1px);background:rgba(255,255,255,0.85)}
+    #home-view > nav,
+    #dashboard-view > .dashboard-nav,
+    #farms-view > .dashboard-nav{position:fixed;top:0;left:0;right:0;z-index:3000}
     
 
     /* ── SHARED ── */
@@ -391,7 +403,6 @@
     .toko-card:hover{transform:translateY(-4px);border-color:rgba(200,85,247,0.5);
       box-shadow:0 18px 50px rgba(0,0,0,0.28),0 0 28px rgba(200,85,247,0.12);
       background:linear-gradient(180deg,rgba(24,31,52,0.96),rgba(12,16,30,0.82))}
-    .toko-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)}
     .toko-card::after{content:attr(data-step);position:absolute;right:18px;top:16px;
       font-family:'Space Mono',monospace;font-size:0.58rem;color:rgba(240,236,224,0.34);
       letter-spacing:0.1em}
@@ -428,7 +439,6 @@
     .tf-row{display:flex;align-items:flex-start;gap:14px;padding:16px 18px;
       border:1px solid rgba(255,160,50,0.14);background:linear-gradient(180deg,rgba(21,27,46,0.9),rgba(10,14,26,0.7));
       border-radius:10px;position:relative;overflow:hidden;transition:transform 0.2s,border-color 0.2s,box-shadow 0.2s}
-    .tf-row::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)}
     .tf-row:hover{transform:translateY(-3px);border-color:rgba(200,85,247,0.42);box-shadow:0 16px 42px rgba(0,0,0,0.22)}
     .tf-icon{font-size:1.35rem;flex-shrink:0;margin-top:1px;width:36px;height:36px;border-radius:50%;
       display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1)}
@@ -488,45 +498,6 @@
       border-radius:10px;font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);line-height:1.7;margin-top:20px}
     .wn-addr{color:var(--blue);word-break:break-all;display:block;margin-top:6px}
 
-    /* ── HOW TO BUY ── */
-    .htb-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
-    .steps{display:flex;flex-direction:column;gap:12px}
-    .step{display:grid;grid-template-columns:48px 1fr;gap:20px;align-items:flex-start;
-      padding:20px;border:1px solid rgba(255,160,50,0.13);border-radius:12px;background:linear-gradient(180deg,rgba(21,27,46,0.82),rgba(10,14,26,0.62));
-      transition:transform 0.2s,border-color 0.2s,box-shadow 0.2s}
-    .step:hover{transform:translateY(-2px);border-color:rgba(200,85,247,0.38);box-shadow:0 14px 34px rgba(0,0,0,0.2)}
-    .step-n{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:2rem;
-      letter-spacing:-0.03em;background:var(--grad);-webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;line-height:1;padding-top:2px}
-    .step-title{font-weight:600;font-size:0.95rem;margin-bottom:5px}
-    .step-desc{color:var(--muted);font-size:0.85rem;line-height:1.75}
-    .step-desc a{color:var(--blue);text-decoration:none}
-    .step-desc a:hover{text-decoration:underline}
-    .htb-right{display:flex;flex-direction:column;gap:14px}
-    .contract-panel{border:1px solid rgba(255,160,50,0.15);padding:24px;background:linear-gradient(180deg,rgba(21,27,46,0.9),rgba(10,14,26,0.72));
-      border-radius:14px;box-shadow:0 18px 54px rgba(0,0,0,0.2)}
-    .cp-lbl{font-family:'Space Mono',monospace;font-size:0.54rem;color:var(--muted);
-      letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px}
-    .cp-addr{font-family:'Space Mono',monospace;font-size:0.66rem;color:var(--text);
-      word-break:break-all;margin-bottom:12px;line-height:1.6}
-    .cp-copy{font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.08em;
-      text-transform:uppercase;padding:10px;background:var(--grad-btn);color:#fff;
-      border:none;cursor:pointer;width:100%;transition:opacity 0.2s}
-    .cp-copy:hover{opacity:0.82}
-    .links-panel{border:1px solid rgba(255,160,50,0.13);background:rgba(15,20,34,0.72);border-radius:12px;overflow:hidden}
-    .lrow{display:flex;align-items:center;justify-content:space-between;
-      padding:12px 18px;border-bottom:1px solid var(--border)}
-    .lrow:last-child{border-bottom:none}
-    .lrow-lbl{font-size:0.85rem;color:var(--muted)}
-    .lrow a{font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.06em;
-      color:var(--purple);text-decoration:none;border:1px solid var(--border2);
-      padding:5px 12px;transition:all 0.2s}
-    .lrow a:hover{background:var(--purple);color:#fff;border-color:var(--purple)}
-    .slippage-note{border:1px solid rgba(155,109,255,0.22);padding:16px 18px;background:rgba(155,109,255,0.06);border-radius:12px}
-    .sn-lbl{font-family:'Space Mono',monospace;font-size:0.54rem;color:var(--purple);
-      letter-spacing:0.1em;text-transform:uppercase;margin-bottom:5px}
-    .sn-txt{font-size:0.82rem;color:var(--muted);line-height:1.65}
-
     /* ── DASHBOARD CTA ── */
     .dash-cta{background:linear-gradient(135deg,rgba(21,27,46,0.92),rgba(10,14,26,0.78));
       border:1px solid rgba(255,160,50,0.14);border-radius:18px;box-shadow:0 28px 100px rgba(0,0,0,0.22);
@@ -579,7 +550,7 @@
     @media(max-width:860px){
       .hero{grid-template-columns:1fr;padding:90px 28px 60px}
       .hero-img-wrap{display:none}
-      .treas-grid,.eco-grid,.htb-grid,.toko-grid{grid-template-columns:1fr}
+      .treas-grid,.eco-grid,.toko-grid{grid-template-columns:1fr}
       .founder-section{grid-template-columns:1fr;padding:70px 28px}
       .founder-img{max-width:380px}
       .toko-head{grid-template-columns:1fr}
@@ -625,23 +596,25 @@
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     
     #dashboard-view{
-      background:
-        url("dashboard-bg.png") center top / 100% auto fixed no-repeat,
-        var(--bg);
+      background:none;
       color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.5;display:flex;flex-direction:column;min-height:100vh;overflow-x:hidden;
       position:relative;
-      animation:pgIn 0.22s ease both;
+      animation:pgIn 0.22s ease backwards;
     }
     #dashboard-view::before,
-    #farms-view::before{
-      content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
-      background:rgba(2,4,12,0.42);
-    }
+    #farms-view::before{ display:none }
+    .page-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;
+      background:url("dash-bg-clouds.jpg") center center / cover no-repeat;
+      display:none}
+    #dashboard-view:not([hidden]) ~ .page-bg,
+    #farms-view:not([hidden]) ~ .page-bg{ display:block }
+    body:has(#dashboard-view:not([hidden]))::after,
+    body:has(#farms-view:not([hidden]))::after{ display:none }
     #dashboard-view > :not(.dashboard-nav),
     #farms-view > :not(.dashboard-nav){position:relative;z-index:1}
     @keyframes pgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-    #dashboard-view .dashboard-nav{position:fixed;z-index:1200}
+    #dashboard-view .dashboard-nav{position:fixed;z-index:3000}
     #dashboard-view .nav-logo{cursor:pointer}
     #dashboard-view .nav-right{gap:8px}
     #dashboard-view .nav-dash-btn{font-size:0.78rem;padding:9px 18px}
@@ -691,7 +664,7 @@
 
     /* STAT CARDS */
     .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;background:transparent}
-    .card{background:#0d1628;padding:20px 18px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,0.1);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.4);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+    .card{background:linear-gradient(145deg,#2a2440 0%,#1b1730 58%,#151326 100%);padding:20px 18px;position:relative;overflow:hidden;border:1px solid rgba(155,109,255,0.32);border-radius:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.07),0 12px 34px rgba(0,0,0,0.22);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
     .card::before,.panel::before,.dash-section::before,.chart-frame::before{display:none}
     .card::after,.panel::after,.dash-section::after,.chart-frame::after{display:none}
     .card:hover,.panel:hover,.dash-section:hover,.chart-frame:hover{transform:translateY(-3px);border-color:rgba(155,109,255,0.4);box-shadow:0 12px 40px rgba(0,0,0,0.5),0 0 20px rgba(155,109,255,0.12)}
@@ -1075,11 +1048,9 @@
     .section-title{font-family:'Space Mono',monospace;font-size:.82rem;color:#fff;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
     .section-note{font-family:'Space Mono',monospace;font-size:.55rem;color:var(--muted2);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
     .section-body{padding:16px;display:flex;flex-direction:column;gap:14px;flex:1}
-    .burn-layout{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:18px;align-items:center}
     .section-big{font-family:'DM Sans',sans-serif;font-weight:300;font-size:clamp(2rem,3.2vw,3.35rem);letter-spacing:-.055em;line-height:1;color:#fff}
     .section-big .ld{font:inherit;color:var(--muted2);letter-spacing:0}
     .section-sub{font-family:'Space Mono',monospace;font-size:.66rem;color:var(--muted);letter-spacing:.05em;margin-top:9px}
-    .section-gauge svg{width:210px;height:210px;display:block}
     .section-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
     .section-stat{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.11);border-radius:10px;padding:11px 12px;min-width:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
     .section-label{font-family:'Space Mono',monospace;font-size:.66rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -1087,7 +1058,7 @@
     .section-meta{font-family:'Space Mono',monospace;font-size:.64rem;color:var(--muted2);margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .market-price{font-family:'DM Sans',sans-serif;font-weight:300;font-size:clamp(1.9rem,2.8vw,2.8rem);letter-spacing:-.055em;color:#fff;line-height:1}
     .activity-list{display:grid;gap:10px}
-    .activity-item{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.11);border-radius:10px;padding:13px;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+    .activity-item{background:rgba(18,6,38,0.5);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(200,100,255,0.25);border-radius:10px;padding:13px;box-shadow:0 8px 32px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.08)}
     .activity-amount{font-family:'DM Sans',sans-serif;font-weight:300;font-size:1.32rem;color:#fff;letter-spacing:-.03em}
     .recent-burns-card{border:1px solid rgba(255,255,255,.11);border-radius:10px;background:rgba(255,255,255,.04);overflow:hidden;min-height:0}
     .recent-burns-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.08)}
@@ -1115,22 +1086,22 @@
     .dash-section:nth-child(2) .section-stat{display:flex;flex-direction:column;justify-content:center}
     .dash-section:nth-child(1) .section-stat{min-height:92px}
     .dash-section:nth-child(2) .section-stat{min-height:0}
-    .chart-frame{width:100%;height:600px;border:1px solid rgba(255,255,255,0.1);border-radius:12px;overflow:hidden;position:relative;background:#0d1628;box-shadow:0 8px 32px rgba(0,0,0,0.4);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
-    .reveal-card{opacity:0;translate:0 22px;filter:blur(5px);transition:opacity .42s ease,translate .46s cubic-bezier(.2,.8,.2,1),filter .42s ease,transform .18s ease,border-color .18s ease,box-shadow .18s ease;transition-delay:var(--reveal-delay,0ms)}
-    .reveal-card.is-visible{opacity:1;translate:0 0;filter:blur(0)}
+    .chart-frame{width:100%;height:600px;border:1px solid rgba(155,109,255,0.32);border-radius:12px;overflow:hidden;position:relative;background:linear-gradient(145deg,#2a2440 0%,#1b1730 58%,#151326 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,0.07),0 12px 34px rgba(0,0,0,0.22);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+    .reveal-card{opacity:1;translate:0 0;filter:none;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+    .reveal-card.is-visible{opacity:1;translate:0 0;filter:none}
     .reveal-card.has-revealed{transition-delay:0ms}
-    @media(max-width:1180px){.section-grid{grid-template-columns:1fr}.burn-layout{grid-template-columns:minmax(0,1fr) 210px}}
-    @media(max-width:700px){.burn-layout{grid-template-columns:1fr}.section-gauge{display:flex;justify-content:center}.section-stats{grid-template-columns:1fr}.section-head{align-items:flex-start;flex-direction:column}.section-note{white-space:normal}}
+    @media(max-width:1180px){.section-grid{grid-template-columns:1fr}}
+    @media(max-width:700px){.section-stats{grid-template-columns:1fr}.section-head{align-items:flex-start;flex-direction:column}.section-note{white-space:normal}}
 
     /* DASHBOARD CONCEPT LAB */
     #dashboard-view{
       --dash-page:#090817;
       --bg:var(--dash-page);
-      --dash-panel:#111027;
-      --dash-panel-strong:#171337;
+      --dash-panel:#151326;
+      --dash-panel-strong:#2a2440;
       --dash-panel-soft:rgba(255,255,255,0.055);
-      --dash-border:rgba(255,255,255,0.12);
-      --dash-border-strong:rgba(255,255,255,0.2);
+      --dash-border:rgba(155,109,255,0.32);
+      --dash-border-strong:rgba(155,109,255,0.55);
       --dash-text:#f7f4ff;
       --dash-muted:#958ba9;
       --dash-faint:#5d536f;
@@ -1140,53 +1111,55 @@
       --dash-good:#4ade80;
       --dash-warn:#fbbf24;
       --dash-chart-fill:rgba(216,92,255,0.12);
-      --dash-shadow:0 22px 70px rgba(0,0,0,0.38);
+      --dash-shadow:inset 0 1px 0 rgba(255,255,255,0.07),0 12px 34px rgba(0,0,0,0.22);
       --dash-radius:8px;
     }
     #dashboard-view::before{background:linear-gradient(180deg,rgba(3,5,12,0.78),rgba(3,5,12,0.9))}
     #dashboard-view .dashboard-main{padding:94px 20px 28px;max-width:none;gap:0}
     #view-home.dash-concepts{display:block;flex:1;width:100%}
-    .dash-stage{width:100%;max-width:1440px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,340px);gap:14px;align-items:stretch}
+    .dash-stage{width:100%;max-width:1440px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
     .dash-stage,
     .dash-stage *{letter-spacing:0}
     .dash-stage > *{min-width:0}
-    .dash-stage > .rv-top{grid-column:1 / -1;grid-row:1;order:1}
-    .dash-stage > .rv-top{width:100%;max-width:none;align-self:stretch}
-    .dash-stage > .rv-top .rv-card{display:grid;grid-template-columns:minmax(160px,210px) minmax(260px,1fr) minmax(320px,0.9fr);gap:12px;align-items:stretch;padding:14px 16px;border-radius:var(--dash-radius);background:linear-gradient(135deg,color-mix(in srgb,var(--dash-accent) 10%,transparent),var(--dash-panel-strong));border:1px solid var(--dash-border);box-shadow:var(--dash-shadow)}
+    .dash-stage > .rv-top{order:-1;width:100%;align-self:stretch}
+    .dash-stage > .rv-top .rv-card{display:grid;grid-template-columns:1fr;gap:12px;align-items:stretch;padding:0;border-radius:0;background:transparent;border:none;box-shadow:none}
     .dash-stage > .rv-top .rv-section-label{margin:0;min-height:58px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:9px;color:var(--dash-accent)}
     .dash-stage > .rv-top .rv-disconnect-btn{padding:4px 10px;font-size:0.48rem}
-    .dash-stage > .rv-top .rv-wallet-row{margin:0;min-height:58px;padding:10px 14px;border-color:var(--dash-border);background:var(--dash-panel-soft)}
-    .dash-stage > .rv-top .rv-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-    .dash-stage > .rv-top .rv-bal{min-height:86px;padding:12px 14px;display:flex;flex-direction:column;justify-content:center;border-color:var(--dash-border);background:var(--dash-panel-soft)}
+    .dash-stage > .rv-top .rv-grid{grid-template-columns:repeat(2,minmax(220px,300px));gap:12px;justify-content:start}
+    .dash-stage > .rv-top .rv-bal{min-height:86px;padding:12px 14px;display:flex;flex-direction:column;justify-content:center;border:1px solid rgba(200,100,255,0.3);background:rgba(18,6,38,0.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.08)}
     .dash-stage > .rv-top .rv-tok-name{margin-bottom:4px}
     .dash-stage > .rv-top .rv-tok-val{font-size:1.25rem}
-    .dash-stage > .rv-top .rv-tok-usd{font-size:0.72rem}
+    .dash-stage > .rv-top .rv-tok-usd{font-size:0.72rem;color:var(--dash-faint)}
     .dash-stage > .rv-top .rv-token-head{margin-bottom:8px}
     .dash-stage > .rv-top .rv-token-logo{width:36px;height:36px}
     .dash-stage > .rv-top .rv-token-title{font-size:1rem}
     .dash-stage > .rv-top .rv-wallet-label{font-size:0.5rem}
+    .rv-grid-3{grid-template-columns:minmax(380px,3fr) minmax(180px,1fr) minmax(180px,1fr)!important}
+    .rv-price-icon{width:34px;height:34px;border-radius:50%;background:rgba(155,109,255,0.18);border:1px solid rgba(155,109,255,0.32);display:flex;align-items:center;justify-content:center;color:var(--dash-accent);flex-shrink:0}
+    .rv-price-val{font-size:1.25rem!important;color:var(--dash-text)!important}
+    .rv-price-card .rv-price-val{font-size:2.2rem!important;letter-spacing:-0.02em}
+    .rv-price-card .rv-tok-usd{font-size:0.85rem!important}
+    .rv-price-card .rv-price-change{font-size:0.88rem}
+    .rv-price-change{font-family:'Space Mono',monospace;font-size:0.75rem;margin-top:6px;letter-spacing:0.04em;font-weight:700}
+    .rv-price-change.pct-up{color:#39ff7e}
+    .rv-price-change.pct-dn{color:#ff4e6a}
+    .rv-price-change.pct-neu{color:var(--dash-muted)}
+    .rv-price-card .rv-token-head{gap:10px;align-items:center}
+    .rv-price-card .rv-wallet-label{font-size:0.6rem!important;letter-spacing:0.14em}
+    .rv-price-card a:hover .rv-price-val,.rv-price-card a:hover .rv-tok-usd{opacity:0.75}
+    @keyframes rv-pulse{0%,100%{opacity:0.25}50%{opacity:0.6}}
+    .rv-loading{animation:rv-pulse 1.5s ease-in-out infinite;color:var(--muted2)!important}
 
     .dash-hero-shell{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,0.65fr);gap:14px;align-items:stretch}
-    .dash-market-strip{grid-column:1 / -1;display:grid;grid-template-columns:1.55fr repeat(5,minmax(0,1fr));gap:8px}
-    .dash-stage > .dash-market-strip{grid-column:1 / -1;grid-row:2;order:2}
-    .dash-market-lead,
-    .dash-market-cell,
     .dash-chart-panel,
     .dash-key-metric,
     .dash-section,
     .panel,
     .card{border-radius:var(--dash-radius);border-color:var(--dash-border);background:var(--dash-panel);box-shadow:var(--dash-shadow)}
-    .dash-market-lead{position:relative;overflow:hidden;padding:15px 16px;border:1px solid var(--dash-border);background:linear-gradient(135deg,color-mix(in srgb,var(--dash-accent) 16%,transparent),var(--dash-panel-strong))}
-    .dash-market-lead::after{content:"";position:absolute;right:12px;top:14px;width:42px;height:42px;border-radius:50%;background:radial-gradient(circle,var(--dash-accent),transparent 70%);opacity:.18}
-    .dash-label{font-family:'Space Mono',monospace;font-size:0.64rem;color:var(--dash-muted);text-transform:uppercase;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .dash-value{font-family:'DM Sans',sans-serif;font-size:1.15rem;font-weight:700;color:var(--dash-text);line-height:1.1;overflow-wrap:anywhere}
     .dash-value.big{font-size:2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .dash-price-link{display:inline-block;color:inherit;text-decoration:none}
-    .dash-price-link:hover .dash-value{color:#fff;text-decoration:none}
-    .dash-sub{font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--dash-faint);margin-top:7px;overflow-wrap:anywhere}
-    .dash-market-cell{padding:12px 13px;border:1px solid var(--dash-border);min-width:0;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(180deg,var(--dash-panel),rgba(255,255,255,0.035))}
 
-    .dash-chart-panel{min-height:390px;border:1px solid var(--dash-border);overflow:hidden;display:flex;flex-direction:column;background:linear-gradient(180deg,var(--dash-panel-strong),var(--dash-panel))}
+    .dash-chart-panel{min-height:390px;border:1px solid rgba(200,100,255,0.15);overflow:hidden;display:flex;flex-direction:column;background:rgba(255,255,255,0.03);border-radius:10px}
     .dash-chart-head{padding:16px 18px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
     .dash-chart-title{font-family:'DM Sans',sans-serif;font-size:1.45rem;font-weight:700;color:var(--dash-text);line-height:1.15}
     .dash-chart-meta{font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--dash-muted);text-transform:uppercase;margin-top:5px}
@@ -1195,7 +1168,7 @@
     .dash-chart-controls .chart-btn{border-radius:999px;border:none;color:var(--dash-muted);background:transparent;padding:6px 11px}
     .dash-chart-controls .chart-btn.active{background:var(--dash-accent);color:#101014}
     .dash-chart-wrap{height:315px;margin:12px 14px 14px;padding:8px;border:1px solid rgba(255,255,255,0.07);border-radius:var(--dash-radius);background:rgba(0,0,0,0.18)}
-    .dash-stage > .dash-chart-panel{grid-column:1;grid-row:3;order:3}
+    .dash-stage > .dash-chart-panel{width:100%}
     .dash-chart-panel .panel-body{padding:16px;gap:12px}
     .dash-chart-panel .chart-toggle-row{margin:0;align-items:flex-start}
     .dash-chart-panel .chart-title{font-family:'DM Sans',sans-serif;font-size:1.4rem;font-weight:700;color:var(--dash-text);text-transform:none}
@@ -1205,7 +1178,7 @@
     .dash-chart-panel .chart-wrap{height:315px;padding:8px;border:1px solid rgba(255,255,255,0.07);border-radius:var(--dash-radius);background:rgba(0,0,0,0.18)}
 
     .dash-stat-rail{display:grid;grid-template-columns:1fr;gap:10px}
-    .dash-key-metric{border:1px solid var(--dash-border);padding:14px 15px;min-width:0;position:relative;overflow:hidden;background:linear-gradient(145deg,var(--dash-panel),rgba(255,255,255,0.04))}
+    .dash-key-metric{border:1px solid var(--dash-border);padding:14px 15px;min-width:0;position:relative;overflow:hidden;background:linear-gradient(145deg,#2a2440 0%,#1b1730 58%,#151326 100%)}
     .dash-key-metric::before{content:"";position:absolute;inset:0 0 auto 0;height:2px;background:linear-gradient(90deg,var(--dash-accent),var(--dash-accent-2));opacity:.85}
     .dash-key-metric.primary{background:linear-gradient(145deg,color-mix(in srgb,var(--dash-accent) 18%,transparent),var(--dash-panel-strong))}
     .dash-key-metric .dash-value{font-size:1.48rem}
@@ -1213,7 +1186,7 @@
 
     .dash-lower-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(320px,0.95fr);gap:14px}
     .section-grid{grid-template-columns:minmax(0,1.1fr) minmax(390px,0.9fr);align-items:stretch}
-    .dash-section{overflow:hidden;min-width:0;background:linear-gradient(180deg,var(--dash-panel-strong),var(--dash-panel));border:1px solid var(--dash-border);align-self:stretch}
+    .dash-section{overflow:hidden;min-width:0;background:linear-gradient(145deg,#2a2440 0%,#1b1730 58%,#151326 100%);border:1px solid var(--dash-border);align-self:stretch}
     .section-head{border-bottom-color:var(--dash-border)}
     .section-title{color:var(--dash-text)}
     .section-note,.section-label,.section-sub{color:var(--dash-muted)}
@@ -1221,10 +1194,25 @@
     .section-stat,
     .activity-item,
     .source-card,
-    .contract-box{border-radius:var(--dash-radius);border-color:var(--dash-border);background:var(--dash-panel-soft);box-shadow:none}
+    .recent-burns-card,
+    .contract-box{border-radius:8px;border-color:rgba(155,109,255,0.32);
+      background:linear-gradient(145deg,#2a2440 0%,#1b1730 58%,#151326 100%);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,0.07),0 12px 34px rgba(0,0,0,0.22)}
     .section-big,.section-value,.activity-amount{color:var(--dash-text)}
     .section-meta,.source-card-note{color:var(--dash-faint)}
-    .section-gauge svg{max-width:190px}
+    .burn-compact-card{width:min(292px,100%);padding:20px 22px;border:1px solid rgba(155,109,255,0.32);border-radius:8px;
+      background:linear-gradient(145deg,#2a2440 0%,#1b1730 58%,#151326 100%);
+      color:var(--dash-text);box-shadow:inset 0 1px 0 rgba(255,255,255,0.07),0 12px 34px rgba(0,0,0,0.22)}
+    .burn-compact-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+    .burn-compact-icon{display:flex;align-items:center;justify-content:center;color:var(--dash-accent)}
+    .burn-compact-title{font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dash-muted)}
+    .burn-compact-value{font-family:'DM Sans',sans-serif;font-size:1.45rem;font-weight:400;letter-spacing:-0.035em;line-height:1.08;color:var(--dash-text)}
+    .burn-compact-token{font-family:'Space Mono',monospace;font-size:0.8rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--dash-accent);margin-top:8px}
+    .burn-compact-meta{font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--dash-faint);margin-top:7px}
+    .frameless-section{background:transparent;border:none;box-shadow:none;border-radius:0;overflow:visible}
+    .frameless-section:hover{transform:none;border-color:transparent;box-shadow:none}
+    .frameless-section .section-head{padding:0 4px 14px;border-bottom:none}
+    .frameless-section .section-body{padding:0;gap:20px}
     .sbar{height:8px;border-radius:999px}
     .sbar-fill{height:8px;border-radius:999px;background:linear-gradient(90deg,var(--dash-accent),var(--dash-accent-2))}
     .sbar-remain{background:color-mix(in srgb,var(--dash-accent-2) 14%,transparent)}
@@ -1234,7 +1222,6 @@
     .addr-chip{color:var(--dash-accent-2)}
 
     .dash-section:nth-child(1) .section-body{gap:20px}
-    .dash-section:nth-child(1) .burn-layout{grid-template-columns:minmax(0,1fr) 190px;gap:20px}
     .dash-section:nth-child(1) .section-body{justify-content:space-between}
     .dash-section:nth-child(1) .recent-burns-list{max-height:248px;overflow-y:auto}
     .dash-section:nth-child(1) .section-stats,
@@ -1251,46 +1238,61 @@
     .dash-section:nth-child(2) .contract-box.compact .cb-addr{margin:0;min-width:0}
     .dash-section:nth-child(2) .contract-box.compact .cb-copy{margin:0;width:auto;min-width:132px;white-space:nowrap}
 
-    .dash-burn-summary{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-    .dash-stage > .dash-burn-summary{grid-column:2;grid-row:3;order:3;grid-template-columns:1fr}
-    .dash-stage > .section-grid{grid-column:1 / -1;grid-row:4;order:4}
-    .dash-stage > .dash-top-burns{grid-column:1 / -1;grid-row:5;order:5}
-    .dash-burn-summary .card{padding:15px 16px;border:1px solid var(--dash-border);background:linear-gradient(145deg,var(--dash-panel),rgba(255,255,255,0.035));box-shadow:var(--dash-shadow)}
+    .dash-burn-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    /* new dashboard layout */
+    .dash-stat-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;background:rgba(10,3,22,0.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(200,100,255,0.2);border-radius:14px;padding:14px;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+    .dash-stat-item{background:rgba(18,6,38,0.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(200,100,255,0.25);border-radius:12px;padding:18px 20px;box-shadow:0 8px 32px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.08);position:relative;overflow:hidden}
+    .dash-stat-item::before{display:none}
+    .dash-stat-label{font-family:'Space Mono',monospace;font-size:0.54rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dash-muted);margin-bottom:10px;display:flex;align-items:center;gap:5px}
+    .dash-stat-num{font-family:'DM Sans',sans-serif;font-size:1.8rem;font-weight:300;letter-spacing:-0.04em;color:#fff;line-height:1}
+    .dash-stat-token{font-family:'Space Mono',monospace;font-size:0.62rem;color:#c864ff;text-transform:uppercase;letter-spacing:0.08em;margin-top:7px}
+    .dash-stat-sub{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--dash-faint);margin-top:5px;line-height:1.5}
+    .dash-main-row{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(240px,0.7fr);gap:14px;align-items:stretch;background:rgba(10,3,22,0.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(200,100,255,0.2);border-radius:14px;padding:14px;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+    .dash-stats-sidebar{display:flex;flex-direction:column;gap:10px}
+    .dash-metric-card{background:rgba(18,6,38,0.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(200,100,255,0.25);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.08);padding:16px 18px;flex-shrink:0}
+    .dash-metric-featured{padding:22px 22px;flex:1}
+    .dash-metric-label{font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dash-muted);margin-bottom:10px;display:flex;align-items:center;gap:5px}
+    .dash-metric-value{font-family:'DM Sans',sans-serif;font-size:1.35rem;font-weight:400;letter-spacing:-0.03em;color:var(--dash-text);line-height:1.1}
+    .dash-metric-value-lg{font-family:'DM Sans',sans-serif;font-size:1.85rem;font-weight:400;letter-spacing:-0.04em;color:var(--dash-text);line-height:1.05}
+    .dash-metric-token{font-family:'Space Mono',monospace;font-size:0.76rem;color:var(--dash-accent);text-transform:uppercase;letter-spacing:0.06em;margin-top:8px}
+    .dash-metric-sub{font-family:'Space Mono',monospace;font-size:0.64rem;color:var(--dash-faint);margin-top:5px;line-height:1.5}
+    .dash-lower-panels{display:grid;grid-template-columns:1fr;gap:14px;align-items:start}
+    .dash-recent-burns-panel{border:1px solid rgba(155,109,255,0.32);border-radius:12px;background:linear-gradient(145deg,#2a2440 0%,#1b1730 58%,#151326 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,0.07),0 12px 34px rgba(0,0,0,0.22);overflow:hidden}
+    .dash-recent-burns-panel .recent-burns-head{padding:12px 16px;border-bottom:1px solid rgba(155,109,255,0.2)}
+    .dash-recent-burns-panel .recent-burns-list{max-height:259px;overflow-y:auto}
+    .dash-activity-col{display:flex;flex-direction:column;gap:12px}
+    .dash-latest-pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .dash-burn-summary .card{padding:15px 16px;border:1px solid var(--dash-border);background:linear-gradient(145deg,#2a2440 0%,#1b1730 58%,#151326 100%);box-shadow:var(--dash-shadow)}
     .dash-burn-summary .card-lbl{font-size:0.66rem;color:var(--dash-muted);margin-bottom:9px}
     .dash-burn-summary .card-val{font-size:1.55rem;color:var(--dash-text)}
     .dash-burn-summary .burns-cashx{color:var(--dash-accent);font-size:1rem;line-height:1.2;margin-top:10px}
     .dash-burn-summary .burns-usd{font-size:0.95rem;line-height:1.2;margin-top:5px}
 
     .dash-data-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
-    .dash-top-burns{border:1px solid var(--dash-border);background:linear-gradient(180deg,var(--dash-panel-strong),var(--dash-panel));box-shadow:var(--dash-shadow)}
-    .dash-top-burns .panel-head{color:var(--dash-text);border-bottom:1px solid var(--dash-border)}
+    .dash-top-burns{border:1px solid rgba(200,100,255,0.2);background:rgba(10,3,22,0.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 8px 32px rgba(0,0,0,0.4);border-radius:14px}
+    .dash-top-burns .panel-head{color:var(--dash-text);border-bottom:1px solid var(--dash-border);border-radius:12px 12px 0 0}
     .dash-top-burns .btx-table-head{grid-template-columns:40px 1fr 1fr 1fr 1fr;background:var(--dash-panel-soft);border-bottom-color:var(--dash-border)}
     .dash-top-burns .btx-th{font-size:0.64rem;color:var(--dash-muted)}
     .dash-top-burns .btx-row{border-bottom-color:var(--dash-border)!important}
 
     @media(max-width:1180px){
-      .dash-stage{grid-template-columns:1fr}
-      .dash-stage > .dash-chart-panel,
-      .dash-stage > .dash-burn-summary{grid-column:1 / -1}
-      .dash-stage > .dash-chart-panel{grid-row:3}
-      .dash-stage > .dash-burn-summary{grid-row:4}
-      .dash-stage > .section-grid{grid-row:5}
-      .dash-stage > .dash-top-burns{grid-row:6}
-      .dash-stage > .dash-burn-summary{grid-template-columns:repeat(4,minmax(0,1fr))}
-      .dash-market-strip{grid-template-columns:repeat(3,minmax(0,1fr))}
-      .dash-market-lead{grid-column:1 / -1}
+      .dash-main-row{grid-template-columns:1fr}
+      .dash-stats-sidebar{flex-direction:row;flex-wrap:wrap}
+      .dash-stats-sidebar .dash-metric-card{flex:1 1 calc(50% - 5px);min-width:160px}
       .dash-hero-shell{grid-template-columns:1fr}
       .dash-stat-rail{grid-template-columns:repeat(2,minmax(0,1fr))}
       .dash-lower-grid{grid-template-columns:1fr}
-      .dash-stage > .rv-top .rv-card{grid-template-columns:minmax(160px,200px) minmax(240px,1fr) minmax(280px,0.95fr)}
-      .section-grid{grid-template-columns:1fr}
+      .dash-stage > .rv-top .rv-card{grid-template-columns:1fr}
     }
     @media(max-width:760px){
       #dashboard-view .dashboard-main{padding:104px 12px 20px}
-      .dash-market-strip,
       .dash-stat-rail,
-      .dash-burn-summary,
-      .dash-stage > .dash-burn-summary{grid-template-columns:1fr}
+      .dash-burn-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .dash-main-row{grid-template-columns:1fr}
+      .dash-stats-sidebar{flex-direction:row;flex-wrap:wrap}
+      .dash-stats-sidebar .dash-metric-card{flex:1 1 calc(50% - 5px)}
+      .dash-lower-panels{grid-template-columns:1fr}
+      .dash-latest-pair{grid-template-columns:1fr 1fr}
       .dash-chart-head{flex-direction:column}
       .dash-chart-controls{width:100%}
       .dash-chart-controls .chart-toggles{display:grid;grid-template-columns:repeat(4,1fr);width:100%}
@@ -1299,8 +1301,8 @@
       .dash-top-burns .btx-table-head{display:none}
       .dash-top-burns .btx-row{grid-template-columns:1fr!important;gap:6px}
       .dash-stage > .rv-top .rv-card{grid-template-columns:1fr}
+      .dash-stage > .rv-top .rv-grid{grid-template-columns:1fr}
       .dash-stage > .rv-top .rv-section-label{min-height:auto;flex-direction:row;align-items:center;justify-content:space-between}
-      .dash-section:nth-child(1) .burn-layout{grid-template-columns:1fr}
       .dash-section:nth-child(2) .activity-list{grid-template-columns:1fr}
       .dash-section:nth-child(2) .contract-box.compact{grid-template-columns:1fr}
       .dash-section:nth-child(2) .contract-box.compact .cb-copy{width:100%}
@@ -1442,10 +1444,10 @@
       --grad:linear-gradient(135deg,#4f8ef7 0%,#9b6dff 52%,#e040fb 100%);
       --text:#ede8f5;--muted:#8878a8;--muted2:#524870;--green:#4ade80;--red:#f87171;
       min-height:100vh;color:var(--text);font-family:'DM Sans',sans-serif;
-      background:url("dashboard-bg.png") center top / 100% auto fixed no-repeat,var(--bg);
+      background:none;
       position:relative;
     }
-    #farms-view .dashboard-nav{position:fixed;z-index:1200}
+    #farms-view .dashboard-nav{position:fixed;z-index:3000}
     #farms-view .farms-main{
       flex:1;display:flex;flex-direction:column;align-items:center;
       padding:118px 34px 48px;gap:24px;position:relative;z-index:1;
@@ -1461,7 +1463,7 @@
       border:none;border-radius:0;padding:0;
       position:relative;overflow:visible;
       box-shadow:none}
-    #farms-view .rv-card{background:transparent!important;border:none!important;box-shadow:none!important}
+    #farms-view .rv-card{background:rgba(10,3,22,0.75)!important;backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;border:1px solid rgba(200,100,255,0.2)!important;border-radius:14px!important;padding:18px 20px!important;box-shadow:0 8px 32px rgba(0,0,0,0.4)!important}
     #farms-view .rv-card::after{display:none!important}
     .rv-card::before{display:none}
 
@@ -1525,10 +1527,10 @@
     .farm-rank-grid{
       display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;
       padding:22px 18px;
-      background:linear-gradient(135deg,rgba(54,17,104,0.42),rgba(8,10,24,0.28) 52%,rgba(86,28,138,0.22));
+      background:rgba(10,3,22,0.75);
       backdrop-filter:blur(18px) saturate(145%);
       -webkit-backdrop-filter:blur(18px) saturate(145%);
-      border:1px solid rgba(155,109,255,0.12);
+      border:1px solid rgba(155,109,255,0.2);
       border-radius:14px;
       box-shadow:0 18px 52px rgba(0,0,0,0.24),inset 0 1px 0 rgba(255,255,255,0.04);
     }
@@ -1539,12 +1541,13 @@
       border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:12px}
     .farm-rank-list{display:flex;flex-direction:column;gap:7px}
     .farm-rank-row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;
-      min-height:46px;padding:10px 12px;border:1px solid rgba(255,255,255,0.08);
-      border-radius:7px;background:#111f35;transition:transform 0.18s,border-color 0.18s,box-shadow 0.18s,background 0.18s;cursor:pointer}
-    .farm-rank-row:hover{transform:translateY(-4px) scale(1.015);border-color:rgba(155,109,255,0.5);
-      background:#16243b;box-shadow:0 16px 36px rgba(0,0,0,0.35),0 0 22px rgba(155,109,255,0.18)}
+      min-height:46px;padding:10px 12px;border:1px solid rgba(200,100,255,0.2);
+      border-radius:7px;background:rgba(8,2,18,0.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+      transition:transform 0.18s,border-color 0.18s,box-shadow 0.18s,background 0.18s;cursor:pointer}
+    .farm-rank-row:hover{transform:translateY(-4px) scale(1.015);border-color:rgba(200,100,255,0.5);
+      background:rgba(30,10,55,0.65);box-shadow:0 16px 36px rgba(0,0,0,0.35),0 0 22px rgba(155,109,255,0.18)}
     .farm-rank-row:focus-visible{outline:2px solid rgba(155,109,255,0.85);outline-offset:2px}
-    .farm-rank-row:first-child{background:#1a1730;border-color:rgba(155,109,255,0.42)}
+    .farm-rank-row:first-child{background:rgba(15,4,30,0.88);border-color:rgba(200,100,255,0.4)}
     .farm-rank-pos{font-family:'Space Mono',monospace;font-size:0.58rem;color:#9b6dff;font-weight:700}
     .farm-rank-farm{min-width:0;display:flex;align-items:center;gap:10px}
     .farm-rank-farm .farm-pair-logos{flex-shrink:0;background:none;border:none;padding:0;
@@ -1592,12 +1595,14 @@
     .farm-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
 
     /* CARD SHELL */
-    .farm-item{background:#0d1628;border:1px solid rgba(255,255,255,0.1);
-      border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+    .farm-item{background:rgba(8,2,18,0.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+      border:1px solid rgba(200,100,255,0.25);
+      border-radius:10px;overflow:hidden;display:flex;flex-direction:column;
+      box-shadow:0 8px 32px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.08)}
 
     /* CARD HEADER */
     .farm-hdr{display:flex;align-items:center;justify-content:space-between;
-      padding:11px 14px;border-bottom:1px solid rgba(255,255,255,0.07)}
+      padding:11px 14px;border-bottom:1px solid rgba(200,100,255,0.15)}
     .farm-hdr-name{font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.08em;
       text-transform:uppercase;color:var(--text);display:flex;align-items:center;gap:6px}
     .farm-hdr-num{font-family:'Space Mono',monospace;font-size:0.8rem;font-weight:700;color:#fff;
@@ -1626,8 +1631,8 @@
     .farm-reward-token .farm-token-logo{width:14px;height:14px;box-shadow:none}
 
     /* 2-COL STAT GRID */
-    .farm-stat-grid{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid rgba(255,255,255,0.07)}
-    .farm-cell{padding:10px 14px;border-right:1px solid rgba(255,255,255,0.07)}
+    .farm-stat-grid{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid rgba(200,100,255,0.12)}
+    .farm-cell{padding:10px 14px;border-right:1px solid rgba(200,100,255,0.12)}
     .farm-cell:nth-child(even){border-right:none}
     .farm-cell-lbl{font-family:'Space Mono',monospace;font-size:0.46rem;letter-spacing:0.1em;
       text-transform:uppercase;color:var(--muted2);margin-bottom:5px}
@@ -2581,131 +2586,6 @@
 </section>
 
 
-<!-- ECOSYSTEM -->
-<section class="section-wrap premium-section" id="ecosystem">
-  <div class="fade" style="margin-bottom:48px">
-    <span class="sec-tag">// Ecosystem</span>
-    <h2 class="sec-h">Where $CASHX Lives<br>&amp; Works.</h2>
-  </div>
-  <div class="eco-grid">
-    <div class="fade">
-      <div class="sub-heading">Liquidity Pools</div>
-      <table class="lp-table">
-        <thead>
-          <tr><th>Pair</th><th>DEX</th><th>Status</th><th>Links</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><div class="lp-pair">CASHX / WPLS</div><div style="font-size:0.72rem;color:var(--muted);margin-top:2px">Primary pair</div></td>
-            <td><span class="badge badge-blue">PulseX V2</span></td>
-            <td><span class="badge badge-green">● Active</span></td>
-            <td class="lp-a"><a href="https://dexscreener.com/pulsechain/0xda942580cee2a69c5fc74109090816157730c64d" target="_blank">Chart</a> · <a href="https://www.swap.win/?token=0x4c450b3c2b89a2dabe5a3ee39ff475134a30d665" target="_blank">Trade</a></td>
-          </tr>
-          <tr>
-            <td><div class="lp-pair">CashX / WPLS</div><div style="font-size:0.72rem;color:var(--muted);margin-top:2px">Legacy pair</div></td>
-            <td><span class="badge badge-blue">PulseX V1</span></td>
-            <td><span class="badge badge-green">● Active</span></td>
-            <td class="lp-a"><a href="https://liquidity-pools.vercel.app/0x4c450b3c2b89a2dabe5a3ee39ff475134a30d665" target="_blank">View All</a></td>
-          </tr>
-        </tbody>
-      </table>
-      <div style="margin-top:10px;font-family:'Space Mono',monospace;font-size:0.56rem;color:var(--muted)">
-        All LP data: <a href="https://liquidity-pools.vercel.app/0x4c450b3c2b89a2dabe5a3ee39ff475134a30d665" target="_blank" style="color:var(--blue);text-decoration:none">liquidity-pools.vercel.app →</a>
-      </div>
-      <div class="sub-heading" style="margin-top:32px">Treasury Wallet</div>
-      <div class="wallet-note">
-        <div style="color:var(--text);margin-bottom:6px">Track treasury farm positions on Hocus Pocus — paste wallet into "Impersonate address" then click "Staked".</div>
-        <span class="wn-addr">0xeda3aa737947337b425227dB8174519f623C041f</span>
-        <div style="margin-top:12px">
-          <button onclick="copyAndOpenHP()" style="font-family:'Space Mono',monospace;font-size:0.56rem;letter-spacing:0.07em;text-transform:uppercase;padding:8px 14px;background:var(--grad-btn);color:#fff;border:none;cursor:pointer;transition:opacity 0.2s" onmouseover="this.style.opacity='0.82'" onmouseout="this.style.opacity='1'">Copy Wallet &amp; Open Hocus Pocus →</button>
-        </div>
-      </div>
-    </div>
-    <div class="fade" style="transition-delay:0.15s">
-      <div class="sub-heading">Treasury Yield Farms</div>
-      <div class="farm-grid">
-        <div class="farm-card">
-          <span class="farm-icon">⚡</span>
-          <div class="farm-name">Emit Farm</div>
-          <div class="farm-desc">Primary yield platform. NFT holders get zero deposit/withdraw fees.</div>
-          <a class="farm-link" href="https://emit.farm/farms" target="_blank">Open →</a>
-        </div>
-        <div class="farm-card">
-          <span class="farm-icon">🌱</span>
-          <div class="farm-name">Tru2Farms</div>
-          <div class="farm-desc">Secondary farming platform. Also supports fee-free NFT holders.</div>
-          <a class="farm-link" href="https://trufarms.io/farms" target="_blank">Open →</a>
-        </div>
-        <div class="farm-card">
-          <span class="farm-icon">🎯</span>
-          <div class="farm-name">Actuator Finance</div>
-          <div class="farm-desc">High APR HEX single-stake, backed 1:1 on redemption day.</div>
-          <a class="farm-link" href="https://app.actuator.finance/farms" target="_blank">Open →</a>
-        </div>
-        <div class="farm-card">
-          <span class="farm-icon">🔮</span>
-          <div class="farm-name">Hocus Pocus</div>
-          <div class="farm-desc">Track treasury positions: paste wallet into "Impersonate address", then click "Staked".</div>
-          <a class="farm-link" href="https://app.hocuspocus.finance/farms" target="_blank">Open →</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-
-<!-- HOW TO BUY -->
-<section class="section-wrap premium-section" id="buy" style="scroll-margin-top:90px">
-  <div class="fade" style="margin-bottom:48px">
-    <span class="sec-tag">// How to Buy</span>
-    <h2 class="sec-h">Get $CASHX<br>in 4 Steps.</h2>
-  </div>
-  <div class="htb-grid">
-    <div class="steps fade">
-      <div class="step">
-        <div class="step-n">01</div>
-        <div><div class="step-title">Set Up a PulseChain Wallet</div>
-        <div class="step-desc">Install <a href="https://metamask.io" target="_blank">MetaMask</a> or Rabby Wallet. Add the PulseChain network: Chain ID <strong>369</strong>, RPC <a href="https://rpc.pulsechain.com" target="_blank">rpc.pulsechain.com</a>.</div></div>
-      </div>
-      <div class="step">
-        <div class="step-n">02</div>
-        <div><div class="step-title">Get PLS</div>
-        <div class="step-desc">Bridge assets from Ethereum via the <a href="https://bridge.pulsechain.com" target="_blank">official PulseChain bridge</a>, or buy PLS directly on a supported exchange.</div></div>
-      </div>
-      <div class="step">
-        <div class="step-n">03</div>
-        <div><div class="step-title">Open PulseX</div>
-        <div class="step-desc">Go to <a href="https://pulsex.com" target="_blank">pulsex.com</a> and connect your wallet.</div></div>
-      </div>
-      <div class="step">
-        <div class="step-n">04</div>
-        <div><div class="step-title">Swap for $CASHX</div>
-        <div class="step-desc">Paste the contract address into the token search and swap your PLS. Set slippage to at least <strong style="color:var(--purple)">5%</strong> to account for the 4% tax.</div></div>
-      </div>
-    </div>
-
-    <div class="htb-right fade" style="transition-delay:0.15s">
-      <div class="contract-panel">
-        <div class="cp-lbl">Contract Address · PRC-20 · PulseChain</div>
-        <div class="cp-addr">0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665</div>
-        <button class="cp-copy" onclick="copyAddr(this)">Copy Contract Address</button>
-      </div>
-      <div class="links-panel">
-        <div class="lrow"><span class="lrow-lbl">Trade on PulseX</span><a href="https://pulsex.com" target="_blank">Open →</a></div>
-        <div class="lrow"><span class="lrow-lbl">Chart on DexScreener</span><a href="https://dexscreener.com/pulsechain/0xda942580cee2a69c5fc74109090816157730c64d" target="_blank">Open →</a></div>
-        <div class="lrow"><span class="lrow-lbl">Block Explorer</span><a href="https://scan.pulsechain.com/token/0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665" target="_blank">Open →</a></div>
-        <div class="lrow"><span class="lrow-lbl">Telegram Community</span><a href="https://t.me/+Ruw3dQPRTv00NDRl" target="_blank">Join →</a></div>
-      </div>
-      <div class="slippage-note">
-        <div class="sn-lbl">⚠ Slippage</div>
-        <div class="sn-txt">$CASHX has a 4% buy and 4% sell tax. Set your slippage tolerance to at least 5% or your transaction will fail.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-
 <!-- FOUNDER -->
 <section class="founder-section">
   <div class="founder-img-wrap">
@@ -2771,7 +2651,6 @@
 
   <div class="nav-right">
     <span class="last-up" id="last-up" aria-live="polite">—</span>
-    <button class="nav-dash-btn" id="rbtn" onclick="refreshDashboard({force:true})">Refresh</button>
     <button id="wallet-connect-btn" class="nav-dash-btn" onclick="connectWallet()">Connect Wallet</button>
     <button id="wallet-connected-btn" class="h-wallet-chip" onclick="showWalletActions('main')" style="display:none" aria-label="My Wallet">
       <span class="wc-dot"></span>
@@ -2793,187 +2672,50 @@
 <div id="view-home" class="dash-concepts">
 <div class="dash-stage">
 
-  <div class="rv-top" id="rv-account-panels" style="display:none">
-    <div class="rv-card">
-      <div class="rv-section-label">
-        <span>// My Wallet</span>
-        <button class="rv-disconnect-btn" onclick="disconnectSharedWallet()">Disconnect</button>
-      </div>
-      <div class="rv-wallet-row">
-        <span class="rv-wallet-addr" id="rv-addr-display">—</span>
-        <button class="rv-copy-btn" onclick="copySharedWalletAddr()">Copy</button>
-      </div>
-      <div class="rv-grid">
-        <div class="rv-bal">
-          <div class="rv-token-head">
-            <img class="rv-token-logo" src="cashx-logo.png" alt="">
-            <div class="rv-token-title cashx">CashX</div>
-          </div>
-          <div class="rv-wallet-label">Amount in wallet</div>
-          <div class="rv-tok-val" id="rv-cashx"><span class="rv-tok-muted">—</span></div>
-          <div class="rv-tok-usd" id="rv-cashx-usd">—</div>
-        </div>
-        <div class="rv-bal">
-          <div class="rv-token-head">
-            <img class="rv-token-logo" src="distrox.jpg" alt="">
-            <div class="rv-token-title">DistributionX</div>
-          </div>
-          <div class="rv-wallet-label">Amount in wallet</div>
-          <div class="rv-tok-val" id="rv-distrox"><span class="rv-tok-muted">—</span></div>
-          <div class="rv-tok-usd" id="rv-distrox-usd">—</div>
-        </div>
-      </div>
+  <!-- STAT BAR -->
+  <div class="dash-stat-bar">
+    <div class="dash-stat-item">
+      <div class="dash-stat-label">🔥 Total Burned</div>
+      <div class="dash-stat-num rv-loading" id="c-burned">···</div>
+      <div class="dash-stat-token">CASHX</div>
+      <div class="dash-stat-sub"><span id="c-burned-pct">—</span> · <span id="c-burned-usd">—</span></div>
+    </div>
+    <div class="dash-stat-item">
+      <div class="dash-stat-label">🏦 Treasury Burned</div>
+      <div class="dash-stat-num rv-loading" id="c-dead">···</div>
+      <div class="dash-stat-sub" id="c-dead-count">burn events</div>
+    </div>
+    <div class="dash-stat-item">
+      <div class="dash-stat-label">📦 Remaining Supply</div>
+      <div class="dash-stat-num rv-loading" id="src-community">—</div>
+      <div class="dash-stat-sub">after all burns</div>
+    </div>
+    <div class="dash-stat-item">
+      <div class="dash-stat-label"><span class="live-dot"></span> Holders</div>
+      <div class="dash-stat-num rv-loading" id="c-holders">···</div>
+      <div class="dash-stat-sub" id="c-txs">transfers</div>
     </div>
   </div>
 
-  <section class="dash-market-strip" aria-label="Market snapshot">
-    <div class="dash-market-lead">
-      <div class="dash-label">CashX Price</div>
-      <a class="dash-price-link" href="https://dexscreener.com/pulsechain/0xda942580cee2a69c5fc74109090816157730c64d" target="_blank" rel="noopener" aria-label="Open CashX price chart on DexScreener">
-        <div class="dash-value big" id="p-price"><span class="ld">···</span></div>
-      </a>
-      <div class="ch-badge badge-neu" id="p-ch">—</div>
-    </div>
-    <div class="dash-market-cell">
-      <div class="dash-label">Market Cap</div>
-      <div class="dash-value" id="p-mcap"><span class="ld">···</span></div>
-    </div>
-    <div class="dash-market-cell">
-      <div class="dash-label">Volume</div>
-      <div class="dash-value" id="p-vol"><span class="ld">···</span></div>
-      <div class="dash-sub">24H</div>
-    </div>
-    <div class="dash-market-cell">
-      <div class="dash-label">Liquidity</div>
-      <div class="dash-value" id="p-liq"><span class="ld">···</span></div>
-    </div>
-    <div class="dash-market-cell">
-      <div class="dash-label">5M Move</div>
-      <div class="dash-value" id="p-5m">—</div>
-    </div>
-    <div class="dash-market-cell">
-      <div class="dash-label">1H Move</div>
-      <div class="dash-value" id="p-1h">—</div>
-    </div>
-  </section>
+  <!-- MAIN ROW -->
+  <div class="dash-main-row">
 
-  <!-- BURN SUMMARY CARDS -->
-  <div class="burns-summary dash-burn-summary">
-    <div class="card">
-      <div class="card-lbl">🔥 Total Burns</div>
-      <span class="card-val" id="burns-total-count"><span class="ld">···</span></span>
-      <div class="card-sub burns-cashx" id="burns-total-cashx"><span class="ld">···</span></div>
-      <div class="card-sub burns-usd" id="burns-total-usd"><span class="ld">···</span></div>
-    </div>
-    <div class="card">
-      <div class="card-lbl">🏦 Treasury Burns</div>
-      <span class="card-val" id="burns-treasury-count"><span class="ld">···</span></span>
-      <div class="card-sub burns-cashx" id="burns-treasury-cashx"><span class="ld">···</span></div>
-      <div class="card-sub burns-usd" id="burns-treasury-usd"><span class="ld">···</span></div>
-    </div>
-    <div class="card">
-      <div class="card-lbl">🔥 Burn Sources</div>
-      <span class="card-val" id="burns-partner-count"><span class="ld">···</span></span>
-      <div class="card-sub burns-cashx" id="burns-partner-cashx"><span class="ld">···</span></div>
-      <div class="card-sub burns-usd" id="burns-partner-usd"><span class="ld">···</span></div>
-    </div>
-    <div class="card">
-      <div class="card-lbl">🌐 Community Burns</div>
-      <span class="card-val" id="burns-community-count"><span class="ld">···</span></span>
-      <div class="card-sub burns-cashx" id="burns-community-cashx"><span class="ld">···</span></div>
-      <div class="card-sub burns-usd" id="burns-community-usd"><span class="ld">···</span></div>
-    </div>
-  </div>
-
-  <!-- THREE SECTION DASHBOARD -->
-  <section class="section-grid">
-    <div class="dash-section">
-      <div class="section-head">
-        <div class="section-title">🔥 Burn Status</div>
-        <div class="section-note" id="c-bpct">% of supply</div>
-      </div>
-      <div class="section-body">
-        <div class="burn-layout">
-          <div>
-            <div class="section-label">Total Burned</div>
-            <div class="section-big" id="c-burned"><span class="ld">···</span></div>
-            <div class="section-sub" id="c-burned-usd" style="color:var(--purple);font-size:0.82rem;margin-top:2px;margin-bottom:6px"></div>
-            <div class="section-sub">Permanent supply removed from circulation.</div>
-            <div class="sbar-wrap" style="margin-top:18px">
-              <div class="sbar-labels">
-                <span class="sbar-lbl">Total Burned</span>
-                <span class="sbar-lbl" id="s-pct">0%</span>
-              </div>
-              <div class="sbar sbar-bg"><div class="sbar-fill" id="s-fill"></div></div>
-              <div class="sbar-labels" style="margin-top:7px">
-                <span class="sbar-lbl">Remaining Supply</span>
-                <span class="sbar-lbl" id="s-rpct">100%</span>
-              </div>
-              <div class="sbar sbar-remain"><div class="sbar-fill" id="s-rfill" style="width:100%"></div></div>
-            </div>
-          </div>
-          <div class="section-gauge">
-            <svg viewBox="0 0 200 200">
-              <defs>
-                <linearGradient id="burnGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#d85cff"/>
-                  <stop offset="100%" stop-color="#ffb84d"/>
-                </linearGradient>
-                <linearGradient id="gTextGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stop-color="#d85cff"/>
-                  <stop offset="100%" stop-color="#43e0a4"/>
-                </linearGradient>
-              </defs>
-              <circle cx="100" cy="100" r="80" fill="none" stroke="#1e3a5f" stroke-width="24"/>
-              <circle class="g-fill" id="g-fill" cx="100" cy="100" r="80" fill="none" stroke="url(#burnGrad)" stroke-width="24" stroke-linecap="round" stroke-dasharray="502" stroke-dashoffset="502" transform="rotate(-90 100 100)"/>
-              <text id="sp-pct" x="100" y="94" text-anchor="middle" dominant-baseline="middle" font-family="'DM Sans',sans-serif" font-weight="300" font-size="28" fill="url(#gTextGrad)">0%</text>
-              <text x="100" y="118" text-anchor="middle" font-family="'Space Mono',monospace" font-size="8" fill="#8878a8" letter-spacing="2">SUPPLY BURNED</text>
-            </svg>
+    <!-- Left: Chart -->
+    <div class="panel dash-chart-panel">
+      <div class="panel-body">
+        <div class="chart-toggle-row">
+          <div class="chart-title"><span class="live-dot"></span>Burn Activity</div>
+          <div class="chart-toggles">
+            <button class="chart-btn active" onclick="switchChart('24H',this)">24H</button>
+            <button class="chart-btn" onclick="switchChart('7D',this)">7D</button>
+            <button class="chart-btn" onclick="switchChart('30D',this)">30D</button>
+            <button class="chart-btn" onclick="switchChart('ALL',this)">All</button>
           </div>
         </div>
-        <div class="recent-burns-card">
-          <div class="recent-burns-head">
-            <div class="recent-burns-title"><span class="live-dot"></span> Recent Burns</div>
-            <div class="recent-burns-note">latest 25</div>
-          </div>
-          <div class="recent-burns-list" id="recent-burn-events">
-            <div class="no-data" style="padding:14px 12px">Loading recent burns…</div>
-          </div>
+        <div class="chart-wrap">
+          <canvas id="burn-chart"></canvas>
         </div>
-        <div class="section-stats">
-          <div class="section-stat">
-            <div class="section-label">Treasury Burned</div>
-            <div class="section-value" id="c-dead"><span class="ld">···</span></div>
-            <div class="section-meta" id="c-dead-count">exact · on-chain</div>
-          </div>
-          <div class="section-stat">
-            <div class="section-label">Remaining Supply</div>
-            <div class="section-value" id="src-community">—</div>
-            <div class="section-meta">after all burns</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="dash-section">
-      <div class="section-head">
-        <div class="section-title">⚡ Activity</div>
-        <div class="section-note">wallets & latest burns</div>
-      </div>
-      <div class="section-body">
-        <div class="section-stats">
-          <div class="section-stat">
-            <div class="section-label"><span class="live-dot"></span> Holders</div>
-            <div class="section-value" id="c-holders"><span class="ld">···</span></div>
-            <div class="section-meta" id="c-txs">transfers</div>
-          </div>
-          <div class="section-stat">
-            <div class="section-label">Treasury PLS</div>
-            <div class="section-value" id="t-pls">— PLS</div>
-            <div class="section-meta" id="t-pls-usd">—</div>
-          </div>
-        </div>
-        <div class="activity-list">
+        <div class="dash-latest-pair" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 0 4px">
           <div class="activity-item">
             <div class="section-label">Latest Treasury Burn</div>
             <div class="activity-amount" id="latest-treasury-amt">—</div>
@@ -2987,63 +2729,60 @@
             <div class="section-meta" id="latest-community-addr">—</div>
           </div>
         </div>
-        <div class="source-card">
-          <div class="source-card-head">
-            <div class="source-card-title">Burn Sources</div>
-            <div class="source-card-note">ranked</div>
-          </div>
-          <div class="source-rank-list" id="burn-source-rankings">
-            <div class="no-data" style="padding:16px 10px">Loading burn sources…</div>
-          </div>
-        </div>
-        <div class="contract-box compact">
-          <div class="cb-l">Contract · PRC-20 · PulseChain</div>
-          <div class="cb-addr"><span class="addr-chip" data-addr="0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665" onclick="amOpen(event,this.dataset.addr)">0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665</span></div>
-          <button class="cb-copy" onclick="copyAddr(this)">Copy Contract Address</button>
-        </div>
       </div>
     </div>
-  </section>
 
-  <span id="src-treasury" style="display:none"></span>
-  <span id="src-tax" style="display:none"></span>
-  <span id="flask-burn" style="display:none"></span>
-  <span id="flask-burn-val" style="display:none"></span>
-  <span id="flask-burn-pct" style="display:none"></span>
-  <span id="flask-buy" style="display:none"></span>
-  <span id="flask-buy-val" style="display:none"></span>
-  <span id="flask-buy-pct" style="display:none"></span>
-  <span id="bs-burned" style="display:none"></span>
-  <span id="bs-dead" style="display:none"></span>
-  <span id="bs-remain" style="display:none"></span>
-  <span id="g-sub" style="display:none"></span>
-  <span id="g-pct" style="display:none"></span>
-
-  <span id="c-ch" style="display:none"></span>
-  <span id="c-mcap" style="display:none"></span>
-  <span id="c-price" style="display:none"></span>
-
-  <!-- ROW 4: BURN ACTIVITY CHART -->
-  <div class="panel dash-chart-panel">
-    <div class="panel-body">
-      <div class="chart-toggle-row">
-        <div class="chart-title"><span class="live-dot"></span>Burn Activity</div>
-        <div class="chart-toggles">
-          <button class="chart-btn active" onclick="switchChart('24H',this)">24H</button>
-          <button class="chart-btn" onclick="switchChart('7D',this)">7D</button>
-          <button class="chart-btn" onclick="switchChart('30D',this)">30D</button>
-          <button class="chart-btn" onclick="switchChart('ALL',this)">All</button>
+    <!-- Right: Price + Wallet + Treasury -->
+    <div class="dash-stats-sidebar">
+      <!-- Price card -->
+      <div class="rv-bal rv-price-card">
+        <div class="rv-token-head">
+          <div class="rv-price-icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div class="rv-wallet-label" style="margin:0;letter-spacing:0.12em">Live CashX Price</div>
         </div>
+        <a href="https://dexscreener.com/pulsechain/0xda942580cee2a69c5fc74109090816157730c64d" target="_blank" rel="noopener" style="text-decoration:none;cursor:pointer">
+          <div class="rv-tok-val rv-price-val rv-loading" id="c-price" style="transition:opacity 0.15s">—</div>
+          <div class="rv-tok-usd rv-loading" id="c-mcap" style="margin-top:4px">—</div>
+        </a>
+        <div class="rv-price-change pct-neu rv-loading" id="c-ch">—</div>
       </div>
-      <div class="chart-wrap">
-        <canvas id="burn-chart"></canvas>
+      <!-- Treasury PLS -->
+      <div class="dash-metric-card">
+        <div class="dash-metric-label">💎 Treasury PLS</div>
+        <div class="dash-metric-value" id="t-pls">— PLS</div>
+        <div class="dash-metric-sub" id="t-pls-usd">—</div>
+      </div>
+      <!-- Wallet balances (shown when wallet connected) -->
+      <div id="rv-account-panels" style="display:none;flex-direction:column;gap:10px">
+        <div class="rv-bal">
+          <div class="rv-token-head">
+            <img class="rv-token-logo" src="cashx-logo.png" alt="">
+            <div class="rv-token-title cashx">CashX</div>
+          </div>
+          <div class="rv-wallet-label">Amount in wallet</div>
+          <div class="rv-tok-val" id="rv-cashx">—</div>
+          <div class="rv-tok-usd" id="rv-cashx-usd">—</div>
+        </div>
+        <div class="rv-bal">
+          <div class="rv-token-head">
+            <img class="rv-token-logo" src="distrox.jpg" alt="">
+            <div class="rv-token-title">DistributionX</div>
+          </div>
+          <div class="rv-wallet-label">Amount in wallet</div>
+          <div class="rv-tok-val" id="rv-distrox">—</div>
+          <div class="rv-tok-usd" id="rv-distrox-usd">—</div>
+        </div>
       </div>
     </div>
   </div>
 
 
-  <!-- ROW 6: TOP 3 BURNS -->
-  <div class="panel dash-top-burns">
+
+  <!-- ROW 4: Top Burns -->
+  <div style="background:rgba(10,3,22,0.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(200,100,255,0.2);border-radius:16px;padding:14px;box-shadow:0 8px 32px rgba(0,0,0,0.4);overflow:hidden">
+  <div class="panel dash-top-burns" style="background:transparent;border:none;box-shadow:none;border-radius:16px;overflow:hidden">
     <div class="panel-head"><span class="live-dot"></span>Top Burns</div>
     <div class="panel-body" style="padding:0;gap:0">
       <div class="btx-table-head">
@@ -3058,7 +2797,22 @@
       </div>
     </div>
   </div>
+  </div>
 
+  <!-- Hidden spans (JS compatibility) -->
+  <span id="src-treasury" style="display:none"></span>
+  <span id="src-tax" style="display:none"></span>
+  <span id="flask-burn" style="display:none"></span>
+  <span id="flask-burn-val" style="display:none"></span>
+  <span id="flask-burn-pct" style="display:none"></span>
+  <span id="flask-buy" style="display:none"></span>
+  <span id="flask-buy-val" style="display:none"></span>
+  <span id="flask-buy-pct" style="display:none"></span>
+  <span id="bs-burned" style="display:none"></span>
+  <span id="bs-dead" style="display:none"></span>
+  <span id="bs-remain" style="display:none"></span>
+  <span id="g-sub" style="display:none"></span>
+  <span id="g-pct" style="display:none"></span>
 
 </div>
 </div><!-- end #view-home -->
@@ -3105,6 +2859,7 @@
   let cachedChartBurnsData = [];
   let cachedPrice = 0;
   let _burnCountsReady = false; // true once loadBurnCounts has populated accurate data
+  let _allBurnsPromise = null; // shared promise so chart + counts make ONE network call
   let serviceState = null;
   let burnTrackerConfig = null;
   let resolveBurnSource = null;
@@ -3304,7 +3059,7 @@
       const ts  = tx.timestamp ? Math.floor(new Date(tx.timestamp).getTime() / 1000) : 0;
       const hash = tx.tx_hash || '';
       const link = hash ? `<a href="${explorerWeb}/tx/${hash}" target="_blank" style="color:var(--purple);text-decoration:none">${hash.slice(0,8)}…</a>` : '—';
-      return `<div class="btx-row" style="display:grid;grid-template-columns:40px 1fr 1fr 1fr 1fr;align-items:center;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,0.06)">
+      return `<div class="btx-row" style="display:grid;grid-template-columns:40px 1fr 1fr 1fr 1fr;align-items:center;padding:12px 20px;border:1px solid rgba(200,100,255,0.15);border-radius:10px;margin:6px 10px;background:rgba(255,255,255,0.03)">
         <div style="font-weight:700;color:var(--purple)">#${i + 1}</div>
         <div style="font-family:'Space Mono',monospace;font-size:0.82rem">🔥 ${fmtN(amt, 2)} CASHX</div>
         <div style="font-size:0.8rem;color:rgba(237,232,245,0.6)">≈ ${usd}</div>
@@ -3430,11 +3185,9 @@
     return true;
   }
 
-  async function loadBurnCounts() {
+  async function loadBurnCounts(force = false) {
     try {
-      const { readAllBurnTransactions } = await getServicesReady();
-      const all = await withTimeout(readAllBurnTransactions(), 60000, 'Burn count request timed out');
-      const allItems = all.map(toDashboardTx);
+      const allItems = await _getAllBurns(force);
       if (!summarizeBurnCards(allItems, cachedPrice, { markReady: true, save: true, totalBurned: serviceState?.totalTrackedBurned || serviceState?.supplyBurned || 0 })) {
         throw new Error('No burn transactions returned');
       }
@@ -3447,15 +3200,50 @@
   }
 
   let _burnActivityLoadPromise = null;
+  const _CHART_CACHE_KEY = 'cashx_chart_burns_v1';
+  function _chartCacheSave(items) {
+    try { localStorage.setItem(_CHART_CACHE_KEY, JSON.stringify({ _ts: Date.now(), items })); } catch(e) {}
+  }
+  function _chartCacheApply() {
+    try {
+      const d = JSON.parse(localStorage.getItem(_CHART_CACHE_KEY) || 'null');
+      if (!d || !Array.isArray(d.items) || !d.items.length) return false;
+      cachedChartBurnsData = d.items;
+      renderBurnChart(cachedChartBurnsData, currentChartRange);
+      return true;
+    } catch(e) { return false; }
+  }
+
+  const _ALL_BURNS_TTL = 5 * 60 * 1000; // 5 minutes
+  function _getAllBurns(force = false) {
+    if (!_allBurnsPromise) {
+      _allBurnsPromise = (async () => {
+        // Return cached data if fresh and not forced
+        if (!force) {
+          try {
+            const d = JSON.parse(localStorage.getItem(_CHART_CACHE_KEY) || 'null');
+            if (d && Array.isArray(d.items) && d.items.length && Date.now() - d._ts < _ALL_BURNS_TTL) {
+              return d.items;
+            }
+          } catch(e) {}
+        }
+        const { readAllBurnTransactions } = await getServicesReady();
+        const all = await withTimeout(readAllBurnTransactions(), 60000, 'All burns request timed out');
+        return all.map(toDashboardTx);
+      })().finally(() => { _allBurnsPromise = null; });
+    }
+    return _allBurnsPromise;
+  }
+
   async function loadBurnActivityChart(options = {}) {
     const force = !!options.force;
     if (_burnActivityLoadPromise && !force) return _burnActivityLoadPromise;
     _burnActivityLoadPromise = (async () => {
       try {
-        const { readAllBurnTransactions } = await getServicesReady();
-        const all = await withTimeout(readAllBurnTransactions(), 60000, 'Burn activity request timed out');
-        cachedChartBurnsData = all.map(toDashboardTx);
+        const items = await _getAllBurns(force);
+        cachedChartBurnsData = items;
         renderBurnChart(cachedChartBurnsData, currentChartRange);
+        _chartCacheSave(items);
       } catch(e) {
         console.warn('Burn activity chart fetch failed:', e);
       } finally {
@@ -3467,7 +3255,7 @@
 
 
   const $   = id => document.getElementById(id);
-  const set = (id,v) => { const e=$(id); if(e) e.textContent=v };
+  const set = (id,v) => { const e=$(id); if(e){e.textContent=v;e.classList.remove('rv-loading')} };
   const setHTML = (id,v) => { const e=$(id); if(e) e.innerHTML=v };
   const setErr = id => setHTML(id,'<span class="err">⚠</span>');
 
@@ -3506,7 +3294,7 @@
     if(n>=1e9)return'$'+(n/1e9).toFixed(2)+'B USD';
     if(n>=1e6)return'$'+(n/1e6).toFixed(2)+'M USD';
     if(n>=1e3)return'$'+(n/1e3).toFixed(2)+'K USD';
-    return'$'+n.toFixed(4)+' USD';
+    return'$'+n.toFixed(2)+' USD';
   }
   function fmtPrice(p){
     if(!p||isNaN(p))return'—';
@@ -3574,6 +3362,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
       set('p-5m', pctText(state.priceChange5m));
       set('p-1h', pctText(state.priceChange1h));
       set('c-ch', ch24 + ' (24h)'); set('c-ch2', ch24 + ' (24h)');
+      const cChEl = $('c-ch'); if(cChEl){cChEl.className='rv-price-change '+(state.priceChange24h>0?'pct-up':state.priceChange24h<0?'pct-dn':'pct-neu')}
       const badge=$('p-ch');
       if(badge){badge.textContent=ch24+' (24h)';badge.className='ch-badge '+(state.priceChange24h>0?'badge-up':state.priceChange24h<0?'badge-dn':'badge-neu')}
       if(state.txns24h) set('p-txs', (state.txns24h.buys||0)+' / '+(state.txns24h.sells||0));
@@ -3601,8 +3390,9 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
         renderBurnSummaryFallback(burned, state.priceUsd);
       }
 
-      set('c-burned',fmtN(burned,2)+' CASHX');
-      set('c-burned-usd', state.priceUsd > 0 ? '≈ ' + fmtUSD(burned * state.priceUsd) : '');
+      set('c-burned',fmtN(burned,2));
+      set('c-burned-pct', pct.toFixed(2)+'% burned');
+      set('c-burned-usd', state.priceUsd > 0 ? fmtUSD(burned * state.priceUsd) : '—');
       set('c-bpct',pct.toFixed(6)+'% of supply');
       set('bs-burned',fmtN(burned,2)+' CASHX');
       set('bs-remain',fmtN(remaining,2)+' CASHX');
@@ -3716,7 +3506,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     _dashboardLoadPromise = load()
       .then(() => {
         loadBurnActivityChart({ force });
-        if (force || !_burnCountsReady || topBurnsNeedsLoad()) return runBurnCounts();
+        return runBurnCounts(force);
       })
       .finally(() => { _dashboardLoadPromise = null; });
     return _dashboardLoadPromise;
@@ -3920,10 +3710,13 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     if (burnChart) burnChart.destroy();
     const dashView = document.getElementById('dashboard-view');
     const dashStyles = getComputedStyle(dashView || document.documentElement);
-    const chartColor = dashStyles.getPropertyValue('--dash-accent').trim() || '#9b6dff';
-    const chartFill = dashStyles.getPropertyValue('--dash-chart-fill').trim() || 'rgba(155,109,255,0.08)';
+    const chartColor = '#c864ff';
     const chartPanel = dashStyles.getPropertyValue('--dash-panel-strong').trim() || '#0d1628';
     const chartMuted = dashStyles.getPropertyValue('--dash-faint').trim() || '#524870';
+    const grad = ctx.createLinearGradient(0, 0, 0, canvas.height || 300);
+    grad.addColorStop(0, 'rgba(200,100,255,0.45)');
+    grad.addColorStop(0.5, 'rgba(200,100,255,0.12)');
+    grad.addColorStop(1, 'rgba(200,100,255,0)');
 
     burnChart = new Chart(ctx, {
       type: 'line',
@@ -3933,11 +3726,13 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
           label: 'CASHX Burned',
           data,
           borderColor: chartColor,
-          backgroundColor: chartFill,
-          borderWidth: 2,
+          backgroundColor: grad,
+          borderWidth: 2.5,
           pointRadius: 3,
           pointBackgroundColor: chartColor,
-          pointHoverRadius: 5,
+          pointBorderColor: 'rgba(200,100,255,0.5)',
+          pointHoverRadius: 0,
+          pointHoverBackgroundColor: 'transparent',
           fill: true,
           tension: 0.4
         }]
@@ -3947,19 +3742,10 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
         maintainAspectRatio: false,
         plugins: {
           legend: { display: false },
-          tooltip: {
-            backgroundColor: chartPanel,
-            borderColor: chartColor,
-            borderWidth: 1,
-            titleColor: chartMuted,
-            bodyColor: '#fff',
-            titleFont: { family: 'Space Mono', size: 10 },
-            bodyFont: { family: 'DM Sans', size: 13 },
-            callbacks: {
-              label: ctx => ` ${ctx.parsed.y.toLocaleString()} CASHX burned`
-            }
-          }
+          tooltip: { enabled: false }
         },
+        interaction: { mode: 'none' },
+        hover: { mode: null },
         scales: {
           x: {
             grid: { color: 'rgba(255,255,255,0.04)' },
@@ -4022,11 +3808,12 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
   initRevealCards();
   _dashApply(); // Paint cached dashboard values immediately; live refresh runs in the background.
   _bcApply(_bcLoad()); // Instantly restore last accurate burn counts from cache
+  _chartCacheApply(); // Paint cached chart immediately
 
   // Run loadBurnCounts with auto-retry — if API is flaky, try again after 45s
-  async function runBurnCounts() {
+  async function runBurnCounts(force = false) {
     if (window.location.hash !== '#dashboard') return;
-    await loadBurnCounts();
+    await loadBurnCounts(force);
     if (!_burnCountsReady && window.location.hash === '#dashboard') setTimeout(runBurnCounts, 45000);
   }
 
@@ -4349,7 +4136,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     document.getElementById('wp-yield-label').textContent = 'CASHX Yield';
     const rvPanel = document.getElementById('rv-account-panels');
     const rvDash = '<span class="rv-tok-muted">—</span>';
-    if (rvPanel) rvPanel.style.display = 'none';
+    if (rvPanel) rvPanel.style.display = 'flex';
     const rvCashx = document.getElementById('rv-cashx');
     const rvDistrox = document.getElementById('rv-distrox');
     if (rvCashx) rvCashx.innerHTML = rvDash;
@@ -6723,15 +6510,6 @@ function farmsToggleLpBreakdown(pid){ return window.FarmsApp.toggleLpBreakdown(p
     setTimeout(() => btn.textContent = o, 1800);
   }
 
-  // Copy treasury wallet and open Hocus Pocus
-  function copyAndOpenHP() {
-    navigator.clipboard.writeText('0xeda3aa737947337b425227dB8174519f623C041f').then(() => {
-      window.open('https://app.hocuspocus.finance/farms', '_blank');
-    }).catch(() => {
-      window.open('https://app.hocuspocus.finance/farms', '_blank');
-    });
-  }
-
   // Nav background on scroll
   const nav = document.querySelector('nav');
   window.addEventListener('scroll', () => {
@@ -6764,5 +6542,6 @@ function farmsToggleLpBreakdown(pid){ return window.FarmsApp.toggleLpBreakdown(p
 
 
 </script>
+<div class="page-bg"></div>
 </body>
 </html>
