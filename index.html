@@ -520,8 +520,6 @@
       display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
     .footer-logo{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.1rem;
       letter-spacing:-0.02em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-    .footer-note{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--muted2);
-      letter-spacing:0.04em;text-align:center}
     .footer-links{display:flex;gap:8px;flex-wrap:wrap}
     .footer-links a{font-family:'Space Mono',monospace;font-size:0.56rem;color:rgba(240,236,224,0.68);
       text-decoration:none;padding:7px 12px;border:1px solid rgba(255,255,255,0.1);border-radius:999px;background:rgba(255,255,255,0.04);
@@ -973,7 +971,7 @@
     .top-burns-header{display:flex;align-items:baseline;gap:14px;margin-bottom:4px}
     .top-burns-title{font-family:'DM Sans',sans-serif;font-weight:300;font-size:1.6rem;letter-spacing:-0.03em;color:#fff}
     .top-burns-sub{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);letter-spacing:0.06em}
-    .tb-table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;position:relative}
+    .tb-table-wrap{background:linear-gradient(145deg,#2a2440 0%,#1b1730 58%,#151326 100%);border:1px solid rgba(155,109,255,0.32);border-radius:12px;overflow:hidden;position:relative;box-shadow:inset 0 1px 0 rgba(255,255,255,0.07),0 12px 34px rgba(0,0,0,0.22)}
     .tb-thead{display:grid;grid-template-columns:56px 1.2fr 1fr 1.6fr 1.2fr;gap:0;padding:12px 20px;border-bottom:1px solid var(--border);background:var(--surface2)}
     .tb-th{font-family:'DM Sans',sans-serif;font-weight:300;font-size:0.85rem;color:#fff;letter-spacing:0.05em;text-transform:uppercase}
     .tb-body{overflow-y:auto;max-height:calc(100vh - 260px)}
@@ -1058,7 +1056,7 @@
     .section-meta{font-family:'Space Mono',monospace;font-size:.64rem;color:var(--muted2);margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .market-price{font-family:'DM Sans',sans-serif;font-weight:300;font-size:clamp(1.9rem,2.8vw,2.8rem);letter-spacing:-.055em;color:#fff;line-height:1}
     .activity-list{display:grid;gap:10px}
-    .activity-item{background:rgba(18,6,38,0.5);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(200,100,255,0.25);border-radius:10px;padding:13px;box-shadow:0 8px 32px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.08)}
+    .activity-item{background:linear-gradient(145deg,#2a2440 0%,#1b1730 58%,#151326 100%);border:1px solid rgba(155,109,255,0.32);border-radius:10px;padding:13px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.07),0 12px 34px rgba(0,0,0,0.22)}
     .activity-amount{font-family:'DM Sans',sans-serif;font-weight:300;font-size:1.32rem;color:#fff;letter-spacing:-.03em}
     .recent-burns-card{border:1px solid rgba(255,255,255,.11);border-radius:10px;background:rgba(255,255,255,.04);overflow:hidden;min-height:0}
     .recent-burns-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.08)}
@@ -1126,7 +1124,7 @@
     .dash-stage > .rv-top .rv-section-label{margin:0;min-height:58px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:9px;color:var(--dash-accent)}
     .dash-stage > .rv-top .rv-disconnect-btn{padding:4px 10px;font-size:0.48rem}
     .dash-stage > .rv-top .rv-grid{grid-template-columns:repeat(2,minmax(220px,300px));gap:12px;justify-content:start}
-    .dash-stage > .rv-top .rv-bal{min-height:86px;padding:12px 14px;display:flex;flex-direction:column;justify-content:center;border:1px solid rgba(200,100,255,0.3);background:rgba(18,6,38,0.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.08)}
+    .dash-stage > .rv-top .rv-bal{min-height:86px;padding:12px 14px;display:flex;flex-direction:column;justify-content:center;border:1px solid rgba(155,109,255,0.32);background:linear-gradient(145deg,#2a2440 0%,#1b1730 58%,#151326 100%);border-radius:8px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.07),0 12px 34px rgba(0,0,0,0.22)}
     .dash-stage > .rv-top .rv-tok-name{margin-bottom:4px}
     .dash-stage > .rv-top .rv-tok-val{font-size:1.25rem}
     .dash-stage > .rv-top .rv-tok-usd{font-size:0.72rem;color:var(--dash-faint)}
@@ -1219,7 +1217,7 @@
     .g-fill{stroke:var(--dash-accent)}
     .source-rank-amount{color:var(--dash-accent)}
     .cb-copy{border-radius:6px;background:linear-gradient(135deg,var(--dash-accent),var(--dash-accent-2));color:#101014;font-weight:700}
-    .addr-chip{color:var(--dash-accent-2)}
+    .addr-chip{color:var(--dash-muted)}
 
     .dash-section:nth-child(1) .section-body{gap:20px}
     .dash-section:nth-child(1) .section-body{justify-content:space-between}
@@ -1241,7 +1239,7 @@
     .dash-burn-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
     /* new dashboard layout */
     .dash-stat-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;background:rgba(10,3,22,0.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(200,100,255,0.2);border-radius:14px;padding:14px;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
-    .dash-stat-item{background:rgba(18,6,38,0.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(200,100,255,0.25);border-radius:12px;padding:18px 20px;box-shadow:0 8px 32px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.08);position:relative;overflow:hidden}
+    .dash-stat-item{background:linear-gradient(145deg,#2a2440 0%,#1b1730 58%,#151326 100%);border:1px solid rgba(155,109,255,0.32);border-radius:12px;padding:18px 20px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.07),0 12px 34px rgba(0,0,0,0.22);position:relative;overflow:hidden}
     .dash-stat-item::before{display:none}
     .dash-stat-label{font-family:'Space Mono',monospace;font-size:0.54rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dash-muted);margin-bottom:10px;display:flex;align-items:center;gap:5px}
     .dash-stat-num{font-family:'DM Sans',sans-serif;font-size:1.8rem;font-weight:300;letter-spacing:-0.04em;color:#fff;line-height:1}
@@ -1249,7 +1247,7 @@
     .dash-stat-sub{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--dash-faint);margin-top:5px;line-height:1.5}
     .dash-main-row{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(240px,0.7fr);gap:14px;align-items:stretch;background:rgba(10,3,22,0.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(200,100,255,0.2);border-radius:14px;padding:14px;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
     .dash-stats-sidebar{display:flex;flex-direction:column;gap:10px}
-    .dash-metric-card{background:rgba(18,6,38,0.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(200,100,255,0.25);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.08);padding:16px 18px;flex-shrink:0}
+    .dash-metric-card{background:linear-gradient(145deg,#2a2440 0%,#1b1730 58%,#151326 100%);border:1px solid rgba(155,109,255,0.32);border-radius:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.07),0 12px 34px rgba(0,0,0,0.22);padding:16px 18px;flex-shrink:0}
     .dash-metric-featured{padding:22px 22px;flex:1}
     .dash-metric-label{font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dash-muted);margin-bottom:10px;display:flex;align-items:center;gap:5px}
     .dash-metric-value{font-family:'DM Sans',sans-serif;font-size:1.35rem;font-weight:400;letter-spacing:-0.03em;color:var(--dash-text);line-height:1.1}
@@ -1498,8 +1496,8 @@
       cursor:pointer;padding:2px 6px;transition:opacity 0.2s;flex-shrink:0}
     .rv-copy-btn:hover{opacity:0.7}
     .rv-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .rv-bal{padding:16px 18px;background:#111f35;
-      border:1px solid rgba(255,255,255,0.09);border-radius:10px;position:relative;overflow:hidden}
+    .rv-bal{padding:16px 18px;background:linear-gradient(145deg,#2a2440 0%,#1b1730 58%,#151326 100%);
+      border:1px solid rgba(155,109,255,0.32);border-radius:10px;position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,0.07),0 12px 34px rgba(0,0,0,0.22)}
     .rv-bal::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
       background:var(--grad);opacity:0.25;border-radius:10px 10px 0 0}
     .rv-tok-name{font-family:'Space Mono',monospace;font-size:0.56rem;letter-spacing:0.1em;
@@ -2576,7 +2574,7 @@
         <div class="tf-desc">When PulseChain runs, treasury positions rotate to stablecoins to lock in gains. Capital is redeployed at strategic entries — compounding the base before the next burn cycle.</div></div>
       </div>
       <div class="tf-row fade">
-        <div class="tf-icon">🔥</div>
+        <div class="tf-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c864ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></div>
         <div><div class="tf-title">Manual Buy &amp; Burn</div>
         <div class="tf-desc">Burns are executed manually by the team. Revenue from yield is used to buy $CASHX on the open market, creating real buy pressure, then burned permanently.</div></div>
       </div>
@@ -2604,8 +2602,7 @@
 <!-- FOOTER -->
 <footer>
   <div class="footer-logo">CashX</div>
-  <div class="footer-note">$CASHX IS A UTILITY TOKEN ON PULSECHAIN · NOT FINANCIAL ADVICE · DYOR</div>
-  <div class="footer-links">
+<div class="footer-links">
     <a href="https://t.me/+Ruw3dQPRTv00NDRl" target="_blank">Telegram</a>
     <a href="https://dexscreener.com/pulsechain/0xda942580cee2a69c5fc74109090816157730c64d" target="_blank">DexScreener</a>
     <a href="https://scan.pulsechain.com/token/0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665" target="_blank">Explorer</a>
@@ -2675,7 +2672,7 @@
   <!-- STAT BAR -->
   <div class="dash-stat-bar">
     <div class="dash-stat-item">
-      <div class="dash-stat-label">🔥 Total Burned</div>
+      <div class="dash-stat-label"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#c864ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0;margin-right:3px"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg> Total Burned</div>
       <div class="dash-stat-num rv-loading" id="c-burned">···</div>
       <div class="dash-stat-token">CASHX</div>
       <div class="dash-stat-sub"><span id="c-burned-pct">—</span> · <span id="c-burned-usd">—</span></div>
@@ -2688,10 +2685,9 @@
     <div class="dash-stat-item">
       <div class="dash-stat-label">📦 Remaining Supply</div>
       <div class="dash-stat-num rv-loading" id="src-community">—</div>
-      <div class="dash-stat-sub">after all burns</div>
     </div>
     <div class="dash-stat-item">
-      <div class="dash-stat-label"><span class="live-dot"></span> Holders</div>
+      <div class="dash-stat-label">Holders</div>
       <div class="dash-stat-num rv-loading" id="c-holders">···</div>
       <div class="dash-stat-sub" id="c-txs">transfers</div>
     </div>
@@ -2737,20 +2733,17 @@
       <!-- Price card -->
       <div class="rv-bal rv-price-card">
         <div class="rv-token-head">
-          <div class="rv-price-icon" aria-hidden="true">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          </div>
-          <div class="rv-wallet-label" style="margin:0;letter-spacing:0.12em">Live CashX Price</div>
+          <img class="rv-token-logo" src="cashx-logo.png" alt="CashX">
+          <div class="rv-token-title cashx">CashX</div>
         </div>
         <a href="https://dexscreener.com/pulsechain/0xda942580cee2a69c5fc74109090816157730c64d" target="_blank" rel="noopener" style="text-decoration:none;cursor:pointer">
           <div class="rv-tok-val rv-price-val rv-loading" id="c-price" style="transition:opacity 0.15s">—</div>
-          <div class="rv-tok-usd rv-loading" id="c-mcap" style="margin-top:4px">—</div>
         </a>
         <div class="rv-price-change pct-neu rv-loading" id="c-ch">—</div>
       </div>
       <!-- Treasury PLS -->
       <div class="dash-metric-card">
-        <div class="dash-metric-label">💎 Treasury PLS</div>
+        <div class="dash-metric-label">🏛️ Treasury PLS</div>
         <div class="dash-metric-value" id="t-pls">— PLS</div>
         <div class="dash-metric-sub" id="t-pls-usd">—</div>
       </div>
@@ -2782,8 +2775,8 @@
 
   <!-- ROW 4: Top Burns -->
   <div style="background:rgba(10,3,22,0.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(200,100,255,0.2);border-radius:16px;padding:14px;box-shadow:0 8px 32px rgba(0,0,0,0.4);overflow:hidden">
-  <div class="panel dash-top-burns" style="background:transparent;border:none;box-shadow:none;border-radius:16px;overflow:hidden">
-    <div class="panel-head"><span class="live-dot"></span>Top Burns</div>
+  <div class="panel dash-top-burns" style="background:linear-gradient(145deg,#2a2440 0%,#1b1730 58%,#151326 100%);border:1px solid rgba(155,109,255,0.32);box-shadow:inset 0 1px 0 rgba(255,255,255,0.07),0 12px 34px rgba(0,0,0,0.22);border-radius:16px;overflow:hidden">
+    <div class="panel-head">Top Burns</div>
     <div class="panel-body" style="padding:0;gap:0">
       <div class="btx-table-head">
         <div class="btx-th">Rank</div>
@@ -3061,7 +3054,7 @@
       const link = hash ? `<a href="${explorerWeb}/tx/${hash}" target="_blank" style="color:var(--purple);text-decoration:none">${hash.slice(0,8)}…</a>` : '—';
       return `<div class="btx-row" style="display:grid;grid-template-columns:40px 1fr 1fr 1fr 1fr;align-items:center;padding:12px 20px;border:1px solid rgba(200,100,255,0.15);border-radius:10px;margin:6px 10px;background:rgba(255,255,255,0.03)">
         <div style="font-weight:700;color:var(--purple)">#${i + 1}</div>
-        <div style="font-family:'Space Mono',monospace;font-size:0.82rem">🔥 ${fmtN(amt, 2)} CASHX</div>
+        <div style="font-family:'Space Mono',monospace;font-size:0.82rem"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#c864ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:3px;flex-shrink:0"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg> ${fmtN(amt, 2)} CASHX</div>
         <div style="font-size:0.8rem;color:rgba(237,232,245,0.6)">≈ ${usd}</div>
         <div>${src}</div>
         <div style="font-size:0.75rem;color:rgba(237,232,245,0.5)">${ts ? ago(ts) : '—'}</div>
@@ -3106,7 +3099,7 @@
           ${recentBurnSourceIconHTML(source)}
           <span class="recent-burn-hash">${shortHash(hash)}</span>
         </span>
-        <span class="recent-burn-amount">🔥 ${fmtN(amt, 0)}</span>
+        <span class="recent-burn-amount"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#c864ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:3px;flex-shrink:0"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg> ${fmtN(amt, 0)}</span>
         <span class="recent-burn-time">${ts ? ago(ts) : '—'}</span>
       </a>`;
     }).join('');
@@ -3448,7 +3441,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
       if(latestTreasury){
         const amt = parseFloat(latestTreasury.total?.value||0)/1e18;
         const ts = latestTreasury.timestamp ? Math.floor(new Date(latestTreasury.timestamp).getTime()/1000) : 0;
-        set('latest-treasury-amt', '🔥 '+fmtN(amt, 2)+' CASHX');
+        setHTML('latest-treasury-amt', '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#c864ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;flex-shrink:0"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>'+fmtN(amt, 2)+' CASHX');
         set('latest-treasury-time', ts ? ago(ts) : '—');
         const tAddr = latestTreasury.from?.hash || '';
         setHTML('latest-treasury-addr', tAddr ? `<span class="addr-chip" data-addr="${tAddr}" onclick="amOpen(event,this.dataset.addr)">${formatAddress(tAddr,10,6)}</span>` : '—');
@@ -3460,7 +3453,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
       if(latestCommunity){
         const amt = parseFloat(latestCommunity.total?.value||0)/1e18;
         const ts = latestCommunity.timestamp ? Math.floor(new Date(latestCommunity.timestamp).getTime()/1000) : 0;
-        set('latest-community-amt', '🔥 '+fmtN(amt, 2)+' CASHX');
+        setHTML('latest-community-amt', '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#c864ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;flex-shrink:0"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>'+fmtN(amt, 2)+' CASHX');
         set('latest-community-time', ts ? ago(ts) : '—');
         const cAddr = latestCommunity.from?.hash || '';
         setHTML('latest-community-addr', cAddr ? `<span class="addr-chip" data-addr="${cAddr}" onclick="amOpen(event,this.dataset.addr)">${formatAddress(cAddr,10,6)}</span>` : '—');
@@ -5713,7 +5706,7 @@ const PULSE_ID     = 369;
           onclick="farmsApproveFarm(${r.pid})" ${approveDisabled}>Approve <span id="farm-approve-label-${r.pid}">MAX</span></button>
         <div class="farm-proto-footer">
           ${footerTimeHTML}
-          <span>TVL: <strong>${tvlDisplay}</strong></span>
+          <span style="white-space:nowrap">TVL: <strong>${tvlDisplay}</strong></span>
           ${footerRankHTML}
         </div>
       </div>`;
