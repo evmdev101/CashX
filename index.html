@@ -122,13 +122,10 @@
 .hero{
   min-height:100vh;display:flex;align-items:center;justify-content:center;
   text-align:center;position:relative;overflow:hidden;padding:90px 40px 120px;
-  background:url('hero2-bg.png') center bottom / cover no-repeat;
+  background:none;
 }
 
-.hero::before{
-  content:'';position:absolute;inset:0;pointer-events:none;z-index:1;
-  background:rgba(3,5,12,0.55);
-}
+.hero::before{display:none}
 
 .hero::after{display:none}
 
@@ -587,12 +584,48 @@
     #dashboard-view::before,
     #farms-view::before{ display:none }
     .page-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;
-      background:url("dash-bg-clouds.jpg") center center / cover no-repeat;
+      background:
+        radial-gradient(ellipse at 14% 16%,rgba(216,92,255,0.48),transparent 34%),
+        radial-gradient(ellipse at 86% 12%,rgba(67,224,164,0.18),transparent 30%),
+        radial-gradient(ellipse at 78% 82%,rgba(255,184,77,0.26),transparent 38%),
+        radial-gradient(ellipse at 24% 84%,rgba(13,22,40,0.86),transparent 36%),
+        linear-gradient(135deg,#0a0f1e 0%,#151326 48%,#0a0f1e 100%);
       display:none}
+    .page-bg::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      opacity:0;
+      transition:opacity 0.18s ease;
+      background:
+        repeating-linear-gradient(90deg,var(--page-grid-color,rgba(237,232,245,0.07)) 0 1px,transparent 1px 72px),
+        repeating-linear-gradient(0deg,var(--page-grid-color-soft,rgba(237,232,245,0.05)) 0 1px,transparent 1px 72px);
+      mask-image:radial-gradient(circle at center,#000 0 62%,transparent 90%);
+      -webkit-mask-image:radial-gradient(circle at center,#000 0 62%,transparent 90%);
+    }
+    #home-view:not([hidden]) ~ .page-bg,
     #dashboard-view:not([hidden]) ~ .page-bg,
     #farms-view:not([hidden]) ~ .page-bg{ display:block }
+    #home-view:not([hidden]) ~ .page-bg,
+    #dashboard-view:not([hidden]) ~ .page-bg,
+    #farms-view:not([hidden]) ~ .page-bg{
+      --page-grid-color:color-mix(in srgb,var(--farm-theme-text,#e8edf2) 7%,transparent);
+      --page-grid-color-soft:color-mix(in srgb,var(--farm-theme-text,#e8edf2) 5%,transparent);
+      background:
+        radial-gradient(ellipse at 14% 16%,color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 58%,transparent),transparent 34%),
+        radial-gradient(ellipse at 86% 12%,color-mix(in srgb,var(--farm-theme-text,#e8edf2) 24%,transparent),transparent 30%),
+        radial-gradient(ellipse at 78% 82%,color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 44%,var(--farm-theme-bg,#080b10)),transparent 38%),
+        radial-gradient(ellipse at 24% 84%,color-mix(in srgb,var(--farm-theme-panel,#10151c) 78%,var(--farm-theme-accent,#9b6dff)),transparent 36%),
+        linear-gradient(135deg,var(--farm-theme-bg,#080b10) 0%,color-mix(in srgb,var(--farm-theme-panel,#10151c) 76%,var(--farm-theme-accent,#9b6dff)) 48%,var(--farm-theme-bg,#080b10) 100%);
+    }
+    #home-view:not([hidden]) ~ .page-bg::before,
+    #dashboard-view:not([hidden]) ~ .page-bg::before,
+    #farms-view:not([hidden]) ~ .page-bg::before{opacity:0.34}
+    body:has(#home-view:not([hidden]))::after,
     body:has(#dashboard-view:not([hidden]))::after,
     body:has(#farms-view:not([hidden]))::after{ display:none }
+    #home-view > :not(nav),
     #dashboard-view > :not(.dashboard-nav),
     #farms-view > :not(.dashboard-nav){position:relative;z-index:1}
     @keyframes pgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -1711,6 +1744,178 @@
       transition:all 0.18s;line-height:0}
     .fvt-btn:hover{color:var(--text);background:rgba(255,255,255,0.06)}
     .fvt-btn.active{color:var(--purple);background:rgba(155,109,255,0.15)}
+    .farm-theme-btn{
+      height:32px;
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      background:var(--farm-theme-panel,#10151c);
+      border:1px solid var(--farm-theme-border,rgba(139,161,184,0.16));
+      border-radius:7px;
+      color:var(--farm-theme-text,#e8edf2);
+      font-family:'Space Mono',monospace;
+      font-size:0.62rem;
+      letter-spacing:0.02em;
+      padding:0 12px;
+      outline:none;
+      cursor:pointer;
+      transition:border-color 0.16s,background 0.16s,color 0.16s;
+    }
+    .farm-theme-btn:hover,
+    .farm-theme-btn:focus{border-color:var(--farm-theme-accent,#9b6dff);color:var(--farm-theme-accent,#9b6dff)}
+    .nav-theme-btn{
+      height:36px;
+      padding:0 14px;
+      border-radius:999px;
+      background:color-mix(in srgb,var(--farm-theme-panel,#10151c) 82%,transparent);
+      box-shadow:0 0 18px var(--farm-theme-shadow,rgba(155,109,255,0.22));
+    }
+    .farm-theme-modal[hidden]{display:none}
+    .farm-theme-modal{
+      position:fixed;
+      inset:0;
+      z-index:5000;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      background:transparent;
+    }
+    .farm-theme-dialog{
+      position:fixed;
+      width:min(560px,calc(100vw - 32px));
+      max-height:min(720px,calc(100vh - 48px));
+      display:flex;
+      flex-direction:column;
+      background:var(--farm-theme-card,#080b10);
+      border:1px solid var(--farm-theme-border,rgba(139,161,184,0.16));
+      border-radius:9px;
+      box-shadow:0 28px 90px rgba(0,0,0,0.68),0 0 48px var(--farm-theme-shadow,rgba(155,109,255,0.22));
+      color:var(--farm-theme-text,#e8edf2);
+      overflow:hidden;
+    }
+    .farm-theme-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:12px 14px 10px;
+      border-bottom:1px solid var(--farm-theme-border,rgba(139,161,184,0.16));
+      cursor:move;
+      user-select:none;
+      touch-action:none;
+    }
+    .farm-theme-dialog.dragging{transition:none}
+    .farm-theme-title{
+      font-family:'DM Sans',sans-serif;
+      font-size:1rem;
+      font-weight:800;
+      color:var(--farm-theme-accent,#9b6dff);
+    }
+    .farm-theme-close{
+      width:26px;
+      height:26px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border:1px solid var(--farm-theme-border,rgba(139,161,184,0.16));
+      border-radius:6px;
+      background:transparent;
+      color:var(--farm-theme-text,#e8edf2);
+      cursor:pointer;
+      font-weight:800;
+    }
+    .farm-theme-close:hover{border-color:var(--farm-theme-accent,#9b6dff);color:var(--farm-theme-accent,#9b6dff)}
+    .farm-theme-tabs{display:flex;gap:8px;padding:0 14px;border-bottom:1px solid var(--farm-theme-border,rgba(139,161,184,0.16))}
+    .farm-theme-tab{
+      background:transparent;
+      border:0;
+      border-bottom:2px solid transparent;
+      color:var(--farm-theme-text,#e8edf2);
+      cursor:pointer;
+      font-family:'Space Mono',monospace;
+      font-size:0.68rem;
+      padding:10px 12px 9px;
+    }
+    .farm-theme-tab.active{
+      color:var(--farm-theme-accent,#9b6dff);
+      border-bottom-color:var(--farm-theme-accent,#9b6dff);
+    }
+    .farm-theme-body{padding:12px;overflow:auto}
+    .farm-theme-panel{
+      border:1px solid var(--farm-theme-border,rgba(139,161,184,0.16));
+      border-radius:8px;
+      padding:14px;
+      background:color-mix(in srgb,var(--farm-theme-panel,#10151c) 72%,transparent);
+    }
+    .farm-theme-panel[hidden]{display:none}
+    .farm-theme-section-title{
+      font-family:'DM Sans',sans-serif;
+      font-size:0.9rem;
+      font-weight:800;
+      color:var(--farm-theme-text,#e8edf2);
+      padding-bottom:10px;
+      margin-bottom:12px;
+      border-bottom:1px solid var(--farm-theme-border,rgba(139,161,184,0.16));
+    }
+    .farm-theme-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+    .farm-theme-swatch{
+      min-height:44px;
+      border:1px solid var(--farm-theme-border,rgba(139,161,184,0.16));
+      border-radius:7px;
+      background:var(--swatch-bg,#111);
+      color:var(--swatch-fg,#fff);
+      cursor:pointer;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:3px;
+      font-family:'Space Mono',monospace;
+      font-size:0.52rem;
+      line-height:1;
+    }
+    .farm-theme-swatch.active{
+      border-color:var(--farm-theme-accent,#9b6dff);
+      box-shadow:0 0 0 2px color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 25%,transparent);
+    }
+    .farm-theme-dots{display:flex;align-items:center;justify-content:center}
+    .farm-theme-dot{width:14px;height:14px;border-radius:50%;box-shadow:0 0 0 1px rgba(255,255,255,0.16)}
+    .farm-theme-dot + .farm-theme-dot{margin-left:-4px}
+    .farm-theme-custom-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .farm-theme-field{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      font-family:'Space Mono',monospace;
+      font-size:0.62rem;
+      color:var(--farm-theme-muted,rgba(232,237,242,0.62));
+    }
+    .farm-theme-field input{
+      width:42px;
+      height:30px;
+      border:1px solid var(--farm-theme-border,rgba(139,161,184,0.16));
+      border-radius:999px;
+      background:transparent;
+      padding:0;
+      cursor:pointer;
+    }
+    .farm-theme-apply{
+      margin-top:14px;
+      width:100%;
+      height:34px;
+      border:1px solid var(--farm-theme-accent,#9b6dff);
+      border-radius:7px;
+      background:transparent;
+      color:var(--farm-theme-accent,#9b6dff);
+      font-family:'Space Mono',monospace;
+      font-size:0.66rem;
+      cursor:pointer;
+    }
+    @media(max-width:640px){
+      .farm-theme-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .farm-theme-custom-grid{grid-template-columns:1fr}
+    }
 
     /* TABLE VIEW */
     .farm-table{width:100%;border-collapse:collapse;table-layout:fixed}
@@ -1850,7 +2055,7 @@
       background:#080b10;
       border-color:#05070a;
       box-shadow:0 22px 58px rgba(0,0,0,0.48),inset 0 1px 0 rgba(255,255,255,0.035);
-      overflow:visible;
+      overflow:hidden;
       position:relative;
       z-index:0;
     }
@@ -1920,18 +2125,25 @@
     .farm-design-proto .farm-proto-metric.farm-proto-rewards{
       min-height:86px;
       padding:14px 13px;
+      overflow:hidden;
     }
     .farm-design-proto .farm-proto-label{font-family:'Space Mono',monospace;font-size:0.68rem;color:#8ea0ad;margin-bottom:8px}
     .farm-design-proto .farm-proto-compact .farm-proto-label{font-size:0.72rem;margin-bottom:6px;text-align:center}
     .farm-design-proto .farm-proto-compact .farm-proto-value{text-align:center}
     .farm-design-proto .farm-proto-value{font-size:1rem;color:#e8edf2}
     .farm-design-proto .farm-proto-value.apr{font-size:1.08rem;color:#18d98b;text-align:center}
+    .farm-design-proto .farm-proto-metric:has(.farm-apr-wrap){
+      position:relative;
+      overflow:visible;
+      z-index:3;
+    }
     .farm-design-proto .farm-apr-wrap{
       position:relative;
       display:inline-flex;
       align-items:center;
       justify-content:center;
       gap:6px;
+      z-index:4;
     }
     .farm-design-proto .farm-apr-calc{
       width:20px;
@@ -1953,7 +2165,7 @@
       position:absolute;
       left:50%;
       top:calc(100% + 10px);
-      z-index:10;
+      z-index:30;
       width:178px;
       transform:translateX(-50%) translateY(-4px);
       opacity:0;
@@ -2105,7 +2317,16 @@
       font-size:0.88rem;
       font-weight:700;
       color:#e8edf2;
-      white-space:nowrap;
+      max-width:100%;
+      min-width:0;
+      overflow:visible;
+      white-space:normal;
+      overflow-wrap:anywhere;
+    }
+    .farm-design-proto .farm-rewards-tokenline > span:not(.farm-reward-projection-wrap){
+      min-width:0;
+      overflow:hidden;
+      overflow-wrap:anywhere;
     }
     .farm-design-proto .farm-reward-projection-wrap{
       position:relative;
@@ -2338,6 +2559,79 @@
       font-size:0.96rem;
       font-weight:800;
     }
+    #farms-view{
+      --farm-theme-bg:#080b10;
+      --farm-theme-panel:#10151c;
+      --farm-theme-card:#080b10;
+      --farm-theme-metric:#141a21;
+      --farm-theme-border:rgba(139,161,184,0.16);
+      --farm-theme-text:#e8edf2;
+      --farm-theme-muted:#8ea0ad;
+      --farm-theme-accent:#9b6dff;
+      --farm-theme-shadow:rgba(155,109,255,0.22);
+    }
+    #farms-view .rv-card,
+    #farms-view .farm-rank-grid{
+      background:color-mix(in srgb,var(--farm-theme-bg) 86%,transparent)!important;
+      border-color:color-mix(in srgb,var(--farm-theme-accent) 32%,transparent)!important;
+    }
+    #farms-view .farm-item.farm-rich.farm-design-proto{
+      background:var(--farm-theme-card);
+      border-color:color-mix(in srgb,var(--farm-theme-accent) 34%,#000);
+      box-shadow:0 18px 54px rgba(0,0,0,0.48),0 0 28px var(--farm-theme-shadow),inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+    #farms-view .farm-design-proto .farm-proto-metric,
+    #farms-view .farm-design-proto .farm-lp-token-card,
+    #farms-view .farm-design-proto .farm-amount-input,
+    #farms-view .farm-design-proto .farm-stake-btn,
+    #farms-view .farm-design-proto .farm-unstake-btn,
+    #farms-view .farm-design-proto .farm-approve-max-btn{
+      background:var(--farm-theme-metric);
+      border-color:var(--farm-theme-border);
+    }
+    #farms-view .farm-design-proto .farm-proto-label,
+    #farms-view .farm-design-proto .farm-balance,
+    #farms-view .farm-design-proto .farm-proto-sub,
+    #farms-view .farm-design-proto .farm-footer-time,
+    #farms-view .farm-design-proto .farm-footer-rank,
+    #farms-view .farm-rank-id,
+    #farms-view .nexion-farms-count{
+      color:var(--farm-theme-muted);
+    }
+    #farms-view .farm-design-proto .farm-pair-name,
+    #farms-view .farm-design-proto .farm-proto-value,
+    #farms-view .farm-design-proto .farm-footer-time strong,
+    #farms-view .farm-design-proto .farm-claim-btn,
+    #farms-view .farm-rank-name{
+      color:var(--farm-theme-text);
+    }
+    #farms-view .nexion-farms-title,
+    #farms-view .farm-rank-pos,
+    #farms-view .farm-rank-value,
+    #farms-view .farm-design-proto .farm-liquidity-btn,
+    #farms-view .farm-design-proto .farm-lp-toggle,
+    #farms-view .fvt-btn.active{
+      color:var(--farm-theme-accent);
+    }
+    #farms-view .farm-design-proto .farm-liquidity-btn,
+    #farms-view .farm-design-proto .farm-claim-btn,
+    #farms-view .fvt-btn.active{
+      background:color-mix(in srgb,var(--farm-theme-accent) 22%,transparent);
+      border-color:color-mix(in srgb,var(--farm-theme-accent) 54%,transparent);
+    }
+    #farms-view .farm-design-proto .farm-claim-btn:not(:disabled){
+      background:linear-gradient(135deg,var(--farm-theme-accent),color-mix(in srgb,var(--farm-theme-accent) 68%,#4f8ef7));
+      color:#fff;
+    }
+    #farms-view .farm-rank-row{
+      background:color-mix(in srgb,var(--farm-theme-card) 92%,transparent);
+      border-color:color-mix(in srgb,var(--farm-theme-accent) 28%,transparent);
+    }
+    #farms-view .farm-rank-row:hover{
+      background:color-mix(in srgb,var(--farm-theme-accent) 16%,var(--farm-theme-card));
+      border-color:color-mix(in srgb,var(--farm-theme-accent) 62%,transparent);
+      box-shadow:0 16px 36px rgba(0,0,0,0.35),0 0 22px var(--farm-theme-shadow);
+    }
 
     @media(max-width:800px){
       #farms-view .farms-main{padding:118px 16px 24px}
@@ -2430,7 +2724,11 @@
     <button class="nav-tab" data-page-tab="dashboard" onclick="showPage('dashboard')">Dashboard</button>
   </div>
 
-  <div class="nav-right"></div>
+  <div class="nav-right">
+    <button class="farm-theme-btn nav-theme-btn" type="button" onclick="openFarmThemeModal()" aria-haspopup="dialog">
+      <span aria-hidden="true">☯</span><span>Theme</span>
+    </button>
+  </div>
 </nav>
 
 
@@ -2637,6 +2935,9 @@
 
   <div class="nav-right">
     <span class="last-up" id="last-up" aria-live="polite">—</span>
+    <button class="farm-theme-btn nav-theme-btn" type="button" onclick="openFarmThemeModal()" aria-haspopup="dialog">
+      <span aria-hidden="true">☯</span><span>Theme</span>
+    </button>
     <button id="wallet-connect-btn" class="nav-dash-btn" onclick="connectWallet()">Connect Wallet</button>
     <button id="wallet-connected-btn" class="h-wallet-chip" onclick="showWalletActions('main')" style="display:none" aria-label="My Wallet">
       <span class="wc-dot"></span>
@@ -4375,6 +4676,9 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
   </div>
 
   <div class="nav-right">
+    <button class="farm-theme-btn nav-theme-btn" type="button" onclick="openFarmThemeModal()" aria-haspopup="dialog">
+      <span aria-hidden="true">☯</span><span>Theme</span>
+    </button>
     <button id="farms-wallet-connect-btn" class="nav-dash-btn" onclick="farmsConnectWallet()">Connect Wallet</button>
     <button id="farms-wallet-connected-btn" class="h-wallet-chip" onclick="showWalletActions('farms')" style="display:none" aria-label="My Farms Wallet">
       <span class="wc-dot"></span>
@@ -4445,6 +4749,35 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
       <div id="farms-body">
         <div class="farm-loading">··· Loading farms</div>
       </div>
+      <div id="farm-theme-modal" class="farm-theme-modal" hidden role="dialog" aria-modal="true" aria-labelledby="farm-theme-title">
+        <div class="farm-theme-dialog">
+          <div class="farm-theme-head">
+            <div class="farm-theme-title" id="farm-theme-title">☯ Theme</div>
+            <button class="farm-theme-close" type="button" onclick="closeFarmThemeModal()" aria-label="Close theme picker">×</button>
+          </div>
+          <div class="farm-theme-tabs" role="tablist" aria-label="Farm theme settings">
+            <button class="farm-theme-tab active" id="farm-theme-tab-themes" type="button" onclick="showFarmThemeTab('themes')" role="tab" aria-selected="true">☯ Themes</button>
+            <button class="farm-theme-tab" id="farm-theme-tab-customize" type="button" onclick="showFarmThemeTab('customize')" role="tab" aria-selected="false">☄ Customize</button>
+          </div>
+          <div class="farm-theme-body">
+            <div id="farm-theme-panel-themes" class="farm-theme-panel" role="tabpanel" aria-labelledby="farm-theme-tab-themes">
+              <div class="farm-theme-section-title">Default Themes</div>
+              <div id="farm-theme-grid" class="farm-theme-grid"></div>
+            </div>
+            <div id="farm-theme-panel-customize" class="farm-theme-panel" role="tabpanel" aria-labelledby="farm-theme-tab-customize" hidden>
+              <div class="farm-theme-section-title">Colors</div>
+              <div class="farm-theme-custom-grid">
+                <label class="farm-theme-field">Background <input id="farm-theme-custom-bg" type="color"></label>
+                <label class="farm-theme-field">Text <input id="farm-theme-custom-fg" type="color"></label>
+                <label class="farm-theme-field">Panel <input id="farm-theme-custom-panel" type="color"></label>
+                <label class="farm-theme-field">Border <input id="farm-theme-custom-border" type="color"></label>
+                <label class="farm-theme-field">Accent <input id="farm-theme-custom-red" type="color"></label>
+              </div>
+              <button class="farm-theme-apply" type="button" onclick="applyFarmCustomTheme()">Apply Custom Theme</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
   </div><!-- end rv-connected -->
@@ -4454,6 +4787,249 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
 </div>
 
 <script>
+const FARM_THEME_KEY = 'cashx_farm_theme_v1';
+const FARM_CUSTOM_THEME_KEY = 'cashx_farm_custom_theme_v1';
+const FARM_THEME_POSITION_KEY = 'cashx_farm_theme_position_v1';
+const FARM_THEMES = {
+  dark: { label: 'original', bg:'#282c34', fg:'#9cdef2', panel:'#111111', border:'#355a66', red:'#e06c75' },
+  light: { label: 'light', bg:'#f0ebe3', fg:'#5a5248', panel:'#faf6f0', border:'#d4cdc2', red:'#c47d5a' },
+  midnight: { label: 'midnight', bg:'#0d1117', fg:'#c9d1d9', panel:'#161b22', border:'#30363d', red:'#f85149' },
+  paper: { label: 'paper', bg:'#faf8f5', fg:'#3b3836', panel:'#ffffff', border:'#d5d0c8', red:'#c5ac4a' },
+  cyberpunk: { label: 'cyberpunk', bg:'#0a0a0f', fg:'#0ff0fc', panel:'#12101a', border:'#9b30ff', red:'#e040fb' },
+  retrowave: { label: 'retrowave', bg:'#1a1a2e', fg:'#e94560', panel:'#16213e', border:'#533483', red:'#e94560' },
+  forest: { label: 'forest', bg:'#1b2a1b', fg:'#a8d5a2', panel:'#142414', border:'#3d6b3d', red:'#7cb871' },
+  ocean: { label: 'ocean', bg:'#0b1a2c', fg:'#64d2ff', panel:'#091422', border:'#1e5074', red:'#4facfe' },
+  ume: { label: 'ume', bg:'#2b1b2e', fg:'#f5c2e7', panel:'#1e1420', border:'#6c4675', red:'#f5a0c0' },
+  copper: { label: 'copper', bg:'#1c1410', fg:'#e8c39e', panel:'#140f0a', border:'#7a5533', red:'#d4764e' },
+  terminal: { label: 'terminal', bg:'#000000', fg:'#00ff41', panel:'#0a0a0a', border:'#003b00', red:'#00ff41' },
+  organs: { label: 'organs', bg:'#0a0406', fg:'#efe1c8', panel:'#15080a', border:'#3a1519', red:'#c83240' },
+  lavender: { label: 'lavender', bg:'#f3eef8', fg:'#3d3551', panel:'#faf7ff', border:'#cec3de', red:'#9b6dcc' },
+  gpt: { label: 'GPT', bg:'#212121', fg:'#ececec', panel:'#171717', border:'#424242', red:'#949494' },
+  claude: { label: 'claude', bg:'#262624', fg:'#f5f4f0', panel:'#30302e', border:'#4a4a47', red:'#c6613f' },
+  cute: { label: 'cute', bg:'#fff0f5', fg:'#d4608a', panel:'#fff8fa', border:'#f0c0d0', red:'#ff6b9d' },
+};
+
+function farmHexToRgb(hex) {
+  const clean = String(hex || '').replace('#', '');
+  const full = clean.length === 3 ? clean.split('').map(ch => ch + ch).join('') : clean;
+  const n = parseInt(full, 16);
+  return Number.isFinite(n) ? { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 } : { r: 155, g: 109, b: 255 };
+}
+
+function farmRgba(hex, alpha) {
+  const { r, g, b } = farmHexToRgb(hex);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+function applyFarmThemeVars(target, theme) {
+  if (!target) return;
+  target.style.setProperty('--farm-theme-bg', theme.bg);
+  target.style.setProperty('--farm-theme-panel', theme.panel);
+  target.style.setProperty('--farm-theme-card', theme.panel);
+  target.style.setProperty('--farm-theme-metric', farmRgba(theme.fg, 0.08));
+  target.style.setProperty('--farm-theme-border', farmRgba(theme.border, 0.72));
+  target.style.setProperty('--farm-theme-text', theme.fg);
+  target.style.setProperty('--farm-theme-muted', farmRgba(theme.fg, 0.62));
+  target.style.setProperty('--farm-theme-accent', theme.red);
+  target.style.setProperty('--farm-theme-shadow', farmRgba(theme.red, 0.24));
+}
+
+function loadFarmCustomTheme() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(FARM_CUSTOM_THEME_KEY) || 'null');
+    return parsed && parsed.bg && parsed.fg && parsed.panel && parsed.border && parsed.red ? parsed : null;
+  } catch(e) {
+    return null;
+  }
+}
+
+function setFarmTheme(name) {
+  const custom = name === 'custom' ? loadFarmCustomTheme() : null;
+  const key = custom ? 'custom' : (FARM_THEMES[name] ? name : 'dark');
+  const theme = custom || FARM_THEMES[key];
+  const root = document.getElementById('farms-view');
+  if (!root) return;
+  root.dataset.farmTheme = key;
+  applyFarmThemeVars(root, theme);
+  applyFarmThemeVars(document.body, theme);
+  applyFarmThemeVars(document.getElementById('farm-theme-modal'), theme);
+  try { localStorage.setItem(FARM_THEME_KEY, key); } catch(e) {}
+  updateFarmThemeUI(key, theme);
+}
+
+function initFarmTheme() {
+  renderFarmThemeGrid();
+  let saved = 'dark';
+  try { saved = localStorage.getItem(FARM_THEME_KEY) || 'dark'; } catch(e) {}
+  setFarmTheme(saved);
+}
+
+function renderFarmThemeGrid() {
+  const grid = document.getElementById('farm-theme-grid');
+  if (!grid || grid.dataset.ready === 'true') return;
+  grid.dataset.ready = 'true';
+  grid.innerHTML = Object.entries(FARM_THEMES).map(([key, theme]) => `
+    <button class="farm-theme-swatch" type="button" data-farm-theme="${key}" onclick="setFarmTheme('${key}')" style="--swatch-bg:${theme.bg};--swatch-fg:${theme.fg}">
+      <span class="farm-theme-dots" aria-hidden="true">
+        <span class="farm-theme-dot" style="background:${theme.bg}"></span>
+        <span class="farm-theme-dot" style="background:${theme.panel}"></span>
+        <span class="farm-theme-dot" style="background:${theme.fg}"></span>
+        <span class="farm-theme-dot" style="background:${theme.red}"></span>
+      </span>
+      <span>${theme.label}</span>
+    </button>`).join('');
+}
+
+function updateFarmThemeUI(key, theme) {
+  document.querySelectorAll('[data-farm-theme]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.farmTheme === key);
+  });
+  const inputs = {
+    bg: document.getElementById('farm-theme-custom-bg'),
+    fg: document.getElementById('farm-theme-custom-fg'),
+    panel: document.getElementById('farm-theme-custom-panel'),
+    border: document.getElementById('farm-theme-custom-border'),
+    red: document.getElementById('farm-theme-custom-red'),
+  };
+  Object.entries(inputs).forEach(([field, input]) => {
+    if (input && theme[field]) input.value = theme[field];
+  });
+}
+
+function openFarmThemeModal() {
+  renderFarmThemeGrid();
+  showFarmThemeTab('themes');
+  const modal = document.getElementById('farm-theme-modal');
+  if (modal) {
+    if (modal.parentElement !== document.body) document.body.appendChild(modal);
+    modal.hidden = false;
+    requestAnimationFrame(() => positionFarmThemeDialog(true));
+  }
+}
+
+function closeFarmThemeModal() {
+  const modal = document.getElementById('farm-theme-modal');
+  if (modal) modal.hidden = true;
+}
+
+function showFarmThemeTab(tab) {
+  const themesActive = tab !== 'customize';
+  const themesTab = document.getElementById('farm-theme-tab-themes');
+  const customizeTab = document.getElementById('farm-theme-tab-customize');
+  const themesPanel = document.getElementById('farm-theme-panel-themes');
+  const customizePanel = document.getElementById('farm-theme-panel-customize');
+  if (themesTab) {
+    themesTab.classList.toggle('active', themesActive);
+    themesTab.setAttribute('aria-selected', String(themesActive));
+  }
+  if (customizeTab) {
+    customizeTab.classList.toggle('active', !themesActive);
+    customizeTab.setAttribute('aria-selected', String(!themesActive));
+  }
+  if (themesPanel) themesPanel.hidden = !themesActive;
+  if (customizePanel) customizePanel.hidden = themesActive;
+}
+
+function applyFarmCustomTheme() {
+  const theme = {
+    label: 'custom',
+    bg: document.getElementById('farm-theme-custom-bg')?.value || '#080b10',
+    fg: document.getElementById('farm-theme-custom-fg')?.value || '#e8edf2',
+    panel: document.getElementById('farm-theme-custom-panel')?.value || '#10151c',
+    border: document.getElementById('farm-theme-custom-border')?.value || '#8ba1b8',
+    red: document.getElementById('farm-theme-custom-red')?.value || '#9b6dff',
+  };
+  try { localStorage.setItem(FARM_CUSTOM_THEME_KEY, JSON.stringify(theme)); } catch(e) {}
+  setFarmTheme('custom');
+}
+
+function clampFarmThemePosition(left, top, dialog) {
+  const rect = dialog.getBoundingClientRect();
+  const margin = 8;
+  return {
+    left: Math.min(Math.max(left, margin), Math.max(margin, window.innerWidth - rect.width - margin)),
+    top: Math.min(Math.max(top, margin), Math.max(margin, window.innerHeight - rect.height - margin)),
+  };
+}
+
+function moveFarmThemeDialog(left, top, shouldSave = false) {
+  const dialog = document.querySelector('#farm-theme-modal .farm-theme-dialog');
+  if (!dialog) return;
+  const pos = clampFarmThemePosition(left, top, dialog);
+  dialog.style.left = `${pos.left}px`;
+  dialog.style.top = `${pos.top}px`;
+  dialog.style.transform = 'none';
+  if (shouldSave) {
+    try { localStorage.setItem(FARM_THEME_POSITION_KEY, JSON.stringify(pos)); } catch(e) {}
+  }
+}
+
+function positionFarmThemeDialog(forceCenter = false) {
+  const dialog = document.querySelector('#farm-theme-modal .farm-theme-dialog');
+  if (!dialog) return;
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(FARM_THEME_POSITION_KEY) || 'null'); } catch(e) {}
+  if (!forceCenter && saved && Number.isFinite(saved.left) && Number.isFinite(saved.top)) {
+    moveFarmThemeDialog(saved.left, saved.top);
+    return;
+  }
+  const rect = dialog.getBoundingClientRect();
+  moveFarmThemeDialog((window.innerWidth - rect.width) / 2, (window.innerHeight - rect.height) / 2);
+}
+
+function initFarmThemeDrag() {
+  const dialog = document.querySelector('#farm-theme-modal .farm-theme-dialog');
+  const handle = document.querySelector('#farm-theme-modal .farm-theme-head');
+  if (!dialog || !handle || handle.dataset.dragReady === 'true') return;
+  handle.dataset.dragReady = 'true';
+  let drag = null;
+
+  handle.addEventListener('pointerdown', event => {
+    if (event.target.closest('button')) return;
+    const rect = dialog.getBoundingClientRect();
+    drag = {
+      startX: event.clientX,
+      startY: event.clientY,
+      left: rect.left,
+      top: rect.top,
+    };
+    dialog.classList.add('dragging');
+    handle.setPointerCapture?.(event.pointerId);
+    event.preventDefault();
+  });
+
+  handle.addEventListener('pointermove', event => {
+    if (!drag) return;
+    moveFarmThemeDialog(drag.left + event.clientX - drag.startX, drag.top + event.clientY - drag.startY);
+  });
+
+  handle.addEventListener('pointerup', event => {
+    if (!drag) return;
+    const rect = dialog.getBoundingClientRect();
+    drag = null;
+    dialog.classList.remove('dragging');
+    handle.releasePointerCapture?.(event.pointerId);
+    moveFarmThemeDialog(rect.left, rect.top, true);
+  });
+
+  handle.addEventListener('pointercancel', () => {
+    drag = null;
+    dialog.classList.remove('dragging');
+  });
+
+  window.addEventListener('resize', () => {
+    const rect = dialog.getBoundingClientRect();
+    moveFarmThemeDialog(rect.left, rect.top, true);
+  });
+}
+
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') closeFarmThemeModal();
+});
+
+initFarmTheme();
+initFarmThemeDrag();
+
 window.FarmsApp = (() => {
 const PULSE_ID     = 369;
   const PULSE_HEX    = '0x171';
