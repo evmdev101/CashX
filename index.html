@@ -1820,14 +1820,14 @@
     .farm-rich .farm-copy-lp{flex:0 0 20px}
     .farm-proto-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;min-width:0}
     .farm-proto-metric{min-height:58px;background:rgba(255,255,255,0.045);
-      border:1px solid rgba(255,255,255,0.08);border-radius:7px;padding:8px 11px;min-width:0}
+      border:1px solid rgba(255,255,255,0.08);border-radius:7px;padding:8px 11px;min-width:0;overflow:hidden}
     .farm-proto-metric.wide{grid-column:1 / -1;min-height:36px;display:flex;align-items:center;justify-content:space-between}
     .farm-proto-label{font-family:'Michroma',sans-serif;font-size:0.5rem;letter-spacing:0.02em;
       text-transform:uppercase;color:rgba(255,255,255,0.32);margin-bottom:5px}
     .farm-proto-value{font-family:'Space Mono',monospace;font-size:0.78rem;font-weight:700;color:#f5f1ff}
     .farm-proto-value.apr{color:#00d477;font-size:0.94rem}
     .farm-proto-value.long{font-size:0.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;min-width:0}
-    .farm-proto-value.with-token{display:flex;align-items:center;gap:5px;white-space:nowrap;max-width:100%;min-width:0;overflow:hidden}
+    .farm-proto-value.with-token{display:flex;align-items:center;gap:5px;flex-wrap:wrap;max-width:100%;min-width:0}
     .farm-proto-token{display:inline-flex;align-items:center;gap:4px;font-size:0.68rem;color:#f5f1ff}
     .farm-proto-token .farm-token-logo{width:13px;height:13px;box-shadow:none}
     .farm-proto-sub{font-family:'Space Mono',monospace;font-size:0.9rem;color:rgba(255,255,255,0.58);margin-top:8px}
@@ -1850,7 +1850,7 @@
       background:#080b10;
       border-color:#05070a;
       box-shadow:0 22px 58px rgba(0,0,0,0.48),inset 0 1px 0 rgba(255,255,255,0.035);
-      overflow:hidden;
+      overflow:visible;
       position:relative;
       z-index:0;
     }
@@ -2096,7 +2096,7 @@
       grid-template-columns:1fr;
       gap:6px;
     }
-    .farm-design-proto .farm-proto-metric.farm-proto-rewards{overflow:hidden}
+    .farm-design-proto .farm-proto-metric.farm-proto-rewards{overflow:visible}
     .farm-design-proto .farm-rewards-tokenline{
       display:flex;
       align-items:center;
@@ -5219,9 +5219,6 @@ const PULSE_ID     = 369;
         return new Map();
       });
 
-      console.log(`Matched ${matched.length}/${FARMS.length} farms:`,
-        matched.map(m => `${m.farm.label} → pid ${m.pid}`).join(', '));
-
       if (matched.length === 0) {
         el.innerHTML = '<div class="farm-empty">Could not match any farm LP tokens to pool IDs.</div>';
         return;
@@ -6438,7 +6435,7 @@ function farmsToggleLpBreakdown(pid){ return window.FarmsApp.toggleLpBreakdown(p
     root.querySelectorAll('a[href="#farms"]').forEach(link => {
       link.addEventListener('click', event => {
         event.preventDefault();
-        window.location.reload();
+        showPage('farms');
       });
     });
     show(0);
