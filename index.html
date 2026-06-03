@@ -9,10 +9,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link rel="preconnect" href="https://api.fontshare.com"/>
   <link rel="dns-prefetch" href="https://cdn.jsdelivr.net"/>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&family=Michroma&family=Bebas+Neue&display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&family=Michroma&family=Bebas+Neue&family=Black+Han+Sans&family=Nunito:wght@900&family=Permanent+Marker&display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
 <link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
 <noscript>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&family=Michroma&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&family=Michroma&family=Bebas+Neue&family=Black+Han+Sans&family=Nunito:wght@900&family=Permanent+Marker&display=swap" rel="stylesheet"/>
   <link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap" rel="stylesheet"/>
 </noscript>
 <style>
@@ -122,19 +122,15 @@
 .hero{
   min-height:100vh;display:flex;align-items:center;justify-content:center;
   text-align:center;position:relative;overflow:hidden;padding:90px 40px 120px;
-  background:url('hero2-bg.png') center center / cover no-repeat;
+  background:url('hero2-bg.png') center bottom / cover no-repeat;
 }
 
 .hero::before{
   content:'';position:absolute;inset:0;pointer-events:none;z-index:1;
-  background:rgba(3,5,12,0.28);
+  background:rgba(3,5,12,0.55);
 }
 
-.hero::after{
-  content:'';position:absolute;bottom:0;left:0;right:0;
-  height:200px;pointer-events:none;z-index:3;
-  background:linear-gradient(to bottom, transparent 0%, var(--bg) 100%);
-}
+.hero::after{display:none}
 
 .hero-content{position:relative;z-index:2;display:flex;flex-direction:column;
   align-items:center;max-width:800px;margin:0 auto}
@@ -146,9 +142,10 @@
   background:#ff2222;animation:blink 2s infinite;flex-shrink:0;
   box-shadow:0 0 8px rgba(255,30,30,0.8)}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
-.hero-title{font-family:'Bebas Neue',sans-serif;font-weight:400;
-  font-size:clamp(5.5rem,13vw,11rem);line-height:0.9;letter-spacing:0.05em;
-  text-transform:uppercase;margin-bottom:10px;color:#ffffff}
+.hero-title{font-family:'Permanent Marker',cursive;font-weight:400;
+  font-size:clamp(4rem,10vw,7.5rem);line-height:0.95;letter-spacing:4px;
+  text-transform:uppercase;margin-bottom:10px;color:#fff;
+  text-shadow:none}
 .hero-sub-name{display:block;font-size:0.22em;letter-spacing:0.15em;
   text-transform:uppercase;font-weight:600;margin-bottom:8px;
   background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
@@ -164,7 +161,8 @@
   background:rgba(255,160,50,0.05);white-space:nowrap}
 .hero-ctas{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
 
-.hero-banner-placeholder{width:460px;max-width:90%;height:auto;border-radius:18px;background:none;border:none;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;overflow:hidden;animation:banner-float 3.5s ease-in-out infinite;box-shadow:0 0 18px rgba(155,109,255,0.6),0 0 40px rgba(155,109,255,0.35),0 0 70px rgba(155,109,255,0.15)}
+.hero-banner-placeholder{width:460px;max-width:90%;height:auto;border-radius:18px;background:none;border:none;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;overflow:hidden;animation:banner-float 3.5s ease-in-out infinite;box-shadow:none;position:relative}
+.hero-banner-placeholder::after{content:'';position:absolute;inset:0;background:rgba(3,5,12,0.03);border-radius:18px;pointer-events:none}
 @keyframes banner-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 .hero-banner-img{width:100%;height:100%;object-fit:cover;border-radius:14px;display:block}
 .hero-social-links{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-top:14px}
@@ -225,7 +223,7 @@
 
 .promo-carousel-section{padding:38px 40px 24px;background:#050713;position:relative;z-index:2}
 .promo-carousel{
-  width:min(1320px,100%);
+  width:min(1320px,92%);
   margin:0 auto;
   display:flex;
   flex-direction:column;
@@ -233,7 +231,7 @@
 }
 .promo-track{
   position:relative;
-  aspect-ratio:3 / 1;
+  aspect-ratio:1320 / 260;
   border-radius:18px;
   overflow:hidden;
   border:1px solid rgba(200,85,247,0.32);
@@ -241,38 +239,26 @@
   box-shadow:0 24px 70px rgba(0,0,0,0.44);
 }
 .promo-track::before{
-  content:"AD";
+  content:"✦  Ad";
   position:absolute;
-  top:18px;
-  left:22px;
+  top:12px;
+  left:14px;
   z-index:3;
-  min-width:62px;
-  height:34px;
+  padding:0 16px;
+  height:36px;
   display:grid;
   place-items:center;
   border-radius:999px;
   color:#fff;
-  font-family:'Orbitron',sans-serif;
-  font-size:0.78rem;
-  font-weight:900;
-  letter-spacing:0.08em;
-  background:linear-gradient(135deg,#ff3f83 0%,#ff7a2f 58%,#ffc44f 100%);
-  border:1px solid rgba(255,255,255,0.28);
-  box-shadow:0 10px 24px rgba(255,87,62,0.32);
+  font-family:'DM Sans',sans-serif;
+  font-size:0.88rem;
+  font-weight:800;
+  letter-spacing:0.03em;
+  background:linear-gradient(135deg,#ff6a00 0%,#ff2d55 100%);
+  border:none;
+  box-shadow:0 4px 18px rgba(255,45,85,0.55);
 }
-.promo-track::after{
-  content:"";
-  position:absolute;
-  top:26px;
-  left:32px;
-  z-index:4;
-  width:5px;
-  height:5px;
-  border-radius:50%;
-  background:#fff6be;
-  box-shadow:9px -5px 0 rgba(255,255,255,0.85),9px 5px 0 rgba(255,255,255,0.72);
-  pointer-events:none;
-}
+.promo-track::after{display:none}
 .promo-slide{
   position:absolute;
   inset:0;
@@ -299,8 +285,8 @@
   padding:0 0 18px;
   background:transparent;
 }
-#farms-view .promo-carousel{width:min(1180px,92%)}
-#farms-view .promo-track{aspect-ratio:3.8 / 1}
+#farms-view .promo-carousel{width:min(1320px,92%)}
+#farms-view .promo-track{aspect-ratio:1320 / 260}
 @media(max-width:700px){
   .promo-carousel-section{padding:26px 16px 18px}
   #farms-view .promo-carousel-section{padding:0 0 14px}
@@ -379,7 +365,7 @@
     .loop-arrow{display:flex;align-items:center;padding:0 4px;color:var(--purple);font-size:1rem;flex-shrink:0}
 
     /* ── TOKENOMICS ── */
-    .tokenomics-section{max-width:1180px;padding-top:110px;padding-bottom:120px}
+    .tokenomics-section{max-width:1180px;padding-top:200px;padding-bottom:120px}
     .toko-grid{display:flex;flex-direction:column;gap:30px;position:relative}
     .toko-grid::before{content:'';position:absolute;inset:-44px -52px;z-index:-1;
       border:1px solid rgba(255,160,50,0.12);border-radius:18px;
@@ -444,8 +430,7 @@
       display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1)}
     .tf-title{font-weight:700;font-size:0.95rem;margin-bottom:5px;color:#fff}
     .tf-desc{font-size:0.82rem;color:var(--muted);line-height:1.6}
-    .treas-cycle{border:1px solid rgba(255,160,50,0.16);background:linear-gradient(180deg,rgba(21,27,46,0.9),rgba(10,14,26,0.72));
-      padding:28px;border-radius:14px;box-shadow:0 20px 70px rgba(0,0,0,0.22)}
+    .treas-cycle{background:none;border:none;padding:28px 0;box-shadow:none}
     .tc-title{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);
       letter-spacing:0.12em;text-transform:uppercase;margin-bottom:18px}
     .cycle-step{display:grid;grid-template-columns:42px 1fr;gap:16px;align-items:flex-start;padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.08)}
@@ -1244,7 +1229,7 @@
     .dash-stat-label{font-family:'Space Mono',monospace;font-size:0.54rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dash-muted);margin-bottom:10px;display:flex;align-items:center;gap:5px}
     .dash-stat-num{font-family:'DM Sans',sans-serif;font-size:1.8rem;font-weight:300;letter-spacing:-0.04em;color:#fff;line-height:1}
     .dash-stat-token{font-family:'Space Mono',monospace;font-size:0.62rem;color:#c864ff;text-transform:uppercase;letter-spacing:0.08em;margin-top:7px}
-    .dash-stat-sub{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--dash-faint);margin-top:5px;line-height:1.5}
+    .dash-stat-sub{font-family:'Space Mono',monospace;font-size:0.72rem;color:#fff;margin-top:5px;line-height:1.5}
     .dash-main-row{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(240px,0.7fr);gap:14px;align-items:stretch;background:rgba(10,3,22,0.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(200,100,255,0.2);border-radius:14px;padding:14px;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
     .dash-stats-sidebar{display:flex;flex-direction:column;gap:10px}
     .dash-metric-card{background:linear-gradient(145deg,#2a2440 0%,#1b1730 58%,#151326 100%);border:1px solid rgba(155,109,255,0.32);border-radius:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.07),0 12px 34px rgba(0,0,0,0.22);padding:16px 18px;flex-shrink:0}
@@ -1596,7 +1581,7 @@
     .farm-item{background:rgba(8,2,18,0.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
       border:1px solid rgba(200,100,255,0.25);
       border-radius:10px;overflow:hidden;display:flex;flex-direction:column;
-      box-shadow:0 8px 32px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.08)}
+      box-shadow:0 8px 32px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.08);min-width:0}
 
     /* CARD HEADER */
     .farm-hdr{display:flex;align-items:center;justify-content:space-between;
@@ -1833,16 +1818,16 @@
       font-weight:800;letter-spacing:0;color:#fff;text-transform:none}
     .farm-rich .farm-title-text{min-width:0}
     .farm-rich .farm-copy-lp{flex:0 0 20px}
-    .farm-proto-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+    .farm-proto-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;min-width:0}
     .farm-proto-metric{min-height:58px;background:rgba(255,255,255,0.045);
-      border:1px solid rgba(255,255,255,0.08);border-radius:7px;padding:8px 11px}
+      border:1px solid rgba(255,255,255,0.08);border-radius:7px;padding:8px 11px;min-width:0}
     .farm-proto-metric.wide{grid-column:1 / -1;min-height:36px;display:flex;align-items:center;justify-content:space-between}
     .farm-proto-label{font-family:'Michroma',sans-serif;font-size:0.5rem;letter-spacing:0.02em;
       text-transform:uppercase;color:rgba(255,255,255,0.32);margin-bottom:5px}
     .farm-proto-value{font-family:'Space Mono',monospace;font-size:0.78rem;font-weight:700;color:#f5f1ff}
     .farm-proto-value.apr{color:#00d477;font-size:0.94rem}
-    .farm-proto-value.long{font-size:0.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .farm-proto-value.with-token{display:flex;align-items:center;gap:5px;white-space:nowrap}
+    .farm-proto-value.long{font-size:0.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;min-width:0}
+    .farm-proto-value.with-token{display:flex;align-items:center;gap:5px;white-space:nowrap;max-width:100%;min-width:0;overflow:hidden}
     .farm-proto-token{display:inline-flex;align-items:center;gap:4px;font-size:0.68rem;color:#f5f1ff}
     .farm-proto-token .farm-token-logo{width:13px;height:13px;box-shadow:none}
     .farm-proto-sub{font-family:'Space Mono',monospace;font-size:0.9rem;color:rgba(255,255,255,0.58);margin-top:8px}
@@ -1865,14 +1850,14 @@
       background:#080b10;
       border-color:#05070a;
       box-shadow:0 22px 58px rgba(0,0,0,0.48),inset 0 1px 0 rgba(255,255,255,0.035);
-      overflow:visible;
+      overflow:hidden;
       position:relative;
       z-index:0;
     }
     .farm-item.farm-rich.farm-design-proto:hover,
     .farm-item.farm-rich.farm-design-proto:focus-within{z-index:20}
-    .farm-design-proto .farm-hdr{border-bottom:none;padding-bottom:8px}
-    .farm-design-proto .farm-title{gap:13px}
+    .farm-design-proto .farm-hdr{border-bottom:none;padding-bottom:8px;flex-wrap:wrap;gap:6px}
+    .farm-design-proto .farm-title{gap:13px;flex:1;min-width:0}
     .farm-design-proto .farm-title > div:first-child{
       display:flex;
       align-items:center;
@@ -2111,7 +2096,7 @@
       grid-template-columns:1fr;
       gap:6px;
     }
-    .farm-design-proto .farm-proto-metric.farm-proto-rewards{overflow:visible}
+    .farm-design-proto .farm-proto-metric.farm-proto-rewards{overflow:hidden}
     .farm-design-proto .farm-rewards-tokenline{
       display:flex;
       align-items:center;
@@ -2359,10 +2344,10 @@
       .farm-rank-grid{grid-template-columns:1fr}
       .rv-grid{grid-template-columns:1fr}
     }
-    @media(max-width:1100px){
+    @media(max-width:1200px){
       .farm-row{grid-template-columns:repeat(2,minmax(0,1fr))}
     }
-    @media(max-width:700px){
+    @media(max-width:860px){
       .farm-row{grid-template-columns:1fr}
     }
     @media(max-width:560px){
@@ -2374,6 +2359,10 @@
     }
     @media(max-width:420px){
       .farm-design-proto .farm-lp-breakdown{grid-template-columns:1fr}
+    }
+    @media(max-width:500px){
+      .farm-design-proto .farm-proto-grid{grid-template-columns:1fr}
+      .farm-design-proto .farm-proto-actions{grid-template-columns:1fr 1fr}
     }
 
   /* ── LOADING SCREEN ── */
@@ -2452,7 +2441,7 @@
     <div class="hero-banner-placeholder">
       <img src="welcome-banner2.png" alt="Welcome to CashX" class="hero-banner-img"/>
     </div>
-    <h1 class="hero-title">CASH<span style="background:linear-gradient(135deg,#9b30d9,#d44dff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">X</span></h1>
+    <h1 class="hero-title" style="-webkit-text-fill-color:#9b30d9;color:#9b30d9">CASHX</h1>
   <div class="hero-social-links">
     <a href="https://t.me/+Ruw3dQPRTv00NDRl" target="_blank" class="hero-social-btn" >
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
@@ -2489,7 +2478,7 @@
 
 
 <!-- TOKENOMICS -->
-<section class="section-wrap tokenomics-section" id="tokenomics" style="scroll-margin-top:90px">
+<section class="section-wrap tokenomics-section" id="tokenomics" style="scroll-margin-top:90px;background:none;position:relative;z-index:2">
   <div class="toko-grid">
     <div>
       <div class="toko-head fade">
@@ -4398,7 +4387,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
   <div class="promo-carousel" data-promo-carousel>
     <div class="promo-track">
       <a class="promo-slide active" href="#farms" aria-label="Refresh CashX Farms">
-        <img src="promo-cashx-farms.png" alt="CashX Farms">
+        <img src="promo-cashx-farms.png" alt="CashX Farms" style="object-position:center 35%">
       </a>
       <a class="promo-slide" href="https://cashx-casino-beta.netlify.app/" target="_blank" rel="noopener" aria-label="Open CashX Casino">
         <img src="promo-cashx-casino.png" alt="CashX Casino">
@@ -6079,6 +6068,19 @@ const PULSE_ID     = 369;
   }
 
   // ── Stake ──────────────────────────────────────────────────────────────────
+  function friendlyFarmError(msg) {
+    if (!msg) return 'Transaction failed';
+    const m = msg.toLowerCase();
+    if (m.includes('user rejected') || m.includes('user denied')) return 'Transaction cancelled';
+    if (m.includes('ds-math-sub-underflow') || m.includes('underflow')) return 'Approve your tokens first before staking';
+    if (m.includes('insufficient allowance') || m.includes('allowance')) return 'Approve your tokens first before staking';
+    if (m.includes('insufficient balance') || m.includes('exceeds balance')) return 'Insufficient balance';
+    if (m.includes('nonce')) return 'Transaction conflict — please try again';
+    if (m.includes('gas')) return 'Transaction ran out of gas — try again';
+    if (m.includes('network') || m.includes('timeout')) return 'Network error — please try again';
+    return 'Transaction failed — please try again';
+  }
+
   async function stakeFarm(pid) {
     const input = document.getElementById(`farm-input-${pid}`);
     const amountStr = input?.value?.trim();
@@ -6092,7 +6094,7 @@ const PULSE_ID     = 369;
     let amount;
     try { amount = ethers.parseUnits(amountStr, 18); } catch { return; }
     if (typeof r.walletLp === 'bigint' && amount > r.walletLp) {
-      setFarmStatus(pid, '✗ Amount is higher than your wallet LP balance. Click Max for wallet max, or Staked Max to unstake.', true);
+      setFarmStatus(pid, '✗ Amount exceeds wallet balance', true);
       setTimeout(() => setFarmStatus(pid, '', false), 6000);
       return;
     }
@@ -6122,7 +6124,7 @@ const PULSE_ID     = 369;
       setFarmStatus(pid, '', false);
       scheduleFarmRefresh(pid);
     } catch(err) {
-      const reason = err?.reason || err?.shortMessage || err?.message || 'Transaction failed';
+      const reason = friendlyFarmError(err?.reason || err?.shortMessage || err?.message || '');
       setFarmStatus(pid, `✗ ${reason}`, true);
       setTimeout(() => setFarmStatus(pid, '', false), 6000);
     } finally {
@@ -6146,7 +6148,7 @@ const PULSE_ID     = 369;
       if (!receipt) return;
       scheduleFarmRefresh(pid);
     } catch(err) {
-      const reason = err?.reason || err?.shortMessage || err?.message || 'Approval failed';
+      const reason = friendlyFarmError(err?.reason || err?.shortMessage || err?.message || '');
       setFarmStatus(pid, `✗ ${reason}`, true);
       setTimeout(() => setFarmStatus(pid, '', false), 6000);
     } finally {
@@ -6168,7 +6170,7 @@ const PULSE_ID     = 369;
     let amount;
     try { amount = ethers.parseUnits(amountStr, 18); } catch { return; }
     if (typeof r.staked === 'bigint' && amount > r.staked) {
-      setFarmStatus(pid, '✗ Amount is higher than your staked LP balance. Click Staked Max to unstake your full amount.', true);
+      setFarmStatus(pid, '✗ Amount exceeds staked balance', true);
       setTimeout(() => setFarmStatus(pid, '', false), 6000);
       return;
     }
@@ -6191,7 +6193,7 @@ const PULSE_ID     = 369;
       setFarmStatus(pid, '', false);
       scheduleFarmRefresh(pid);
     } catch(err) {
-      const reason = err?.reason || err?.shortMessage || err?.message || 'Transaction failed';
+      const reason = friendlyFarmError(err?.reason || err?.shortMessage || err?.message || '');
       setFarmStatus(pid, `✗ ${reason}`, true);
       setTimeout(() => setFarmStatus(pid, '', false), 6000);
     } finally {
@@ -6227,7 +6229,7 @@ const PULSE_ID     = 369;
     } catch(err) {
       console.error(`Claim failed for ${label}:`, err);
       btn.classList.remove('claiming');
-      const reason = err?.reason || err?.shortMessage || err?.message || 'Transaction failed';
+      const reason = friendlyFarmError(err?.reason || err?.shortMessage || err?.message || '');
       setFarmStatus(pid, `✗ ${reason}`, true);
       setTimeout(() => setFarmStatus(pid, '', false), 6000);
     } finally {
