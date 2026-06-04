@@ -79,6 +79,7 @@
         box-shadow:0 0 24px rgba(185,41,214,0.32);
         transition:opacity 0.2s,transform 0.2s,box-shadow 0.2s;white-space:nowrap}
     .nav-dash-btn:hover{opacity:0.98;transform:translateY(-1px);box-shadow:0 0 30px rgba(185,41,214,0.5)}
+    #home-wallet-connect-btn,
     #wallet-connect-btn,
     #farms-wallet-connect-btn{font-size:0.76rem;padding:8px 18px;letter-spacing:0.1em}
     .nav-icon{display:flex;align-items:center;justify-content:center;
@@ -141,7 +142,11 @@
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
 .hero-title{font-family:'Permanent Marker',cursive;font-weight:400;
   font-size:clamp(4rem,10vw,7.5rem);line-height:0.95;letter-spacing:4px;
-  text-transform:uppercase;margin-bottom:10px;color:#fff;
+  text-transform:uppercase;margin-bottom:10px;
+  color:var(--farm-theme-accent,#9b6dff);
+  background:linear-gradient(135deg,var(--farm-theme-accent,#9b6dff),color-mix(in srgb,var(--farm-theme-text,#e8edf2) 42%,var(--farm-theme-accent,#9b6dff)));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
   text-shadow:none}
 .hero-sub-name{display:block;font-size:0.22em;letter-spacing:0.15em;
   text-transform:uppercase;font-weight:600;margin-bottom:8px;
@@ -170,6 +175,31 @@
   font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;transition:all 0.3s}
 
 .hero-social-btn:hover{background:rgba(255,255,255,0.85);transform:scale(1.08)}
+.hero-farms-cta{
+  margin:26px auto 0;
+  min-width:220px;
+  height:52px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 58%,transparent);
+  border-radius:8px;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 30%,var(--farm-theme-panel,#10151c)),color-mix(in srgb,var(--farm-theme-bg,#080b10) 78%,var(--farm-theme-accent,#9b6dff)));
+  color:var(--farm-theme-text,#e8edf2);
+  font-family:'Space Mono',monospace;
+  font-size:0.78rem;
+  font-weight:700;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  cursor:pointer;
+  box-shadow:0 14px 34px rgba(0,0,0,0.28),0 0 24px var(--farm-theme-shadow,rgba(155,109,255,0.22));
+  transition:transform 0.18s,border-color 0.18s,box-shadow 0.18s,background 0.18s;
+}
+.hero-farms-cta:hover{
+  transform:translateY(-2px);
+  border-color:var(--farm-theme-accent,#9b6dff);
+  box-shadow:0 18px 42px rgba(0,0,0,0.34),0 0 34px var(--farm-theme-shadow,rgba(155,109,255,0.22));
+}
 .hero-scroll-cue{
   position:absolute;left:50%;bottom:34px;z-index:4;
   width:58px;height:58px;border-radius:50%;
@@ -591,27 +621,12 @@
         radial-gradient(ellipse at 24% 84%,rgba(13,22,40,0.86),transparent 36%),
         linear-gradient(135deg,#0a0f1e 0%,#151326 48%,#0a0f1e 100%);
       display:none}
-    .page-bg::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      opacity:0;
-      transition:opacity 0.18s ease;
-      background:
-        repeating-linear-gradient(90deg,var(--page-grid-color,rgba(237,232,245,0.07)) 0 1px,transparent 1px 72px),
-        repeating-linear-gradient(0deg,var(--page-grid-color-soft,rgba(237,232,245,0.05)) 0 1px,transparent 1px 72px);
-      mask-image:radial-gradient(circle at center,#000 0 62%,transparent 90%);
-      -webkit-mask-image:radial-gradient(circle at center,#000 0 62%,transparent 90%);
-    }
     #home-view:not([hidden]) ~ .page-bg,
     #dashboard-view:not([hidden]) ~ .page-bg,
     #farms-view:not([hidden]) ~ .page-bg{ display:block }
     #home-view:not([hidden]) ~ .page-bg,
     #dashboard-view:not([hidden]) ~ .page-bg,
     #farms-view:not([hidden]) ~ .page-bg{
-      --page-grid-color:color-mix(in srgb,var(--farm-theme-text,#e8edf2) 7%,transparent);
-      --page-grid-color-soft:color-mix(in srgb,var(--farm-theme-text,#e8edf2) 5%,transparent);
       background:
         radial-gradient(ellipse at 14% 16%,color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 58%,transparent),transparent 34%),
         radial-gradient(ellipse at 86% 12%,color-mix(in srgb,var(--farm-theme-text,#e8edf2) 24%,transparent),transparent 30%),
@@ -619,9 +634,6 @@
         radial-gradient(ellipse at 24% 84%,color-mix(in srgb,var(--farm-theme-panel,#10151c) 78%,var(--farm-theme-accent,#9b6dff)),transparent 36%),
         linear-gradient(135deg,var(--farm-theme-bg,#080b10) 0%,color-mix(in srgb,var(--farm-theme-panel,#10151c) 76%,var(--farm-theme-accent,#9b6dff)) 48%,var(--farm-theme-bg,#080b10) 100%);
     }
-    #home-view:not([hidden]) ~ .page-bg::before,
-    #dashboard-view:not([hidden]) ~ .page-bg::before,
-    #farms-view:not([hidden]) ~ .page-bg::before{opacity:0.34}
     body:has(#home-view:not([hidden]))::after,
     body:has(#dashboard-view:not([hidden]))::after,
     body:has(#farms-view:not([hidden]))::after{ display:none }
@@ -1335,9 +1347,6 @@
       transition:all 0.2s;white-space:nowrap}
     .h-wallet-chip:hover{background:linear-gradient(135deg,rgba(155,109,255,0.35),rgba(79,142,247,0.32));
       box-shadow:0 0 20px rgba(155,109,255,0.28)}
-    .wc-dot{width:7px;height:7px;border-radius:50%;background:var(--green);
-      box-shadow:0 0 8px rgba(74,222,128,0.8);flex-shrink:0;animation:blink 2.5s infinite}
-
     #wallet-panel{position:fixed;top:78px;right:48px;z-index:90;width:292px;
       background:linear-gradient(180deg,rgba(13,22,40,0.98),rgba(7,9,18,0.97));
       backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);
@@ -1764,9 +1773,11 @@
     .farm-theme-btn:hover,
     .farm-theme-btn:focus{border-color:var(--farm-theme-accent,#9b6dff);color:var(--farm-theme-accent,#9b6dff)}
     .nav-theme-btn{
-      height:36px;
-      padding:0 14px;
+      height:42px;
+      padding:0 20px;
       border-radius:999px;
+      font-size:0.72rem;
+      gap:9px;
       background:color-mix(in srgb,var(--farm-theme-panel,#10151c) 82%,transparent);
       box-shadow:0 0 18px var(--farm-theme-shadow,rgba(155,109,255,0.22));
     }
@@ -2632,6 +2643,178 @@
       border-color:color-mix(in srgb,var(--farm-theme-accent) 62%,transparent);
       box-shadow:0 16px 36px rgba(0,0,0,0.35),0 0 22px var(--farm-theme-shadow);
     }
+    body,
+    #home-view,
+    #dashboard-view,
+    #farms-view{
+      --bg:var(--farm-theme-bg,#080b10);
+      --surface:var(--farm-theme-panel,#10151c);
+      --surface2:var(--farm-theme-card,#080b10);
+      --border:var(--farm-theme-border,rgba(139,161,184,0.16));
+      --border2:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 42%,transparent);
+      --purple:var(--farm-theme-accent,#9b6dff);
+      --blue:color-mix(in srgb,var(--farm-theme-text,#e8edf2) 72%,var(--farm-theme-accent,#9b6dff));
+      --pink:var(--farm-theme-accent,#9b6dff);
+      --grad:linear-gradient(135deg,var(--farm-theme-accent,#9b6dff),color-mix(in srgb,var(--farm-theme-text,#e8edf2) 42%,var(--farm-theme-accent,#9b6dff)));
+      --grad-btn:linear-gradient(135deg,var(--farm-theme-accent,#9b6dff),color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 64%,var(--farm-theme-bg,#080b10)));
+      --text:var(--farm-theme-text,#e8edf2);
+      --muted:var(--farm-theme-muted,#8ea0ad);
+      --muted2:color-mix(in srgb,var(--farm-theme-muted,#8ea0ad) 66%,var(--farm-theme-bg,#080b10));
+      --glow-p:var(--farm-theme-shadow,rgba(155,109,255,0.22));
+      --glow-b:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 16%,transparent);
+    }
+    nav,
+    #dashboard-view .dashboard-nav,
+    #farms-view .dashboard-nav{
+      background:linear-gradient(90deg,color-mix(in srgb,var(--farm-theme-bg,#080b10) 94%,transparent),color-mix(in srgb,var(--farm-theme-panel,#10151c) 82%,var(--farm-theme-accent,#9b6dff)),color-mix(in srgb,var(--farm-theme-bg,#080b10) 94%,transparent));
+      border-bottom-color:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 42%,transparent);
+      box-shadow:0 10px 40px rgba(0,0,0,0.35),0 0 28px var(--farm-theme-shadow,rgba(155,109,255,0.22));
+    }
+    .nav-tabs{
+      background:color-mix(in srgb,var(--farm-theme-bg,#080b10) 82%,transparent);
+      border-color:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 28%,transparent);
+    }
+    .nav-tab{color:color-mix(in srgb,var(--farm-theme-text,#e8edf2) 72%,transparent)}
+    .nav-tab:hover{
+      color:var(--farm-theme-text,#e8edf2);
+      background:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 12%,transparent);
+      border-color:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 36%,transparent);
+    }
+    .nav-tab.active{
+      color:var(--farm-theme-text,#e8edf2);
+      background:linear-gradient(180deg,color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 62%,var(--farm-theme-panel,#10151c)),color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 32%,var(--farm-theme-bg,#080b10)));
+      border-color:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 78%,transparent);
+      box-shadow:0 0 0 1px color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 18%,transparent),0 0 22px var(--farm-theme-shadow,rgba(155,109,255,0.22)),inset 0 1px 0 rgba(255,255,255,0.13);
+    }
+    .nav-dash-btn,
+    .h-wallet-chip{
+      background:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 22%,var(--farm-theme-panel,#10151c));
+      border-color:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 48%,transparent);
+      color:var(--farm-theme-text,#e8edf2);
+      box-shadow:0 0 20px var(--farm-theme-shadow,rgba(155,109,255,0.22));
+    }
+    .nav-dash-btn:hover,
+    .h-wallet-chip:hover{
+      background:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 34%,var(--farm-theme-panel,#10151c));
+      box-shadow:0 0 28px var(--farm-theme-shadow,rgba(155,109,255,0.22));
+    }
+    #dashboard-view{
+      --dash-page:var(--farm-theme-bg,#080b10);
+      --dash-panel:color-mix(in srgb,var(--farm-theme-panel,#10151c) 92%,var(--farm-theme-bg,#080b10));
+      --dash-panel-strong:var(--farm-theme-card,#080b10);
+      --dash-panel-soft:color-mix(in srgb,var(--farm-theme-text,#e8edf2) 7%,transparent);
+      --dash-border:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 36%,transparent);
+      --dash-border-strong:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 62%,transparent);
+      --dash-text:var(--farm-theme-text,#e8edf2);
+      --dash-muted:var(--farm-theme-muted,#8ea0ad);
+      --dash-faint:color-mix(in srgb,var(--farm-theme-muted,#8ea0ad) 62%,var(--farm-theme-bg,#080b10));
+      --dash-accent:var(--farm-theme-accent,#9b6dff);
+      --dash-accent-2:color-mix(in srgb,var(--farm-theme-text,#e8edf2) 46%,var(--farm-theme-accent,#9b6dff));
+      --dash-accent-3:color-mix(in srgb,var(--farm-theme-text,#e8edf2) 78%,var(--farm-theme-accent,#9b6dff));
+      --dash-chart-fill:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 18%,transparent);
+      --dash-shadow:inset 0 1px 0 rgba(255,255,255,0.055),0 12px 34px rgba(0,0,0,0.24),0 0 24px var(--farm-theme-shadow,rgba(155,109,255,0.22));
+    }
+    #dashboard-view .card,
+    #dashboard-view .panel,
+    #dashboard-view .dash-section,
+    #dashboard-view .dash-stat-bar,
+    #dashboard-view .dash-stat-item,
+    #dashboard-view .dash-main-row,
+    #dashboard-view .dash-chart-panel,
+    #dashboard-view .dash-key-metric,
+    #dashboard-view .section-stat,
+    #dashboard-view .activity-item,
+    #dashboard-view .source-card,
+    #dashboard-view .recent-burns-card,
+    #dashboard-view .contract-box,
+    #dashboard-view .burn-compact-card,
+    #dashboard-view .rv-card,
+    #dashboard-view .rv-bal,
+    #dashboard-view .dash-metric-card,
+    #dashboard-view .tb-table-wrap,
+    #dashboard-view .burns-table-wrap,
+    #dashboard-view .chart-frame,
+    #dashboard-view .dash-top-burns-shell,
+    #dashboard-view .dash-top-burns{
+      background:color-mix(in srgb,var(--farm-theme-panel,#10151c) 88%,var(--farm-theme-bg,#080b10))!important;
+      border-color:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 38%,transparent)!important;
+      color:var(--farm-theme-text,#e8edf2)!important;
+      box-shadow:var(--dash-shadow)!important;
+    }
+    #dashboard-view .dash-top-burns-shell{
+      border:1px solid;
+      border-radius:16px;
+      padding:14px;
+      overflow:hidden;
+    }
+    #dashboard-view .dash-chart-wrap,
+    #dashboard-view .chart-wrap,
+    #dashboard-view .mg,
+    #dashboard-view .bstat,
+    #dashboard-view .trow,
+    #dashboard-view .activity-note,
+    #dashboard-view .rv-wallet-row{
+      background:color-mix(in srgb,var(--farm-theme-bg,#080b10) 76%,var(--farm-theme-panel,#10151c))!important;
+      border-color:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 22%,transparent)!important;
+    }
+    #dashboard-view .dash-stat-label,
+    #dashboard-view .dash-metric-label,
+    #dashboard-view .dash-chart-meta,
+    #dashboard-view .section-label,
+    #dashboard-view .section-note,
+    #dashboard-view .section-sub,
+    #dashboard-view .rv-wallet-label,
+    #dashboard-view .rv-tok-name,
+    #dashboard-view .card-lbl,
+    #dashboard-view .cb-l,
+    #dashboard-view .btx-th,
+    #dashboard-view .burns-th,
+    #dashboard-view .panel-head{
+      color:var(--farm-theme-muted,#8ea0ad)!important;
+    }
+    #dashboard-view .dash-stat-num,
+    #dashboard-view .dash-stat-sub,
+    #dashboard-view .dash-metric-value,
+    #dashboard-view .dash-chart-title,
+    #dashboard-view .section-title,
+    #dashboard-view .section-big,
+    #dashboard-view .section-value,
+    #dashboard-view .activity-amount,
+    #dashboard-view .rv-tok-val,
+    #dashboard-view .rv-token-title,
+    #dashboard-view .price-hero,
+    #dashboard-view .card-val,
+    #dashboard-view .btx-a,
+    #dashboard-view .burns-cell{
+      color:var(--farm-theme-text,#e8edf2)!important;
+    }
+    #dashboard-view .dash-stat-token,
+    #dashboard-view .burns-cashx,
+    #dashboard-view .source-rank-amount,
+    #dashboard-view .addr-chip,
+    #dashboard-view .btx-from,
+    #dashboard-view .btx-tx a,
+    #dashboard-view .burns-cell.tx a,
+    #dashboard-view .burns-cell.amount,
+    #dashboard-view .tb-amount,
+    #dashboard-view .chart-btn:hover,
+    #dashboard-view .rv-token-title.cashx{
+      color:var(--farm-theme-accent,#9b6dff)!important;
+    }
+    #dashboard-view .dash-chart-controls .chart-btn.active,
+    #dashboard-view .dash-chart-panel .chart-btn.active,
+    #dashboard-view .chart-btn.active,
+    #dashboard-view .cb-copy,
+    #dashboard-view .cta-buy{
+      background:var(--grad-btn)!important;
+      color:var(--farm-theme-bg,#080b10)!important;
+      border-color:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 72%,transparent)!important;
+    }
+    #dashboard-view .chart-toggles,
+    #dashboard-view .tab-nav{
+      background:color-mix(in srgb,var(--farm-theme-bg,#080b10) 74%,transparent)!important;
+      border-color:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 34%,transparent)!important;
+    }
 
     @media(max-width:800px){
       #farms-view .farms-main{padding:118px 16px 24px}
@@ -2728,6 +2911,10 @@
     <button class="farm-theme-btn nav-theme-btn" type="button" onclick="openFarmThemeModal()" aria-haspopup="dialog">
       <span aria-hidden="true">☯</span><span>Theme</span>
     </button>
+    <button id="home-wallet-connect-btn" class="nav-dash-btn" onclick="connectWallet()">Connect Wallet</button>
+    <button id="home-wallet-connected-btn" class="h-wallet-chip" onclick="showWalletActions('main')" style="display:none" aria-label="My Wallet">
+      <span id="home-wc-addr"></span>
+    </button>
   </div>
 </nav>
 
@@ -2739,7 +2926,7 @@
     <div class="hero-banner-placeholder">
       <img src="welcome-banner2.png" alt="Welcome to CashX" class="hero-banner-img"/>
     </div>
-    <h1 class="hero-title" style="-webkit-text-fill-color:#9b30d9;color:#9b30d9">CASHX</h1>
+    <h1 class="hero-title">CASHX</h1>
   <div class="hero-social-links">
     <a href="https://t.me/+Ruw3dQPRTv00NDRl" target="_blank" class="hero-social-btn" >
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
@@ -2765,6 +2952,7 @@
 </a>
 
   </div>
+  <button class="hero-farms-cta" type="button" onclick="showPage('farms')">Open Farms</button>
 </div>
 <a class="hero-scroll-cue" href="#tokenomics" aria-label="Scroll to tokenomics">
   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -2782,18 +2970,6 @@
       <div class="toko-head fade">
         <div>
         <span class="sec-tag" style="font-size:1.2rem;letter-spacing:0.2em">// Tokenomics</span>
-        
-        <p class="sec-p">Fixed supply. Continuous burns. A tax structure that works against sell pressure. Every mechanic points in one direction — shrinking supply and growing treasury.</p>
-        </div>
-        <div class="toko-proof" aria-label="Tokenomics highlights">
-          <div class="toko-proof-item">
-            <div class="toko-proof-value">0 Mint</div>
-            <div class="toko-proof-label">After Launch</div>
-          </div>
-          <div class="toko-proof-item">
-            <div class="toko-proof-value">Down Only</div>
-            <div class="toko-proof-label">Supply Path</div>
-          </div>
         </div>
       </div>
       <div class="toko-cards" style="margin-top:32px">
@@ -2940,7 +3116,6 @@
     </button>
     <button id="wallet-connect-btn" class="nav-dash-btn" onclick="connectWallet()">Connect Wallet</button>
     <button id="wallet-connected-btn" class="h-wallet-chip" onclick="showWalletActions('main')" style="display:none" aria-label="My Wallet">
-      <span class="wc-dot"></span>
       <span id="wc-addr"></span>
     </button>
   </div>
@@ -3064,8 +3239,8 @@
 
 
   <!-- ROW 4: Top Burns -->
-  <div style="background:rgba(10,3,22,0.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(200,100,255,0.2);border-radius:16px;padding:14px;box-shadow:0 8px 32px rgba(0,0,0,0.4);overflow:hidden">
-  <div class="panel dash-top-burns" style="background:linear-gradient(145deg,#2a2440 0%,#1b1730 58%,#151326 100%);border:1px solid rgba(155,109,255,0.32);box-shadow:inset 0 1px 0 rgba(255,255,255,0.07),0 12px 34px rgba(0,0,0,0.22);border-radius:16px;overflow:hidden">
+  <div class="dash-top-burns-shell">
+  <div class="panel dash-top-burns">
     <div class="panel-head">Top Burns</div>
     <div class="panel-body" style="padding:0;gap:0">
       <div class="btx-table-head">
@@ -3948,6 +4123,22 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   }
 
+  function colorWithAlpha(color, alpha) {
+    const raw = String(color || '').trim();
+    if (raw.startsWith('rgba(')) return raw.replace(/rgba\(([^)]+)\)/, (_, inner) => {
+      const parts = inner.split(',').slice(0, 3).map(part => part.trim());
+      return `rgba(${parts.join(',')},${alpha})`;
+    });
+    if (raw.startsWith('rgb(')) return raw.replace('rgb(', 'rgba(').replace(')', `,${alpha})`);
+    if (raw.startsWith('#')) {
+      const clean = raw.slice(1);
+      const full = clean.length === 3 ? clean.split('').map(ch => ch + ch).join('') : clean;
+      const num = parseInt(full, 16);
+      if (Number.isFinite(num)) return `rgba(${(num >> 16) & 255},${(num >> 8) & 255},${num & 255},${alpha})`;
+    }
+    return raw;
+  }
+
   async function renderBurnChart(items, range) {
     const chartReady = await ensureChartReady();
     if (!chartReady || !window.Chart) return;
@@ -3993,13 +4184,14 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     if (burnChart) burnChart.destroy();
     const dashView = document.getElementById('dashboard-view');
     const dashStyles = getComputedStyle(dashView || document.documentElement);
-    const chartColor = '#c864ff';
+    const chartColor = dashStyles.getPropertyValue('--dash-accent').trim() || '#c864ff';
+    const chartFill = dashStyles.getPropertyValue('--dash-chart-fill').trim() || 'rgba(200,100,255,0.18)';
     const chartPanel = dashStyles.getPropertyValue('--dash-panel-strong').trim() || '#0d1628';
     const chartMuted = dashStyles.getPropertyValue('--dash-faint').trim() || '#524870';
     const grad = ctx.createLinearGradient(0, 0, 0, canvas.height || 300);
-    grad.addColorStop(0, 'rgba(200,100,255,0.45)');
-    grad.addColorStop(0.5, 'rgba(200,100,255,0.12)');
-    grad.addColorStop(1, 'rgba(200,100,255,0)');
+    grad.addColorStop(0, chartFill);
+    grad.addColorStop(0.55, colorWithAlpha(chartColor, 0.12));
+    grad.addColorStop(1, colorWithAlpha(chartColor, 0));
 
     burnChart = new Chart(ctx, {
       type: 'line',
@@ -4013,7 +4205,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
           borderWidth: 2.5,
           pointRadius: 3,
           pointBackgroundColor: chartColor,
-          pointBorderColor: 'rgba(200,100,255,0.5)',
+          pointBorderColor: colorWithAlpha(chartColor, 0.5),
           pointHoverRadius: 0,
           pointHoverBackgroundColor: 'transparent',
           fill: true,
@@ -4333,28 +4525,49 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     return { cashxPrice, distroxPrice };
   }
 
+  function setMainWalletConnectState(isConnected, displayAddr = '') {
+    ['home-wallet-connect-btn', 'wallet-connect-btn'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = isConnected ? 'none' : '';
+    });
+    ['home-wallet-connected-btn', 'wallet-connected-btn'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = isConnected ? '' : 'none';
+    });
+    ['home-wc-addr', 'wc-addr'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = displayAddr;
+    });
+  }
+
+  function setMainWalletConnectBusy(isBusy) {
+    ['home-wallet-connect-btn', 'wallet-connect-btn'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = isBusy ? 'Connecting…' : 'Connect Wallet';
+      el.style.opacity = isBusy ? '0.5' : '';
+    });
+  }
+
   async function connectWallet(selectedProvider = null) {
     walletProvider = selectedProvider || await window.CashXWallets.pickProvider();
     if (!walletProvider) return;
-    const btn = document.getElementById('wallet-connect-btn');
-    const orig = btn.textContent;
-    btn.textContent = 'Connecting…';
-    btn.style.opacity = '0.5';
+    setMainWalletConnectBusy(true);
     try {
       const accounts = await walletProvider.request({ method: 'eth_requestAccounts' });
       wAddr = accounts[0];
       window.CashXWallets.setActiveProvider(walletProvider);
       const chainHex = await walletProvider.request({ method: 'eth_chainId' });
       if (parseInt(chainHex, 16) !== PULSE_ID) {
-        btn.textContent = orig; btn.style.opacity = '';
+        setMainWalletConnectBusy(false);
         await switchChain();
         return;
       }
       wProvider = new ethers.BrowserProvider(walletProvider);
-      btn.textContent = orig; btn.style.opacity = '';
+      setMainWalletConnectBusy(false);
       onConnected();
     } catch(err) {
-      btn.textContent = orig; btn.style.opacity = '';
+      setMainWalletConnectBusy(false);
       if (err.code !== 4001) console.error('Wallet error:', err);
     }
   }
@@ -4377,11 +4590,8 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
 
   function onConnected() {
     window.sharedWalletAddr = wAddr;
-    document.getElementById('wallet-connect-btn').style.display = 'none';
-    const chip = document.getElementById('wallet-connected-btn');
-    chip.style.display = '';
     const truncAddr = trunc(wAddr);
-    document.getElementById('wc-addr').textContent = truncAddr;
+    setMainWalletConnectState(true, truncAddr);
     document.getElementById('wp-addr-display').textContent = truncAddr;
     const rvPanel = document.getElementById('rv-account-panels');
     const rvAddr = document.getElementById('rv-addr-display');
@@ -4409,8 +4619,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     window.CashXWallets?.clearRememberedProvider?.();
     wProvider = null; wAddr = null; walletProvider = null;
     closePanel();
-    document.getElementById('wallet-connect-btn').style.display = '';
-    document.getElementById('wallet-connected-btn').style.display = 'none';
+    setMainWalletConnectState(false);
     const d = '<span class="wp-tok-muted">—</span>';
     document.getElementById('wp-cashx').innerHTML = d;
     document.getElementById('wp-distrox').innerHTML = d;
@@ -4557,7 +4766,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
         wAddr = accs[0];
         window.sharedWalletAddr = wAddr;
         const truncAddr = trunc(wAddr);
-        document.getElementById('wc-addr').textContent = truncAddr;
+        setMainWalletConnectState(true, truncAddr);
         document.getElementById('wp-addr-display').textContent = truncAddr;
         const rvPanel = document.getElementById('rv-account-panels');
         const rvAddr = document.getElementById('rv-addr-display');
@@ -4681,7 +4890,6 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     </button>
     <button id="farms-wallet-connect-btn" class="nav-dash-btn" onclick="farmsConnectWallet()">Connect Wallet</button>
     <button id="farms-wallet-connected-btn" class="h-wallet-chip" onclick="showWalletActions('farms')" style="display:none" aria-label="My Farms Wallet">
-      <span class="wc-dot"></span>
       <span id="farms-wc-addr"></span>
     </button>
   </div>
@@ -4832,6 +5040,19 @@ function applyFarmThemeVars(target, theme) {
   target.style.setProperty('--farm-theme-muted', farmRgba(theme.fg, 0.62));
   target.style.setProperty('--farm-theme-accent', theme.red);
   target.style.setProperty('--farm-theme-shadow', farmRgba(theme.red, 0.24));
+  target.style.setProperty('--bg', theme.bg);
+  target.style.setProperty('--surface', theme.panel);
+  target.style.setProperty('--surface2', theme.panel);
+  target.style.setProperty('--border', farmRgba(theme.border, 0.72));
+  target.style.setProperty('--border2', farmRgba(theme.red, 0.42));
+  target.style.setProperty('--purple', theme.red);
+  target.style.setProperty('--blue', theme.fg);
+  target.style.setProperty('--pink', theme.red);
+  target.style.setProperty('--grad', `linear-gradient(135deg,${theme.red},${theme.fg})`);
+  target.style.setProperty('--grad-btn', `linear-gradient(135deg,${theme.red},${theme.panel})`);
+  target.style.setProperty('--text', theme.fg);
+  target.style.setProperty('--muted', farmRgba(theme.fg, 0.62));
+  target.style.setProperty('--muted2', farmRgba(theme.fg, 0.38));
 }
 
 function loadFarmCustomTheme() {
@@ -4852,9 +5073,14 @@ function setFarmTheme(name) {
   root.dataset.farmTheme = key;
   applyFarmThemeVars(root, theme);
   applyFarmThemeVars(document.body, theme);
+  applyFarmThemeVars(document.getElementById('home-view'), theme);
+  applyFarmThemeVars(document.getElementById('dashboard-view'), theme);
   applyFarmThemeVars(document.getElementById('farm-theme-modal'), theme);
   try { localStorage.setItem(FARM_THEME_KEY, key); } catch(e) {}
   updateFarmThemeUI(key, theme);
+  if (typeof renderBurnChart === 'function' && Array.isArray(cachedChartBurnsData) && cachedChartBurnsData.length) {
+    renderBurnChart(cachedChartBurnsData, currentChartRange || '24H');
+  }
 }
 
 function initFarmTheme() {
