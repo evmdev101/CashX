@@ -2566,7 +2566,17 @@
       text-align:center;
       white-space:nowrap;
     }
+    .farm-design-proto .farm-footer-tvl{
+      color:#9fb0bd;
+      font-size:0.82rem;
+      white-space:nowrap;
+    }
     .farm-design-proto .farm-footer-time strong{
+      color:#f3f7fb;
+      font-size:0.96rem;
+      font-weight:800;
+    }
+    .farm-design-proto .farm-footer-tvl strong{
       color:#f3f7fb;
       font-size:0.96rem;
       font-weight:800;
@@ -2589,8 +2599,8 @@
     }
     #farms-view .farm-item.farm-rich.farm-design-proto{
       background:var(--farm-theme-card);
-      border-color:color-mix(in srgb,var(--farm-theme-accent) 34%,#000);
-      box-shadow:0 18px 54px rgba(0,0,0,0.48),0 0 28px var(--farm-theme-shadow),inset 0 1px 0 rgba(255,255,255,0.04);
+      border-color:color-mix(in srgb,var(--farm-theme-accent) 42%,var(--farm-theme-border));
+      box-shadow:0 18px 54px color-mix(in srgb,var(--farm-theme-accent) 18%,transparent),0 0 28px var(--farm-theme-shadow),inset 0 1px 0 rgba(255,255,255,0.18);
     }
     #farms-view .farm-design-proto .farm-proto-metric,
     #farms-view .farm-design-proto .farm-lp-token-card,
@@ -2604,7 +2614,9 @@
     #farms-view .farm-design-proto .farm-proto-label,
     #farms-view .farm-design-proto .farm-balance,
     #farms-view .farm-design-proto .farm-proto-sub,
+    #farms-view .farm-design-proto .farm-remaining-usd,
     #farms-view .farm-design-proto .farm-footer-time,
+    #farms-view .farm-design-proto .farm-footer-tvl,
     #farms-view .farm-design-proto .farm-footer-rank,
     #farms-view .farm-rank-id,
     #farms-view .nexion-farms-count{
@@ -2612,21 +2624,56 @@
     }
     #farms-view .farm-design-proto .farm-pair-name,
     #farms-view .farm-design-proto .farm-proto-value,
+    #farms-view .farm-design-proto .farm-rewards-tokenline,
     #farms-view .farm-design-proto .farm-footer-time strong,
+    #farms-view .farm-design-proto .farm-footer-tvl strong,
     #farms-view .farm-design-proto .farm-claim-btn,
     #farms-view .farm-rank-name{
       color:var(--farm-theme-text);
     }
+    #farms-view .farm-design-proto .farm-rewards-usd{
+      color:var(--farm-theme-muted);
+    }
     #farms-view .nexion-farms-title,
     #farms-view .farm-rank-pos,
     #farms-view .farm-rank-value,
+    #farms-view .farm-design-proto .farm-pair-version,
     #farms-view .farm-design-proto .farm-liquidity-btn,
     #farms-view .farm-design-proto .farm-lp-toggle,
+    #farms-view .farm-design-proto .farm-reward-chart-btn,
     #farms-view .fvt-btn.active{
       color:var(--farm-theme-accent);
     }
+    #farms-view .farm-design-proto .farm-pair-version{
+      text-decoration:none;
+    }
+    #farms-view .farm-staked-toggle{
+      color:var(--farm-theme-text);
+      background:color-mix(in srgb,var(--farm-theme-accent) 14%,var(--farm-theme-card));
+      border-color:color-mix(in srgb,var(--farm-theme-accent) 42%,transparent);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,0.18),0 10px 28px color-mix(in srgb,var(--farm-theme-accent) 14%,transparent);
+    }
+    #farms-view .farm-staked-toggle:hover{
+      color:var(--farm-theme-text);
+      background:color-mix(in srgb,var(--farm-theme-accent) 22%,var(--farm-theme-card));
+      border-color:color-mix(in srgb,var(--farm-theme-accent) 62%,transparent);
+    }
+    #farms-view .farm-toggle-orb{
+      background:color-mix(in srgb,var(--farm-theme-accent) 34%,var(--farm-theme-card));
+      border-color:color-mix(in srgb,var(--farm-theme-accent) 46%,transparent);
+      box-shadow:inset 0 0 0 4px color-mix(in srgb,var(--farm-theme-text) 10%,transparent);
+    }
+    #farms-view .farm-staked-toggle input:checked + .farm-toggle-orb{
+      background:linear-gradient(135deg,var(--farm-theme-accent),color-mix(in srgb,var(--farm-theme-text) 58%,var(--farm-theme-accent)));
+      border-color:color-mix(in srgb,var(--farm-theme-accent) 72%,transparent);
+      box-shadow:0 0 18px var(--farm-theme-shadow),0 0 24px color-mix(in srgb,var(--farm-theme-accent) 24%,transparent);
+    }
+    #farms-view .farm-staked-toggle input:checked + .farm-toggle-orb + span{
+      color:var(--farm-theme-text);
+    }
     #farms-view .farm-design-proto .farm-liquidity-btn,
     #farms-view .farm-design-proto .farm-claim-btn,
+    #farms-view .farm-design-proto .farm-reward-chart-btn,
     #farms-view .fvt-btn.active{
       background:color-mix(in srgb,var(--farm-theme-accent) 22%,transparent);
       border-color:color-mix(in srgb,var(--farm-theme-accent) 54%,transparent);
@@ -6598,7 +6645,7 @@ const PULSE_ID     = 369;
           onclick="farmsApproveFarm(${r.pid})" ${approveDisabled}>Approve <span id="farm-approve-label-${r.pid}">MAX</span></button>
         <div class="farm-proto-footer">
           ${footerTimeHTML}
-          <span style="white-space:nowrap">TVL: <strong>${tvlDisplay}</strong></span>
+          <span class="farm-footer-tvl">TVL: <strong>${tvlDisplay}</strong></span>
           ${footerRankHTML}
         </div>
       </div>`;
