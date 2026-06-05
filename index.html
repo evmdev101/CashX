@@ -325,15 +325,15 @@
 .founder-section{max-width:1180px;margin:0 auto 40px;padding:90px 52px;
   display:grid;grid-template-columns:0.9fr 1.1fr;gap:64px;align-items:center;position:relative}
 .founder-section::before{content:'';position:absolute;inset:26px 20px;z-index:-1;border-radius:18px;
-  border:1px solid rgba(255,160,50,0.13);
-  background:radial-gradient(circle at 18% 50%,rgba(200,85,247,0.16),transparent 34%),
-             linear-gradient(180deg,rgba(15,20,34,0.46),rgba(10,14,26,0.12));
+  border:1px solid color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 24%,transparent);
+  background:radial-gradient(circle at 18% 50%,color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 18%,transparent),transparent 34%),
+             linear-gradient(180deg,color-mix(in srgb,var(--farm-theme-panel,#10151c) 52%,transparent),color-mix(in srgb,var(--farm-theme-bg,#080b10) 16%,transparent));
   box-shadow:0 28px 100px rgba(0,0,0,0.22)}
   
-.founder-img-wrap{position:relative;border-radius:18px;padding:18px;border:1px solid rgba(255,255,255,0.1);
-  background:rgba(15,20,34,0.42);overflow:hidden}
+.founder-img-wrap{position:relative;border-radius:18px;padding:18px;border:1px solid color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 24%,transparent);
+  background:color-mix(in srgb,var(--farm-theme-panel,#10151c) 70%,transparent);overflow:hidden}
 .founder-img{width:100%;max-width:480px;object-position:top center;display:block;
-  filter:drop-shadow(0 0 60px rgba(155,109,255,0.6));
+  filter:drop-shadow(0 0 60px var(--farm-theme-shadow,rgba(155,109,255,0.22)));
   animation:founder-float 6s ease-in-out infinite;
   margin:0 auto; border-radius: 16px;}
 @keyframes founder-float{
@@ -345,19 +345,19 @@
 .founder-text{display:flex;flex-direction:column;justify-content:center;padding:8px 0}
 .founder-tag{font-family:'Michroma',sans-serif;font-size:0.75rem;letter-spacing:0.2em;
   text-transform:uppercase;color:var(--purple);display:block;margin-bottom:20px;
-  text-shadow:0 0 10px rgba(155,109,255,0.8),0 0 20px rgba(155,109,255,0.4)}
+  text-shadow:0 0 10px var(--farm-theme-shadow,rgba(155,109,255,0.22)),0 0 20px var(--farm-theme-shadow,rgba(155,109,255,0.22))}
 .founder-name{font-family:'Barlow Condensed',sans-serif;font-weight:800;
   font-size:clamp(3rem,5vw,5rem);text-transform:uppercase;letter-spacing:-0.01em;
   line-height:0.95;margin-bottom:8px;
   background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.founder-handle{font-family:'Space Mono',monospace;font-size:0.65rem;color:#ffa032;
+.founder-handle{font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--farm-theme-accent,#9b6dff);
   letter-spacing:0.06em;margin-bottom:32px;opacity:0.8}
 .founder-bio{color:var(--muted);font-family:'Barlow',sans-serif;font-size:1rem;
   line-height:1.8;margin-bottom:16px}
 .founder-link{font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.08em;
   text-transform:uppercase;color:#fff;text-decoration:none;margin-top:16px;
-  display:inline-flex;width:max-content;border:1px solid rgba(255,160,50,0.28);
-  padding:10px 16px;border-radius:999px;background:rgba(255,255,255,0.06);transition:all 0.2s}
+  display:inline-flex;width:max-content;border:1px solid color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 42%,transparent);
+  padding:10px 16px;border-radius:999px;background:color-mix(in srgb,var(--farm-theme-text,#e8edf2) 7%,transparent);transition:all 0.2s}
 .founder-link:hover{background:var(--grad-btn);border-color:transparent;transform:translateY(-1px)}
 
 .section-outer{width:100%;padding:100px 0;position:relative}
@@ -1273,8 +1273,9 @@
     .dash-stat-item::before{display:none}
     .dash-stat-label{font-family:'Space Mono',monospace;font-size:0.54rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dash-muted);margin-bottom:10px;display:flex;align-items:center;gap:5px}
     .dash-stat-num{font-family:'DM Sans',sans-serif;font-size:1.8rem;font-weight:300;letter-spacing:-0.04em;color:#fff;line-height:1}
-    .dash-stat-token{font-family:'Space Mono',monospace;font-size:0.62rem;color:#c864ff;text-transform:uppercase;letter-spacing:0.08em;margin-top:7px}
-    .dash-stat-sub{font-family:'Space Mono',monospace;font-size:0.72rem;color:#fff;margin-top:5px;line-height:1.5}
+    .dash-stat-token{font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--dash-accent);text-transform:uppercase;letter-spacing:0.08em;margin-top:7px}
+    .dash-stat-sub{font-family:'DM Sans',sans-serif;font-size:0.86rem;font-weight:800;letter-spacing:0.02em;color:#fff;margin-top:7px;line-height:1.35}
+    .dash-stat-sub span{white-space:nowrap}
     .dash-main-row{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(240px,0.7fr);gap:14px;align-items:stretch;background:rgba(10,3,22,0.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(200,100,255,0.2);border-radius:14px;padding:14px;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
     .dash-stats-sidebar{display:flex;flex-direction:column;gap:10px}
     .dash-metric-card{background:linear-gradient(145deg,#2a2440 0%,#1b1730 58%,#151326 100%);border:1px solid rgba(155,109,255,0.32);border-radius:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.07),0 12px 34px rgba(0,0,0,0.22);padding:16px 18px;flex-shrink:0}
@@ -2815,6 +2816,81 @@
       background:color-mix(in srgb,var(--farm-theme-bg,#080b10) 74%,transparent)!important;
       border-color:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 34%,transparent)!important;
     }
+    #dashboard-view svg[stroke="var(--dash-accent)"],
+    #dashboard-view .dash-stat-label svg,
+    #dashboard-view .recent-burn-amount svg,
+    #dashboard-view [id^="latest-"] svg,
+    #home-view .tf-icon svg{
+      stroke:var(--farm-theme-accent,#9b6dff)!important;
+      color:var(--farm-theme-accent,#9b6dff)!important;
+    }
+    #home-view .premium-section::before,
+    #home-view .toko-grid::before,
+    #home-view .founder-section::before,
+    #home-view .tax-flow::before,
+    #home-view .ecosystem-section::before,
+    #home-view .dash-cta{
+      border-color:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 22%,transparent)!important;
+      background:
+        radial-gradient(circle at 18% 8%,color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 18%,transparent),transparent 34%),
+        radial-gradient(circle at 84% 18%,color-mix(in srgb,var(--farm-theme-text,#e8edf2) 10%,transparent),transparent 30%),
+        linear-gradient(180deg,color-mix(in srgb,var(--farm-theme-panel,#10151c) 52%,transparent),color-mix(in srgb,var(--farm-theme-bg,#080b10) 20%,transparent))!important;
+    }
+    #home-view .toko-card,
+    #home-view .founder-img-wrap,
+    #home-view .toko-flow-node,
+    #home-view .tf-row,
+    #home-view .eco-grid > .fade,
+    #home-view .farm-card,
+    #home-view .phase-card,
+    #home-view .flow-card{
+      background:color-mix(in srgb,var(--farm-theme-panel,#10151c) 84%,var(--farm-theme-bg,#080b10))!important;
+      border-color:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 26%,transparent)!important;
+      color:var(--farm-theme-text,#e8edf2)!important;
+      box-shadow:0 14px 34px rgba(0,0,0,0.22),0 0 18px color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 12%,transparent)!important;
+    }
+    #home-view .toko-card:hover,
+    #home-view .tf-row:hover,
+    #home-view .farm-card:hover{
+      border-color:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 56%,transparent)!important;
+      box-shadow:0 18px 50px rgba(0,0,0,0.28),0 0 28px var(--farm-theme-shadow,rgba(155,109,255,0.22))!important;
+    }
+    #home-view .toko-icon,
+    #home-view .tf-icon,
+    #home-view .flow-card::before{
+      border-color:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 32%,transparent)!important;
+      background:color-mix(in srgb,var(--farm-theme-text,#e8edf2) 8%,transparent)!important;
+      color:var(--farm-theme-text,#e8edf2)!important;
+      box-shadow:0 0 18px color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 18%,transparent)!important;
+    }
+    #home-view .toko-num,
+    #home-view .sec-tag,
+    #home-view .founder-tag,
+    #home-view .founder-handle,
+    #home-view .toko-flow-arrow,
+    #home-view .loop-arrow,
+    #home-view .farm-link,
+    #home-view .df::before,
+    #home-view .founder-name,
+    #home-view .tf-icon svg{
+      color:var(--farm-theme-accent,#9b6dff)!important;
+    }
+    #home-view .founder-name{
+      background:var(--grad)!important;
+      -webkit-background-clip:text!important;
+      background-clip:text!important;
+      -webkit-text-fill-color:transparent!important;
+    }
+    #home-view .founder-bio{color:var(--farm-theme-muted,#8ea0ad)!important}
+    #home-view .founder-link{
+      border-color:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 48%,transparent)!important;
+      background:color-mix(in srgb,var(--farm-theme-text,#e8edf2) 7%,transparent)!important;
+      color:var(--farm-theme-text,#e8edf2)!important;
+    }
+    #home-view .founder-link:hover{
+      background:var(--grad-btn)!important;
+      color:var(--farm-theme-bg,#080b10)!important;
+    }
 
     @media(max-width:800px){
       #farms-view .farms-main{padding:118px 16px 24px}
@@ -3037,7 +3113,7 @@
         <div class="tf-desc">When PulseChain runs, treasury positions rotate to stablecoins to lock in gains. Capital is redeployed at strategic entries — compounding the base before the next burn cycle.</div></div>
       </div>
       <div class="tf-row fade">
-        <div class="tf-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c864ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></div>
+        <div class="tf-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--dash-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></div>
         <div><div class="tf-title">Manual Buy &amp; Burn</div>
         <div class="tf-desc">Burns are executed manually by the team. Revenue from yield is used to buy $CASHX on the open market, creating real buy pressure, then burned permanently.</div></div>
       </div>
@@ -3137,7 +3213,7 @@
   <!-- STAT BAR -->
   <div class="dash-stat-bar">
     <div class="dash-stat-item">
-      <div class="dash-stat-label"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#c864ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0;margin-right:3px"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg> Total Burned</div>
+      <div class="dash-stat-label"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--dash-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0;margin-right:3px"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg> Total Burned</div>
       <div class="dash-stat-num rv-loading" id="c-burned">···</div>
       <div class="dash-stat-token">CASHX</div>
       <div class="dash-stat-sub"><span id="c-burned-pct">—</span> · <span id="c-burned-usd">—</span></div>
@@ -3519,7 +3595,7 @@
       const link = hash ? `<a href="${explorerWeb}/tx/${hash}" target="_blank" style="color:var(--purple);text-decoration:none">${hash.slice(0,8)}…</a>` : '—';
       return `<div class="btx-row" style="display:grid;grid-template-columns:40px 1fr 1fr 1fr 1fr;align-items:center;padding:12px 20px;border:1px solid rgba(200,100,255,0.15);border-radius:10px;margin:6px 10px;background:rgba(255,255,255,0.03)">
         <div style="font-weight:700;color:var(--purple)">#${i + 1}</div>
-        <div style="font-family:'Space Mono',monospace;font-size:0.82rem"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#c864ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:3px;flex-shrink:0"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg> ${fmtN(amt, 2)} CASHX</div>
+        <div style="font-family:'Space Mono',monospace;font-size:0.82rem"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--dash-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:3px;flex-shrink:0"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg> ${fmtN(amt, 2)} CASHX</div>
         <div style="font-size:0.8rem;color:rgba(237,232,245,0.6)">≈ ${usd}</div>
         <div>${src}</div>
         <div style="font-size:0.75rem;color:rgba(237,232,245,0.5)">${ts ? ago(ts) : '—'}</div>
@@ -3564,7 +3640,7 @@
           ${recentBurnSourceIconHTML(source)}
           <span class="recent-burn-hash">${shortHash(hash)}</span>
         </span>
-        <span class="recent-burn-amount"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#c864ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:3px;flex-shrink:0"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg> ${fmtN(amt, 0)}</span>
+        <span class="recent-burn-amount"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--dash-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:3px;flex-shrink:0"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg> ${fmtN(amt, 0)}</span>
         <span class="recent-burn-time">${ts ? ago(ts) : '—'}</span>
       </a>`;
     }).join('');
@@ -3906,7 +3982,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
       if(latestTreasury){
         const amt = parseFloat(latestTreasury.total?.value||0)/1e18;
         const ts = latestTreasury.timestamp ? Math.floor(new Date(latestTreasury.timestamp).getTime()/1000) : 0;
-        setHTML('latest-treasury-amt', '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#c864ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;flex-shrink:0"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>'+fmtN(amt, 2)+' CASHX');
+        setHTML('latest-treasury-amt', '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--dash-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;flex-shrink:0"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>'+fmtN(amt, 2)+' CASHX');
         set('latest-treasury-time', ts ? ago(ts) : '—');
         const tAddr = latestTreasury.from?.hash || '';
         setHTML('latest-treasury-addr', tAddr ? `<span class="addr-chip" data-addr="${tAddr}" onclick="amOpen(event,this.dataset.addr)">${formatAddress(tAddr,10,6)}</span>` : '—');
@@ -3918,7 +3994,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
       if(latestCommunity){
         const amt = parseFloat(latestCommunity.total?.value||0)/1e18;
         const ts = latestCommunity.timestamp ? Math.floor(new Date(latestCommunity.timestamp).getTime()/1000) : 0;
-        setHTML('latest-community-amt', '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#c864ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;flex-shrink:0"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>'+fmtN(amt, 2)+' CASHX');
+        setHTML('latest-community-amt', '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--dash-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;flex-shrink:0"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>'+fmtN(amt, 2)+' CASHX');
         set('latest-community-time', ts ? ago(ts) : '—');
         const cAddr = latestCommunity.from?.hash || '';
         setHTML('latest-community-addr', cAddr ? `<span class="addr-chip" data-addr="${cAddr}" onclick="amOpen(event,this.dataset.addr)">${formatAddress(cAddr,10,6)}</span>` : '—');
@@ -4206,8 +4282,10 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
           pointRadius: 3,
           pointBackgroundColor: chartColor,
           pointBorderColor: colorWithAlpha(chartColor, 0.5),
-          pointHoverRadius: 0,
-          pointHoverBackgroundColor: 'transparent',
+          pointHoverRadius: 5,
+          pointHoverBorderWidth: 2,
+          pointHoverBackgroundColor: chartColor,
+          pointHoverBorderColor: colorWithAlpha(chartColor, 0.48),
           fill: true,
           tension: 0.4
         }]
@@ -4217,10 +4295,36 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
         maintainAspectRatio: false,
         plugins: {
           legend: { display: false },
-          tooltip: { enabled: false }
+          tooltip: {
+            enabled: true,
+            displayColors: true,
+            backgroundColor: colorWithAlpha(chartPanel, 0.96),
+            borderColor: colorWithAlpha(chartColor, 0.52),
+            borderWidth: 1,
+            cornerRadius: 5,
+            caretSize: 0,
+            padding: 10,
+            titleColor: chartMuted,
+            titleFont: { family: 'Space Mono', size: 10, weight: '700' },
+            bodyColor: dashStyles.getPropertyValue('--dash-text').trim() || '#fff',
+            bodyFont: { family: 'DM Sans', size: 14, weight: '700' },
+            boxWidth: 12,
+            boxHeight: 12,
+            boxPadding: 5,
+            callbacks: {
+              title: items => items?.[0]?.label || '',
+              label: ctx => `${Number(ctx.parsed.y || 0).toLocaleString('en-US')} CASHX burned`,
+              labelColor: () => ({
+                borderColor: chartColor,
+                backgroundColor: chartColor,
+                borderWidth: 1,
+                borderRadius: 1
+              })
+            }
+          }
         },
-        interaction: { mode: 'none' },
-        hover: { mode: null },
+        interaction: { mode: 'nearest', intersect: true },
+        hover: { mode: 'nearest', intersect: true },
         scales: {
           x: {
             grid: { color: 'rgba(255,255,255,0.04)' },
@@ -7339,3 +7443,4 @@ function farmsToggleLpBreakdown(pid){ return window.FarmsApp.toggleLpBreakdown(p
 <div class="page-bg"></div>
 </body>
 </html>
+
