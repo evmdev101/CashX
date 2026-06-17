@@ -665,9 +665,6 @@
       line-height:1;user-select:none}
     .h-subtitle{font-family:'Space Mono',monospace;font-size:0.48rem;letter-spacing:0.18em;
       text-transform:uppercase;color:var(--muted);margin-top:1px}
-    .live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);
-      animation:blink 2s infinite;flex-shrink:0}
-    @keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
     .last-up{font-family:'Space Mono',monospace;font-size:0.52rem;
       color:rgba(237,232,245,0.45);white-space:nowrap}
     .rbtn{font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.07em;
@@ -1550,6 +1547,42 @@
     .rv-disconnect-btn:hover{color:#f87171;border-color:rgba(248,113,113,0.5);background:rgba(248,113,113,0.06)}
 
     /* FARMS */
+    .farm-total-tvl{
+      width:min(360px,92%);
+      margin:20px auto 0;
+      padding:16px 22px;
+      border-radius:10px;
+      border:1px solid color-mix(in srgb,var(--farm-theme-text,#4facfe) 24%,transparent);
+      background:color-mix(in srgb,var(--farm-theme-bg,#071a2b) 86%,#020812);
+      box-shadow:0 16px 42px rgba(0,0,0,0.28),inset 0 1px 0 rgba(255,255,255,0.04);
+      font-family:'DM Sans',sans-serif;
+      font-size:1.18rem;
+      font-weight:800;
+      text-align:center;
+      color:color-mix(in srgb,var(--farm-theme-text,#4facfe) 64%,#ffffff);
+    }
+    .farm-summary-value{color:var(--farm-theme-text,#4facfe);margin-left:6px;white-space:nowrap}
+    .farm-total-tvl .farm-summary-value{font-size:1.22rem}
+    .farm-claimable-summary{
+      margin:12px 0 15px;
+      padding:17px 18px;
+      border-radius:10px;
+      border:1px solid color-mix(in srgb,var(--farm-theme-text,#4facfe) 28%,transparent);
+      background:color-mix(in srgb,var(--farm-theme-bg,#071a2b) 72%,transparent);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,0.04);
+      font-family:'Space Mono',monospace;
+      font-size:0.68rem;
+      letter-spacing:0.14em;
+      text-align:center;
+      text-transform:uppercase;
+      color:color-mix(in srgb,var(--farm-theme-text,#4facfe) 58%,transparent);
+    }
+    .farm-claimable-summary .farm-summary-value{
+      font-family:'DM Sans',sans-serif;
+      font-size:1.15rem;
+      letter-spacing:0;
+      text-transform:none;
+    }
     .farm-rank-grid{
       display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;
       padding:22px 18px;
@@ -3288,7 +3321,7 @@
     <div class="panel dash-chart-panel">
       <div class="panel-body">
         <div class="chart-toggle-row">
-          <div class="chart-title"><span class="live-dot"></span>Burn Activity</div>
+          <div class="chart-title">Burn Activity</div>
           <div class="chart-toggles">
             <button class="chart-btn active" onclick="switchChart('24H',this)">24H</button>
             <button class="chart-btn" onclick="switchChart('7D',this)">7D</button>
@@ -5052,16 +5085,17 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
       <a class="promo-slide active" href="#farms" aria-label="Refresh CashX Farms">
         <img src="promo-cashx-farms.png" alt="CashX Farms" style="object-position:center 35%">
       </a>
-      <a class="promo-slide" href="https://cashx-casino-beta.netlify.app/" target="_blank" rel="noopener" aria-label="Open CashX Casino">
-        <img src="promo-cashx-casino.png" alt="CashX Casino">
+      <a class="promo-slide" href="https://evmdev101.github.io/DividendX/#farms" target="_blank" rel="noopener" aria-label="Open DividendX Farms">
+        <img src="promo-dividendx-farms.png" alt="DividendX Farms">
       </a>
     </div>
     <div class="promo-dots" aria-label="Promo slides">
       <button class="promo-dot active" type="button" data-promo-dot="0" aria-label="Show CashX Farms ad"></button>
-      <button class="promo-dot" type="button" data-promo-dot="1" aria-label="Show CashX Casino ad"></button>
+      <button class="promo-dot" type="button" data-promo-dot="1" aria-label="Show DividendX Farms ad"></button>
     </div>
   </div>
 </section>
+<div class="farm-total-tvl">Total Value Locked:<span class="farm-summary-value" id="farms-total-tvl">Loading</span></div>
 <div class="rv-wrap">
 
   <div id="rv-connected" style="display:flex;flex-direction:column;gap:16px">
@@ -5105,6 +5139,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
           </div>
         </div>
       </div>
+      <div class="farm-claimable-summary">Total Claimable Rewards:<span class="farm-summary-value" id="farms-total-claimable">Loading</span></div>
       <div id="farms-body">
         <div class="farm-loading">··· Loading farms</div>
       </div>
@@ -6781,14 +6816,33 @@ const PULSE_ID     = 369;
     return farmStakedOnly ? lastFarmResults.filter(hasStakedFarm) : lastFarmResults;
   }
 
+  function farmUsdNumber(value) {
+    const text = String(value || '').replace(/USD/gi, '').replace(/[^0-9.-]/g, '');
+    const number = Number(text);
+    return Number.isFinite(number) ? number : 0;
+  }
+
+  function updateFarmSummaries(results = lastFarmResults) {
+    const totalTvl = results.reduce((sum, r) => {
+      const valuationTvl = r.valuation?.tvl;
+      const metaTvl = farmMeta(r.farm).tvl;
+      return sum + farmUsdNumber(valuationTvl || metaTvl);
+    }, 0);
+    const totalClaimable = results.reduce((sum, r) => sum + farmUsdNumber(r.valuation?.pendingUsd), 0);
+    set('farms-total-tvl', totalTvl > 0 ? fmtUsd(totalTvl, 2).replace(' USD', '') : 'Loading');
+    set('farms-total-claimable', fmtUsd(totalClaimable, 2));
+  }
+
   function renderFarmResults(results, preserveSource = false) {
     if (!preserveSource) lastFarmResults = results;
     const el = document.getElementById('farms-body');
     if (!el) return;
     if (!lastFarmResults.length) {
+      updateFarmSummaries([]);
       el.innerHTML = '<div class="farm-empty">Could not match any farm LP tokens to pool IDs.</div>';
       return;
     }
+    updateFarmSummaries(lastFarmResults);
     const visibleResults = visibleFarmResults();
     if (!visibleResults.length) {
       el.innerHTML = '<div class="farm-empty">No staked LP farms found for this wallet.</div>';
@@ -6927,6 +6981,7 @@ const PULSE_ID     = 369;
     if (idx >= 0) {
       const valuation = { ...(lastFarmResults[idx].valuation || {}), pending: fmtFarm(0n), pendingUsd: '$0.00 USD' };
       lastFarmResults[idx] = { ...lastFarmResults[idx], pending: 0n, valuation };
+      updateFarmSummaries(lastFarmResults);
     }
   }
 
@@ -7012,6 +7067,7 @@ const PULSE_ID     = 369;
       const idx = lastFarmResults.findIndex(r => r.pid === pid);
       if (idx >= 0) {
         lastFarmResults[idx] = { ...lastFarmResults[idx], staked, pending, walletLp, allowance, totalStaked, poolInfo, valuation, lpBreakdown };
+        updateFarmSummaries(lastFarmResults);
         if (farmStakedOnly && !hasStakedFarm(lastFarmResults[idx])) renderFarmResults(lastFarmResults, true);
       }
     } catch(e) { console.error('refreshFarmData failed:', e); }
