@@ -3783,16 +3783,6 @@
       box-shadow:0 14px 48px rgba(0,0,0,0.35)}
     .reflections-title{font-family:'Barlow Condensed',sans-serif;font-size:2.25rem;font-weight:800;
       letter-spacing:0.05em;text-transform:uppercase;color:#fff;line-height:1}
-    .reflections-page-title{
-      font-family:'Permanent Marker',cursive;
-      font-size:clamp(3.3rem,8vw,6.6rem);
-      font-weight:400;
-      letter-spacing:0;
-      text-align:center;
-      color:var(--accent);
-      text-shadow:0 0 28px color-mix(in srgb,var(--accent) 45%,transparent);
-      margin:0 auto -2px;
-    }
     .reflections-sub{font-family:'Space Mono',monospace;font-size:0.64rem;color:var(--muted);
       letter-spacing:0.04em;margin-top:8px;line-height:1.65}
     .reflections-scan{display:grid;grid-template-columns:minmax(220px,420px) auto;gap:10px;align-items:center}
@@ -6709,13 +6699,13 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
 </nav>
 <main class="reflections-main">
   <section class="reflections-shell">
-    <div class="reflections-title reflections-page-title">Reflection Checker</div>
     <div class="reflections-panel">
       <a class="nexion-factory-link" href="https://nexionpulse.com/reflectionchecker" target="_blank" rel="noopener" title="Open Nexion Reflection Checker">
         <img src="nexion.png" alt="Nexion logo">
         <span>Nexion Factory</span>
       </a>
       <div class="reflections-head">
+        <div class="reflections-title">Reflection Checker</div>
         <div class="reflections-sub">Scan supported Flux Factory tokens for a wallet. Shows balances, pending reflections, yield, and tax config.</div>
         <div class="reflections-scan">
           <input id="reflections-wallet-input" class="reflections-input" placeholder="Connect wallet or paste address">
