@@ -63,3 +63,80 @@ The reusable service files are prepared so future upgrades can move blockchain r
 ## Hosting
 
 Static site hosted via GitHub Pages. No server required.
+
+The site uses **only relative asset paths**, so the exact same files also work
+when served from an IPFS gateway (`…/ipfs/<CID>/`). GitHub Pages and IPFS can run
+side by side — neither affects the other.
+
+---
+
+## IPFS Deployment
+
+The site is decentralization-ready. Anyone can host or pin it.
+
+### 1. Build (stage a clean copy)
+
+There's no compile step — this just copies the site into `dist/` without git
+history, CI files, or backup HTML:
+
+```bash
+bash scripts/build-ipfs.sh
+```
+
+You now have a `dist/` folder ready to upload.
+
+### 2. Upload to IPFS — easiest first
+
+**Option A — Fleek (no terminal, auto-deploys on every push):**
+1. Go to [fleek.xyz](https://fleek.xyz) and sign in with GitHub.
+2. *Add new site* → pick the `evmdev101/CashX` repo.
+3. Build command: `bash scripts/build-ipfs.sh` · Publish directory: `dist`
+4. Deploy. Fleek pins it to IPFS and gives you a CID + gateway URL, and
+   re-deploys automatically whenever you push to `main`.
+
+**Option B — Pinata web UI (drag & drop):**
+1. Create a free account at [app.pinata.cloud](https://app.pinata.cloud).
+2. *Add* → *Folder* → select your local `dist/` folder.
+3. Pinata uploads, pins, and shows you the **CID** and a gateway link.
+
+**Option C — web3.storage:**
+Upload the `dist/` folder at [web3.storage](https://web3.storage); it returns a CID
+and keeps it pinned.
+
+### 3. Upload via CLI (account-free, fully decentralized)
+
+Install [IPFS Kubo](https://docs.ipfs.tech/install/command-line/), then:
+
+```bash
+bash scripts/build-ipfs.sh
+ipfs add -rQ --cid-version=1 dist
+```
+
+That prints the **CID** (e.g. `bafy…`). Your local node is already serving it.
+
+### 4. Pin it (so it stays online)
+
+A CID only stays reachable while at least one node pins it. Options:
+
+- **Pinata / Fleek / web3.storage** keep it pinned for you (steps above).
+- **Pin by CID** on Pinata: dashboard → *Add* → *CID* → paste the CID.
+- **Community pinning** — share the CID and anyone running a node can host it:
+  ```bash
+  ipfs pin add <CID>
+  ```
+- **Automated (CI):** the included GitHub Actions workflow
+  (`.github/workflows/ipfs.yml`) builds the site and computes the CID on every
+  push. Add a repo secret `PINATA_JWT` (Pinata → API Keys) and it will also
+  auto-pin to Pinata. The workflow is read-only and never touches GitHub Pages.
+
+### 5. Share the link
+
+Once pinned, share any of these (replace `<CID>`):
+
+- `ipfs://<CID>` — native (Brave, IPFS Companion, IPFS Desktop)
+- `https://<CID>.ipfs.dweb.link/` — public gateway
+- `https://ipfs.io/ipfs/<CID>/` — public gateway
+
+> **Tip:** for a permanent name that doesn't change each deploy, point an
+> **ENS** name or **DNSLink** record at the latest CID — then you can share one
+> stable link while the underlying CID updates.

@@ -1,0 +1,81 @@
+name: Build for IPFS
+
+# Manual button in the Actions tab, plus on every push to main.
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+# Read-only. This workflow NEVER touches GitHub Pages — your existing
+# Pages deployment keeps working exactly as before.
+permissions:
+  contents: read
+
+jobs:
+  ipfs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Stage site into dist/
+        run: bash scripts/build-ipfs.sh
+
+      - name: Install IPFS (kubo)
+        run: |
+          set -eux
+          VER=v0.30.0
+          curl -fsSL "https://dist.ipfs.tech/kubo/${VER}/kubo_${VER}_linux-amd64.tar.gz" -o kubo.tar.gz
+          tar -xzf kubo.tar.gz
+          sudo bash kubo/install.sh
+          ipfs --version
+
+      - name: Compute IPFS CID (offline, no account)
+        id: cid
+        run: |
+          set -eux
+          export IPFS_PATH="$RUNNER_TEMP/ipfs"
+          ipfs init --profile=server >/dev/null 2>&1 || true
+          CID="$(ipfs add -rQ --cid-version=1 dist)"
+          echo "cid=$CID" >> "$GITHUB_OUTPUT"
+          {
+            echo "## ✅ CashX IPFS build ready"
+            echo ""
+            echo "**CID:** \`$CID\`"
+            echo ""
+            echo "| Where | Link |"
+            echo "|---|---|"
+            echo "| Gateway (dweb.link) | https://$CID.ipfs.dweb.link/ |"
+            echo "| Gateway (ipfs.io)   | https://ipfs.io/ipfs/$CID/ |"
+            echo "| Native              | \`ipfs://$CID\` |"
+            echo ""
+            echo "Anyone can help host it: \`ipfs pin add $CID\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload site as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cashx-ipfs-site
+          path: dist
+          if-no-files-found: error
+
+      # OPTIONAL automated pin to Pinata.
+      # Runs ONLY if you add a repository secret named PINATA_JWT
+      # (Pinata dashboard → API Keys → New Key → copy the JWT).
+      # Best-effort: it will not fail the build if pinning is flaky.
+      - name: Pin to Pinata (optional)
+        if: ${{ secrets.PINATA_JWT != '' }}
+        continue-on-error: true
+        run: |
+          set -eux
+          export IPFS_PATH="$RUNNER_TEMP/ipfs"
+          CID="${{ steps.cid.outputs.cid }}"
+          # Bring a daemon online briefly so Pinata can fetch the content by CID.
+          ipfs daemon &
+          DAEMON_PID=$!
+          sleep 10
+          curl -fsSL -X POST "https://api.pinata.cloud/pinning/pinByHash" \
+            -H "Authorization: Bearer ${{ secrets.PINATA_JWT }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"hashToPin\":\"$CID\",\"pinataMetadata\":{\"name\":\"CashX\"}}"
+          kill $DAEMON_PID || true
