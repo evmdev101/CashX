@@ -1933,7 +1933,7 @@
     .farm-rank-farm .farm-token-fallback + .farm-token-logo,
     .farm-rank-farm .farm-token-fallback + .farm-token-fallback{margin-left:-6px}
     .farm-rank-name{font-family:'Space Mono',monospace;font-size:0.78rem;font-weight:700;color:#fff;
-      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:uppercase;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
       text-align:left;transition:color 0.16s,text-shadow 0.16s}
     .farm-rank-row:hover .farm-rank-name{color:#d9c8ff;text-shadow:0 0 12px rgba(155,109,255,0.45)}
     .farm-rank-id{font-family:'Space Mono',monospace;font-size:0.5rem;color:rgba(255,255,255,0.28);margin-left:4px}
@@ -8490,9 +8490,9 @@ const PULSE_ID     = 369;
   }
 
   function tokenLogoHTML(token) {
-    const src = TOKEN_LOGOS[token];
+    const src = TOKEN_LOGOS[String(token || '').toUpperCase()];
     if (src) return `<img class="farm-token-logo" src="${src}" alt="${token} logo">`;
-    return `<span class="farm-token-fallback" aria-label="${token}">${token.slice(0, 3)}</span>`;
+    return `<span class="farm-token-fallback" aria-label="${token}">${String(token).slice(0, 3)}</span>`;
   }
 
   const TOKEN_ADDRESSES = {
@@ -8506,10 +8506,10 @@ const PULSE_ID     = 369;
 
   function farmRewardSymbol(farm, poolInfo = null) {
     const fromFarm = String(farm?.rewardToken || '').trim().toUpperCase();
-    if (fromFarm) return prettyFarmSymbol(fromFarm).toUpperCase();
+    if (fromFarm) return prettyFarmSymbol(fromFarm);
     const rewardAddress = String(poolValue(poolInfo, 'rewardToken', 1) || '').toLowerCase();
     const match = Object.entries(TOKEN_ADDRESSES).find(([, address]) => String(address).toLowerCase() === rewardAddress);
-    return match ? match[0] : 'DISTROX';
+    return match ? prettyFarmSymbol(match[0]) : 'DISTROX';
   }
 
   function farmRewardAddress(farm, poolInfo = null) {
@@ -8679,8 +8679,8 @@ const PULSE_ID     = 369;
     return fmtFarm(raw);
   }
 
-  function fmtFarmFixed(raw, digits = 2) {
-    const n = parseFloat(ethers.formatUnits(raw, 18));
+  function fmtFarmFixed(raw, digits = 2, decimals = 18) {
+    const n = parseFloat(ethers.formatUnits(raw, decimals));
     if (!Number.isFinite(n) || n === 0) return '0';
     return n.toLocaleString('en-US', { minimumFractionDigits: digits, maximumFractionDigits: digits });
   }
@@ -8706,7 +8706,7 @@ const PULSE_ID     = 369;
 
   function prettyFarmSymbol(symbol) {
     const key = String(symbol || '').trim().toUpperCase();
-    const map = { PHEX: 'pHEX', UPLS: 'uPLS', VOUCHPLS: 'vouchPLS' };
+    const map = { PHEX: 'pHEX', EHEX: 'eHEX', UPLS: 'uPLS', VOUCHPLS: 'vouchPLS' };
     return map[key] || key || 'TOKEN';
   }
 
@@ -9244,10 +9244,14 @@ const PULSE_ID     = 369;
     return remainingRewardRawFromParams(params.totalReward, params.startTime, params.endTime, nowSec);
   }
 
-  function rawUsd(raw, scaledPrice) {
+  function rawUsd(raw, scaledPrice, decimals = 18) {
     if (typeof raw !== 'bigint' || !Number.isFinite(scaledPrice) || scaledPrice <= 0) return null;
-    return Number(ethers.formatUnits(raw, 18)) * scaledPrice / 1e18;
+    return Number(ethers.formatUnits(raw, decimals)) * scaledPrice / 1e18;
   }
+
+  // pHEX / eHEX use 8 decimals; everything else 18.
+  const FARM_TOKEN_DECIMALS = { '0x2b591e99afe9f32eaa6214f7b7629768c40eeb39': 8, '0x57fde0a71132198bbec939b98976993d8d89d225': 8 };
+  function farmTokenDec(addr) { return FARM_TOKEN_DECIMALS[String(addr).toLowerCase()] ?? 18; }
 
   function formatFarmPoolSharePercent(staked, totalStaked) {
     if (typeof staked !== 'bigint' || typeof totalStaked !== 'bigint' || totalStaked <= 0n) return '';
@@ -9274,9 +9278,10 @@ const PULSE_ID     = 369;
   function formatRewardProjection(raw, valuation = {}) {
     const rewardSymbol = valuation.rewardSymbol || 'DISTROX';
     if (raw === null) return 'Loading';
-    const tokenAmount = raw === 0n ? '0.00' : fmtFarmFixed(raw, 2);
+    const dec = Number(valuation.rewardDec || 18);
+    const tokenAmount = raw === 0n ? '0.00' : fmtFarmFixed(raw, 2, dec);
     const scaledPrice = Number(valuation.rewardScaledPrice || 0);
-    const usd = raw === 0n ? '$0.00 USD' : fmtUsd(rawUsd(raw, scaledPrice), 2);
+    const usd = raw === 0n ? '$0.00 USD' : fmtUsd(rawUsd(raw, scaledPrice, dec), 2);
     return `${tokenAmount} ${rewardSymbol} (${usd})`;
   }
 
@@ -9320,12 +9325,13 @@ const PULSE_ID     = 369;
       ]);
       const stakeScaledPrice = Number(stakePrice);
       const rewardScaledPrice = Number(rewardPrice);
+      const rewardDec = farmTokenDec(rewardAddress);
       const remainingParams = remainingRewardParams(poolInfo);
       const remainingRaw = remainingRewardRawNexion(poolInfo);
       const stakedValue = rawUsd(totalStaked, stakeScaledPrice);
-      const remainingValue = rawUsd(remainingRaw, rewardScaledPrice);
+      const remainingValue = rawUsd(remainingRaw, rewardScaledPrice, rewardDec);
       const userStakedValue = rawUsd(staked, stakeScaledPrice);
-      const pendingValue = rawUsd(pending, rewardScaledPrice);
+      const pendingValue = rawUsd(pending, rewardScaledPrice, rewardDec);
       const endTime = Number(poolValue(poolInfo, 'endTime', 5) ?? 0);
       const secondsLeft = Math.max(endTime - Math.floor(Date.now() / 1000), 0);
       const daysLeft = secondsLeft / 86400;
@@ -9337,7 +9343,7 @@ const PULSE_ID     = 369;
         apr: apr === null ? null : `${apr.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`,
         totalStaked: fmtFarmFixed(totalStaked, 2),
         totalStakedUsd: fmtUsd(stakedValue, 2),
-        remainingRewards: remainingRaw !== null ? fmtFarmFixed(remainingRaw, 2) : null,
+        remainingRewards: remainingRaw !== null ? fmtFarmFixed(remainingRaw, 2, rewardDec) : null,
         remainingRewardsUsd: fmtUsd(remainingValue, 2),
         remainingRewardTotal: remainingParams?.totalReward?.toString?.() || '',
         remainingRewardStart: remainingParams?.startTime || 0,
@@ -9346,11 +9352,12 @@ const PULSE_ID     = 369;
         userStaked: fmtFarmFixed(staked, 2),
         userStakedUsd: fmtUsd(userStakedValue, 2),
         userStakedShare: formatFarmPoolSharePercent(staked, totalStaked),
-        pending: fmtFarmFixed(pending, 2),
+        pending: fmtFarmFixed(pending, 2, rewardDec),
         pendingUsd: fmtUsd(pendingValue, 2),
         tvl: fmtUsd(tvl, 2),
         rewardSymbol,
-        rewardAddress
+        rewardAddress,
+        rewardDec
       };
     } catch (err) {
       console.warn('Nexion valuation unavailable:', err);
@@ -9378,7 +9385,7 @@ const PULSE_ID     = 369;
     const end = Number(valuation.remainingRewardEnd || 0);
     const price = valuation.rewardScaledPrice || '';
     if (!total || !start || !end) return fallback;
-    return `<span data-farm-remaining data-reward-total="${total}" data-reward-start="${start}" data-reward-end="${end}" data-reward-price="${price}">${fallback}</span>`;
+    return `<span data-farm-remaining data-reward-total="${total}" data-reward-start="${start}" data-reward-end="${end}" data-reward-price="${price}" data-reward-dec="${valuation.rewardDec || 18}">${fallback}</span>`;
   }
 
   function updateFarmCountdowns() {
@@ -9398,12 +9405,13 @@ const PULSE_ID     = 369;
         const end = Number(el.dataset.rewardEnd || 0);
         const raw = remainingRewardRawFromParams(total, start, end);
         if (raw === null) return;
-        el.textContent = fmtFarmFixed(raw, 2);
+        const dec = Number(el.dataset.rewardDec || 18);
+        el.textContent = fmtFarmFixed(raw, 2, dec);
 
         const usdEl = el.closest('.farm-proto-metric')?.querySelector('[data-farm-remaining-usd]');
         const scaledPrice = Number(el.dataset.rewardPrice || 0);
         if (usdEl && Number.isFinite(scaledPrice) && scaledPrice > 0) {
-          usdEl.textContent = fmtUsd(rawUsd(raw, scaledPrice), 2);
+          usdEl.textContent = fmtUsd(rawUsd(raw, scaledPrice, dec), 2);
         }
       } catch(e) {}
     });
