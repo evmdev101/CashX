@@ -1573,6 +1573,7 @@
     .dash-stat-token{font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--dash-accent);text-transform:uppercase;letter-spacing:0.08em;margin-top:7px}
     .dash-stat-sub{font-family:'DM Sans',sans-serif;font-size:0.86rem;font-weight:800;letter-spacing:0.02em;color:#fff;margin-top:7px;line-height:1.35}
     .dash-stat-sub span{white-space:nowrap}
+    #c-burned-pct{font-size:1.25rem;font-weight:800}
     .dash-main-row{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(240px,0.7fr);gap:14px;align-items:stretch;background:rgba(10,3,22,0.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(200,100,255,0.2);border-radius:14px;padding:14px;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
     .dash-stats-sidebar{display:flex;flex-direction:column;gap:10px}
     .dash-metric-card{background:linear-gradient(145deg,#2a2440 0%,#1b1730 58%,#151326 100%);border:1px solid rgba(155,109,255,0.32);border-radius:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.07),0 12px 34px rgba(0,0,0,0.22);padding:16px 18px;flex-shrink:0}
@@ -2248,8 +2249,9 @@
     .farm-theme-close:hover{border-color:var(--farm-theme-accent,#9b6dff);color:var(--farm-theme-accent,#9b6dff)}
     .farm-theme-minimized{
       position:fixed;
-      left:20px;
+      left:50%;
       bottom:20px;
+      transform:translateX(-50%);
       z-index:5001;
       min-height:34px;
       display:inline-flex;
@@ -2304,7 +2306,7 @@
       color:var(--farm-theme-accent,#9b6dff);
       border-bottom-color:var(--farm-theme-accent,#9b6dff);
     }
-    .farm-theme-body{padding:10px;overflow:auto}
+    .farm-theme-body{padding:10px;overflow:auto;flex:1 1 auto;min-height:0}
     .farm-theme-body::-webkit-scrollbar{width:9px}
     .farm-theme-body::-webkit-scrollbar-track{background:transparent}
     .farm-theme-body::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--farm-theme-text,#e8edf2) 34%,transparent);border-radius:999px}
@@ -2626,7 +2628,22 @@
       .farm-theme-tip .th-zone{animation:none!important}
     }
     .farm-theme-dialog.farm-theme-snapped{
-      transition:left 0.18s ease,top 0.18s ease,width 0.18s ease,max-height 0.18s ease;
+      transition:left 0.24s cubic-bezier(0.34,1.56,0.64,1),top 0.24s cubic-bezier(0.34,1.56,0.64,1),width 0.24s cubic-bezier(0.34,1.56,0.64,1),height 0.24s cubic-bezier(0.34,1.56,0.64,1),max-height 0.24s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .farm-theme-snap-ghost{
+      position:fixed;
+      z-index:4990;
+      pointer-events:none;
+      border-radius:10px;
+      border:2px solid var(--farm-theme-accent,#9b6dff);
+      background:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 16%,transparent);
+      box-shadow:0 0 30px var(--farm-theme-shadow,rgba(155,109,255,0.35)),inset 0 0 28px color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 20%,transparent);
+      opacity:0;
+      transition:opacity 0.14s ease,left 0.14s ease,top 0.14s ease,width 0.14s ease,height 0.14s ease;
+    }
+    .farm-theme-snap-ghost.visible{opacity:1}
+    @media(prefers-reduced-motion:reduce){
+      .farm-theme-snap-ghost{transition:opacity 0.1s ease}
     }
     body.farm-font-sans{--farm-ui-font:'DM Sans',Arial,sans-serif}
     body.farm-font-serif{--farm-ui-font:Georgia,'Times New Roman',serif}
@@ -7843,7 +7860,12 @@ function minimizeFarmThemeModal() {
   const modal = document.getElementById('farm-theme-modal');
   if (modal) modal.hidden = true;
   const chip = document.getElementById('farm-theme-minimized');
-  if (chip) chip.hidden = false;
+  if (chip) {
+    // Re-parent to <body> so position:fixed anchors to the viewport, not to
+    // #farms-view (which carries a transform from the page-transition anim).
+    if (chip.parentElement !== document.body) document.body.appendChild(chip);
+    chip.hidden = false;
+  }
   const tip = document.getElementById('farm-theme-tip');
   if (tip) tip.hidden = true;
   tip?.classList.remove('in','out');
@@ -8071,6 +8093,7 @@ function moveFarmThemeDialog(left, top, shouldSave = false) {
 function setFarmThemeDialogFreeSize(dialog) {
   dialog.classList.remove('farm-theme-snapped');
   dialog.style.width = '';
+  dialog.style.height = '';
   dialog.style.maxHeight = '';
 }
 
@@ -8079,16 +8102,19 @@ function applyFarmThemeSnap(mode, shouldSave = true) {
   if (!dialog || !['top','left','right'].includes(mode)) return false;
   dialog.classList.add('farm-theme-snapped');
   const gap = 12;
+  const fullHeight = `calc(100vh - ${gap * 2}px)`;
   if (mode === 'top') {
     dialog.style.left = `${gap}px`;
     dialog.style.top = `${gap}px`;
     dialog.style.width = `calc(100vw - ${gap * 2}px)`;
-    dialog.style.maxHeight = `calc(100vh - ${gap * 2}px)`;
+    dialog.style.height = fullHeight;
+    dialog.style.maxHeight = fullHeight;
   } else {
     const rect = dialog.getBoundingClientRect();
     const width = Math.min(Math.max(rect.width, 520), window.innerWidth - gap * 2);
     dialog.style.width = `${width}px`;
-    dialog.style.maxHeight = `calc(100vh - ${gap * 2}px)`;
+    dialog.style.height = fullHeight;
+    dialog.style.maxHeight = fullHeight;
     dialog.style.left = mode === 'left' ? `${gap}px` : `${Math.max(gap, window.innerWidth - width - gap)}px`;
     dialog.style.top = `${gap}px`;
   }
@@ -8099,12 +8125,48 @@ function applyFarmThemeSnap(mode, shouldSave = true) {
   return true;
 }
 
-function maybeSnapFarmThemeDialog(rect) {
+function farmThemeSnapZoneFor(rect) {
   const edge = 18;
-  if (rect.top <= edge) return applyFarmThemeSnap('top');
-  if (rect.left <= edge) return applyFarmThemeSnap('left');
-  if (window.innerWidth - rect.right <= edge) return applyFarmThemeSnap('right');
-  return false;
+  if (rect.top <= edge) return 'top';
+  if (rect.left <= edge) return 'left';
+  if (window.innerWidth - rect.right <= edge) return 'right';
+  return null;
+}
+
+// Geometry the dialog WILL fill for a given snap zone — used to draw the
+// live "ghost" preview so it matches applyFarmThemeSnap exactly.
+function farmThemeSnapTargetRect(mode) {
+  const gap = 12;
+  const vw = window.innerWidth, vh = window.innerHeight;
+  if (mode === 'top') return { left: gap, top: gap, width: vw - gap * 2, height: vh - gap * 2 };
+  const dialog = document.querySelector('#farm-theme-modal .farm-theme-dialog');
+  const w0 = dialog ? dialog.getBoundingClientRect().width : 520;
+  const width = Math.min(Math.max(w0, 520), vw - gap * 2);
+  return { left: mode === 'left' ? gap : Math.max(gap, vw - width - gap), top: gap, width, height: vh - gap * 2 };
+}
+
+let farmThemeSnapGhost = null;
+function showFarmThemeSnapGhost(mode) {
+  if (!farmThemeSnapGhost) {
+    farmThemeSnapGhost = document.createElement('div');
+    farmThemeSnapGhost.className = 'farm-theme-snap-ghost';
+    farmThemeSnapGhost.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(farmThemeSnapGhost);
+  }
+  const r = farmThemeSnapTargetRect(mode);
+  farmThemeSnapGhost.style.left = `${r.left}px`;
+  farmThemeSnapGhost.style.top = `${r.top}px`;
+  farmThemeSnapGhost.style.width = `${r.width}px`;
+  farmThemeSnapGhost.style.height = `${r.height}px`;
+  farmThemeSnapGhost.classList.add('visible');
+}
+function hideFarmThemeSnapGhost() {
+  if (farmThemeSnapGhost) farmThemeSnapGhost.classList.remove('visible');
+}
+
+function maybeSnapFarmThemeDialog(rect) {
+  const zone = farmThemeSnapZoneFor(rect);
+  return zone ? applyFarmThemeSnap(zone) : false;
 }
 
 function positionFarmThemeDialog(forceCenter = false) {
@@ -8215,6 +8277,9 @@ function initFarmThemeDrag() {
   handle.addEventListener('pointermove', event => {
     if (!drag) return;
     moveFarmThemeDialog(drag.left + event.clientX - drag.startX, drag.top + event.clientY - drag.startY);
+    const zone = farmThemeSnapZoneFor(dialog.getBoundingClientRect());
+    if (zone) showFarmThemeSnapGhost(zone);
+    else hideFarmThemeSnapGhost();
   });
 
   handle.addEventListener('pointerup', event => {
@@ -8223,12 +8288,14 @@ function initFarmThemeDrag() {
     drag = null;
     dialog.classList.remove('dragging');
     handle.releasePointerCapture?.(event.pointerId);
+    hideFarmThemeSnapGhost();
     if (!maybeSnapFarmThemeDialog(rect)) moveFarmThemeDialog(rect.left, rect.top, true);
   });
 
   handle.addEventListener('pointercancel', () => {
     drag = null;
     dialog.classList.remove('dragging');
+    hideFarmThemeSnapGhost();
   });
 
   window.addEventListener('resize', () => {
