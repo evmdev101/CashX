@@ -238,6 +238,26 @@
   border-color:var(--farm-theme-accent,#9b6dff);
   box-shadow:0 18px 42px rgba(0,0,0,0.34),0 0 34px var(--farm-theme-shadow,rgba(155,109,255,0.22));
 }
+.hero-cta-buttons{display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;margin:26px auto 0}
+.hero-cta-buttons .hero-farms-cta{margin:0}
+.hero-ipfs-cta{background:linear-gradient(135deg,color-mix(in srgb,var(--farm-theme-text,#64d2ff) 22%,var(--farm-theme-panel,#10151c)),color-mix(in srgb,var(--farm-theme-bg,#080b10) 80%,var(--farm-theme-text,#64d2ff)))}
+/* ── IPFS info popup ── */
+.ipfs-modal[hidden]{display:none}
+.ipfs-modal{position:fixed;inset:0;z-index:6000;display:flex;align-items:center;justify-content:center;padding:20px}
+.ipfs-modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,0.62);backdrop-filter:blur(4px)}
+.ipfs-modal-card{position:relative;z-index:1;width:min(460px,100%);max-height:90vh;overflow:auto;background:color-mix(in srgb,var(--farm-theme-card,#10151c) 96%,transparent);border:1px solid color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 45%,transparent);border-radius:14px;padding:28px 24px;color:var(--farm-theme-text,#e8edf2);box-shadow:0 24px 80px rgba(0,0,0,0.6),0 0 40px var(--farm-theme-shadow,rgba(155,109,255,0.25));text-align:center;font-family:'Barlow',sans-serif}
+.ipfs-modal-emoji{font-size:2.2rem;line-height:1}
+.ipfs-modal-card h3{font-family:'Space Mono',monospace;font-size:1.05rem;letter-spacing:0.04em;margin:8px 0 6px;color:var(--farm-theme-accent,#9b6dff)}
+.ipfs-modal-sub{font-size:0.92rem;line-height:1.5;color:color-mix(in srgb,var(--farm-theme-text,#e8edf2) 80%,transparent);margin:0 0 14px}
+.ipfs-modal-steps{text-align:left;font-size:0.9rem;line-height:1.5;margin:0 0 16px;padding-left:20px;color:color-mix(in srgb,var(--farm-theme-text,#e8edf2) 88%,transparent)}
+.ipfs-modal-steps li{margin-bottom:6px}
+.ipfs-modal-link{display:block;padding:13px 18px;border-radius:10px;background:linear-gradient(135deg,var(--farm-theme-accent,#9b6dff),color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 50%,var(--farm-theme-text,#64d2ff)));color:#fff;font-weight:700;text-decoration:none;font-family:'Space Mono',monospace;font-size:0.8rem;letter-spacing:0.03em;word-break:break-all}
+.ipfs-modal-link:hover{filter:brightness(1.08)}
+.ipfs-modal-copy{margin-top:10px;background:transparent;border:1px solid color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 45%,transparent);color:var(--farm-theme-text,#e8edf2);border-radius:999px;padding:8px 18px;font-size:0.8rem;cursor:pointer;font-family:'Space Mono',monospace}
+.ipfs-modal-copy:hover{border-color:var(--farm-theme-accent,#9b6dff)}
+.ipfs-modal-note{font-size:0.78rem;color:color-mix(in srgb,var(--farm-theme-text,#e8edf2) 62%,transparent);margin:14px 0 0;line-height:1.45}
+.ipfs-modal-close{position:absolute;top:10px;right:12px;background:transparent;border:none;color:var(--farm-theme-text,#e8edf2);font-size:1.5rem;line-height:1;cursor:pointer;opacity:0.7}
+.ipfs-modal-close:hover{opacity:1}
 .hero-scroll-cue{
   position:absolute;left:50%;bottom:34px;z-index:4;
   width:58px;height:58px;border-radius:50%;
@@ -4456,7 +4476,10 @@
 </a>
 
   </div>
-  <button class="hero-farms-cta" type="button" onclick="showPage('farms')">Open Farms</button>
+  <div class="hero-cta-buttons">
+    <button class="hero-farms-cta" type="button" onclick="showPage('farms')">Open Farms</button>
+    <button class="hero-farms-cta hero-ipfs-cta" type="button" onclick="openIpfsModal()">IPFS Version</button>
+  </div>
 </div>
 <a class="hero-scroll-cue" href="#tokenomics" aria-label="Scroll to tokenomics">
   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -4632,9 +4655,52 @@
     <a href="https://dexscreener.com/pulsechain/0xda942580cee2a69c5fc74109090816157730c64d" target="_blank">DexScreener</a>
     <a href="https://scan.pulsechain.com/token/0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665" target="_blank">Explorer</a>
     <a href="https://www.youtube.com/watch?v=UefZfzeoU_M" target="_blank">Learn More</a>
+    <a href="#" onclick="openIpfsModal();return false;" title="Open the decentralized (IPFS) version">Decentralized (IPFS)</a>
   </div>
 </footer>
 </div>
+
+<!-- IPFS INFO POPUP -->
+<div id="ipfs-modal" class="ipfs-modal" hidden>
+  <div class="ipfs-modal-backdrop" onclick="closeIpfsModal()"></div>
+  <div class="ipfs-modal-card" role="dialog" aria-modal="true" aria-labelledby="ipfs-modal-title">
+    <button class="ipfs-modal-close" type="button" onclick="closeIpfsModal()" aria-label="Close">&times;</button>
+    <h3 id="ipfs-modal-title">Decentralized Version</h3>
+    <p class="ipfs-modal-sub">CashX is also hosted on <strong>IPFS</strong> — a peer-to-peer network with no single server, so this copy can't easily be taken down.</p>
+    <ol class="ipfs-modal-steps">
+      <li>Tap the link below to open the decentralized version.</li>
+      <li>For the smoothest experience, open it in <strong>Chrome</strong> or <strong>Firefox</strong>.</li>
+      <li>The first load can take ~10–15 seconds.</li>
+    </ol>
+    <!-- IPFS: when you redeploy, paste the NEW CID here (keep the .ipfs.dweb.link/ part). -->
+    <a class="ipfs-modal-link" id="ipfs-open-link" href="https://bafybeibw3ipxbaijjtwji2iahnvweerkjdt3gplmebpqgixda2tntc33ae.ipfs.dweb.link/" target="_blank" rel="noopener">Open CashX on IPFS</a>
+    <button class="ipfs-modal-copy" type="button" onclick="copyIpfsLink(this)">Copy link</button>
+    <p class="ipfs-modal-note">Using Brave with IPFS turned on? If it gets stuck loading, open the link in Chrome instead.</p>
+  </div>
+</div>
+<script>
+  function openIpfsModal(){
+    var m=document.getElementById('ipfs-modal');
+    if(!m) return;
+    if(m.parentElement!==document.body) document.body.appendChild(m); // anchor to viewport
+    m.hidden=false;
+    document.body.style.overflow='hidden';
+  }
+  function closeIpfsModal(){
+    var m=document.getElementById('ipfs-modal');
+    if(m) m.hidden=true;
+    document.body.style.overflow='';
+  }
+  function copyIpfsLink(btn){
+    var link=document.getElementById('ipfs-open-link');
+    if(!link) return;
+    navigator.clipboard.writeText(link.href).then(function(){
+      var o=btn.textContent; btn.textContent='Copied! ✓';
+      setTimeout(function(){ btn.textContent=o; },1600);
+    }).catch(function(){});
+  }
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeIpfsModal(); });
+</script>
 
 <!-- DASHBOARD TAB -->
 <div id="dashboard-view" class="page-view" hidden>
