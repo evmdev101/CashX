@@ -32,6 +32,7 @@ tar \
   --exclude='./dist' \
   --exclude='./scripts' \
   --exclude='./node_modules' \
+  --exclude='./public' \
   --exclude='./README.md' \
   --exclude='./index.recovered-candidate.html' \
   --exclude='./*.backup.html' \

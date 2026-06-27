@@ -4866,7 +4866,7 @@
 
 </main>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/ethers@6/dist/ethers.umd.min.js"></script>
+<script src="./vendor/ethers.umd.min.js"></script>
 <script>
   const CONTRACT  = '0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665';
   const DEAD      = '0x000000000000000000000000000000000000dead';
@@ -5908,7 +5908,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     if (chartReadyPromise) return chartReadyPromise;
     chartReadyPromise = new Promise(resolve => {
       const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
+      script.src = './vendor/chart.umd.min.js';
       script.async = true;
       script.onload = () => resolve(true);
       script.onerror = () => resolve(false);
@@ -6854,10 +6854,10 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
   <div class="promo-carousel" data-promo-carousel>
     <div class="promo-track">
       <a class="promo-slide active" href="#farms" data-farms-refresh aria-label="Refresh CashX Farms">
-        <img src="promo-cashx-farms.png" alt="CashX Farms" style="object-position:center 35%">
+        <img src="promo-cashx-farms.jpg" alt="CashX Farms" style="object-position:center 35%">
       </a>
       <a class="promo-slide" href="#farms" data-farms-refresh aria-label="Refresh DividendX Farms">
-        <img src="promo-dividendx-farms.png" alt="DividendX Farms">
+        <img src="promo-dividendx-farms.jpg" alt="DividendX Farms">
       </a>
     </div>
     <div class="promo-dots" aria-label="Promo slides">
