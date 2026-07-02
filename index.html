@@ -1796,6 +1796,15 @@
       flex:1;display:flex;flex-direction:column;align-items:center;
       padding:118px 34px 48px;gap:24px;position:relative;z-index:1;
     }
+    /* DEGEN-style single loader: only this shows until all farm data is ready */
+    .farms-loading-screen{
+      display:none;width:100%;min-height:46vh;align-items:center;justify-content:center;
+      font-family:'Space Mono',monospace;font-size:0.95rem;letter-spacing:0.14em;text-transform:uppercase;
+      color:var(--farm-theme-accent,#9b6dff);
+    }
+    .farms-loading-screen .fls-text::after{content:'';animation:ls-dots 1.2s steps(1) infinite}
+    .farms-main.farms-loading > #farms-loading-screen{display:flex}
+    .farms-main.farms-loading > *:not(#farms-loading-screen){display:none !important}
     #farms-view .nav-dash-btn.active{
       background:linear-gradient(135deg,rgba(79,142,247,0.24),rgba(155,109,255,0.38));
       border-color:rgba(255,255,255,0.24);
@@ -6916,6 +6925,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
   </div>
 </nav>
 <main class="farms-main">
+<div id="farms-loading-screen" class="farms-loading-screen" aria-live="polite"><span class="fls-text">Loading CashX farms</span></div>
 <section class="promo-carousel-section farms-promo-carousel" aria-label="Promoted CashX links">
   <div class="promo-carousel" data-promo-carousel>
     <div class="promo-track">
@@ -8512,44 +8522,8 @@ const PULSE_ID     = 369;
     timeLeft: 'Loading',
     tvl: 'Loading'
   };
-  const FARM_CARD_META = {
-    '#240': { apr: '2.68%', totalStaked: '10,000.00', totalStakedUsd: '$0.67', remainingRewards: '10.00', remainingRewardsUsd: '$0.009', tvl: '$0.676' },
-    '#239': { apr: '1643.27%', totalStaked: '8,732,782.88', totalStakedUsd: '$48.69', remainingRewards: '11,998,659.44', remainingRewardsUsd: '$800.017', tvl: '$848.707' },
-    '#238': { apr: '318.04%', totalStaked: '56.21', totalStakedUsd: '$251.57', remainingRewards: '11,998,408.30', remainingRewardsUsd: '$800.000', tvl: '$1,051.574' },
-    '#237': { apr: '1465.08%', totalStaked: '2.67', totalStakedUsd: '$54.61', remainingRewards: '11,998,170.09', remainingRewardsUsd: '$799.985', tvl: '$854.597' },
-    '#236': { apr: '368.71%', totalStaked: '10,128,858.13', totalStakedUsd: '$250.85', remainingRewards: '11,991,359.97', remainingRewardsUsd: '$924.236', userStaked: '8,221,331.60', userStakedUsd: '$203.61', pending: '7,150.83', pendingUsd: '$0.55', tvl: '$1,175.084' },
-    '#235': { apr: '782.04%', totalStaked: '2,046,923.78', totalStakedUsd: '$102.31', remainingRewards: '11,997,873.29', remainingRewardsUsd: '$799.965', tvl: '$902.275' },
-    '#234': { apr: '458.83%', totalStaked: '4.46', totalStakedUsd: '$172.00', remainingRewards: '11,997,648.31', remainingRewardsUsd: '$799.953', tvl: '$974.327' },
-    '#233': { apr: '96.36%', totalStaked: '0.00', totalStakedUsd: '$0.00', remainingRewards: '11,997,423.33', remainingRewardsUsd: '$799.941', tvl: '$1,630.268' },
-    '#232': { apr: '70.75%', totalStaked: '22.21', totalStakedUsd: '$1,307.31', remainingRewards: '11,990,404.87', remainingRewardsUsd: '$924.162', userStaked: '3.80', userStakedUsd: '$223.55', pending: '3,168.96', pendingUsd: '$0.24', tvl: '$2,231.472' },
-    '#231': { apr: '1037.17%', totalStaked: '4,705,677.88', totalStakedUsd: '$77.14', remainingRewards: '11,996,973.36', remainingRewardsUsd: '$799.905', tvl: '$877.049' },
-    '#230': { apr: '81.23%', totalStaked: '100,776.87', totalStakedUsd: '$985.03', remainingRewards: '11,996,714.61', remainingRewardsUsd: '$799.888', tvl: '$1,784.923' },
-    '#229': { apr: '77.61%', totalStaked: '26,257,965.55', totalStakedUsd: '$1,030.97', remainingRewards: '11,996,531.96', remainingRewardsUsd: '$799.876', tvl: '$1,830.849' },
-    '#228': { apr: '84.87%', totalStaked: '22,322,101.14', totalStakedUsd: '$942.76', remainingRewards: '11,996,290.72', remainingRewardsUsd: '$799.860', tvl: '$1,742.62' },
-    '#205': { apr: '32.58%', totalStaked: '159,013,322.71', totalStakedUsd: '$3,454.67', remainingRewards: '1,455,984,826.86', remainingRewardsUsd: '$1,092.615', tvl: '$4,547.284' },
-    '#204': { apr: '65.18%', totalStaked: '51.95', totalStakedUsd: '$1,726.88', remainingRewards: '1,455,965,325.34', remainingRewardsUsd: '$1,092.6', tvl: '$2,819.477' },
-    '#203': { apr: '58.89%', totalStaked: '362,431.50', totalStakedUsd: '$1,911.56', remainingRewards: '1,455,936,310.88', remainingRewardsUsd: '$1,092.579', tvl: '$3,004.14' },
-    '#202': { apr: '110.89%' },
-    '#201': { apr: '90.88%' },
-    '#200': { apr: '14.23%' },
-    '#199': { apr: '101.07%', tvl: 'Live' },
-    '#198': { apr: '101.07%', tvl: 'Live' },
-    '#197': { apr: '101.07%', tvl: 'Live' },
-    '#196': { apr: '101.07%', tvl: 'Live' },
-    '#195': {
-      apr: '102.41%',
-      fees: '0% / 0%',
-      totalStaked: '236,618,399.40',
-      totalStakedUsd: '$1,109.52',
-      remainingRewards: '1,450,462,281.20',
-      remainingRewardsUsd: '$1,099.469',
-      userStaked: '24,823,157.77',
-      userStakedUsd: '$116.40',
-      pending: '213,623.21',
-      pendingUsd: '$0.16',
-      tvl: '$2,208.927'
-    }
-  };
+  // Per-farm display values come from LIVE on-chain data only — no stale fallbacks.
+  const FARM_CARD_META = {};
 
   function farmTokens(name) {
     return name.replace(/\s+LP$/i, '').split('/').map(t => t.trim().toUpperCase());
@@ -8656,7 +8630,9 @@ const PULSE_ID     = 369;
 
   function rankNumber(value) {
     if (!value || value === '—' || value === 'Live') return null;
-    const parsed = Number(String(value).replace(/[^0-9.-]/g, ''));
+    const cleaned = String(value).replace(/[^0-9.-]/g, '');
+    if (!/[0-9]/.test(cleaned)) return null; // placeholder text ("Loading", "rewards") → not a real number
+    const parsed = Number(cleaned);
     return Number.isFinite(parsed) ? parsed : null;
   }
 
@@ -8705,6 +8681,7 @@ const PULSE_ID     = 369;
   async function init() {
     if (farmsInitialized) return;
     farmsInitialized = true;
+    showFarmsLoading();
     renderFarmRankings();
     renderPlaceholderFarms();
     const provider = window.CashXWallets?.getActiveProvider?.() || window.ethereum;
@@ -8796,6 +8773,7 @@ const PULSE_ID     = 369;
 
   async function fetchLpBreakdown(provider, farm, lpAmount, token0Address = null, token1Address = null) {
     if (!provider || typeof lpAmount !== 'bigint') return null;
+    if (farm.single) return null; // single-stake (e.g. DIVX) has no LP pair to break down
     try {
       const lpC = new ethers.Contract(farm.lp, LP_ABI, provider);
       const [reserves, totalSupply, token0, token1] = await Promise.all([
@@ -8946,7 +8924,7 @@ const PULSE_ID     = 369;
     let distroxPrice = 0;
     let divxPrice = 0;
     try {
-      const priceC = new ethers.Contract(NEXION_LP_CALCULATOR, NEXION_PRICE_ABI, wProvider);
+      const priceC = new ethers.Contract(NEXION_LP_CALCULATOR, NEXION_PRICE_ABI, readProvider());
       const [rawCashxPrice, rawDistroxPrice, rawDivxPrice] = await priceC.getBatchPrice([CASHX_ADDR, DISTROX_ADDR, DIVX_ADDR]);
       const liveCashxPrice = Number(ethers.formatUnits(rawCashxPrice, 18));
       cashxPrice = liveCashxPrice > 0 ? liveCashxPrice : cashxPrice;
@@ -8962,7 +8940,7 @@ const PULSE_ID     = 369;
 
     const fetchOne = async (addr, id, usdId, price) => {
       try {
-        const c = new ethers.Contract(addr, balABI, wProvider);
+        const c = new ethers.Contract(addr, balABI, readProvider());
         const raw = await c.balanceOf(wAddr);
         // Both CASHX and DISTROX are 18-decimal tokens — no need to call decimals()
         const amount = Number(ethers.formatUnits(raw, 18));
@@ -8987,7 +8965,7 @@ const PULSE_ID     = 369;
     const ld = '<span class="rv-tok-muted">Loading…</span>';
     setHTML('rv-distx-reflect', ld); setHTML('rv-cashx-yield', ld);
     try {
-      const distxC = new ethers.Contract(DISTROX_ADDR, DISTX_REWARDS_ABI, wProvider);
+      const distxC = new ethers.Contract(DISTROX_ADDR, DISTX_REWARDS_ABI, readProvider());
       const [reflections, yieldTokens, yieldAmt] = await Promise.all([
         distxC.pendingReflections(wAddr),
         distxC.getYieldTokens(),
@@ -9003,6 +8981,69 @@ const PULSE_ID     = 369;
       const e = '<span class="rv-tok-muted">Error</span>';
       setHTML('rv-distx-reflect', e); setHTML('rv-cashx-yield', e);
     }
+  }
+
+  // Limit how many farm loads run at once so we don't flood (and get rate-limited by) the RPC.
+  async function mapLimit(items, limit, fn) {
+    const out = new Array(items.length);
+    let next = 0;
+    async function worker() {
+      while (next < items.length) {
+        const idx = next++;
+        out[idx] = await fn(items[idx], idx);
+      }
+    }
+    await Promise.all(Array.from({ length: Math.min(limit, items.length || 1) }, worker));
+    return out;
+  }
+
+  // Read-only provider for all data fetches. Uses the direct PulseChain RPC instead of
+  // the injected wallet (whose RPC throws NetworkErrors under load). The wallet provider
+  // is only used for transactions (getSigner).
+  let _farmReadProvider = null;
+  function readProvider() {
+    try {
+      if (!_farmReadProvider) _farmReadProvider = new ethers.JsonRpcProvider('https://rpc.pulsechain.com', PULSE_ID);
+      return _farmReadProvider;
+    } catch (e) {
+      return wProvider;
+    }
+  }
+
+  // Retry a read a couple times so a transient RPC hiccup doesn't drop a value.
+  async function retry(fn, tries = 2) {
+    let err;
+    for (let i = 0; i <= tries; i++) {
+      try { return await fn(); } catch (e) { err = e; }
+    }
+    throw err;
+  }
+
+  // Fetch every farm's stake price + reward price in just a few batched calls
+  // (the calculator takes arrays), instead of ~50 per-farm calls. This is what
+  // keeps values consistent on every refresh — nothing gets rate-limited.
+  async function fetchFarmPriceMaps(provider, matched) {
+    const priceC = new ethers.Contract(NEXION_LP_CALCULATOR, NEXION_PRICE_ABI, provider);
+    const lpFarms = matched.filter(m => !m.farm.single);
+    const singleFarms = matched.filter(m => m.farm.single);
+    const rewardList = [...new Set(matched.map(m => String(farmRewardAddress(m.farm)).toLowerCase()))];
+    const [lpVals, singleVals, rewardVals] = await Promise.all([
+      lpFarms.length ? retry(() => priceC.getBatchLpValue(lpFarms.map(m => m.farm.lp))).catch(() => []) : [],
+      singleFarms.length ? retry(() => priceC.getBatchPrice(singleFarms.map(m => m.farm.lp))).catch(() => []) : [],
+      rewardList.length ? retry(() => priceC.getBatchPrice(rewardList)).catch(() => []) : []
+    ]);
+    const stakePriceOf = new Map();
+    lpFarms.forEach((m, i) => stakePriceOf.set(m.farm.lp.toLowerCase(), lpVals[i]));
+    singleFarms.forEach((m, i) => stakePriceOf.set(m.farm.lp.toLowerCase(), singleVals[i]));
+    const rewardPriceOf = new Map();
+    rewardList.forEach((a, i) => rewardPriceOf.set(a, rewardVals[i]));
+    return { stakePriceOf, rewardPriceOf };
+  }
+  function prefetchedPrices(maps, farm) {
+    return {
+      stakeScaledPrice: maps.stakePriceOf.get(farm.lp.toLowerCase()),
+      rewardScaledPrice: maps.rewardPriceOf.get(String(farmRewardAddress(farm)).toLowerCase())
+    };
   }
 
   function renderPlaceholderFarms() {
@@ -9035,21 +9076,22 @@ const PULSE_ID     = 369;
         console.warn('Farm timing unavailable:', err);
         return new Map();
       });
-      const results = await Promise.all(matched.map(async ({ farm, pid }) => {
+      const priceMaps = await fetchFarmPriceMaps(provider, matched);
+      const results = await mapLimit(matched, 4, async ({ farm, pid }) => {
         try {
           const lpC = new ethers.Contract(farm.lp, LP_ABI, provider);
           const [poolInfo, totalStaked, token0, token1] = await Promise.all([
-            farmC.poolInfo(pid).catch(() => null),
+            retry(() => farmC.poolInfo(pid)).catch(() => null),
             lpC.balanceOf(FARM_CONTRACT).catch(() => null),
             lpC.token0().catch(() => null),
             lpC.token1().catch(() => null)
           ]);
-          const valuation = await fetchNexionValuation(provider, farm, poolInfo, totalStaked, 0n, 0n);
+          const valuation = await fetchNexionValuation(provider, farm, poolInfo, totalStaked, 0n, 0n, prefetchedPrices(priceMaps, farm));
           return { farm, pid, staked: 0n, pending: 0n, walletLp: 0n, poolInfo, totalStaked, valuation, lpTokens: token0 && token1 ? [token0, token1] : null, countdownEnd: timing.get(pid) || null, disconnected: true };
         } catch(e) {
           return { farm, pid, staked: 0n, pending: 0n, walletLp: 0n, totalStaked: null, countdownEnd: timing.get(pid) || null, disconnected: true };
         }
-      }));
+      });
       if (!wAddr) renderFarmResults(results);
     } catch(e) {
       console.warn('Public farm stats unavailable:', e);
@@ -9211,7 +9253,8 @@ const PULSE_ID     = 369;
     el.innerHTML = '<div class="farm-loading">··· Loading farm balances…</div>';
 
     try {
-      const farmC = new ethers.Contract(FARM_CONTRACT, FARM_TIME_ABI, wProvider);
+      const rp = readProvider();
+      const farmC = new ethers.Contract(FARM_CONTRACT, FARM_TIME_ABI, rp);
       let matched = matchFarmPools(getCachedFarmPools());
       if (matched.length !== FARMS.length) {
         matched = matchFarmPools(await discoverFarmPools(farmC, el));
@@ -9226,33 +9269,34 @@ const PULSE_ID     = 369;
         return;
       }
 
+      // Fetch every farm's prices in a few batched calls (fast + consistent).
+      const priceMaps = await fetchFarmPriceMaps(rp, matched);
+
       // Step 4: Fetch user data + wallet LP balance for ALL matched farms
-      const results = await Promise.all(
-        matched.map(async ({ farm, pid }) => {
+      const results = await mapLimit(matched, 4, async ({ farm, pid }) => {
           try {
-            const lpC = new ethers.Contract(farm.lp, LP_ABI, wProvider);
+            const lpC = new ethers.Contract(farm.lp, LP_ABI, rp);
             const [userInfo, pending, walletLp, allowance, totalStaked, poolInfo, token0, token1] = await Promise.all([
-              farmC.userInfo(pid, wAddr),
-              farmC.pendingReward(pid, wAddr),
+              farmC.userInfo(pid, wAddr).catch(() => ({})),
+              farmC.pendingReward(pid, wAddr).catch(() => 0n),
               lpC.balanceOf(wAddr).catch(() => 0n),
               lpC.allowance(wAddr, FARM_CONTRACT).catch(() => 0n),
               lpC.balanceOf(FARM_CONTRACT).catch(() => null),
-              farmC.poolInfo(pid).catch(() => null),
+              retry(() => farmC.poolInfo(pid)).catch(() => null),
               lpC.token0().catch(() => null),
               lpC.token1().catch(() => null)
             ]);
             const staked = userInfo.amount ?? userInfo[0] ?? 0n;
             const [valuation, lpBreakdown] = await Promise.all([
-              fetchNexionValuation(wProvider, farm, poolInfo, totalStaked, staked, pending),
-              fetchLpBreakdown(wProvider, farm, staked, token0, token1)
+              fetchNexionValuation(rp, farm, poolInfo, totalStaked, staked, pending, prefetchedPrices(priceMaps, farm)),
+              fetchLpBreakdown(rp, farm, staked, token0, token1)
             ]);
             return { farm, pid, staked, pending, walletLp, allowance, totalStaked, poolInfo, valuation, lpBreakdown, lpTokens: token0 && token1 ? [token0, token1] : null, countdownEnd: timing.get(pid) || null, error: null };
           } catch(err) {
             console.error(`${farm.label} (pid=${pid}) FAILED:`, err.message || err);
             return { farm, pid, staked: 0n, pending: 0n, walletLp: 0n, totalStaked: null, countdownEnd: timing.get(pid) || null, error: err.message || String(err) };
           }
-        })
-      );
+      });
 
       // Step 5: Show ALL farms (not just staked ones)
       renderFarmResults(results);
@@ -9376,25 +9420,38 @@ const PULSE_ID     = 369;
       </span>`;
   }
 
-  async function fetchNexionValuation(provider, farm, poolInfo, totalStaked, staked, pending) {
+  async function fetchNexionValuation(provider, farm, poolInfo, totalStaked, staked, pending, prefetched) {
     if (!poolInfo || typeof totalStaked !== 'bigint') return null;
     try {
-      const priceC = new ethers.Contract(NEXION_LP_CALCULATOR, NEXION_PRICE_ABI, provider);
       const rewardSymbol = farmRewardSymbol(farm, poolInfo);
       const rewardAddress = farmRewardAddress(farm, poolInfo);
-      const stakePriceCall = farm.single
-        ? priceC.getBatchPrice([farm.lp])
-        : priceC.getBatchLpValue([farm.lp]);
-      const [[stakePrice], [rewardPrice]] = await Promise.all([
-        stakePriceCall,
-        priceC.getBatchPrice([rewardAddress])
-      ]);
-      const stakeScaledPrice = Number(stakePrice);
-      const rewardScaledPrice = Number(rewardPrice);
+      let stakeScaledPrice, rewardScaledPrice;
+      if (prefetched && prefetched.stakeScaledPrice != null && prefetched.rewardScaledPrice != null) {
+        // Use batched prices fetched once for all farms (fast + consistent).
+        stakeScaledPrice = Number(prefetched.stakeScaledPrice);
+        rewardScaledPrice = Number(prefetched.rewardScaledPrice);
+      } else {
+        const priceC = new ethers.Contract(NEXION_LP_CALCULATOR, NEXION_PRICE_ABI, provider);
+        const stakePriceCall = farm.single
+          ? priceC.getBatchPrice([farm.lp])
+          : priceC.getBatchLpValue([farm.lp]);
+        const [[stakePrice], [rewardPrice]] = await Promise.all([
+          stakePriceCall,
+          priceC.getBatchPrice([rewardAddress])
+        ]);
+        stakeScaledPrice = Number(stakePrice);
+        rewardScaledPrice = Number(rewardPrice);
+      }
       const rewardDec = farmTokenDec(rewardAddress);
       const remainingParams = remainingRewardParams(poolInfo);
       const remainingRaw = remainingRewardRawNexion(poolInfo);
-      const stakedValue = rawUsd(totalStaked, stakeScaledPrice);
+      // Use the pool's RECORDED staked total (lpSupply), not the farm's token balance.
+      // For single-stake DIVX the balance also holds the DIVX reward buffer for other
+      // pools, which over-counts the stake and crushes APR. Matches Nexion.
+      // (For LP farms lpSupply == balanceOf, so no change there.)
+      const poolStaked = poolValue(poolInfo, 'lpSupply', 3);
+      const effTotalStaked = (typeof poolStaked === 'bigint' && poolStaked > 0n) ? poolStaked : totalStaked;
+      const stakedValue = rawUsd(effTotalStaked, stakeScaledPrice);
       const remainingValue = rawUsd(remainingRaw, rewardScaledPrice, rewardDec);
       const userStakedValue = rawUsd(staked, stakeScaledPrice);
       const pendingValue = rawUsd(pending, rewardScaledPrice, rewardDec);
@@ -9407,7 +9464,7 @@ const PULSE_ID     = 369;
       const tvl = (stakedValue || 0) + (remainingValue || 0);
       return {
         apr: apr === null ? null : `${apr.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`,
-        totalStaked: fmtFarmFixed(totalStaked, 2),
+        totalStaked: fmtFarmFixed(effTotalStaked, 2),
         totalStakedUsd: fmtUsd(stakedValue, 2),
         remainingRewards: remainingRaw !== null ? fmtFarmFixed(remainingRaw, 2, rewardDec) : null,
         remainingRewardsUsd: fmtUsd(remainingValue, 2),
@@ -9417,7 +9474,7 @@ const PULSE_ID     = 369;
         rewardScaledPrice: Number.isFinite(rewardScaledPrice) ? String(rewardScaledPrice) : '',
         userStaked: fmtFarmFixed(staked, 2),
         userStakedUsd: fmtUsd(userStakedValue, 2),
-        userStakedShare: formatFarmPoolSharePercent(staked, totalStaked),
+        userStakedShare: formatFarmPoolSharePercent(staked, effTotalStaked),
         pending: fmtFarmFixed(pending, 2, rewardDec),
         pendingUsd: fmtUsd(pendingValue, 2),
         tvl: fmtUsd(tvl, 2),
@@ -9897,6 +9954,20 @@ const PULSE_ID     = 369;
     btn.disabled = !connected || claimables.length === 0 || btn.classList.contains('claiming');
   }
 
+  // DEGEN-style single loader: keep everything hidden behind one "Loading" message
+  // until the first batch of REAL farm data (results with a valuation) is rendered.
+  let farmsRevealed = true; // true = no loader; set false by showFarmsLoading() during the initial load
+  function showFarmsLoading() {
+    farmsRevealed = false;
+    document.querySelector('#farms-view .farms-main')?.classList.add('farms-loading');
+    setTimeout(() => revealFarms(), 15000); // safety: never stay stuck on the loader
+  }
+  function revealFarms() {
+    if (farmsRevealed) return;
+    farmsRevealed = true;
+    document.querySelector('#farms-view .farms-main')?.classList.remove('farms-loading');
+  }
+
   function renderFarmResults(results, preserveSource = false) {
     if (!preserveSource) lastFarmResults = results;
     const el = document.getElementById('farms-body');
@@ -9904,17 +9975,21 @@ const PULSE_ID     = 369;
     if (!lastFarmResults.length) {
       updateFarmSummaries([]);
       el.innerHTML = '<div class="farm-empty">Could not match any farm LP tokens to pool IDs.</div>';
+      revealFarms();
       return;
     }
     updateFarmSummaries(lastFarmResults);
     const visibleResults = visibleFarmResults();
     if (!visibleResults.length) {
       el.innerHTML = '<div class="farm-empty">No staked LP farms found for this wallet.</div>';
+      if (lastFarmResults.some(r => r && r.valuation)) revealFarms();
       return;
     }
     el.innerHTML = farmView === 'table' ? renderFarmTable(visibleResults) : renderFarmGrid(visibleResults);
     renderFarmRankings();
     updateFarmCountdowns();
+    // Reveal once we have real on-chain data (placeholders have no valuation).
+    if (lastFarmResults.some(r => r && r.valuation)) revealFarms();
   }
 
   function setFarmView(view) {
@@ -10073,7 +10148,7 @@ const PULSE_ID     = 369;
 
   function refreshVisibleFarmData() {
     if (!wProvider || !wAddr || window.location.hash !== '#farms') return;
-    visibleFarmResults().forEach(r => refreshFarmData(r.pid));
+    mapLimit(visibleFarmResults(), 4, r => refreshFarmData(r.pid));
   }
 
   function disableFarmBtns(pid, disabled) {
@@ -10093,11 +10168,12 @@ const PULSE_ID     = 369;
     const r = lastFarmResults.find(r => r.pid === pid);
     if (!r) return;
     try {
-      const farmC = new ethers.Contract(FARM_CONTRACT, FARM_ABI, wProvider);
-      const lpC   = new ethers.Contract(r.farm.lp, LP_ABI, wProvider);
+      const rp = readProvider();
+      const farmC = new ethers.Contract(FARM_CONTRACT, FARM_ABI, rp);
+      const lpC   = new ethers.Contract(r.farm.lp, LP_ABI, rp);
       const [info, pending, walletLp, allowance, totalStaked, poolInfo] = await Promise.all([
-        farmC.userInfo(pid, wAddr),
-        farmC.pendingReward(pid, wAddr),
+        farmC.userInfo(pid, wAddr).catch(() => ({})),
+        farmC.pendingReward(pid, wAddr).catch(() => 0n),
         lpC.balanceOf(wAddr).catch(() => 0n),
         lpC.allowance(wAddr, FARM_CONTRACT).catch(() => 0n),
         lpC.balanceOf(FARM_CONTRACT).catch(() => null),
@@ -10106,8 +10182,8 @@ const PULSE_ID     = 369;
       const staked = info.amount ?? info[0] ?? 0n;
       const lpTokens = Array.isArray(r.lpTokens) ? r.lpTokens : [];
       const [valuation, lpBreakdown] = await Promise.all([
-        fetchNexionValuation(wProvider, r.farm, poolInfo, totalStaked, staked, pending),
-        fetchLpBreakdown(wProvider, r.farm, staked, lpTokens[0], lpTokens[1])
+        fetchNexionValuation(rp, r.farm, poolInfo, totalStaked, staked, pending),
+        fetchLpBreakdown(rp, r.farm, staked, lpTokens[0], lpTokens[1])
       ]);
       // Update DOM
       const walletEl = document.getElementById(`farm-wallet-${pid}`);
