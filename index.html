@@ -1520,7 +1520,7 @@
     .dash-chart-panel .chart-toggles{background:var(--dash-panel-soft);border:1px solid var(--dash-border);border-radius:999px;padding:4px;gap:3px}
     .dash-chart-panel .chart-btn{border:none;border-radius:999px;padding:6px 11px;color:var(--dash-muted)}
     .dash-chart-panel .chart-btn.active{background:var(--dash-accent);color:#101014}
-    .dash-chart-panel .chart-wrap{height:315px;padding:8px;border:1px solid rgba(255,255,255,0.07);border-radius:var(--dash-radius);background:rgba(0,0,0,0.18)}
+    .dash-chart-panel .chart-wrap{flex:1 1 auto;min-height:315px;padding:8px;border:1px solid rgba(255,255,255,0.07);border-radius:var(--dash-radius);background:rgba(0,0,0,0.18)}
 
     .dash-stat-rail{display:grid;grid-template-columns:1fr;gap:10px}
     .dash-key-metric{border:1px solid var(--dash-border);padding:14px 15px;min-width:0;position:relative;overflow:hidden;background:linear-gradient(145deg,#2a2440 0%,#1b1730 58%,#151326 100%)}
@@ -1893,6 +1893,11 @@
     }
     .farm-summary-value{color:var(--farm-theme-text,#4facfe);margin-left:6px;white-space:nowrap}
     .farm-total-tvl .farm-summary-value{font-size:1.22rem}
+    .farm-tvl-change{font-family:'Space Mono',monospace;font-size:0.82rem;font-weight:700;margin-left:10px;letter-spacing:0.04em;white-space:nowrap}
+    .farm-tvl-change.pct-up{color:#39ff7e}
+    .farm-tvl-change.pct-dn{color:#ff4e6a}
+    .farm-tvl-change.pct-neu{color:var(--farm-theme-muted,#8ba1b8)}
+    .farm-tvl-change[hidden]{display:none}
     .farm-claimable-summary{
       margin:12px 0 15px;
       padding:17px 18px;
@@ -4682,7 +4687,7 @@
       <li>The first load can take ~10–15 seconds.</li>
     </ol>
     <!-- IPFS: when you redeploy, paste the NEW CID here (keep the .ipfs.dweb.link/ part). -->
-    <a class="ipfs-modal-link" id="ipfs-open-link" href="https://bafybeibw3ipxbaijjtwji2iahnvweerkjdt3gplmebpqgixda2tntc33ae.ipfs.dweb.link/" target="_blank" rel="noopener">Open CashX on IPFS</a>
+    <a class="ipfs-modal-link" id="ipfs-open-link" href="https://bafybeiewhiyupp3tqadraag2g3leuaq65chvwqhqvcar6r7mot6wgow7xe.ipfs.dweb.link/" target="_blank" rel="noopener">Open CashX on IPFS</a>
     <button class="ipfs-modal-copy" type="button" onclick="copyIpfsLink(this)">Copy link</button>
     <p class="ipfs-modal-note">Using Brave with IPFS turned on? If it gets stuck loading, open the link in Chrome instead.</p>
   </div>
@@ -6942,7 +6947,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     </div>
   </div>
 </section>
-<div class="farm-total-tvl">Total Value Locked:<span class="farm-summary-value" id="farms-total-tvl">Loading</span></div>
+<div class="farm-total-tvl">Total Value Locked:<span class="farm-summary-value" id="farms-total-tvl">Loading</span><span class="farm-tvl-change" id="farms-tvl-change" hidden></span></div>
 <div class="rv-wrap">
 
   <div id="rv-connected" style="display:flex;flex-direction:column;gap:16px">
@@ -9911,6 +9916,43 @@ const PULSE_ID     = 369;
     return Number.isFinite(number) ? number : 0;
   }
 
+  // TVL 24h change — snapshots of the COMPLETE TVL are kept in localStorage so we
+  // can show how it moved vs ~24h ago (no backend, so history is per-browser).
+  const FARM_TVL_HIST_KEY = 'cashx_farms_tvl_hist_v1';
+  function recordTvlSnapshot(tvl) {
+    try {
+      const now = Date.now();
+      let hist = JSON.parse(localStorage.getItem(FARM_TVL_HIST_KEY) || '[]');
+      if (!Array.isArray(hist)) hist = [];
+      hist = hist.filter(e => e && Number.isFinite(e.t) && Number.isFinite(e.v) && now - e.t < 8 * 86400000);
+      const last = hist[hist.length - 1];
+      if (!last || now - last.t > 30 * 60000) { // at most one snapshot per 30 min
+        hist.push({ t: now, v: tvl });
+        localStorage.setItem(FARM_TVL_HIST_KEY, JSON.stringify(hist));
+      }
+      return hist;
+    } catch (e) { return []; }
+  }
+  function updateTvlChange(tvl) {
+    const el = document.getElementById('farms-tvl-change');
+    if (!el) return;
+    const hist = recordTvlSnapshot(tvl);
+    const now = Date.now();
+    // reference = snapshot closest to 24h old (accepted between 20h and 30h old)
+    let ref = null, bestDiff = Infinity;
+    hist.forEach(e => {
+      const age = now - e.t;
+      if (age < 20 * 3600000 || age > 30 * 3600000) return;
+      const diff = Math.abs(age - 86400000);
+      if (diff < bestDiff) { bestDiff = diff; ref = e; }
+    });
+    if (!ref || !(ref.v > 0)) { el.hidden = true; return; }
+    const pct = (tvl - ref.v) / ref.v * 100;
+    el.textContent = `${pct >= 0 ? '+' : ''}${pct.toFixed(2)}% (24h)`;
+    el.className = 'farm-tvl-change ' + (pct > 0 ? 'pct-up' : pct < 0 ? 'pct-dn' : 'pct-neu');
+    el.hidden = false;
+  }
+
   function updateFarmSummaries(results = lastFarmResults) {
     const totalTvl = results.reduce((sum, r) => {
       const valuationTvl = r.valuation?.tvl;
@@ -9920,6 +9962,10 @@ const PULSE_ID     = 369;
     const totalClaimable = results.reduce((sum, r) => sum + farmUsdNumber(r.valuation?.pendingUsd), 0);
     set('farms-total-tvl', totalTvl > 0 ? fmtUsd(totalTvl, 2).replace(' USD', '') : 'Loading');
     set('farms-total-claimable', fmtUsd(totalClaimable, 2));
+    // Only trust a COMPLETE load for the 24h-change history (partial sums would poison it).
+    if (totalTvl > 0 && results.length >= FARMS.length && results.every(r => r && r.valuation)) {
+      updateTvlChange(totalTvl);
+    }
     updateClaimAllButton(results);
   }
 
