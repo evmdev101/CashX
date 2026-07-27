@@ -9675,13 +9675,23 @@ const PULSE_ID     = 369;
   function rewardProjectionRaw(r, seconds) {
     if (typeof r?.staked === 'bigint' && r.staked <= 0n) return 0n;
     const params = remainingRewardParams(r?.poolInfo);
-    if (!params || typeof r?.staked !== 'bigint' || typeof r?.totalStaked !== 'bigint') return null;
-    if (r.totalStaked <= 0n) return 0n;
+    if (!params || typeof r?.staked !== 'bigint') return null;
+    // A token can be staked in more than one pool, so balanceOf(farm) may
+    // include deposits that earn a different reward. Use this pool's own
+    // recorded supply for the wallet share and only fall back to the token
+    // balance for older pools that do not expose lpSupply.
+    const poolStaked = poolValue(r.poolInfo, 'lpSupply', 3);
+    const effectiveTotalStaked = (typeof poolStaked === 'bigint' && poolStaked > 0n)
+      ? poolStaked
+      : r.totalStaked;
+    if (typeof effectiveTotalStaked !== 'bigint') return null;
+    if (effectiveTotalStaked <= 0n) return 0n;
     const nowSec = Math.floor(Date.now() / 1000);
     if (nowSec >= params.endTime) return 0n;
     const duration = BigInt(params.endTime - params.startTime);
     if (duration <= 0n) return null;
-    return params.totalReward * BigInt(seconds) * r.staked / (duration * r.totalStaked);
+    const projectedSeconds = Math.min(Math.max(Math.floor(Number(seconds)), 0), params.endTime - nowSec);
+    return params.totalReward * BigInt(projectedSeconds) * r.staked / (duration * effectiveTotalStaked);
   }
 
   function formatRewardProjection(raw, valuation = {}) {
@@ -9745,9 +9755,8 @@ const PULSE_ID     = 369;
       const remainingParams = remainingRewardParams(poolInfo);
       const remainingRaw = remainingRewardRawNexion(poolInfo);
       // Use the pool's RECORDED staked total (lpSupply), not the farm's token balance.
-      // For single-stake DIVX the balance also holds the DIVX reward buffer for other
-      // pools, which over-counts the stake and crushes APR. Matches Nexion.
-      // (For LP farms lpSupply == balanceOf, so no change there.)
+      // Single-stake tokens can overlap with reward buffers, and the same LP token can
+      // be used by multiple pools. In both cases balanceOf(farm) over-counts this pool.
       const poolStaked = poolValue(poolInfo, 'lpSupply', 3);
       const effTotalStaked = (typeof poolStaked === 'bigint' && poolStaked > 0n) ? poolStaked : totalStaked;
       const stakedValue = rawUsd(effTotalStaked, stakeScaledPrice);
@@ -10705,7 +10714,10 @@ const PULSE_ID     = 369;
     // Nexion's rewardPerSecond is the emission for the WHOLE pool. A wallet
     // earns its NFT share of that emission; multiplying by the NFT count alone
     // overstates rewards by roughly the total number of NFTs in the pool.
-    return nftFarmState.rewardPerSecond * BigInt(seconds) * stakedCount / totalStaked;
+    const endTime = Number(nftFarmState.poolInfo?.endTime ?? nftFarmState.poolInfo?.[3] ?? 0);
+    const secondsLeft = endTime ? Math.max(endTime - Math.floor(Date.now() / 1000), 0) : Number(seconds);
+    const projectedSeconds = Math.min(Math.max(Math.floor(Number(seconds)), 0), secondsLeft);
+    return nftFarmState.rewardPerSecond * BigInt(projectedSeconds) * stakedCount / totalStaked;
   }
 
   function nftFarmEstimatedPending() {
