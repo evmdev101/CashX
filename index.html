@@ -1421,50 +1421,45 @@
     .dashboard-token-switch{
       display:flex;
       align-items:center;
-      justify-content:center;
-      gap:12px;
+      justify-content:flex-start;
+      gap:36px;
       flex-wrap:wrap;
-      margin:0 auto 2px;
-      padding:10px;
-      border:1px solid var(--dash-border);
-      border-radius:999px;
-      background:rgba(5,7,14,0.36);
-      box-shadow:inset 0 1px 0 rgba(255,255,255,0.08),0 14px 34px rgba(0,0,0,0.22);
+      width:100%;
+      margin:0 auto 16px;
+      padding:0 0 12px;
+      border-bottom:1px solid rgba(109,205,235,0.28);
     }
     .dashboard-token-btn{
-      min-height:50px;
+      position:relative;
+      min-height:42px;
       display:inline-flex;
       align-items:center;
-      gap:11px;
-      padding:0 23px 0 13px;
-      border:1px solid transparent;
-      border-radius:999px;
+      gap:0;
+      padding:0 0 14px;
+      border:0;
       background:transparent;
-      color:var(--dash-muted);
+      color:#6d98ab;
       font-family:'Permanent Marker',cursive;
-      font-size:1.08rem;
+      font-size:1.35rem;
       font-weight:400;
       line-height:1;
-      letter-spacing:0.02em;
+      letter-spacing:0.03em;
+      text-transform:none;
       cursor:pointer;
-      transition:background 0.18s,border-color 0.18s,color 0.18s,box-shadow 0.18s;
+      transition:color 0.18s;
     }
-    .dashboard-token-btn img{
-      width:34px;
-      height:34px;
-      border-radius:9px;
-      object-fit:cover;
-      box-shadow:0 0 0 1px rgba(255,255,255,0.12);
-    }
+    .dashboard-token-btn img{display:none}
     .dashboard-token-btn.active{
-      color:var(--dash-text);
-      border-color:var(--dash-border-strong);
-      background:linear-gradient(135deg,rgba(200,100,255,0.2),rgba(255,88,88,0.16));
-      box-shadow:0 0 20px color-mix(in srgb,var(--dash-accent) 22%,transparent);
+      color:#a8e9ff;
+      background:transparent;
+      box-shadow:none;
+    }
+    .dashboard-token-btn.active::after{
+      content:'';position:absolute;left:0;right:0;bottom:-13px;height:3px;
+      background:#f05f7e;box-shadow:0 0 10px rgba(240,95,126,0.45);
     }
     .dashboard-token-btn:hover:not(.active){
-      color:var(--dash-text);
-      background:rgba(255,255,255,0.06);
+      color:#b9dce9;background:transparent;
     }
     .dash-stage > .rv-top{order:-1;width:100%;align-self:stretch}
     .dash-stage > .rv-top .rv-card{display:grid;grid-template-columns:1fr;gap:12px;align-items:stretch;padding:0;border-radius:0;background:transparent;border:none;box-shadow:none}
@@ -2909,6 +2904,10 @@
     .nexion-nft-farm .farm-proto-rewards .nft-reward,
     .nexion-nft-farm .farm-proto-rewards .farm-proto-sub{white-space:nowrap}
     .nexion-nft-farm .farm-proto-rewards .farm-proto-sub{font-size:.78rem}
+    .nft-rewards-stack{display:grid;gap:8px;width:100%}
+    .nft-reward-line{display:flex;align-items:center;gap:8px;min-width:0}
+    .nft-reward-line img{width:22px;height:22px;border-radius:50%;flex:none}
+    .nft-reward-line .farm-rewards-tokenline{min-width:0;overflow:hidden;text-overflow:ellipsis}
     .nexion-nft-picker-hint{width:100%;min-height:44px;margin-top:6px;padding:12px 13px;text-align:left;
       border:1px solid rgba(139,161,184,0.08);border-radius:6px;background:#141a21;color:#7d8b96;
       font:500 .82rem/'DM Sans',sans-serif;cursor:pointer;transition:border-color .16s,color .16s,background .16s}
@@ -4898,6 +4897,10 @@
       <img src="divx.png" alt="">
       <span>DIVX</span>
     </button>
+    <button class="dashboard-token-btn" type="button" data-dashboard-token="gsx" onclick="switchDashboardToken('gsx')" role="tab" aria-selected="false">
+      <img src="nexion.png" alt="">
+      <span>GSX</span>
+    </button>
   </div>
 
   <!-- STAT BAR -->
@@ -4980,33 +4983,19 @@
       </div>
       <!-- Wallet balances (shown when wallet connected) -->
       <div id="rv-account-panels" style="display:none;flex-direction:column;gap:10px">
-        <div class="rv-bal">
+        <div class="rv-bal" id="dashboard-wallet-card">
           <div class="rv-token-head">
-            <img class="rv-token-logo" src="cashx-logo.png" alt="">
-            <div class="rv-token-title cashx">CashX</div>
+            <img class="rv-token-logo" id="dashboard-wallet-logo" src="cashx-logo.png" alt="">
+            <div class="rv-token-title cashx" id="dashboard-wallet-title">CashX</div>
           </div>
           <div class="rv-wallet-label">Amount in wallet</div>
-          <div class="rv-tok-val" id="rv-cashx">—</div>
-          <div class="rv-tok-usd" id="rv-cashx-usd">—</div>
+          <div class="rv-tok-val" id="dashboard-wallet-balance">—</div>
+          <div class="rv-tok-usd" id="dashboard-wallet-usd">—</div>
         </div>
-        <div class="rv-bal">
-          <div class="rv-token-head">
-            <img class="rv-token-logo" src="distrox.jpg" alt="">
-            <div class="rv-token-title">DistroX</div>
-          </div>
-          <div class="rv-wallet-label">Amount in wallet</div>
-          <div class="rv-tok-val" id="rv-distrox">—</div>
-          <div class="rv-tok-usd" id="rv-distrox-usd">—</div>
-        </div>
-        <div class="rv-bal">
-          <div class="rv-token-head">
-            <img class="rv-token-logo" src="divx.png" alt="">
-            <div class="rv-token-title">DIVX</div>
-          </div>
-          <div class="rv-wallet-label">Amount in wallet</div>
-          <div class="rv-tok-val" id="rv-divx">—</div>
-          <div class="rv-tok-usd" id="rv-divx-usd">—</div>
-        </div>
+        <span id="rv-cashx" hidden>—</span><span id="rv-cashx-usd" hidden>—</span>
+        <span id="rv-distrox" hidden>—</span><span id="rv-distrox-usd" hidden>—</span>
+        <span id="rv-divx" hidden>—</span><span id="rv-divx-usd" hidden>—</span>
+        <span id="rv-gsx" hidden>—</span><span id="rv-gsx-usd" hidden>—</span>
       </div>
     </div>
   </div>
@@ -5106,6 +5095,17 @@
         '0x24F3aBD69D9B3b5f8e99e53c3531113Dba82486c',
         '0x000b1ae112d59513618a04fd5e83bd7efba05a3f'
       ]
+    },
+    gsx: {
+      key: 'gsx',
+      name: 'GSX',
+      symbol: 'GSX',
+      logo: 'gsx.png',
+      token: '0x395127a44ac1cdc609c8cc9d048e096e8e8fc30e',
+      pair: '0x3c2FCC4a47470d81433C659FAb6706f7Aa37b51A',
+      initialSupply: null,
+      treasury: null,
+      treasuryAddresses: []
     }
   };
   let currentDashboardToken = 'cashx';
@@ -5545,6 +5545,18 @@
   const activeDashboardConfig = () => DASHBOARD_TOKEN_CONFIG[currentDashboardToken] || DASHBOARD_TOKEN_CONFIG.cashx;
   const activeDashboardSymbol = () => activeDashboardConfig().symbol;
 
+  function renderDashboardWalletCard() {
+    const cfg = activeDashboardConfig();
+    const balance = document.getElementById(`rv-${cfg.key}`)?.textContent || '—';
+    const usd = document.getElementById(`rv-${cfg.key}-usd`)?.textContent || '—';
+    const logo = document.getElementById('dashboard-wallet-logo');
+    const title = document.getElementById('dashboard-wallet-title');
+    if (logo) { logo.src = cfg.logo; logo.alt = `${cfg.name} logo`; }
+    if (title) { title.textContent = cfg.name; title.classList.toggle('cashx', cfg.key === 'cashx'); }
+    set('dashboard-wallet-balance', balance);
+    set('dashboard-wallet-usd', usd);
+  }
+
   function setDashboardLoading() {
     ['c-price','c-ch','c-burned','c-burned-pct','c-burned-usd','c-dead','c-dead-count','src-community','c-holders','c-txs','t-pls','t-pls-usd'].forEach(id => {
       const el = document.getElementById(id);
@@ -5581,6 +5593,7 @@
     }
     set('dashboard-burn-symbol', cfg.symbol);
     set('last-up', `Loading ${cfg.symbol} dashboard...`);
+    renderDashboardWalletCard();
   }
 
   function switchDashboardToken(key) {
@@ -5674,6 +5687,8 @@
         fetch(`${DASH_SCAN_API}/tokens/${cfg.token}/counters`).then(r => r.ok ? r.json() : null).catch(() => null),
         fetch(`${DASH_SCAN_API}/tokens/${cfg.token}/transfers`).then(r => r.ok ? r.json() : null).catch(() => null)
       ]);
+      // Ignore a response that finished after the visitor selected another tab.
+      if (currentDashboardToken !== cfg.key) return;
       const decimals = Number(decimalsRaw || 18);
       const totalSupply = parseDashboardTokenAmount(totalSupplyRaw, decimals);
       const deadHeld = parseDashboardTokenAmount(deadRaw, decimals) + parseDashboardTokenAmount(zeroRaw, decimals);
@@ -5823,11 +5838,13 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
 
     try{
       const { CASHX, CASHX_BURN_TRACKER_CONFIG, readBurnTrackerState, resolveBurnSource: sourceResolver, formatToken, formatUsd, formatAddress, explorerTxUrl } = await getServicesReady();
+      if (currentDashboardToken !== 'cashx') return;
       lsSet(40);
       explorerWeb = CASHX.urls.explorer;
       burnTrackerConfig = CASHX_BURN_TRACKER_CONFIG;
       resolveBurnSource = sourceResolver;
       const state = await withTimeout(readBurnTrackerState(), 14000, 'Dashboard live data timed out');
+      if (currentDashboardToken !== 'cashx') return;
       lsSet(80);
       serviceState = state;
       const items = (state.allBurns || state.recentBurns).map(toDashboardTx);
@@ -6700,12 +6717,16 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     const rvCashx = document.getElementById('rv-cashx');
     const rvDistrox = document.getElementById('rv-distrox');
     const rvDivx = document.getElementById('rv-divx');
+    const rvGsx = document.getElementById('rv-gsx');
     if (rvCashx) rvCashx.innerHTML = rvDash;
     if (rvDistrox) rvDistrox.innerHTML = rvDash;
     if (rvDivx) rvDivx.innerHTML = rvDash;
+    if (rvGsx) rvGsx.innerHTML = rvDash;
     set('rv-cashx-usd', '—');
     set('rv-distrox-usd', '—');
     set('rv-divx-usd', '—');
+    set('rv-gsx-usd', '—');
+    renderDashboardWalletCard();
   }
 
   async function fetchBalances() {
@@ -6717,36 +6738,48 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     const rvCashx = document.getElementById('rv-cashx');
     const rvDistrox = document.getElementById('rv-distrox');
     const rvDivx = document.getElementById('rv-divx');
+    const rvGsx = document.getElementById('rv-gsx');
     if (rvCashx) rvCashx.innerHTML = rvLoading;
     if (rvDistrox) rvDistrox.innerHTML = rvLoading;
     if (rvDivx) rvDivx.innerHTML = rvLoading;
+    if (rvGsx) rvGsx.innerHTML = rvLoading;
     set('rv-cashx-usd', '—');
     set('rv-distrox-usd', '—');
     set('rv-divx-usd', '—');
+    set('rv-gsx-usd', '—');
+    renderDashboardWalletCard();
     try {
       const cashxC   = new ethers.Contract(CASHX_ADDR, ERC20_ABI, wProvider);
       const distroxC = new ethers.Contract(DISTROX_ADDR, ERC20_ABI, wProvider);
       const divxC    = new ethers.Contract(DIVX_ADDR, ERC20_ABI, wProvider);
-      const [cb, cd, db, dd, vb, vd, prices] = await Promise.all([
+      const gsxC     = new ethers.Contract(DASHBOARD_TOKEN_CONFIG.gsx.token, ERC20_ABI, wProvider);
+      const [cb, cd, db, dd, vb, vd, gb, gd, prices, gsxDex] = await Promise.all([
         cashxC.balanceOf(wAddr), cashxC.decimals(),
         distroxC.balanceOf(wAddr), distroxC.decimals(),
         divxC.balanceOf(wAddr), divxC.decimals(),
-        fetchWalletTokenPrices()
+        gsxC.balanceOf(wAddr), gsxC.decimals(),
+        fetchWalletTokenPrices(),
+        fetch(DASH_DEX_API + DASHBOARD_TOKEN_CONFIG.gsx.token).then(r => r.ok ? r.json() : null).catch(() => null)
       ]);
       const cashxAmount = Number(ethers.formatUnits(cb, cd));
       const distroxAmount = Number(ethers.formatUnits(db, dd));
       const divxAmount = Number(ethers.formatUnits(vb, vd));
+      const gsxAmount = Number(ethers.formatUnits(gb, gd));
       const cashxVal = fmtBal(cb, cd);
       const distroxVal = fmtBal(db, dd);
       const divxVal = fmtBal(vb, vd);
+      const gsxVal = fmtBal(gb, gd);
       document.getElementById('wp-cashx').textContent = cashxVal;
       document.getElementById('wp-distrox').textContent = distroxVal;
       if (rvCashx) rvCashx.textContent = cashxVal;
       if (rvDistrox) rvDistrox.textContent = distroxVal;
       if (rvDivx) rvDivx.textContent = divxVal;
+      if (rvGsx) rvGsx.textContent = gsxVal;
       set('rv-cashx-usd', fmtWalletUsd(cashxAmount * prices.cashxPrice));
       set('rv-distrox-usd', fmtWalletUsd(distroxAmount * prices.distroxPrice));
       set('rv-divx-usd', fmtWalletUsd(divxAmount * prices.divxPrice));
+      set('rv-gsx-usd', fmtWalletUsd(gsxAmount * dashboardTokenPriceFromDex(gsxDex).priceUsd));
+      renderDashboardWalletCard();
     } catch(err) {
       console.error('Balance fetch error:', err);
       const e = '<span class="wp-tok-muted">Error</span>';
@@ -6756,9 +6789,12 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
       if (rvCashx) rvCashx.innerHTML = rvErr;
       if (rvDistrox) rvDistrox.innerHTML = rvErr;
       if (rvDivx) rvDivx.innerHTML = rvErr;
+      if (rvGsx) rvGsx.innerHTML = rvErr;
       set('rv-cashx-usd', '—');
       set('rv-distrox-usd', '—');
       set('rv-divx-usd', '—');
+      set('rv-gsx-usd', '—');
+      renderDashboardWalletCard();
     }
   }
 
@@ -8563,6 +8599,7 @@ const PULSE_ID     = 369;
   const NFT_VALUE_WPLS_ADDRESS = '0xA1077a294DDE1B09BB078844DF40758a5D0f9a27';
   const NFT_VALUE_GSX_WPLS_PAIR = '0x3c2FCC4a47470d81433C659FAb6706f7Aa37b51A';
   const NFT_VALUE_GSX_UPLS_PAIR = '0xb52ad4becf857ef9c3b11a47b81943d46d5054bd';
+  const NFT_VALUE_GSX_VOUCHPLS_PAIR = '0x01ad76d33012c4b21da4070c23ebfbd7ebb222e4';
   const CASHMONEY_NFT_METADATA_CID = 'bafybeidd7ftycyesgsbmequfwkidbq662edinpa37sk5qsfbyebyiub54a';
   const CASHMONEY_NFT_IMAGE_CID = 'QmREkdPdykKcFb8xippuwLUyk8Tw1WN61bSqLS4ftugna5';
   const NEXION_NFT_POOL_ID = 0;
@@ -8701,6 +8738,7 @@ const PULSE_ID     = 369;
     rewardSymbol: 'uPLS',
     rewardDecimals: 18,
     rewardPerSecond: 0n,
+    rewards: [],
     remainingRewards: 0n,
     remainingRewardsUsd: null,
     tvlUsd: null,
@@ -8709,6 +8747,7 @@ const PULSE_ID     = 369;
     stakedValueUsd: null,
     apr: null,
     pending: 0n,
+    pendingRewards: [],
     pendingSyncedAt: 0,
     pendingRefreshLoading: false,
     depositFee: 0n,
@@ -8726,6 +8765,7 @@ const PULSE_ID     = 369;
     CASHX: 'cashx-logo.png',
     DISTROX: 'distrox.jpg',
     DIVX: 'divx.png',
+    GSX: 'gsx.png',
     GSX: 'https://nexionpulse.com/images/tokens/GSX.png',
     PHEX: 'phex.png',
     EHEX: 'phex.png',
@@ -10163,11 +10203,8 @@ const PULSE_ID     = 369;
             <div class="farm-proto-sub" id="nft-farm-staked-sub">$0.00 USD (0%)</div>
           </div>
           <div class="farm-proto-metric farm-proto-rewards">
-            <div class="farm-proto-label">Rewards</div>
-            <div class="farm-proto-value with-token nft-reward">
-              <span class="farm-rewards-tokenline"><img src="upls.png" alt="uPLS"><span id="nft-farm-pending">${wAddr ? 'Loading' : '0 uPLS'}</span>${nftRewardProjectionButtonHTML()}</span>
-            </div>
-            <div class="farm-rewards-usd" id="nft-farm-pending-usd">$0.00 USD</div>
+            <div class="farm-proto-label">Pending Rewards</div>
+            <div class="nft-rewards-stack" id="nft-farm-pending-rewards">${nftPendingRewardsHTML()}</div>
           </div>
         </div>
         <div class="farm-claim-row">
@@ -10706,10 +10743,11 @@ const PULSE_ID     = 369;
     return Number.isFinite(nftFarmState.tvlUsd) ? fmtUsd(nftFarmState.tvlUsd, 2) : 'Loading';
   }
 
-  function nftRewardProjectionRaw(seconds) {
+  function nftRewardProjectionRaw(seconds, reward = null) {
+    const activeReward = reward || nftFarmState.rewards[0] || nftFarmState;
     const stakedCount = BigInt(nftFarmState.stakedTokens.length);
     const totalStaked = nftFarmState.totalStaked;
-    if (typeof nftFarmState.rewardPerSecond !== 'bigint' ||
+    if (typeof activeReward.rewardPerSecond !== 'bigint' ||
         typeof totalStaked !== 'bigint' || totalStaked <= 0n || stakedCount <= 0n) return 0n;
     // Nexion's rewardPerSecond is the emission for the WHOLE pool. A wallet
     // earns its NFT share of that emission; multiplying by the NFT count alone
@@ -10717,7 +10755,7 @@ const PULSE_ID     = 369;
     const endTime = Number(nftFarmState.poolInfo?.endTime ?? nftFarmState.poolInfo?.[3] ?? 0);
     const secondsLeft = endTime ? Math.max(endTime - Math.floor(Date.now() / 1000), 0) : Number(seconds);
     const projectedSeconds = Math.min(Math.max(Math.floor(Number(seconds)), 0), secondsLeft);
-    return nftFarmState.rewardPerSecond * BigInt(projectedSeconds) * stakedCount / totalStaked;
+    return activeReward.rewardPerSecond * BigInt(projectedSeconds) * stakedCount / totalStaked;
   }
 
   function nftFarmEstimatedPending() {
@@ -10734,47 +10772,67 @@ const PULSE_ID     = 369;
   }
 
   function nftFarmPendingEntry(pendingResult) {
+    return nftFarmPendingEntries(pendingResult)[0] || { token: '', amount: 0n, index: -1 };
+  }
+
+  function nftFarmPendingEntries(pendingResult) {
     const tokens = Array.from(pendingResult?.tokens ?? pendingResult?.[0] ?? [], String);
     const amounts = Array.from(pendingResult?.amounts ?? pendingResult?.[1] ?? [], amount => BigInt(amount || 0));
-    const configuredToken = String(nftFarmState.rewardToken || '').toLowerCase();
-    let index = configuredToken ? tokens.findIndex(token => token.toLowerCase() === configuredToken) : -1;
-    if (index < 0) index = amounts.findIndex(amount => amount > 0n);
-    if (index < 0 && amounts.length) index = 0;
-    return {
-      token: index >= 0 ? tokens[index] || '' : '',
-      amount: index >= 0 ? amounts[index] || 0n : 0n,
-      index
-    };
+    const configured = nftFarmState.rewards.map(reward => String(reward.token || '').toLowerCase());
+    return tokens.map((token, index) => ({ token, amount: amounts[index] || 0n, index }))
+      .sort((a, b) => {
+        const ai = configured.indexOf(a.token.toLowerCase());
+        const bi = configured.indexOf(b.token.toLowerCase());
+        return (ai < 0 ? 999 : ai) - (bi < 0 ? 999 : bi);
+      });
   }
 
-  function formatNftRewardProjection(raw) {
-    const tokenAmount = formatNftReward(raw, nftFarmState.rewardDecimals, 2);
-    const usd = nftFarmState.rewardScaledPrice
-      ? fmtUsd(rawUsd(raw, nftFarmState.rewardScaledPrice, nftFarmState.rewardDecimals), 2)
+  function nftRewardData(token) {
+    return nftFarmState.rewards.find(reward => String(reward.token).toLowerCase() === String(token).toLowerCase()) || null;
+  }
+
+  function nftPendingRewardsHTML() {
+    const rewards = nftFarmState.rewards.length ? nftFarmState.rewards : [{ token: '', symbol: 'uPLS', decimals: 18, pending: 0n, scaledPrice: null }];
+    return rewards.map((reward, index) => {
+      const pending = nftFarmState.pendingRewards.find(item => String(item.token).toLowerCase() === String(reward.token).toLowerCase())?.amount ?? (index === 0 ? nftFarmState.pending : 0n);
+      const amount = wAddr ? `${formatNftRewardFixed(pending, reward.decimals, 2)} ${reward.symbol}` : `0.00 ${reward.symbol}`;
+      const usd = reward.scaledPrice ? fmtUsd(rawUsd(pending, reward.scaledPrice, reward.decimals), 2) : '—';
+      const logoKey = String(reward.symbol || '').toUpperCase() === 'VPLS' ? 'VOUCHPLS' : String(reward.symbol || '').toUpperCase();
+      const logo = TOKEN_LOGOS[logoKey] || 'upls.png';
+      return `<div class="nft-reward-line"><img src="${logo}" alt="${farmSafeText(reward.symbol)}"><span class="farm-rewards-tokenline"><span>${amount}</span>${nftRewardProjectionButtonHTML(reward)}</span><span class="farm-rewards-usd">${usd}</span></div>`;
+    }).join('');
+  }
+
+  function formatNftRewardProjection(raw, reward = null) {
+    const activeReward = reward || nftFarmState.rewards[0] || nftFarmState;
+    const tokenAmount = formatNftReward(raw, activeReward.decimals ?? nftFarmState.rewardDecimals, 2);
+    const usd = activeReward.scaledPrice
+      ? fmtUsd(rawUsd(raw, activeReward.scaledPrice, activeReward.decimals ?? nftFarmState.rewardDecimals), 2)
       : '—';
-    return `${tokenAmount} ${nftFarmState.rewardSymbol} (${usd})`;
+    return `${tokenAmount} ${activeReward.symbol || nftFarmState.rewardSymbol} (${usd})`;
   }
 
-  function nftRewardProjectionRowsHTML() {
+  function nftRewardProjectionRowsHTML(reward = null) {
     return [
       ['Daily:', 86400],
       ['Weekly:', 604800],
       ['Monthly:', 2592000],
       ['Yearly:', 31536000]
     ].map(([label, seconds]) => `
-      <div><span>${label}</span><strong>${formatNftRewardProjection(nftRewardProjectionRaw(seconds))}</strong></div>
+      <div><span>${label}</span><strong>${formatNftRewardProjection(nftRewardProjectionRaw(seconds, reward), reward)}</strong></div>
     `).join('');
   }
 
-  function nftRewardProjectionButtonHTML() {
+  function nftRewardProjectionButtonHTML(reward = null) {
+    const symbol = reward?.symbol || nftFarmState.rewardSymbol;
     return `
       <span class="farm-reward-projection-wrap">
         <button class="farm-reward-chart-btn" type="button" title="NFT rewards projection" aria-label="NFT rewards projection">
           ${chartIconHTML()}
         </button>
         <span class="farm-reward-projection-popover" role="tooltip">
-          <span class="farm-reward-projection-title">${chartIconHTML()}<span>Your NFT Rewards Projection</span></span>
-          <span class="farm-reward-projection-lines" id="nft-farm-reward-projection-lines">${nftRewardProjectionRowsHTML()}</span>
+          <span class="farm-reward-projection-title">${chartIconHTML()}<span>${farmSafeText(symbol)} NFT Rewards Projection</span></span>
+          <span class="farm-reward-projection-lines">${nftRewardProjectionRowsHTML(reward)}</span>
         </span>
       </span>`;
   }
@@ -10846,6 +10904,8 @@ const PULSE_ID     = 369;
       ? `${formatNftRewardFixed(displayedPending, nftFarmState.rewardDecimals, 2)} ${nftFarmState.rewardSymbol}`
       : `0.00 ${nftFarmState.rewardSymbol}`);
     setText('nft-farm-pending-usd', pendingUsd === null ? '—' : fmtUsd(pendingUsd, 2));
+    const pendingRewards = document.getElementById('nft-farm-pending-rewards');
+    if (pendingRewards) pendingRewards.innerHTML = nftPendingRewardsHTML();
 
     const aprBreakdown = document.getElementById('nft-farm-apr-breakdown');
     if (aprBreakdown) aprBreakdown.innerHTML = aprBreakdownHTML(aprDisplay);
@@ -10873,7 +10933,7 @@ const PULSE_ID     = 369;
     if (claimBtn) {
       const compact = claimBtn.hasAttribute('data-nft-compact');
       claimBtn.textContent = nftFarmState.busy ? (compact ? 'Pending…' : 'Claiming…') : 'Claim';
-      claimBtn.disabled = nftFarmState.busy || !connected || displayedPending <= 0n;
+      claimBtn.disabled = nftFarmState.busy || !connected || !nftFarmState.pendingRewards.some(reward => reward.amount > 0n);
     }
     const approveBtn = document.getElementById('nft-farm-approve-btn');
     if (approveBtn) {
@@ -10954,6 +11014,21 @@ const PULSE_ID     = 369;
           ? annualRewardUsd / nftFarmState.stakedValueUsd * 100
           : null;
       }
+      // The NFT pool can stream multiple tokens. Keep the original first reward
+      // fields for the existing APR/projection helpers, and expose every stream
+      // in the card and claim state.
+      const gsxScaledPrice = (await new ethers.Contract(NEXION_LP_CALCULATOR, NEXION_PRICE_ABI, provider).getBatchPrice([TOKEN_ADDRESSES.GSX]).catch(() => []))?.[0];
+      const endTime = Number(poolInfo.endTime ?? poolInfo[3] ?? 0);
+      const secondsLeft = BigInt(Math.max(endTime - Math.floor(Date.now() / 1000), 0));
+      nftFarmState.rewards = await Promise.all((rewards || []).map(async raw => {
+        const token = raw.token ?? raw[0];
+        const meta = await fetchTokenMeta(provider, token, 'Reward');
+        const symbol = meta.symbol || 'Reward';
+        const pair = ['VOUCHPLS', 'VPLS'].includes(symbol.toUpperCase()) ? NFT_VALUE_GSX_VOUCHPLS_PAIR : NFT_VALUE_GSX_UPLS_PAIR;
+        const scaledPrice = await deriveTokenPriceFromPair(provider, pair, TOKEN_ADDRESSES.GSX, Number(gsxScaledPrice), token).catch(() => null);
+        const rewardPerSecond = BigInt(raw.rewardPerSecond ?? raw[2] ?? 0);
+        return { token, symbol, decimals: meta.decimals || 18, rewardPerSecond, scaledPrice: Number.isFinite(scaledPrice) && scaledPrice > 0 ? scaledPrice : null, remaining: rewardPerSecond * secondsLeft };
+      }));
     } catch(err) {
       console.warn('Nexion NFT pool read failed:', err);
     } finally {
@@ -10973,6 +11048,7 @@ const PULSE_ID     = 369;
       nftFarmState.userDataReady = false;
       nftFarmState.userAddress = '';
       nftFarmState.pending = 0n;
+      nftFarmState.pendingRewards = [];
       nftFarmState.pendingSyncedAt = 0;
       nftFarmState.approved = false;
       nftFarmState.userLoading = false;
@@ -11009,10 +11085,12 @@ const PULSE_ID     = 369;
       nftFarmState.approved = Boolean(approved);
       nftFarmState.userAddress = requestAddress;
       nftFarmState.userDataReady = true;
-      const pendingEntry = nftFarmPendingEntry(pendingResult);
+      const pendingEntries = nftFarmPendingEntries(pendingResult);
+      const pendingEntry = pendingEntries[0] || { token: '', amount: 0n, index: -1 };
       const rewardTokens = pendingResult.tokens ?? pendingResult[0] ?? [];
       const rewardIndex = pendingEntry.index;
       nftFarmState.pending = pendingEntry.amount;
+      nftFarmState.pendingRewards = pendingEntries;
       nftFarmState.pendingSyncedAt = Date.now();
       renderNftFarmDom();
 
@@ -11077,8 +11155,10 @@ const PULSE_ID     = 369;
         'NFT reward refresh timed out'
       );
       if (!wAddr || String(wAddr).toLowerCase() !== requestAddress) return;
-      const pendingEntry = nftFarmPendingEntry(pendingResult);
+      const pendingEntries = nftFarmPendingEntries(pendingResult);
+      const pendingEntry = pendingEntries[0] || { token: '', amount: 0n, index: -1 };
       nftFarmState.pending = pendingEntry.amount;
+      nftFarmState.pendingRewards = pendingEntries;
       nftFarmState.pendingSyncedAt = Date.now();
       if (pendingEntry.token && pendingEntry.token.toLowerCase() !== String(nftFarmState.rewardToken || '').toLowerCase()) {
         const meta = await fetchTokenMeta(rp, pendingEntry.token, nftFarmState.rewardSymbol);
@@ -11322,7 +11402,7 @@ const PULSE_ID     = 369;
 
   async function claimNftRewards() {
     if (nftFarmState.busy || !await ensureNftFarmWallet()) return;
-    if (nftFarmEstimatedPending() <= 0n) {
+    if (!nftFarmState.pendingRewards.some(reward => reward.amount > 0n)) {
       setNftFarmStatus('No NFT farm rewards are currently claimable.', false);
       return;
     }
@@ -11333,9 +11413,11 @@ const PULSE_ID     = 369;
       const signer = await wProvider.getSigner();
       const farmC = new ethers.Contract(NEXION_NFT_FARM_CONTRACT, NEXION_NFT_FARM_ABI, signer);
       const tx = await farmC.claimRewards(NEXION_NFT_POOL_ID);
-      const receipt = await waitForNftFarmTx(tx, `Claim ${nftFarmState.rewardSymbol}`);
+      const rewardLabel = nftFarmState.rewards.map(reward => reward.symbol).filter(Boolean).join(' + ') || nftFarmState.rewardSymbol;
+      const receipt = await waitForNftFarmTx(tx, `Claim ${rewardLabel}`);
       if (receipt) {
         nftFarmState.pending = 0n;
+        nftFarmState.pendingRewards = nftFarmState.pendingRewards.map(reward => ({ ...reward, amount: 0n }));
         nftFarmState.pendingSyncedAt = Date.now();
       }
     } catch(err) {
