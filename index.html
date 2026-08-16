@@ -8799,6 +8799,14 @@ const PULSE_ID     = 369;
     // pools fixed in slots 2 and 3, then place the newest LP farm in slot 4.
     { label: '#257', name: 'GSX', single: true, version: 'Single Stake', lp: '0x395127a44ac1cdc609c8cc9d048e096e8e8fc30e', rewardToken: 'PLSX', pid: 72 },
     { label: '#240', name: 'DIVX', single: true, version: 'Single Stake', lp: '0x6df9CD07BF067b42A700dc679bD9325Ff61Da8f3', rewardToken: 'PHEX' },
+    { label: '#277', name: 'GSX / LGSX LP', lp: '0x63aEDb300849581029d6d5A7B63Ac3C809c362BB', rewardToken: 'GSX', pid: 92 },
+    { label: '#276', name: 'WPLS / LGSX LP', lp: '0xbF5B80f368d8563A7ae3d8c2c481770F4d236e3a', rewardToken: 'GSX', pid: 91 },
+    { label: '#275', name: 'DIVX / LDIVX LP', lp: '0x68AaaBABF33EFcC16b2f18251e2dB7e50A103272', rewardToken: 'DIVX', pid: 90 },
+    { label: '#274', name: 'LDIVX / WPLS LP', lp: '0x33692D8679b3F9c2bd5Ac28d7D3A25F677eCB68A', rewardToken: 'DIVX', pid: 89 },
+    { label: '#273', name: 'DISTROX / LDISTROX LP', lp: '0x35b7F3c964a47Ff273ffa916756c95bD9662556E', rewardToken: 'DISTROX', pid: 88 },
+    { label: '#272', name: 'WPLS / LDISTROX LP', lp: '0x6955f02Bd012f6cFF0e5030ac5D123785C6b66FC', rewardToken: 'DISTROX', pid: 87 },
+    { label: '#271', name: 'CASHX / LCASHX LP', lp: '0xe9fF1b8bd6f54b37BA0C104539C88592805Be15F', rewardToken: 'GSX', pid: 86 },
+    { label: '#270', name: 'LCASHX / WPLS LP', lp: '0x207c74d16D659C9627142bf5178aaB6DFb813657', rewardToken: 'GSX', pid: 85 },
     { label: '#265', name: 'pHEX / BurnX LP', lp: '0x31533707dc4ebf5fc3e75b907b7beb54a77c3684', rewardToken: 'BURNX', pid: 80 },
     { label: '#262', name: 'DISTROX / PRVX LP', lp: '0x6c7de1cde40c9ccc44647a2e857273af8e9c9b15', rewardToken: 'DISTROX', pid: 77 },
     { label: '#261', name: 'GSX / WPLS LP', lp: '0x3c2fcc4a47470d81433c659fab6706f7aa37b51a', rewardToken: 'DIVX', pid: 76 },
@@ -8904,6 +8912,10 @@ const PULSE_ID     = 369;
     DISTROX: 'distrox.jpg',
     DIVX: 'divx.png',
     GSX: 'gsx.png',
+    LCASHX: 'https://nexionpulse.com/images/tokens/LCASHX.png',
+    LDISTROX: 'https://nexionpulse.com/images/tokens/LDISTROX.png',
+    LDIVX: 'https://nexionpulse.com/images/tokens/LDIVX.png',
+    LGSX: 'https://nexionpulse.com/images/tokens/LGSX.png',
     PRVX: 'https://nexionpulse.com/images/tokens/PRVX.png',
     PHEX: 'phex.png',
     EHEX: 'phex.png',
@@ -9181,7 +9193,7 @@ const PULSE_ID     = 369;
 
   function prettyFarmSymbol(symbol) {
     const key = String(symbol || '').trim().toUpperCase();
-    const map = { PHEX: 'pHEX', EHEX: 'eHEX', UPLS: 'uPLS', VOUCHPLS: 'vouchPLS' };
+    const map = { PHEX: 'pHEX', EHEX: 'eHEX', UPLS: 'uPLS', VOUCHPLS: 'vouchPLS', LDISTROX: 'LdistroX' };
     return map[key] || key || 'TOKEN';
   }
 
