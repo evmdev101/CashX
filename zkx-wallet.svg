@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">ZKX Wallet</title>
+  <defs>
+    <linearGradient id="zkxBg" x1="8" y1="4" x2="56" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#68e4ff"/>
+      <stop offset="0.48" stop-color="#147de7"/>
+      <stop offset="1" stop-color="#1727a9"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="url(#zkxBg)"/>
+  <path d="M17 20h30l-9 10H26l-4 4h20l-9 10H17l9-10-9-14Z" fill="#fff" opacity=".96"/>
+</svg>

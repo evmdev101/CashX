@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Uniswap Extension</title>
+  <rect width="64" height="64" rx="15" fill="#ffe6f5"/>
+  <path d="M16 38c4-10 12-16 22-15 7 1 12 5 14 12-6-3-11-3-15 1-5 5-10 8-21 2Z" fill="#ff2e9d"/>
+  <path d="m29 23 8-12 2 14-10-2Z" fill="#ff2e9d"/>
+  <circle cx="42" cy="28" r="2.2" fill="#651044"/>
+  <path d="M19 41c5 6 13 9 24 7" fill="none" stroke="#ff2e9d" stroke-width="5" stroke-linecap="round"/>
+</svg>

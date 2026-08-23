@@ -1681,22 +1681,35 @@
     #wallet-picker{position:fixed;inset:0;z-index:2400;display:none;align-items:center;justify-content:center;
       background:rgba(2,4,12,0.78);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:18px}
     #wallet-picker.wp-visible{display:flex}
-    .wallet-picker-box{width:min(364px,calc(100vw - 28px));background:#080909;border:1px solid rgba(255,255,255,0.08);
+    .wallet-picker-box{width:min(392px,calc(100vw - 28px));background:#080909;border:1px solid rgba(255,255,255,0.08);
       border-radius:10px;box-shadow:0 28px 80px rgba(0,0,0,0.72);overflow:hidden}
     #wallet-picker.wallet-actions-mode .wallet-picker-box{background:#f4f4f5;color:#2d3136;border:none;border-radius:22px;
-      width:min(362px,calc(100vw - 28px));box-shadow:0 22px 70px rgba(0,0,0,0.42)}
+      width:min(365px,calc(100vw - 28px));box-shadow:0 22px 70px rgba(0,0,0,0.42)}
     #wallet-picker.wallet-actions-mode .wallet-picker-head{display:block;position:relative;padding:0}
-    #wallet-picker.wallet-actions-mode .wallet-picker-title{display:none}
+    #wallet-picker.wallet-actions-mode .wallet-picker-heading,
+    #wallet-picker.wallet-actions-mode .wallet-picker-search,
+    #wallet-picker.wallet-actions-mode .wallet-picker-footer{display:none}
     #wallet-picker.wallet-actions-mode .wallet-picker-close{position:absolute;right:16px;top:16px;background:#e3e3e3;
       color:#777;width:28px;height:28px;font-size:1.35rem;z-index:2}
     #wallet-picker.wallet-actions-mode .wallet-picker-list{display:block;max-height:none;overflow:visible;padding:26px 18px 18px}
     .wallet-picker-head{display:grid;grid-template-columns:1fr 32px;align-items:center;gap:8px;
-      padding:18px 18px 14px}
+      padding:18px 18px 12px}
+    .wallet-picker-heading{padding-left:32px;text-align:center}
     .wallet-picker-close{width:28px;height:28px;border-radius:50%;border:none;
       background:transparent;color:#fff;font-family:'Space Mono',monospace;font-weight:700;cursor:pointer}
     .wallet-picker-close{font-size:1.35rem;line-height:1}
-    .wallet-picker-title{font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:700;color:#f4f4f5;text-align:center}
+    .wallet-picker-title{display:block;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:700;color:#f4f4f5}
+    .wallet-picker-meta{display:block;margin-top:4px;color:rgba(255,255,255,0.36);font-family:'Space Mono',monospace;
+      font-size:0.48rem;letter-spacing:0.08em;text-transform:uppercase}
+    .wallet-picker-search{height:42px;margin:0 13px 10px;padding:0 12px;display:flex;align-items:center;gap:9px;
+      border:1px solid rgba(255,255,255,0.06);border-radius:5px;color:rgba(255,255,255,0.38);background:#111312}
+    .wallet-picker-search:focus-within{border-color:rgba(155,109,255,0.42);color:#9b6dff}
+    .wallet-picker-search input{min-width:0;flex:1;border:0;outline:0;color:#f4f4f5;background:transparent;
+      font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:600}
+    .wallet-picker-search input::placeholder{color:rgba(255,255,255,0.28)}
     .wallet-picker-list{display:flex;flex-direction:column;gap:7px;padding:0 13px 10px;max-height:min(520px,70vh);overflow:auto}
+    .wallet-picker-empty{margin:18px 8px 22px;color:rgba(255,255,255,0.42);font-family:'Space Mono',monospace;
+      font-size:0.66rem;text-align:center}
     .wallet-option{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:10px;width:100%;
       border:1px solid rgba(255,255,255,0.035);background:#111312;color:#fff;border-radius:4px;
       padding:7px 12px 7px 7px;min-height:58px;cursor:pointer;text-align:left;transition:background 0.16s,border-color 0.16s,transform 0.16s,opacity 0.16s}
@@ -1710,33 +1723,33 @@
     .wallet-icon-metamask{background:#000}
     .wallet-icon-internet-money{background:#080909;color:transparent;border-radius:50%;box-shadow:none}
     .wallet-icon-internet-money img{border-radius:50%}
-    .wallet-icon-all{background:#172235;color:#8fc8ff}
-    .wallet-option-name{font-family:'DM Sans',sans-serif;font-size:0.86rem;font-weight:700;color:#f4f4f5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .wallet-icon-safepal{background:#5b2be0}
+    .wallet-icon-browser-wallet{background:#111312}
+    .wallet-option-copy{min-width:0}
+    .wallet-option-name{display:block;font-family:'DM Sans',sans-serif;font-size:0.86rem;font-weight:700;color:#f4f4f5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .wallet-option-sub{display:block;font-family:'Space Mono',monospace;font-size:0.48rem;color:#168f45;letter-spacing:0.05em;text-transform:uppercase;margin-top:2px}
     .wallet-option-badge{font-family:'Space Mono',monospace;font-size:0.46rem;font-weight:700;letter-spacing:0.05em;
       color:#23a956;background:rgba(35,169,86,0.12);border-radius:2px;padding:4px 6px;text-transform:uppercase}
     .wallet-option-badge.muted{color:rgba(255,255,255,0.32);background:rgba(255,255,255,0.035)}
-    .wallet-picker-note{font-family:'DM Sans',sans-serif;font-size:0.72rem;color:rgba(255,255,255,0.54);
-      padding:0 16px 18px;text-align:center;line-height:1.45}
-    .wallet-picker-note a{color:#8c6cff;text-decoration:none}
+    .wallet-picker-footer{margin:0;padding:10px 20px 14px;border-top:1px solid rgba(255,255,255,0.05);
+      color:rgba(255,255,255,0.34);font-family:'Space Mono',monospace;font-size:0.52rem;line-height:1.55;text-align:center}
     .wallet-summary{display:flex;flex-direction:column;align-items:center;gap:8px;padding:6px 16px 18px}
     #wallet-picker.wallet-actions-mode .wallet-summary{padding:0 0 18px;gap:7px}
-    .wallet-avatar{width:72px;height:72px;border-radius:22px;background:
-      radial-gradient(circle at 62% 38%,#fff 0 8%,#c9c2ce 9% 18%,transparent 19%),
-      linear-gradient(135deg,#45374d,#916484);box-shadow:0 0 0 8px rgba(255,255,255,0.06)}
-    #wallet-picker.wallet-actions-mode .wallet-avatar{width:74px;height:74px;border-radius:50%;box-shadow:none}
-    .wallet-summary-addr{display:flex;align-items:center;gap:8px;font-family:'DM Sans',sans-serif;
+    .wallet-avatar{width:74px;height:74px;border-radius:50%;background:linear-gradient(135deg,#76405a,#bd7182 58%,#555249);
+      box-shadow:inset 0 1px rgba(255,255,255,0.28)}
+    #wallet-picker.wallet-actions-mode .wallet-avatar{width:74px;height:74px;border-radius:50%}
+    .wallet-summary-addr{display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;
       font-size:1rem;font-weight:800;color:#f4f4f5}
     #wallet-picker.wallet-actions-mode .wallet-summary-addr{font-size:1.08rem;color:#2f3439}
     .wallet-summary-copy{width:22px;height:22px;border:none;background:transparent;color:rgba(255,255,255,0.66);
       cursor:pointer;font-size:1rem}
     #wallet-picker.wallet-actions-mode .wallet-summary-copy{display:none}
-    .wallet-summary-balance{font-family:'DM Sans',sans-serif;font-size:0.86rem;color:rgba(255,255,255,0.64)}
+    .wallet-summary-balance{font-family:'Space Mono',monospace;font-size:0.8rem;color:rgba(255,255,255,0.64)}
     #wallet-picker.wallet-actions-mode .wallet-summary-balance{color:#777;font-weight:600}
     .wallet-action-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
     .wallet-action-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
       min-height:60px;border:none;border-radius:10px;background:#fff;color:#4c5258;cursor:pointer;
-      font-family:'DM Sans',sans-serif;font-weight:800;font-size:0.78rem;box-shadow:0 1px 0 rgba(0,0,0,0.03)}
+      font-family:'Space Mono',monospace;font-weight:500;font-size:0.72rem;box-shadow:0 1px 0 rgba(0,0,0,0.03)}
     .wallet-action-card:hover{background:#fafafa}
     .wallet-action-card-icon{font-family:'Space Mono',monospace;font-size:1.15rem;line-height:1;color:#34393e}
     .wallet-option.disconnect{grid-template-columns:42px minmax(0,1fr);opacity:0.68;padding:9px 12px 9px 8px}
@@ -6481,42 +6494,112 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     let activeProvider = null;
     let pendingResolve = null;
 
+    const walletCatalog = [
+      { key: 'metamask', name: 'MetaMask', icon: 'metamask-wallet-icon.svg', description: 'MetaMask browser wallet' },
+      { key: 'internet-money', name: 'Internet Money Wallet', icon: 'internetmoneywallet.png', description: 'Internet Money browser wallet' },
+      { key: 'rabby', name: 'Rabby Wallet', icon: 'rabby-clean.png', description: 'Rabby browser wallet' },
+      { key: 'safepal', name: 'SafePal', icon: 'safepal-wallet.svg', description: 'SafePal browser wallet' },
+      { key: 'zkx', name: 'ZKX Wallet', icon: 'zkx-wallet.svg', description: 'ZKX browser wallet' },
+      { key: 'coinbase', name: 'Coinbase Wallet', icon: 'coinbase-wallet.svg', description: 'Coinbase browser wallet' },
+      { key: 'uniswap', name: 'Uniswap Extension', icon: 'uniswap-wallet.svg', description: 'Uniswap browser wallet' }
+    ];
+
     function providerId(provider, fallback) {
       return provider?.info?.uuid || provider?.rdns || provider?.name || fallback;
     }
 
-    function addProvider(list, provider, name, detail = '') {
-      if (!provider || typeof provider.request !== 'function') return;
-      const id = providerId(provider, `${name}-${list.length}`);
-      if (list.some(item => item.id === id || item.provider === provider)) return;
-      list.push({ id, provider, name, detail });
+    function walletSlug(value) {
+      return String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'wallet';
     }
 
-    function providerLabel(provider, fallback = 'Browser Wallet') {
+    function walletKeyFromIdentity(name = '', rdns = '') {
+      const identity = `${name} ${rdns}`.toLowerCase();
+      if (identity.includes('rabby')) return 'rabby';
+      if (identity.includes('internet money') || identity.includes('internetmoney')) return 'internet-money';
+      if (identity.includes('safepal') || identity.includes('safe pal')) return 'safepal';
+      if (identity.includes('zkx')) return 'zkx';
+      if (identity.includes('coinbase')) return 'coinbase';
+      if (identity.includes('uniswap')) return 'uniswap';
+      if (identity.includes('phantom')) return 'phantom';
+      if (identity.includes('metamask') || identity.includes('io.metamask')) return 'metamask';
+      return null;
+    }
+
+    function isInternetMoneyProvider(provider) {
+      return Boolean(provider?.isInternetMoney || provider?.isInternetMoneyWallet || provider?.isIMWallet);
+    }
+
+    function isActualMetaMaskProvider(provider) {
+      return Boolean(
+        provider?.isMetaMask &&
+        !provider?.isRabby &&
+        !provider?.isPhantom &&
+        !provider?.isCoinbaseWallet &&
+        !provider?.isBraveWallet &&
+        !provider?.isTrust &&
+        !provider?.isTrustWallet &&
+        !provider?.isSafePal &&
+        !provider?.isSafePalWallet &&
+        !provider?.isOkxWallet &&
+        !provider?.isOKXWallet &&
+        !provider?.isZKXWallet &&
+        !provider?.isZkxWallet &&
+        !provider?.isZerion &&
+        !provider?.isZerionWallet &&
+        !provider?.isUniswapWallet &&
+        provider !== window.phantom?.ethereum
+      );
+    }
+
+    function providerLabel(provider, fallback = 'Browser / Mobile Wallet') {
+      if (provider?.isSafePal || provider?.isSafePalWallet) return 'SafePal Wallet';
       if (provider?.isRabby) return 'Rabby Wallet';
-      if (provider?.isInternetMoney || provider?.isInternetMoneyWallet || provider?.isIMWallet) return 'Internet Money Wallet';
-      if (provider?.isCoinbaseWallet) return 'Coinbase Wallet';
-      if (provider?.isPhantom) return 'Phantom';
+      if (isInternetMoneyProvider(provider)) return 'Internet Money Wallet';
+      if (provider?.isOkxWallet || provider?.isOKXWallet) return 'OKX Wallet';
+      if (provider?.isZKXWallet || provider?.isZkxWallet) return 'ZKX Wallet';
+      if (provider?.isZerion || provider?.isZerionWallet) return 'Zerion Wallet';
       if (provider?.isUniswapWallet) return 'Uniswap Extension';
-      if (provider?.isMetaMask) return 'MetaMask';
+      if (provider?.isCoinbaseWallet) return 'Coinbase Wallet';
+      if (provider?.isTrust || provider?.isTrustWallet) return 'Trust Wallet';
+      if (provider?.isBraveWallet) return 'Brave Wallet';
+      if (provider?.isPhantom || provider === window.phantom?.ethereum) return 'Phantom';
+      if (isActualMetaMaskProvider(provider)) return 'MetaMask';
       return provider?.info?.name || provider?.name || fallback;
     }
 
-    function walletKey(name) {
-      const n = String(name || '').toLowerCase();
-      if (n.includes('rabby')) return 'rabby';
-      if (n.includes('metamask')) return 'metamask';
-      if (n.includes('internet')) return 'internet-money';
-      return 'all';
+    function addProvider(list, provider, { key = null, name = '', icon = '', detail = 'Injected wallet ready to connect' } = {}) {
+      if (!provider || typeof provider.request !== 'function') return;
+      const resolvedName = name || providerLabel(provider);
+      const resolvedKey = key || `legacy:${walletSlug(resolvedName)}`;
+      const id = providerId(provider, `${resolvedKey}-${list.length}`);
+      if (list.some(item => item.id === id || item.provider === provider)) return;
+      list.push({ id, key: resolvedKey, provider, name: resolvedName, icon, detail });
     }
 
-    function walletIcon(key) {
-      return {
-        rabby: '<img src="rabby-clean.png" alt="">',
-        metamask: '<img src="metamask-wallet-icon.svg" alt="">',
-        'internet-money': '<img src="internetmoneywallet.png" alt="">',
-        all: '…'
-      }[key] || '…';
+    function legacyWalletKey(provider) {
+      if (provider?.isSafePal || provider?.isSafePalWallet) return 'safepal';
+      if (provider?.isRabby) return 'rabby';
+      if (isInternetMoneyProvider(provider)) return 'internet-money';
+      if (provider?.isZKXWallet || provider?.isZkxWallet) return 'zkx';
+      if (provider?.isCoinbaseWallet) return 'coinbase';
+      if (provider?.isUniswapWallet) return 'uniswap';
+      if (provider?.isPhantom || provider === window.phantom?.ethereum) return 'phantom';
+      if (isActualMetaMaskProvider(provider)) return 'metamask';
+      return null;
+    }
+
+    function escapeWalletHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, character => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      })[character]);
+    }
+
+    function walletIconHtml(wallet) {
+      const icon = String(wallet.icon || '');
+      if (/^(?:data:image\/|https:\/\/|[a-z0-9_.-]+\.(?:svg|png|jpe?g|webp)$)/i.test(icon)) {
+        return `<img src="${escapeWalletHtml(icon)}" alt="">`;
+      }
+      return escapeWalletHtml(String(wallet.name || 'W').trim().slice(0, 1).toUpperCase() || 'W');
     }
 
     function rememberWalletKey(key) {
@@ -6534,39 +6617,62 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
 
       const list = [];
       eip6963Providers.forEach(({ provider, info }) => {
-        addProvider(list, provider, info?.name || providerLabel(provider), info?.rdns || 'Detected wallet');
+        const catalogKey = walletKeyFromIdentity(info?.name, info?.rdns);
+        if (catalogKey === 'phantom') return;
+        const dynamicKey = `eip6963:${walletSlug(info?.rdns || info?.name || info?.uuid)}`;
+        addProvider(list, provider, {
+          key: catalogKey || dynamicKey,
+          name: info?.name || providerLabel(provider),
+          icon: info?.icon || '',
+          detail: 'Injected wallet ready to connect'
+        });
       });
+
+      const addLegacyProvider = (provider, suffix = 'default') => {
+        if (!provider) return;
+        const catalogKey = legacyWalletKey(provider);
+        if (catalogKey === 'phantom') return;
+        const name = providerLabel(provider);
+        addProvider(list, provider, {
+          key: catalogKey || `legacy:${walletSlug(name)}:${suffix}`,
+          name,
+          detail: 'Injected wallet ready to connect'
+        });
+      };
 
       const injected = window.ethereum;
       if (injected?.providers?.length) {
-        injected.providers.forEach(provider => addProvider(list, provider, providerLabel(provider), 'Injected wallet'));
+        injected.providers.forEach((provider, index) => addLegacyProvider(provider, String(index)));
       }
-      addProvider(list, window.rabby, 'Rabby Wallet', 'Injected wallet');
-      addProvider(list, window.internetMoney, 'Internet Money Wallet', 'Injected wallet');
-      addProvider(list, window.ethereum, providerLabel(window.ethereum), 'Injected wallet');
+      addProvider(list, window.rabby, { key: 'rabby', name: 'Rabby Wallet' });
+      addProvider(list, window.internetMoney, { key: 'internet-money', name: 'Internet Money Wallet' });
+      addLegacyProvider(window.okxwallet, 'okx');
+      addLegacyProvider(window.safepalProvider || window.safepal, 'safepal');
+      addLegacyProvider(window.zkx, 'zkx');
+      if (!injected?.providers?.length) addLegacyProvider(injected);
 
-      const catalog = [
-        { name: 'MetaMask', key: 'metamask' },
-        { name: 'Internet Money Wallet', key: 'internet-money' },
-        { name: 'Rabby Wallet', key: 'rabby' }
-      ];
-      const rows = catalog.map(item => {
-        const detected = list.find(wallet => walletKey(wallet.name) === item.key);
+      const catalogKeys = new Set(walletCatalog.map(wallet => wallet.key));
+      const rows = walletCatalog.map(item => {
+        const detected = list.find(wallet => wallet.key === item.key);
         return {
           ...item,
           provider: detected?.provider || null,
-          detail: detected ? 'INSTALLED' : (item.note || 'NOT DETECTED')
+          icon: detected?.icon || item.icon,
+          detail: detected ? 'Injected wallet ready to connect' : item.description
         };
       });
-      return rows;
+      const dynamicRows = list.filter(wallet => wallet.key !== 'phantom' && !catalogKeys.has(wallet.key));
+      return [...rows, ...dynamicRows];
     }
 
     function closePicker() {
       const picker = document.getElementById('wallet-picker');
+      const search = document.getElementById('wallet-picker-search');
       if (picker) {
         picker.classList.remove('wp-visible');
         picker.setAttribute('aria-hidden', 'true');
       }
+      if (search) search.oninput = null;
       if (pendingResolve) {
         pendingResolve(null);
         pendingResolve = null;
@@ -6576,39 +6682,57 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     function chooseFromList(wallets) {
       const picker = document.getElementById('wallet-picker');
       const title = document.getElementById('wallet-picker-title');
+      const meta = document.getElementById('wallet-picker-meta');
+      const search = document.getElementById('wallet-picker-search');
       const list = document.getElementById('wallet-picker-list');
       if (!picker || !list) return Promise.resolve(wallets[0]?.provider || null);
       picker.classList.remove('wallet-actions-mode');
-      if (title) title.textContent = 'Choose Wallet';
-      list.innerHTML = wallets.map((wallet, index) => {
-        const key = wallet.key || walletKey(wallet.name);
-        const installed = Boolean(wallet.provider);
-        const badge = installed ? (wallet.detail || 'INSTALLED') : (wallet.detail || 'NOT DETECTED');
-        return `
-        <button class="wallet-option" type="button" data-wallet-index="${index}" ${installed ? '' : 'disabled'}>
-          <span class="wallet-option-icon wallet-icon-${key}" aria-hidden="true">${walletIcon(key)}</span>
-          <span>
-            <span class="wallet-option-name">${wallet.name}</span>
-            <span class="wallet-option-sub">${installed ? 'Ready to connect' : 'Install or unlock wallet'}</span>
-          </span>
-          <span class="wallet-option-badge ${installed ? '' : 'muted'}">${badge}</span>
-        </button>`;
-      }).join('');
-      picker.classList.add('wp-visible');
-      picker.setAttribute('aria-hidden', 'false');
-      return new Promise(resolve => {
-        pendingResolve = resolve;
+      if (title) title.textContent = 'Connect Wallet';
+      if (meta) meta.textContent = `PulseChain · ${wallets.filter(wallet => wallet.provider).length} detected`;
+      if (search) search.value = '';
+      let resolvePicker = () => {};
+
+      const renderWallets = () => {
+        const query = String(search?.value || '').trim().toLowerCase();
+        const visibleWallets = wallets
+          .map((wallet, index) => ({ wallet, index }))
+          .filter(({ wallet }) => !query || `${wallet.name} ${wallet.detail || wallet.description || ''}`.toLowerCase().includes(query));
+        list.innerHTML = visibleWallets.length ? visibleWallets.map(({ wallet, index }) => {
+          const installed = Boolean(wallet.provider);
+          const catalogWallet = walletCatalog.some(item => item.key === wallet.key);
+          const iconClass = catalogWallet ? wallet.key : 'browser-wallet';
+          return `
+          <button class="wallet-option" type="button" data-wallet-index="${index}" ${installed ? '' : 'disabled'}>
+            <span class="wallet-option-icon wallet-icon-${escapeWalletHtml(iconClass)}" aria-hidden="true">${walletIconHtml(wallet)}</span>
+            <span class="wallet-option-copy">
+              <span class="wallet-option-name">${escapeWalletHtml(wallet.name)}</span>
+              <span class="wallet-option-sub">${installed ? 'Ready to connect' : escapeWalletHtml(wallet.detail || wallet.description || 'Browser wallet')}</span>
+            </span>
+            <span class="wallet-option-badge ${installed ? '' : 'muted'}">${installed ? 'Installed' : 'Not detected'}</span>
+          </button>`;
+        }).join('') : '<p class="wallet-picker-empty">No matching wallet was detected.</p>';
+
         list.querySelectorAll('[data-wallet-index]').forEach(btn => {
           btn.addEventListener('click', () => {
             const wallet = wallets[Number(btn.dataset.walletIndex)];
             pendingResolve = null;
+            if (search) search.oninput = null;
             picker.classList.remove('wp-visible');
             picker.setAttribute('aria-hidden', 'true');
             activeProvider = wallet.provider;
-            rememberWalletKey(wallet.key || walletKey(wallet.name));
-            resolve(wallet.provider);
+            rememberWalletKey(wallet.key);
+            resolvePicker(wallet.provider);
           }, { once: true });
         });
+      };
+
+      picker.classList.add('wp-visible');
+      picker.setAttribute('aria-hidden', 'false');
+      return new Promise(resolve => {
+        pendingResolve = resolve;
+        resolvePicker = resolve;
+        if (search) search.oninput = renderWallets;
+        renderWallets();
       });
     }
 
@@ -6625,10 +6749,6 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
 
     async function pickProvider() {
       const wallets = await discoverProviders();
-      if (!wallets.some(wallet => wallet.provider)) {
-        alert('Please refresh the page and try connecting your wallet again.');
-        return null;
-      }
       return chooseFromList(wallets);
     }
 
@@ -6918,6 +7038,11 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     const addr = window.sharedWalletAddr || wAddr;
     if (!addr) return;
     navigator.clipboard.writeText(addr).then(() => {
+      const modalLabel = document.getElementById('wallet-summary-copy-label');
+      if (modalLabel) {
+        modalLabel.textContent = 'Copied';
+        setTimeout(() => { if (modalLabel.isConnected) modalLabel.textContent = 'Copy Address'; }, 1800);
+      }
       const b = document.querySelector('.rv-copy-btn');
       if (!b) return;
       b.textContent = 'Copied!';
@@ -6981,13 +7106,24 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
   <div class="am-sep"></div>
   <button class="am-item am-copy" id="am-copy-btn" onclick="amCopy()">Copy Address</button>
 </div>
-<div id="wallet-picker" aria-hidden="true">
+<div id="wallet-picker" aria-hidden="true" onclick="if(event.target===this){window.CashXWallets?.closePicker();window.hideWalletActions?.()}">
   <div class="wallet-picker-box" role="dialog" aria-modal="true" aria-labelledby="wallet-picker-title">
     <div class="wallet-picker-head">
-      <div class="wallet-picker-title" id="wallet-picker-title">Choose Wallet</div>
-      <button class="wallet-picker-close" type="button" onclick="window.CashXWallets?.closePicker(); window.hideWalletActions?.()">×</button>
+      <div class="wallet-picker-heading">
+        <div class="wallet-picker-title" id="wallet-picker-title">Connect Wallet</div>
+        <div class="wallet-picker-meta" id="wallet-picker-meta">PulseChain · 0 detected</div>
+      </div>
+      <button class="wallet-picker-close" type="button" aria-label="Close wallet dialog" onclick="window.CashXWallets?.closePicker(); window.hideWalletActions?.()">×</button>
     </div>
+    <label class="wallet-picker-search" for="wallet-picker-search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"></circle>
+        <path d="m16 16 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+      </svg>
+      <input id="wallet-picker-search" type="search" autocomplete="off" placeholder="Search wallets" aria-label="Search wallets">
+    </label>
     <div class="wallet-picker-list" id="wallet-picker-list"></div>
+    <p class="wallet-picker-footer">Supported browser wallets are detected automatically and connect directly.</p>
   </div>
 </div>
 
@@ -9078,13 +9214,14 @@ const PULSE_ID     = 369;
       const score = rankNumber(value);
       return score === null ? null : { farm, value, score };
     });
+    // The NFT farm is intentionally absent from the TVL ranking: Nexion assigns no
+    // USD value to staked NFTs, and pricing them at mint cost would displace a real
+    // LP pool. It still ranks on APR and Rewards, which come from live pool data.
     const nftValue = key === 'apr'
       ? nftFarmState.apr
-      : key === 'tvl'
-        ? nftFarmState.tvlUsd
-        : key === 'remainingRewardsUsd'
-          ? nftFarmState.remainingRewardsUsd
-          : null;
+      : key === 'remainingRewardsUsd'
+        ? nftFarmState.remainingRewardsUsd
+        : null;
     if (Number.isFinite(nftValue)) {
       ranked.push({
         farm: { label: '#NFT', name: 'CashMoney NFT', lp: '__nft__', nft: true },
@@ -12897,18 +13034,6 @@ function farmsTryNextNftImage(image){ return window.FarmsApp.tryNextNftImage(ima
     }
   }
 
-  function walletAvatarStyle(address) {
-    const hex = String(address || '').replace(/^0x/i, '').padEnd(40, '0');
-    const read = (start, len = 2) => parseInt(hex.slice(start, start + len), 16) || 0;
-    const hueA = read(0) * 360 / 255;
-    const hueB = (hueA + 42 + read(8) * 90 / 255) % 360;
-    const hueC = (hueA + 180 + read(16) * 80 / 255) % 360;
-    const c1 = `hsl(${hueA.toFixed(0)} 26% 32%)`;
-    const c2 = `hsl(${hueB.toFixed(0)} 30% 49%)`;
-    const c3 = `hsl(${hueC.toFixed(0)} 22% 20%)`;
-    return `background:linear-gradient(135deg,${c1},${c2} 58%,${c3});`;
-  }
-
   async function showWalletActions(source = 'main') {
     const picker = document.getElementById('wallet-picker');
     const title = document.getElementById('wallet-picker-title');
@@ -12917,12 +13042,11 @@ function farmsTryNextNftImage(image){ return window.FarmsApp.tryNextNftImage(ima
     picker.classList.add('wallet-actions-mode');
     if (title) title.textContent = 'Wallet Options';
     const address = window.sharedWalletAddr || '';
-    const shortAddr = address ? `${address.slice(0, 4)}...${address.slice(-4)}` : 'Connected';
+    const shortAddr = address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'Connected';
     const balanceText = await connectedPlsBalanceText();
-    const avatarStyle = walletAvatarStyle(address);
     list.innerHTML = `
       <div class="wallet-summary">
-        <div class="wallet-avatar" style="${avatarStyle}" aria-hidden="true"></div>
+        <div class="wallet-avatar" aria-hidden="true"></div>
         <div class="wallet-summary-addr">
           <span>${shortAddr}</span>
         </div>
@@ -12931,7 +13055,7 @@ function farmsTryNextNftImage(image){ return window.FarmsApp.tryNextNftImage(ima
       <div class="wallet-action-grid">
         <button class="wallet-action-card" type="button" onclick="copySharedWalletAddr()">
           <span class="wallet-action-card-icon">⧉</span>
-          <span>Copy Address</span>
+          <span id="wallet-summary-copy-label">Copy Address</span>
         </button>
         <button class="wallet-action-card" type="button" onclick="hideWalletActions(); disconnectSharedWallet()">
           <span class="wallet-action-card-icon">↪</span>
@@ -13585,4 +13709,3 @@ function farmsTryNextNftImage(image){ return window.FarmsApp.tryNextNftImage(ima
 <div class="page-bg"></div>
 </body>
 </html>
-
