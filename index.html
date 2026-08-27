@@ -7576,6 +7576,30 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
   </div>
 </div>
 
+<div id="cashx-eco-nft-modal" class="nft-farm-modal" hidden role="dialog" aria-modal="true" aria-labelledby="cashx-eco-nft-modal-title" onclick="if(event.target===this)farmsCloseEcoNftModal()">
+  <div class="nft-farm-dialog">
+    <div class="nft-farm-modal-head">
+      <div class="nft-farm-modal-title" id="cashx-eco-nft-modal-title">Select NFTs to Stake</div>
+      <button class="nft-farm-modal-close" type="button" onclick="farmsCloseEcoNftModal()" aria-label="Close CashX Ecosystem NFT selector">×</button>
+    </div>
+    <div class="nft-farm-modal-status" id="cashx-eco-nft-modal-status">Loading your NFTs…</div>
+    <div class="nft-farm-modal-controls">
+      <button class="nft-farm-mini-btn" id="cashx-eco-nft-select-all" type="button" onclick="farmsSelectAllEcoNfts(true)">Select All</button>
+      <button class="nft-farm-mini-btn" id="cashx-eco-nft-deselect-all" type="button" onclick="farmsSelectAllEcoNfts(false)">Deselect All</button>
+      <div class="nft-farm-selected-count" id="cashx-eco-nft-selected-count">Selected: 0 / 0</div>
+    </div>
+    <div class="nft-farm-grid-wrap">
+      <div class="nft-farm-grid" id="cashx-eco-nft-token-grid">
+        <div class="nft-farm-empty">Loading your CashX Ecosystem NFTs…</div>
+      </div>
+    </div>
+    <div class="nft-farm-modal-footer">
+      <button class="nft-farm-submit" id="cashx-eco-nft-submit" type="button" onclick="farmsSubmitEcoNftSelection()" disabled>Stake Selected NFTs</button>
+      <div class="nft-farm-modal-tx" id="cashx-eco-nft-modal-tx"></div>
+    </div>
+  </div>
+</div>
+
 <script>
 const FARM_THEME_KEY = 'cashx_farm_theme_v2';
 const FARM_CUSTOM_THEME_KEY = 'cashx_farm_custom_theme_v2';
@@ -8852,6 +8876,9 @@ const PULSE_ID     = 369;
   const CASHMONEY_NFT_METADATA_CID = 'bafybeidd7ftycyesgsbmequfwkidbq662edinpa37sk5qsfbyebyiub54a';
   const CASHMONEY_NFT_IMAGE_CID = 'QmREkdPdykKcFb8xippuwLUyk8Tw1WN61bSqLS4ftugna5';
   const NEXION_NFT_POOL_ID = 0;
+  const CASHX_ECO_NFT_COLLECTION = '0x744351E2846498D040B649D694CAB21f32f14AFe';
+  const CASHX_ECO_NFT_POOL_ID = 1;
+  const CASHX_ECO_NFT_IMAGE_URI = 'ipfs://bafybeigh4xrxvp3kly56ezepomltbxlfgxs4rz3dllquf4qxixhm4tpupy';
   const NEXION_NFT_FARM_ABI = [
     'function depositNFTs(uint256 _pid, uint256[] _tokenIds) payable',
     'function withdrawNFTs(uint256 _pid, uint256[] _tokenIds)',
@@ -8881,6 +8908,10 @@ const PULSE_ID     = 369;
     'function edai() view returns (address)',
     'function isApprovedForAll(address owner,address operator) view returns (bool)',
     'function setApprovalForAll(address operator,bool approved)'
+  ];
+  const CASHX_ECO_NFT_ABI = [
+    ...CASHMONEY_NFT_ABI,
+    'function nftPrice() view returns (uint256)'
   ];
   const FARM_POOL_CACHE_KEY = 'cashx_farm_pool_ids_v1';
   const FARM_ABI = [
@@ -8931,8 +8962,8 @@ const PULSE_ID     = 369;
 
   // LP token addresses (from PulseX pairs) used to match pools in the contract
   const FARMS = [
-    // The NFT card is rendered separately as slot 1. Keep the two single-stake
-    // pools fixed in slots 2 and 3, then place the newest LP farm in slot 4.
+    // NFT cards are rendered separately, followed by the newest token farms.
+    { label: '#282', name: 'DISTROX', single: true, version: 'Single Stake', lp: DISTROX_ADDR, rewardToken: 'INC', rewardAddress: '0x2fa878Ab3F87CC1C9737Fc071108F904c0B0C95d', pid: 97 },
     { label: '#257', name: 'GSX', single: true, version: 'Single Stake', lp: '0x395127a44ac1cdc609c8cc9d048e096e8e8fc30e', rewardToken: 'PLSX', pid: 72 },
     { label: '#240', name: 'DIVX', single: true, version: 'Single Stake', lp: '0x6df9CD07BF067b42A700dc679bD9325Ff61Da8f3', rewardToken: 'PHEX' },
     { label: '#277', name: 'GSX / LGSX LP', lp: '0x63aEDb300849581029d6d5A7B63Ac3C809c362BB', rewardToken: 'GSX', pid: 92 },
@@ -9042,6 +9073,16 @@ const PULSE_ID     = 369;
     lastTxHash: '',
     requestId: 0
   };
+  const cashxEcoNftState = {
+    walletTokens: [], stakedTokens: [], walletBalance: null, userDataReady: false,
+    userAddress: '', selected: new Set(), metadata: new Map(), metadataLoading: new Set(),
+    mode: 'stake', poolInfo: null, totalStaked: null, rewards: [],
+    remainingRewardsUsd: null, dailyUsdPerNft: null, nftUnitValueUsd: null,
+    stakedValueUsd: null, tvlUsd: null, apr: null, pendingRewards: [],
+    depositFee: 0n, approved: false, publicLoading: false, publicRetryTimer: null, userLoading: false,
+    pendingRefreshLoading: false, busy: false, status: '', statusError: false,
+    lastTxHash: '', requestId: 0
+  };
   const TOKEN_LOGOS = {
     BURNX: 'BurnX.png',
     CASHX: 'cashx-logo.png',
@@ -9095,7 +9136,8 @@ const PULSE_ID     = 369;
     PRVX: '0xF6f8Db0aBa00007681F8fAF16A0FDa1c9B030b11',
     PHEX: '0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39',
     EHEX: '0x57fde0a71132198bbec939b98976993d8d89d225',
-    PLSX: '0x95B303987A60C71504D99Aa1b13B4DA07b0790ab'
+    PLSX: '0x95B303987A60C71504D99Aa1b13B4DA07b0790ab',
+    INC: '0x2fa878Ab3F87CC1C9737Fc071108F904c0B0C95d'
   };
 
   function farmRewardSymbol(farm, poolInfo = null) {
@@ -9214,9 +9256,8 @@ const PULSE_ID     = 369;
       const score = rankNumber(value);
       return score === null ? null : { farm, value, score };
     });
-    // The NFT farm is intentionally absent from the TVL ranking: Nexion assigns no
-    // USD value to staked NFTs, and pricing them at mint cost would displace a real
-    // LP pool. It still ranks on APR and Rewards, which come from live pool data.
+    // NFT farms are intentionally absent from the TVL ranking. They still rank on
+    // APR and remaining rewards, which come from live pool and mint-price data.
     const nftValue = key === 'apr'
       ? nftFarmState.apr
       : key === 'remainingRewardsUsd'
@@ -9227,6 +9268,20 @@ const PULSE_ID     = 369;
         farm: { label: '#NFT', name: 'CashMoney NFT', lp: '__nft__', nft: true },
         value: key === 'apr' ? nftFarmAprDisplay() : fmtUsd(nftValue, 2),
         score: nftValue
+      });
+    }
+    const ecoNftValue = key === 'apr'
+      ? cashxEcoNftState.apr
+      : key === 'tvl'
+        ? cashxEcoNftState.tvlUsd
+      : key === 'remainingRewardsUsd'
+        ? cashxEcoNftState.remainingRewardsUsd
+        : null;
+    if (Number.isFinite(ecoNftValue)) {
+      ranked.push({
+        farm: { label: '#1', name: 'CASHX ECO NFT', lp: '__cashx_eco_nft__', nft: true },
+        value: key === 'apr' ? ecoNftAprDisplay() : fmtUsd(ecoNftValue, 2),
+        score: ecoNftValue
       });
     }
     return ranked
@@ -9465,6 +9520,15 @@ const PULSE_ID     = 369;
     nftFarmState.userLoading = false;
     renderNftFarmDom();
     refreshNftFarmPublicStats();
+    cashxEcoNftState.requestId++;
+    cashxEcoNftState.walletTokens = [];
+    cashxEcoNftState.stakedTokens = [];
+    cashxEcoNftState.selected.clear();
+    cashxEcoNftState.pendingRewards = [];
+    cashxEcoNftState.approved = false;
+    cashxEcoNftState.userLoading = false;
+    renderEcoNftFarmDom();
+    refreshEcoNftPublicStats();
     fetchVaults(true);
     setClaimAllStatus('');
     updateClaimAllButton([]);
@@ -9525,6 +9589,7 @@ const PULSE_ID     = 369;
     fetchRewards();
     fetchFarms();
     refreshNftFarmData();
+    refreshEcoNftData();
     fetchVaults(true);
   }
 
@@ -9533,10 +9598,11 @@ const PULSE_ID     = 369;
     window.CashXWallets?.clearRememberedProvider?.();
     wProvider = null; wAddr = null; walletProvider = null;
     closeNftFarmModal();
+    closeEcoNftModal();
     showDisconnected();
   }
 
-  function refreshAll() { fetchBalances(); fetchRewards(); fetchFarms(); refreshNftFarmData(); fetchVaults(true); }
+  function refreshAll() { fetchBalances(); fetchRewards(); fetchFarms(); refreshNftFarmData(); refreshEcoNftData(); fetchVaults(true); }
 
   async function fetchBalances() {
     if (!wProvider || !wAddr) return;
@@ -10254,6 +10320,7 @@ const PULSE_ID     = 369;
     })));
     fetchPublicFarmStats();
     refreshNftFarmPublicStats();
+    refreshEcoNftPublicStats();
   }
 
   async function fetchPublicFarmStats() {
@@ -11097,8 +11164,87 @@ const PULSE_ID     = 369;
       </div>`;
   }
 
+  function renderCashxEcoNftFarmCard() {
+    if (farmStakedOnly && cashxEcoNftState.stakedTokens.length === 0) return '';
+    const rewardCount = cashxEcoNftState.rewards.length || 4;
+    return `
+      <div class="farm-item farm-rich farm-design-proto nexion-nft-farm" id="cashx-eco-nft-farm-card">
+        <div class="farm-hdr">
+          <div class="farm-title">
+            <img class="nexion-nft-header-art" src="${normalizeNftUri(CASHX_ECO_NFT_IMAGE_URI)}" alt="CashX Ecosystem NFT">
+            <div class="farm-title-text"><div class="farm-pair-main"><span class="farm-pair-name">CASHX ECO NFT</span></div></div>
+          </div>
+          <a class="farm-liquidity-btn" href="https://nexionpulse.com/farmexplorer" target="_blank" rel="noopener">View on Nexion</a>
+        </div>
+        <div class="farm-proto-grid">
+          <div class="farm-proto-metric farm-proto-compact nft-apr-wide">
+            <div class="farm-proto-label">APR</div>
+            <div class="farm-proto-value apr">
+              <span class="farm-apr-wrap">
+                <span id="cashx-eco-nft-apr">${ecoNftAprDisplay()}</span>
+                <button class="farm-apr-calc" type="button" aria-label="Show CashX Ecosystem NFT APR breakdown">&#x1F9EE;</button>
+                <span class="farm-apr-popover" role="tooltip">
+                  <span class="farm-apr-popover-title"><span>&#x1F9EE;</span> APR Breakdown</span>
+                  <span class="farm-apr-breakdown" id="cashx-eco-nft-apr-breakdown">${aprBreakdownHTML(ecoNftAprDisplay())}</span>
+                </span>
+              </span>
+            </div>
+          </div>
+          <div class="farm-proto-metric">
+            <div class="farm-proto-label">Balance</div>
+            <div class="farm-balance-value-row">
+              <div class="farm-proto-value" id="cashx-eco-nft-wallet-count">${wAddr ? 'Loading' : '0'}</div>
+              <button class="farm-balance-max" id="cashx-eco-nft-wallet-max" type="button" onclick="farmsOpenEcoNftMaxModal()" disabled>[MAX]</button>
+            </div>
+            <div class="farm-proto-sub">NFTs in wallet</div>
+          </div>
+          <div class="farm-proto-metric">
+            <div class="farm-proto-label">Remaining Rewards</div>
+            <div class="farm-proto-value long" id="cashx-eco-nft-remaining">${ecoNftRemainingDisplay()}</div>
+            <div class="farm-proto-sub" id="cashx-eco-nft-reward-count">${rewardCount} reward tokens</div>
+          </div>
+          <div class="farm-proto-metric">
+            <div class="farm-proto-label">Staked</div>
+            <div class="farm-proto-value nft-staked-main"><span id="cashx-eco-nft-staked-count">${wAddr ? 'Loading' : '0'}</span><span class="nft-staked-total">/ <span id="cashx-eco-nft-total-staked">Loading</span> total</span></div>
+            <div class="farm-proto-sub" id="cashx-eco-nft-staked-sub">$0.00 USD (0%)</div>
+          </div>
+          <div class="farm-proto-metric farm-proto-rewards">
+            <div class="farm-proto-label">Pending Rewards</div>
+            <div class="nft-rewards-stack" id="cashx-eco-nft-pending-rewards">${ecoNftPendingRewardsHTML()}</div>
+          </div>
+        </div>
+        <div class="farm-claim-row"><button class="farm-claim-btn" id="cashx-eco-nft-claim-btn" type="button" onclick="farmsClaimEcoNftRewards()" disabled>Claim All</button></div>
+        <div class="nexion-nft-transaction" id="cashx-eco-nft-transaction"></div>
+        <div class="farm-proto-actions">
+          <button class="farm-stake-btn" id="cashx-eco-nft-stake-btn" type="button" onclick="farmsOpenEcoNftStakeModal()">Stake NFTs</button>
+          <button class="farm-unstake-btn" id="cashx-eco-nft-unstake-btn" type="button" onclick="farmsOpenEcoNftUnstakeModal()" disabled>Unstake</button>
+        </div>
+        <button class="farm-approve-max-btn" id="cashx-eco-nft-approve-btn" type="button" onclick="farmsApproveEcoNftFarm()" disabled>Approve NFT Farm</button>
+        <div class="farm-proto-footer">
+          <span class="farm-footer-time">Time Left: <strong id="cashx-eco-nft-time-left">Loading</strong></span>
+          <span class="farm-footer-rank">#1</span>
+        </div>
+      </div>`;
+  }
+
   function renderFarmGrid(results) {
-    return '<div class="farm-row">' + renderNexionNftFarmCard() + results.map((r, index) => renderFarmRichCard(r, index + 2)).join('') + '</div>';
+    return '<div class="farm-row">' + renderCashxEcoNftFarmCard() + renderNexionNftFarmCard() + results.map((r, index) => renderFarmRichCard(r, index + 3)).join('') + '</div>';
+  }
+
+  function renderCashxEcoNftFarmTableRow() {
+    if (farmStakedOnly && cashxEcoNftState.stakedTokens.length === 0) return '';
+    return `
+      <tr class="farm-table-nft-row">
+        <td><div class="farm-table-nft-name"><img src="${normalizeNftUri(CASHX_ECO_NFT_IMAGE_URI)}" alt="CashX Ecosystem NFT"><div><div class="ft-name">CASHX ECO NFT</div><div class="ft-badge">Nexion pool #1 · NFT</div></div></div></td>
+        <td><div class="ft-val" id="cashx-eco-nft-wallet-count">${wAddr ? 'Loading' : '—'}</div><div class="ft-sub">NFTs in wallet</div></td>
+        <td><div class="ft-val" id="cashx-eco-nft-staked-count">${wAddr ? 'Loading' : '—'}</div><div class="ft-sub">NFTs staked</div></td>
+        <td><div class="ft-val">4 tokens</div><div class="ft-sub">CASHX · DISTROX · DIVX · GSX</div></td>
+        <td style="text-align:right"><div style="display:flex;justify-content:flex-end;gap:6px;flex-wrap:wrap">
+          <button class="farm-row-toggle" type="button" onclick="farmsOpenEcoNftStakeModal()">Stake</button>
+          <button class="farm-row-toggle" type="button" onclick="farmsOpenEcoNftUnstakeModal()" ${wAddr && cashxEcoNftState.stakedTokens.length ? '' : 'disabled'}>Unstake</button>
+          <button class="farm-row-toggle" type="button" onclick="farmsClaimEcoNftRewards()" ${cashxEcoNftState.pendingRewards.some(reward => reward.amount > 0n) ? '' : 'disabled'}>Claim</button>
+        </div></td>
+      </tr>`;
   }
 
   function renderNexionNftFarmTableRow() {
@@ -11130,13 +11276,14 @@ const PULSE_ID     = 369;
           </tr>
         </thead>
         <tbody>
+          ${renderCashxEcoNftFarmTableRow()}
           ${renderNexionNftFarmTableRow()}
           ${results.map(r => {
             const liqUrl = pulsexAddLiquidityURL(r.lpTokens, r.farm);
             return `
           <tr class="farm-table-main" id="farm-table-row-${r.pid}" onclick="farmsToggleTableRow(${r.pid})">
             <td>
-              <div class="ft-name">${farmTitleHTML(r.farm.name)}</div>
+              <div class="ft-name">${farmTitleHTML(r.farm.name, r.farm.lp, r.pid, r.farm.version || 'PLP V2')}</div>
               <div class="ft-badge">${r.farm.label}</div>
             </td>
             <td>
@@ -11145,7 +11292,7 @@ const PULSE_ID     = 369;
             </td>
             <td>
               <div class="ft-val" id="farm-staked-${r.pid}">${fmtFarm(r.staked)}</div>
-              <div class="ft-sub">LP tokens</div>
+              <div class="ft-sub">${r.farm.single ? r.farm.name : 'LP tokens'}</div>
             </td>
             <td>
               <div class="ft-val" id="farm-pending-${r.pid}">${fmtFarm(r.pending)}</div>
@@ -11340,6 +11487,18 @@ const PULSE_ID     = 369;
       });
     }
 
+    if (wAddr && cashxEcoNftState.stakedTokens.length > 0) {
+      (cashxEcoNftState.rewards || []).forEach(reward => {
+        addReward({
+          address: reward.token,
+          symbol: reward.symbol,
+          raw: ecoNftRewardProjectionRaw(86400, reward),
+          decimals: Number(reward.decimals || 18),
+          scaledPrice: Number(reward.scaledPrice || 0)
+        });
+      });
+    }
+
     return [...rewards.values()].sort((a, b) => {
       if (a.hasPrice !== b.hasPrice) return a.hasPrice ? -1 : 1;
       if (a.hasPrice && b.hasPrice && b.usd !== a.usd) return b.usd - a.usd;
@@ -11397,22 +11556,25 @@ const PULSE_ID     = 369;
     }, 0);
     // Value staked NFTs from the mint contract's live eDAI + PLS price, then add
     // the NFT pool's funded reward reserve. This avoids inventing a floor price.
-    const nftFarmTvl = Number.isFinite(nftFarmState.tvlUsd) ? nftFarmState.tvlUsd : 0;
+    const nftFarmTvl = (Number.isFinite(nftFarmState.tvlUsd) ? nftFarmState.tvlUsd : 0) +
+      (Number.isFinite(cashxEcoNftState.tvlUsd) ? cashxEcoNftState.tvlUsd : 0);
     const totalTvl = lpFarmTvl + nftFarmTvl;
     const regularClaimable = results.reduce((sum, r) => sum + farmUsdNumber(r.valuation?.pendingUsd), 0);
-    const nftClaimable = nftFarmClaimableUsd();
+    const nftClaimable = nftFarmClaimableUsd() + ecoNftClaimableUsd();
     const totalClaimable = regularClaimable + nftClaimable;
     const lpUserStaked = results.reduce((sum, r) => sum + farmUsdNumber(r.valuation?.userStakedUsd), 0);
-    // NFTs have no defensible live floor price here. Keep their count visible,
-    // but do not treat the mint cost as withdrawable staked principal.
-    const totalUserStaked = lpUserStaked;
-    set('nexion-farms-count', `${FARMS.length + 1} farms`);
+    const ecoNftUserStaked = Number.isFinite(cashxEcoNftState.nftUnitValueUsd)
+      ? cashxEcoNftState.stakedTokens.length * cashxEcoNftState.nftUnitValueUsd
+      : 0;
+    const totalUserStaked = lpUserStaked + ecoNftUserStaked;
+    set('nexion-farms-count', `${FARMS.length + 2} farms`);
     set('farms-total-tvl', totalTvl > 0 ? fmtUsd(totalTvl, 2).replace(' USD', '') : 'Loading');
     set('farms-total-claimable', fmtUsd(totalClaimable, 2));
     set('farms-total-user-staked', fmtUsd(totalUserStaked, 2));
     updateDailyRewardSummary(results);
     // Only trust a COMPLETE load for the 24h-change history (partial sums would poison it).
-    if (totalTvl > 0 && Number.isFinite(nftFarmState.tvlUsd) && results.length >= FARMS.length && results.every(r => r && r.valuation)) {
+    if (totalTvl > 0 && Number.isFinite(nftFarmState.tvlUsd) && Number.isFinite(cashxEcoNftState.tvlUsd) &&
+        results.length >= FARMS.length && results.every(r => r && r.valuation)) {
       updateTvlChange(totalTvl);
     }
     updateClaimAllButton(results);
@@ -11461,11 +11623,12 @@ const PULSE_ID     = 369;
     const positionsLabel = document.getElementById('farms-active-positions');
     const claimables = farmClaimableResults(results);
     const stakedPositions = farmActiveStakedResults(results);
-    const nftPositionCount = nftFarmState.stakedTokens.length > 0 ? 1 : 0;
+    const nftPositionCount = (nftFarmState.stakedTokens.length > 0 ? 1 : 0) +
+      (cashxEcoNftState.stakedTokens.length > 0 ? 1 : 0);
     const activePositionCount = stakedPositions.length + nftPositionCount;
     const connected = Boolean(wProvider && wAddr);
     if (positionsLabel) {
-      const nftSuffix = nftPositionCount ? ' (1 NFT)' : '';
+      const nftSuffix = nftPositionCount ? ` (${nftPositionCount} NFT${nftPositionCount === 1 ? '' : 's'})` : '';
       positionsLabel.textContent = `${activePositionCount} active position${activePositionCount === 1 ? '' : 's'}${nftSuffix}`;
     }
     if (!btn) return;
@@ -11506,6 +11669,7 @@ const PULSE_ID     = 369;
     }
     el.innerHTML = farmView === 'table' ? renderFarmTable(visibleResults) : renderFarmGrid(visibleResults);
     renderNftFarmDom();
+    renderEcoNftFarmDom();
     renderFarmRankings();
     if (lastVaultResults.length) renderVaultResults();
     updateFarmCountdowns();
@@ -11528,6 +11692,19 @@ const PULSE_ID     = 369;
   }
 
   function goToFarm(lp) {
+    if (String(lp).toLowerCase() === '__cashx_eco_nft__') {
+      if (farmStakedOnly && cashxEcoNftState.stakedTokens.length === 0) setStakedFilter(false);
+      requestAnimationFrame(() => {
+        const card = document.getElementById('cashx-eco-nft-farm-card');
+        if (!card) return;
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        card.classList.remove('farm-focus');
+        void card.offsetWidth;
+        card.classList.add('farm-focus');
+        setTimeout(() => card.classList.remove('farm-focus'), 1700);
+      });
+      return;
+    }
     if (String(lp).toLowerCase() === '__nft__') {
       if (farmStakedOnly && nftFarmState.stakedTokens.length === 0) setStakedFilter(false);
       requestAnimationFrame(() => {
@@ -12339,7 +12516,6 @@ const PULSE_ID     = 369;
   }
 
   function closeNftFarmModal() {
-    if (nftFarmState.busy) return;
     const modal = document.getElementById('nft-farm-modal');
     if (!modal) return;
     modal.hidden = true;
@@ -12490,6 +12666,519 @@ const PULSE_ID     = 369;
     }
   }
 
+  // ── CashX Ecosystem NFT farm (Nexion pool #1) ───────────────────────────
+  function ecoNftTokenIds() {
+    return cashxEcoNftState.mode === 'unstake' ? cashxEcoNftState.stakedTokens : cashxEcoNftState.walletTokens;
+  }
+
+  function ecoNftAprDisplay() {
+    return Number.isFinite(cashxEcoNftState.apr)
+      ? `${cashxEcoNftState.apr.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`
+      : '—';
+  }
+
+  function ecoNftRemainingDisplay() {
+    return Number.isFinite(cashxEcoNftState.remainingRewardsUsd)
+      ? fmtUsd(cashxEcoNftState.remainingRewardsUsd, 2)
+      : 'Loading';
+  }
+
+  function ecoNftPendingEntries(pendingResult) {
+    const tokens = Array.from(pendingResult?.tokens ?? pendingResult?.[0] ?? [], String);
+    const amounts = Array.from(pendingResult?.amounts ?? pendingResult?.[1] ?? [], value => BigInt(value || 0));
+    const configured = cashxEcoNftState.rewards.map(reward => String(reward.token || '').toLowerCase());
+    return tokens.map((token, index) => ({ token, amount: amounts[index] || 0n, index }))
+      .sort((left, right) => {
+        const leftIndex = configured.indexOf(left.token.toLowerCase());
+        const rightIndex = configured.indexOf(right.token.toLowerCase());
+        return (leftIndex < 0 ? 999 : leftIndex) - (rightIndex < 0 ? 999 : rightIndex);
+      });
+  }
+
+  function ecoNftRewardProjectionRaw(seconds, reward) {
+    const stakedCount = BigInt(cashxEcoNftState.stakedTokens.length);
+    const totalStaked = cashxEcoNftState.totalStaked;
+    if (!reward || typeof reward.rewardPerSecond !== 'bigint' ||
+        typeof totalStaked !== 'bigint' || totalStaked <= 0n || stakedCount <= 0n) return 0n;
+    const endTime = Number(cashxEcoNftState.poolInfo?.endTime ?? cashxEcoNftState.poolInfo?.[3] ?? 0);
+    const secondsLeft = endTime ? Math.max(endTime - Math.floor(Date.now() / 1000), 0) : Number(seconds);
+    const projectedSeconds = Math.min(Math.max(Math.floor(Number(seconds)), 0), secondsLeft);
+    return reward.rewardPerSecond * BigInt(projectedSeconds) * stakedCount / totalStaked;
+  }
+
+  function formatEcoNftRewardProjection(raw, reward) {
+    const tokenAmount = formatNftReward(raw, reward?.decimals || 18, 2);
+    const usd = reward?.scaledPrice
+      ? fmtUsd(rawUsd(raw, reward.scaledPrice, reward.decimals || 18), 2)
+      : '—';
+    return `${tokenAmount} ${reward?.symbol || 'Reward'} (${usd})`;
+  }
+
+  function ecoNftRewardProjectionRowsHTML(reward) {
+    return [
+      ['Daily:', 86400],
+      ['Weekly:', 604800],
+      ['Monthly:', 2592000],
+      ['Yearly:', 31536000]
+    ].map(([label, seconds]) => `
+      <div><span>${label}</span><strong>${formatEcoNftRewardProjection(ecoNftRewardProjectionRaw(seconds, reward), reward)}</strong></div>
+    `).join('');
+  }
+
+  function ecoNftRewardProjectionButtonHTML(reward) {
+    return `
+      <span class="farm-reward-projection-wrap">
+        <button class="farm-reward-chart-btn" type="button" title="${farmSafeText(reward?.symbol || 'Reward')} NFT rewards projection" aria-label="${farmSafeText(reward?.symbol || 'Reward')} NFT rewards projection">
+          ${chartIconHTML()}
+        </button>
+        <span class="farm-reward-projection-popover" role="tooltip">
+          <span class="farm-reward-projection-title">${chartIconHTML()}<span>${farmSafeText(reward?.symbol || 'Reward')} NFT Rewards Projection</span></span>
+          <span class="farm-reward-projection-lines">${ecoNftRewardProjectionRowsHTML(reward)}</span>
+        </span>
+      </span>`;
+  }
+
+  function ecoNftPendingRewardsHTML() {
+    const fallback = ['CASHX', 'DISTROX', 'DIVX', 'GSX'].map(symbol => ({
+      token: TOKEN_ADDRESSES[symbol], symbol, decimals: 18, scaledPrice: null
+    }));
+    const rewards = cashxEcoNftState.rewards.length ? cashxEcoNftState.rewards : fallback;
+    return rewards.map(reward => {
+      const pending = cashxEcoNftState.pendingRewards.find(item =>
+        String(item.token).toLowerCase() === String(reward.token).toLowerCase())?.amount ?? 0n;
+      const amount = wAddr ? `${formatNftRewardFixed(pending, reward.decimals, 2)} ${reward.symbol}` : `0.00 ${reward.symbol}`;
+      const usd = reward.scaledPrice ? fmtUsd(rawUsd(pending, reward.scaledPrice, reward.decimals), 2) : '—';
+      const logo = TOKEN_LOGOS[String(reward.symbol).toUpperCase()] || 'cashx-logo.png';
+      return `<div class="nft-reward-line"><img src="${logo}" alt="${farmSafeText(reward.symbol)}"><span class="farm-rewards-tokenline"><span>${amount}</span>${ecoNftRewardProjectionButtonHTML(reward)}</span><span class="farm-rewards-usd">${usd}</span></div>`;
+    }).join('');
+  }
+
+  function ecoNftClaimableUsd() {
+    return cashxEcoNftState.pendingRewards.reduce((sum, pending) => {
+      const reward = cashxEcoNftState.rewards.find(item => String(item.token).toLowerCase() === String(pending.token).toLowerCase());
+      const usd = reward?.scaledPrice ? rawUsd(pending.amount, reward.scaledPrice, reward.decimals) : null;
+      return sum + (Number.isFinite(usd) ? usd : 0);
+    }, 0);
+  }
+
+  function setEcoNftStatus(message = '', isError = false, txHash = '') {
+    cashxEcoNftState.status = message;
+    cashxEcoNftState.statusError = Boolean(isError);
+    cashxEcoNftState.lastTxHash = txHash || '';
+    renderEcoNftFarmDom();
+    renderEcoNftModal();
+  }
+
+  function renderEcoNftStatus(element, baseClass) {
+    if (!element) return;
+    const link = cashxEcoNftState.lastTxHash
+      ? ` · <a href="${pulseScanTxLink(cashxEcoNftState.lastTxHash)}" target="_blank" rel="noopener">View ${cashxEcoNftState.lastTxHash.slice(0, 6)}...${cashxEcoNftState.lastTxHash.slice(-4)}</a>`
+      : '';
+    element.innerHTML = cashxEcoNftState.status ? `${farmSafeText(cashxEcoNftState.status)}${link}` : '';
+    element.className = `${baseClass}${cashxEcoNftState.status ? ' visible' : ''}${cashxEcoNftState.statusError ? ' err' : ''}`;
+  }
+
+  function renderEcoNftFarmDom() {
+    const setText = (id, value) => {
+      const element = document.getElementById(id);
+      if (element) element.textContent = value;
+    };
+    const connected = Boolean(wProvider && wAddr);
+    const userReady = connected && cashxEcoNftState.userDataReady && cashxEcoNftState.userAddress === String(wAddr).toLowerCase();
+    const pool = cashxEcoNftState.poolInfo;
+    const endTime = Number(pool?.endTime ?? pool?.[3] ?? 0);
+    setText('cashx-eco-nft-wallet-count', !connected ? '0' : userReady && Number.isFinite(cashxEcoNftState.walletBalance) ? String(cashxEcoNftState.walletBalance) : 'Loading');
+    setText('cashx-eco-nft-staked-count', !connected ? '0' : userReady ? String(cashxEcoNftState.stakedTokens.length) : 'Loading');
+    const userStakedCount = userReady ? BigInt(cashxEcoNftState.stakedTokens.length) : 0n;
+    const userStakedUsd = Number.isFinite(cashxEcoNftState.nftUnitValueUsd)
+      ? Number(userStakedCount) * cashxEcoNftState.nftUnitValueUsd
+      : 0;
+    const userStakedShare = formatFarmPoolSharePercent(userStakedCount, cashxEcoNftState.totalStaked) || '0%';
+    setText('cashx-eco-nft-staked-sub', `${fmtUsd(userStakedUsd, 2)} (${userStakedShare})`);
+    setText('cashx-eco-nft-total-staked', typeof cashxEcoNftState.totalStaked === 'bigint' ? cashxEcoNftState.totalStaked.toLocaleString('en-US') : 'Loading');
+    const aprDisplay = ecoNftAprDisplay();
+    setText('cashx-eco-nft-apr', aprDisplay);
+    const aprBreakdown = document.getElementById('cashx-eco-nft-apr-breakdown');
+    if (aprBreakdown) aprBreakdown.innerHTML = aprBreakdownHTML(aprDisplay);
+    setText('cashx-eco-nft-remaining', ecoNftRemainingDisplay());
+    setText('cashx-eco-nft-reward-count', `${cashxEcoNftState.rewards.length || 4} reward tokens`);
+    setText('cashx-eco-nft-time-left', endTime ? formatCountdown(endTime * 1000 - Date.now()) : 'Loading');
+    const pending = document.getElementById('cashx-eco-nft-pending-rewards');
+    if (pending) pending.innerHTML = ecoNftPendingRewardsHTML();
+    const hasPending = cashxEcoNftState.pendingRewards.some(reward => reward.amount > 0n);
+    const claim = document.getElementById('cashx-eco-nft-claim-btn');
+    if (claim) claim.disabled = !connected || cashxEcoNftState.busy || !hasPending;
+    const stake = document.getElementById('cashx-eco-nft-stake-btn');
+    if (stake) stake.disabled = cashxEcoNftState.busy;
+    const unstake = document.getElementById('cashx-eco-nft-unstake-btn');
+    if (unstake) unstake.disabled = cashxEcoNftState.busy || !userReady || cashxEcoNftState.stakedTokens.length === 0;
+    const approve = document.getElementById('cashx-eco-nft-approve-btn');
+    if (approve) {
+      approve.textContent = cashxEcoNftState.approved ? 'NFT Farm Approved' : 'Approve NFT Farm';
+      approve.disabled = !connected || cashxEcoNftState.busy || cashxEcoNftState.approved;
+    }
+    const max = document.getElementById('cashx-eco-nft-wallet-max');
+    if (max) max.disabled = cashxEcoNftState.busy || !userReady || cashxEcoNftState.walletTokens.length === 0;
+    renderEcoNftStatus(document.getElementById('cashx-eco-nft-transaction'), 'nexion-nft-transaction');
+  }
+
+  async function fetchEcoNftMetadata(tokenId) {
+    const key = String(tokenId);
+    if (cashxEcoNftState.metadata.has(key)) return cashxEcoNftState.metadata.get(key);
+    if (cashxEcoNftState.metadataLoading.has(key)) return null;
+    cashxEcoNftState.metadataLoading.add(key);
+    let metadata = { name: `CashX Ecosystem NFT #${key}`, image: normalizeNftUri(CASHX_ECO_NFT_IMAGE_URI) };
+    try {
+      const nft = new ethers.Contract(CASHX_ECO_NFT_COLLECTION, CASHMONEY_NFT_ABI, readProvider());
+      const uri = await nft.tokenURI(BigInt(key));
+      const json = parseNftDataJson(uri) || await fetchNftJson(uri);
+      const image = normalizeNftUri(json?.image || json?.image_url || CASHX_ECO_NFT_IMAGE_URI);
+      metadata = { name: String(json?.name || metadata.name), image };
+    } catch (error) {
+      console.warn(`CashX Ecosystem NFT metadata unavailable for #${key}:`, error);
+    } finally {
+      cashxEcoNftState.metadata.set(key, metadata);
+      cashxEcoNftState.metadataLoading.delete(key);
+      renderEcoNftModal();
+    }
+    return metadata;
+  }
+
+  async function fetchEcoNftPrices(calculator, addresses) {
+    const normalized = addresses.map(address => String(address || '').toLowerCase());
+    try {
+      const batch = await retry(() => calculator.getBatchPrice(normalized), 4);
+      if (batch.length === normalized.length && batch.every(value => BigInt(value || 0) > 0n)) return batch;
+    } catch (error) {
+      console.warn('CashX Ecosystem NFT batch pricing retrying individually:', error);
+    }
+    const individual = await mapLimit(normalized, 2, async address => {
+      const values = await retry(() => calculator.getBatchPrice([address]), 3);
+      return values?.[0] ?? 0n;
+    });
+    if (individual.some(value => BigInt(value || 0) <= 0n)) throw new Error('CashX Ecosystem NFT prices unavailable');
+    return individual;
+  }
+
+  async function refreshEcoNftPublicStats() {
+    if (cashxEcoNftState.publicLoading || !window.ethers) return;
+    cashxEcoNftState.publicLoading = true;
+    try {
+      const provider = readProvider();
+      const farm = new ethers.Contract(NEXION_NFT_FARM_CONTRACT, NEXION_NFT_FARM_ABI, provider);
+      const nft = new ethers.Contract(CASHX_ECO_NFT_COLLECTION, CASHX_ECO_NFT_ABI, provider);
+      const [poolInfo, rewardRows, nftPriceRaw] = await Promise.all([
+        farm.poolInfo(CASHX_ECO_NFT_POOL_ID),
+        farm.getPoolRewards(CASHX_ECO_NFT_POOL_ID).catch(() => []),
+        nft.nftPrice().catch(() => 0n)
+      ]);
+      cashxEcoNftState.poolInfo = poolInfo;
+      cashxEcoNftState.totalStaked = BigInt(poolInfo.totalStaked ?? poolInfo[1] ?? 0);
+      cashxEcoNftState.depositFee = BigInt(poolInfo.depositFeePerNFT ?? poolInfo[6] ?? 0);
+      const rows = Array.from(rewardRows || []);
+      const tokens = rows.map(row => row.token ?? row[0]);
+      const calculator = new ethers.Contract(NEXION_LP_CALCULATOR, NEXION_PRICE_ABI, provider);
+      const prices = await fetchEcoNftPrices(calculator, [...tokens, NFT_VALUE_WPLS_ADDRESS]);
+      const plsScaledPrice = Number(prices?.[tokens.length] ?? 0);
+      cashxEcoNftState.nftUnitValueUsd = nftPriceRaw > 0n && Number.isFinite(plsScaledPrice) && plsScaledPrice > 0
+        ? rawUsd(BigInt(nftPriceRaw), plsScaledPrice, 18)
+        : null;
+      const start = Number(poolInfo.startTime ?? poolInfo[2] ?? 0);
+      const end = Number(poolInfo.endTime ?? poolInfo[3] ?? 0);
+      const duration = BigInt(Math.max(end - start, 0));
+      const secondsLeft = BigInt(Math.max(end - Math.floor(Date.now() / 1000), 0));
+      cashxEcoNftState.rewards = await Promise.all(rows.map(async (row, index) => {
+        const token = row.token ?? row[0];
+        const meta = await fetchTokenMeta(provider, token, 'Reward');
+        const totalReward = BigInt(row.totalReward ?? row[1] ?? 0);
+        const rewardPerSecond = BigInt(row.rewardPerSecond ?? row[2] ?? 0);
+        const scaled = Number(prices?.[index] ?? 0);
+        return {
+          token, symbol: meta.symbol || 'Reward', decimals: meta.decimals || 18,
+          totalReward, rewardPerSecond,
+          scaledPrice: Number.isFinite(scaled) && scaled > 0 ? scaled : null,
+          remaining: duration > 0n ? totalReward * secondsLeft / duration : 0n
+        };
+      }));
+      cashxEcoNftState.remainingRewardsUsd = cashxEcoNftState.rewards.reduce((sum, reward) => {
+        const usd = reward.scaledPrice ? rawUsd(reward.remaining, reward.scaledPrice, reward.decimals) : null;
+        return sum + (Number.isFinite(usd) ? usd : 0);
+      }, 0);
+      cashxEcoNftState.stakedValueUsd = Number.isFinite(cashxEcoNftState.nftUnitValueUsd)
+        ? Number(cashxEcoNftState.totalStaked) * cashxEcoNftState.nftUnitValueUsd
+        : null;
+      cashxEcoNftState.tvlUsd = (Number.isFinite(cashxEcoNftState.stakedValueUsd) ? cashxEcoNftState.stakedValueUsd : 0) +
+        (Number.isFinite(cashxEcoNftState.remainingRewardsUsd) ? cashxEcoNftState.remainingRewardsUsd : 0);
+      const dailyUsd = cashxEcoNftState.rewards.reduce((sum, reward) => {
+        const usd = reward.scaledPrice ? rawUsd(reward.rewardPerSecond * 86400n, reward.scaledPrice, reward.decimals) : null;
+        return sum + (Number.isFinite(usd) ? usd : 0);
+      }, 0);
+      cashxEcoNftState.dailyUsdPerNft = cashxEcoNftState.totalStaked > 0n ? dailyUsd / Number(cashxEcoNftState.totalStaked) : null;
+      cashxEcoNftState.apr = Number.isFinite(cashxEcoNftState.dailyUsdPerNft) &&
+          Number.isFinite(cashxEcoNftState.nftUnitValueUsd) && cashxEcoNftState.nftUnitValueUsd > 0
+        ? cashxEcoNftState.dailyUsdPerNft * 365 / cashxEcoNftState.nftUnitValueUsd * 100
+        : null;
+    } catch (error) {
+      console.warn('CashX Ecosystem NFT pool read failed:', error);
+      if (!cashxEcoNftState.publicRetryTimer && window.location.hash === '#farms') {
+        cashxEcoNftState.publicRetryTimer = setTimeout(() => {
+          cashxEcoNftState.publicRetryTimer = null;
+          refreshEcoNftPublicStats();
+        }, 2500);
+      }
+    } finally {
+      cashxEcoNftState.publicLoading = false;
+      renderEcoNftFarmDom();
+      updateFarmSummaries(lastFarmResults);
+    }
+  }
+
+  async function refreshEcoNftData() {
+    refreshEcoNftPublicStats();
+    if (!wProvider || !wAddr) {
+      cashxEcoNftState.requestId++;
+      cashxEcoNftState.walletTokens = [];
+      cashxEcoNftState.stakedTokens = [];
+      cashxEcoNftState.walletBalance = 0;
+      cashxEcoNftState.userDataReady = false;
+      cashxEcoNftState.userAddress = '';
+      cashxEcoNftState.pendingRewards = [];
+      cashxEcoNftState.approved = false;
+      cashxEcoNftState.userLoading = false;
+      renderEcoNftFarmDom();
+      return;
+    }
+    if (cashxEcoNftState.userLoading) return;
+    const requestId = ++cashxEcoNftState.requestId;
+    const address = String(wAddr).toLowerCase();
+    cashxEcoNftState.userAddress = address;
+    cashxEcoNftState.userLoading = true;
+    renderEcoNftFarmDom();
+    try {
+      const provider = readProvider();
+      const nft = new ethers.Contract(CASHX_ECO_NFT_COLLECTION, CASHMONEY_NFT_ABI, provider);
+      const farm = new ethers.Contract(NEXION_NFT_FARM_CONTRACT, NEXION_NFT_FARM_ABI, provider);
+      const [balanceRaw, stakedRaw, pendingRaw, approved] = await withTimeout(Promise.all([
+        nft.balanceOf(address),
+        farm.getUserStakedTokens(CASHX_ECO_NFT_POOL_ID, address).catch(() => []),
+        farm.pendingRewards(CASHX_ECO_NFT_POOL_ID, address).catch(() => [[], []]),
+        nft.isApprovedForAll(address, NEXION_NFT_FARM_CONTRACT).catch(() => false)
+      ]), 12000, 'CashX Ecosystem NFT wallet summary timed out');
+      if (requestId !== cashxEcoNftState.requestId) return;
+      cashxEcoNftState.walletBalance = Number(balanceRaw);
+      cashxEcoNftState.stakedTokens = sortNftTokenIds(stakedRaw || []);
+      cashxEcoNftState.pendingRewards = ecoNftPendingEntries(pendingRaw);
+      cashxEcoNftState.approved = Boolean(approved);
+      cashxEcoNftState.userDataReady = true;
+      const count = Math.min(Math.max(Math.floor(cashxEcoNftState.walletBalance), 0), 250);
+      cashxEcoNftState.walletTokens = sortNftTokenIds(await withTimeout(
+        mapLimit(Array.from({ length: count }, (_, index) => index), 6, index => nft.tokenOfOwnerByIndex(address, index)),
+        12000,
+        'CashX Ecosystem NFT ownership list timed out'
+      ));
+    } catch (error) {
+      console.warn('CashX Ecosystem NFT wallet read failed:', error);
+      cashxEcoNftState.userDataReady = true;
+    } finally {
+      if (requestId === cashxEcoNftState.requestId) {
+        cashxEcoNftState.userLoading = false;
+        renderEcoNftFarmDom();
+        renderEcoNftModal();
+        updateFarmSummaries(lastFarmResults);
+        if (farmStakedOnly && lastFarmResults.length) renderFarmResults(lastFarmResults, true);
+      }
+    }
+  }
+
+  async function refreshEcoNftPending() {
+    if (!wProvider || !wAddr || cashxEcoNftState.busy || cashxEcoNftState.pendingRefreshLoading) return;
+    cashxEcoNftState.pendingRefreshLoading = true;
+    const address = String(wAddr).toLowerCase();
+    try {
+      const farm = new ethers.Contract(NEXION_NFT_FARM_CONTRACT, NEXION_NFT_FARM_ABI, readProvider());
+      const pending = await withTimeout(farm.pendingRewards(CASHX_ECO_NFT_POOL_ID, address), 9000, 'CashX Ecosystem reward refresh timed out');
+      if (String(wAddr || '').toLowerCase() === address) cashxEcoNftState.pendingRewards = ecoNftPendingEntries(pending);
+      renderEcoNftFarmDom();
+      updateFarmSummaries(lastFarmResults);
+    } catch (error) {
+      console.warn('CashX Ecosystem NFT reward refresh failed:', error);
+    } finally {
+      cashxEcoNftState.pendingRefreshLoading = false;
+    }
+  }
+
+  function renderEcoNftModal() {
+    const modal = document.getElementById('cashx-eco-nft-modal');
+    if (!modal) return;
+    const tokenIds = ecoNftTokenIds();
+    const unstaking = cashxEcoNftState.mode === 'unstake';
+    const title = document.getElementById('cashx-eco-nft-modal-title');
+    const status = document.getElementById('cashx-eco-nft-modal-status');
+    const grid = document.getElementById('cashx-eco-nft-token-grid');
+    const count = document.getElementById('cashx-eco-nft-selected-count');
+    const selectAll = document.getElementById('cashx-eco-nft-select-all');
+    const deselectAll = document.getElementById('cashx-eco-nft-deselect-all');
+    const submit = document.getElementById('cashx-eco-nft-submit');
+    if (title) title.textContent = unstaking ? 'Select CashX Ecosystem NFTs to Unstake' : 'Select CashX Ecosystem NFTs to Stake';
+    if (status) status.textContent = cashxEcoNftState.userLoading ? 'Loading token IDs from PulseChain…' : `${tokenIds.length} ${unstaking ? 'staked' : 'wallet'} NFT${tokenIds.length === 1 ? '' : 's'} detected`;
+    if (grid) {
+      if (cashxEcoNftState.userLoading) grid.innerHTML = '<div class="nft-farm-empty">Loading your CashX Ecosystem NFTs…</div>';
+      else if (!tokenIds.length) grid.innerHTML = `<div class="nft-farm-empty">${unstaking ? 'You do not have any NFTs staked in this pool.' : 'No unstaked CashX Ecosystem NFTs were found in this wallet.'}</div>`;
+      else grid.innerHTML = tokenIds.map(tokenId => {
+        const key = String(tokenId);
+        const metadata = cashxEcoNftState.metadata.get(key) || { name: `CashX Ecosystem NFT #${key}`, image: normalizeNftUri(CASHX_ECO_NFT_IMAGE_URI) };
+        const selected = cashxEcoNftState.selected.has(key);
+        return `<button class="nft-farm-token${selected ? ' selected' : ''}" type="button" aria-pressed="${selected}" onclick="farmsToggleEcoNftSelection('${farmSafeText(key)}')">
+          <span class="nft-farm-token-check" aria-hidden="true">✓</span>
+          <span class="nft-farm-token-art"><img src="${farmSafeText(metadata.image)}" alt="${farmSafeText(metadata.name)}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='cashx-logo.png'"></span>
+          <span class="nft-farm-token-footer"><span class="nft-farm-token-id">#${farmSafeText(key)}</span></span>
+        </button>`;
+      }).join('');
+    }
+    const controls = count?.closest('.nft-farm-modal-controls');
+    if (controls) controls.hidden = tokenIds.length <= 1;
+    if (count) count.textContent = `Selected: ${cashxEcoNftState.selected.size} / ${tokenIds.length}`;
+    if (selectAll) selectAll.disabled = cashxEcoNftState.busy || !tokenIds.length;
+    if (deselectAll) deselectAll.disabled = cashxEcoNftState.busy || !cashxEcoNftState.selected.size;
+    if (submit) {
+      submit.textContent = cashxEcoNftState.busy ? 'Waiting for wallet / confirmation…' : `${unstaking ? 'Unstake' : 'Stake'} Selected NFT${cashxEcoNftState.selected.size === 1 ? '' : 's'}`;
+      submit.disabled = cashxEcoNftState.busy || cashxEcoNftState.userLoading || cashxEcoNftState.selected.size === 0;
+    }
+    renderEcoNftStatus(document.getElementById('cashx-eco-nft-modal-tx'), 'nft-farm-modal-tx');
+  }
+
+  async function openEcoNftModal(mode = 'stake') {
+    if (!await ensureNftFarmWallet()) return;
+    cashxEcoNftState.mode = mode === 'unstake' ? 'unstake' : 'stake';
+    cashxEcoNftState.selected.clear();
+    const modal = document.getElementById('cashx-eco-nft-modal');
+    if (!modal) return;
+    if (modal.parentElement !== document.body) document.body.appendChild(modal);
+    modal.dataset.previousOverflow = document.body.style.overflow || 'unset';
+    document.body.style.overflow = 'hidden';
+    modal.hidden = false;
+    renderEcoNftModal();
+    await refreshEcoNftData();
+    ecoNftTokenIds().forEach(tokenId => { if (!cashxEcoNftState.metadata.has(String(tokenId))) void fetchEcoNftMetadata(tokenId); });
+  }
+
+  async function openEcoNftMaxSelection() {
+    await openEcoNftModal('stake');
+    selectAllEcoNfts(true);
+  }
+
+  function closeEcoNftModal() {
+    const modal = document.getElementById('cashx-eco-nft-modal');
+    if (!modal) return;
+    modal.hidden = true;
+    document.body.style.overflow = modal.dataset.previousOverflow && modal.dataset.previousOverflow !== 'unset' ? modal.dataset.previousOverflow : '';
+    delete modal.dataset.previousOverflow;
+  }
+
+  function toggleEcoNftSelection(tokenId) {
+    if (cashxEcoNftState.busy) return;
+    const key = String(tokenId);
+    if (!ecoNftTokenIds().includes(key)) return;
+    if (cashxEcoNftState.selected.has(key)) cashxEcoNftState.selected.delete(key);
+    else cashxEcoNftState.selected.add(key);
+    renderEcoNftModal();
+  }
+
+  function selectAllEcoNfts(select = true) {
+    if (cashxEcoNftState.busy) return;
+    cashxEcoNftState.selected.clear();
+    if (select) ecoNftTokenIds().forEach(tokenId => cashxEcoNftState.selected.add(String(tokenId)));
+    renderEcoNftModal();
+  }
+
+  function scheduleEcoNftRefresh() {
+    refreshEcoNftData();
+    [2500, 7000, 15000, 30000].forEach(delay => setTimeout(() => {
+      if (wProvider && wAddr && window.location.hash === '#farms') refreshEcoNftData();
+    }, delay));
+  }
+
+  async function submitEcoNftSelection() {
+    if (cashxEcoNftState.busy || cashxEcoNftState.selected.size === 0 || !await ensureNftFarmWallet()) return;
+    cashxEcoNftState.busy = true;
+    setEcoNftStatus('Confirm the transaction in your wallet.');
+    const tokenIds = [...cashxEcoNftState.selected].map(value => BigInt(value));
+    const mode = cashxEcoNftState.mode;
+    try {
+      const signer = await wProvider.getSigner();
+      const farm = new ethers.Contract(NEXION_NFT_FARM_CONTRACT, NEXION_NFT_FARM_ABI, signer);
+      if (mode === 'stake') {
+        const nft = new ethers.Contract(CASHX_ECO_NFT_COLLECTION, CASHMONEY_NFT_ABI, signer);
+        if (!await nft.isApprovedForAll(wAddr, NEXION_NFT_FARM_CONTRACT)) {
+          const approval = await nft.setApprovalForAll(NEXION_NFT_FARM_CONTRACT, true);
+          if (!await waitForNftFarmTx(approval, 'CashX Ecosystem NFT approval')) return;
+          cashxEcoNftState.approved = true;
+        }
+        const fee = await farm.calculateDepositFee(CASHX_ECO_NFT_POOL_ID, tokenIds.length);
+        const tx = await farm.depositNFTs(CASHX_ECO_NFT_POOL_ID, tokenIds, { value: fee });
+        if (!await waitForNftFarmTx(tx, 'Stake CashX Ecosystem NFTs')) return;
+      } else {
+        const tx = await farm.withdrawNFTs(CASHX_ECO_NFT_POOL_ID, tokenIds);
+        if (!await waitForNftFarmTx(tx, 'Unstake CashX Ecosystem NFTs')) return;
+      }
+      cashxEcoNftState.selected.clear();
+      setEcoNftStatus(`${mode === 'stake' ? 'Stake' : 'Unstake'} confirmed.`);
+      await refreshEcoNftData();
+      cashxEcoNftState.busy = false;
+      closeEcoNftModal();
+    } catch (error) {
+      console.error(`CashX Ecosystem NFT ${mode} failed:`, error);
+      setEcoNftStatus(nftFarmFriendlyError(error), true);
+    } finally {
+      cashxEcoNftState.busy = false;
+      renderEcoNftFarmDom();
+      renderEcoNftModal();
+      scheduleEcoNftRefresh();
+    }
+  }
+
+  async function approveEcoNftFarm() {
+    if (cashxEcoNftState.busy || cashxEcoNftState.approved || !await ensureNftFarmWallet()) return;
+    cashxEcoNftState.busy = true;
+    setEcoNftStatus('Confirm NFT farm approval in your wallet.');
+    try {
+      const signer = await wProvider.getSigner();
+      const nft = new ethers.Contract(CASHX_ECO_NFT_COLLECTION, CASHMONEY_NFT_ABI, signer);
+      const tx = await nft.setApprovalForAll(NEXION_NFT_FARM_CONTRACT, true);
+      if (await waitForNftFarmTx(tx, 'CashX Ecosystem NFT approval')) {
+        cashxEcoNftState.approved = true;
+        setEcoNftStatus('NFT farm approved.');
+      }
+    } catch (error) {
+      setEcoNftStatus(nftFarmFriendlyError(error), true);
+    } finally {
+      cashxEcoNftState.busy = false;
+      renderEcoNftFarmDom();
+    }
+  }
+
+  async function claimEcoNftRewards() {
+    if (cashxEcoNftState.busy || !await ensureNftFarmWallet()) return;
+    if (!cashxEcoNftState.pendingRewards.some(reward => reward.amount > 0n)) return setEcoNftStatus('No rewards are currently claimable.');
+    cashxEcoNftState.busy = true;
+    setEcoNftStatus('Confirm reward claim in your wallet.');
+    try {
+      const signer = await wProvider.getSigner();
+      const farm = new ethers.Contract(NEXION_NFT_FARM_CONTRACT, NEXION_NFT_FARM_ABI, signer);
+      const tx = await farm.claimRewards(CASHX_ECO_NFT_POOL_ID);
+      if (await waitForNftFarmTx(tx, 'Claim CashX Ecosystem NFT rewards')) {
+        cashxEcoNftState.pendingRewards = cashxEcoNftState.pendingRewards.map(reward => ({ ...reward, amount: 0n }));
+        setEcoNftStatus('Rewards claimed.');
+      }
+    } catch (error) {
+      setEcoNftStatus(nftFarmFriendlyError(error), true);
+    } finally {
+      cashxEcoNftState.busy = false;
+      renderEcoNftFarmDom();
+      scheduleEcoNftRefresh();
+    }
+  }
+
   // ── Helpers ────────────────────────────────────────────────────────────────
   const FARM_TX_WAIT_TIMEOUT_MS = 90000;
 
@@ -12597,16 +13286,28 @@ const PULSE_ID     = 369;
     if (window.location.hash === '#farms' && farmProductView === 'vaults') fetchVaults(true);
   }, 30000);
   setInterval(() => {
-    if (window.location.hash === '#farms') refreshNftFarmPending();
+    if (window.location.hash === '#farms') {
+      refreshNftFarmPending();
+      refreshEcoNftPending();
+    }
   }, 10000);
   setInterval(() => {
-    if (window.location.hash === '#farms') refreshNftFarmData();
+    if (window.location.hash === '#farms') {
+      refreshNftFarmData();
+      refreshEcoNftData();
+    }
   }, 30000);
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && window.location.hash === '#farms') refreshNftFarmPending();
+    if (!document.hidden && window.location.hash === '#farms') {
+      refreshNftFarmPending();
+      refreshEcoNftPending();
+    }
   });
   window.addEventListener('focus', () => {
-    if (window.location.hash === '#farms') refreshNftFarmPending();
+    if (window.location.hash === '#farms') {
+      refreshNftFarmPending();
+      refreshEcoNftPending();
+    }
   });
 
   async function refreshFarmData(pid) {
@@ -12962,15 +13663,19 @@ const PULSE_ID     = 369;
         fetchRewards();
         fetchFarms();
         refreshNftFarmData();
+        refreshEcoNftData();
         fetchVaults(true);
       }
     });
     window.ethereum.on('chainChanged', () => { disconnectWallet(); showDisconnected(); });
   }
   document.addEventListener('keydown', event => {
-    if (event.key === 'Escape') closeNftFarmModal();
+    if (event.key === 'Escape') {
+      closeNftFarmModal();
+      closeEcoNftModal();
+    }
   });
-  return { init, connectWallet, refreshAll, disconnectWallet, copyAddr, copyLp, setFarmView, setStakedFilter, setProductView, setVaultMode, fillVaultMax, toggleVaultLpBreakdown, fetchVaults, approveVault, depositVault, withdrawVault, withdrawAllVault, goToFarm, fillInput, updateApproveLabel, approveFarm, stakeFarm, unstakeFarm, claimFarm, claimAllPendingFarms, toggleTableRow, toggleLpBreakdown, openNftFarmModal, openNftFarmMaxSelection, closeNftFarmModal, toggleNftSelection, selectAllNfts, submitNftSelection, approveNftFarm, claimNftRewards, tryNextNftImage };
+  return { init, connectWallet, refreshAll, disconnectWallet, copyAddr, copyLp, setFarmView, setStakedFilter, setProductView, setVaultMode, fillVaultMax, toggleVaultLpBreakdown, fetchVaults, approveVault, depositVault, withdrawVault, withdrawAllVault, goToFarm, fillInput, updateApproveLabel, approveFarm, stakeFarm, unstakeFarm, claimFarm, claimAllPendingFarms, toggleTableRow, toggleLpBreakdown, openNftFarmModal, openNftFarmMaxSelection, closeNftFarmModal, toggleNftSelection, selectAllNfts, submitNftSelection, approveNftFarm, claimNftRewards, tryNextNftImage, openEcoNftModal, openEcoNftMaxSelection, closeEcoNftModal, toggleEcoNftSelection, selectAllEcoNfts, submitEcoNftSelection, approveEcoNftFarm, claimEcoNftRewards };
 })();
 function farmsConnectWallet(){ return window.FarmsApp.connectWallet(); }
 function farmsRefreshAll(){ return window.FarmsApp.refreshAll(); }
@@ -13008,6 +13713,15 @@ function farmsSubmitNftSelection(){ return window.FarmsApp.submitNftSelection();
 function farmsApproveNftFarm(){ return window.FarmsApp.approveNftFarm(); }
 function farmsClaimNftRewards(){ return window.FarmsApp.claimNftRewards(); }
 function farmsTryNextNftImage(image){ return window.FarmsApp.tryNextNftImage(image); }
+function farmsOpenEcoNftStakeModal(){ return window.FarmsApp.openEcoNftModal('stake'); }
+function farmsOpenEcoNftMaxModal(){ return window.FarmsApp.openEcoNftMaxSelection(); }
+function farmsOpenEcoNftUnstakeModal(){ return window.FarmsApp.openEcoNftModal('unstake'); }
+function farmsCloseEcoNftModal(){ return window.FarmsApp.closeEcoNftModal(); }
+function farmsToggleEcoNftSelection(tokenId){ return window.FarmsApp.toggleEcoNftSelection(tokenId); }
+function farmsSelectAllEcoNfts(select){ return window.FarmsApp.selectAllEcoNfts(select); }
+function farmsSubmitEcoNftSelection(){ return window.FarmsApp.submitEcoNftSelection(); }
+function farmsApproveEcoNftFarm(){ return window.FarmsApp.approveEcoNftFarm(); }
+function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards(); }
 </script>
 
 <script>
