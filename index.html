@@ -9029,6 +9029,7 @@ const PULSE_ID     = 369;
   let vaultsLoading = false;
   let vaultRequestId = 0;
   let lastVaultResults = [];
+  let claimAllBusy = false;
   const vaultActionModes = new Map();
   const vaultBusy = new Set();
   const vaultMessages = new Map();
@@ -13499,12 +13500,105 @@ const PULSE_ID     = 369;
     }
   }
 
+  function claimNonceSummary(state) {
+    if (!state) return '';
+    return `wallet ${state.walletLatest}/${state.walletPending}, chain ${state.chainLatest}/${state.chainPending}`;
+  }
+
+  async function readClaimNonceState(provider) {
+    const reader = readProvider();
+    const [walletLatestHex, walletPendingHex, chainLatest, chainPending] = await Promise.all([
+      provider.request({ method: 'eth_getTransactionCount', params: [wAddr, 'latest'] }),
+      provider.request({ method: 'eth_getTransactionCount', params: [wAddr, 'pending'] }),
+      reader.getTransactionCount(wAddr, 'latest'),
+      reader.getTransactionCount(wAddr, 'pending')
+    ]);
+    return {
+      walletLatest: BigInt(walletLatestHex),
+      walletPending: BigInt(walletPendingHex),
+      chainLatest: BigInt(chainLatest),
+      chainPending: BigInt(chainPending)
+    };
+  }
+
+  function requireMatchingClaimNonce(state) {
+    if (state.walletLatest === state.chainLatest && state.walletPending === state.chainPending) return;
+    const err = new Error(`Wallet RPC nonce mismatch (${claimNonceSummary(state)})`);
+    err.claimNonceState = state;
+    throw err;
+  }
+
   function claimManyError(err) {
     const raw = String(err?.reason || err?.shortMessage || err?.message || '');
-    return friendlyFarmError(raw);
+    const nested = [
+      err?.info?.error?.data?.originalError?.message,
+      err?.info?.error?.data?.message,
+      err?.info?.error?.message,
+      err?.error?.data?.originalError?.message,
+      err?.error?.data?.message,
+      err?.error?.message,
+      err?.data?.message,
+      err?.shortMessage,
+      err?.reason
+    ].find(message => typeof message === 'string' && message.trim());
+    const specific = String(nested || raw);
+    if (specific.toLowerCase().includes('replacement transaction underpriced')) {
+      return 'Transaction could not be submitted. Please try again';
+    }
+    if (err?.claimNonceState) {
+      return 'Wallet connection is out of sync. Reconnect and try again';
+    }
+    return friendlyFarmError(specific);
+  }
+
+  async function prepareClaimMany(farmC, claimables) {
+    const unique = [...new Map(claimables.map(result => [Number(result.pid), result])).values()]
+      .filter(result => Number.isInteger(Number(result.pid)) && Number(result.pid) >= 0);
+    if (!unique.length) throw new Error('No claimable farm positions');
+
+    const reader = readProvider();
+    const requestFor = (method, pids) => ({
+      from: wAddr,
+      to: FARM_CONTRACT,
+      data: farmC.interface.encodeFunctionData(method, method === 'claimMany' ? [pids] : pids)
+    });
+    const prepareBatch = async results => {
+      const pids = results.map(result => Number(result.pid));
+      const request = requestFor('claimMany', pids);
+      await retry(() => reader.call(request), 1);
+      const estimatedGas = await retry(() => reader.estimateGas(request), 2);
+      const gasLimit = (estimatedGas * 11n) / 10n + 50000n;
+      return { results, pids, gasLimit };
+    };
+
+    try {
+      return await prepareBatch(unique);
+    } catch (batchError) {
+      const valid = (await mapLimit(unique, 4, async result => {
+        try {
+          await retry(() => reader.call(requestFor('claim', [Number(result.pid)])), 1);
+          return result;
+        } catch (error) {
+          console.warn(`Skipping unclaimable farm pool ${result.pid}:`, error);
+          return null;
+        }
+      })).filter(Boolean);
+      if (!valid.length) throw batchError;
+      return prepareBatch(valid);
+    }
   }
 
   async function claimAllPendingFarms() {
+    if (claimAllBusy) return;
+    claimAllBusy = true;
+    try {
+      return await runClaimAllPendingFarms();
+    } finally {
+      claimAllBusy = false;
+    }
+  }
+
+  async function runClaimAllPendingFarms() {
     let btn = document.getElementById('farms-claim-all-btn');
     if (btn?.classList.contains('claiming')) return;
 
@@ -13555,10 +13649,22 @@ const PULSE_ID     = 369;
     try {
       const signer = await wProvider.getSigner();
       const farmC = new ethers.Contract(FARM_CONTRACT, FARM_ABI, signer);
-      const pids = claimables.map(r => r.pid);
-      const tx = await farmC.claimMany(pids);
-      setClaimAllStatus(`Claim submitted ${tx.hash ? `${tx.hash.slice(0, 6)}...${tx.hash.slice(-4)}` : ''}`.trim());
-      claimables.forEach(r => setFarmStatus(r.pid, 'Claim All submitted', false));
+      const prepared = await prepareClaimMany(farmC, claimables);
+      const preparedPids = prepared.pids;
+      const skipped = claimables.filter(result => !preparedPids.includes(Number(result.pid)));
+      if (skipped.length) {
+        skipped.forEach(result => setFarmStatus(result.pid, 'Skipped: not currently claimable', true));
+        setClaimAllStatus(`Claiming ${preparedPids.length}; skipping ${skipped.length} unavailable position${skipped.length === 1 ? '' : 's'}`);
+      }
+
+      const nonceState = await readClaimNonceState(provider);
+      requireMatchingClaimNonce(nonceState);
+      const tx = await farmC.claimMany(prepared.pids, {
+        gasLimit: prepared.gasLimit,
+        nonce: nonceState.walletPending
+      });
+      setClaimAllStatus('Claim submitted');
+      prepared.results.forEach(result => setFarmStatus(result.pid, 'Claim submitted', false));
 
       const receipt = await Promise.race([
         tx.wait(),
@@ -13566,13 +13672,14 @@ const PULSE_ID     = 369;
       ]);
       if (!receipt) {
         setClaimAllStatus('Claim submitted. Refreshing rewards...');
-      } else {
-        claimables.forEach(r => {
-          applyClaimedFarmState(r.pid);
-          setFarmStatus(r.pid, '', false);
-        });
-        setClaimAllStatus(`Claimed ${claimables.length} active position${claimables.length === 1 ? '' : 's'}`);
+        prepared.results.forEach(result => scheduleFarmRefresh(result.pid));
+        return;
       }
+      prepared.results.forEach(result => {
+        applyClaimedFarmState(result.pid);
+        setFarmStatus(result.pid, '', false);
+      });
+      setClaimAllStatus(`Claimed ${prepared.results.length} active position${prepared.results.length === 1 ? '' : 's'}`);
       claimables.forEach(r => scheduleFarmRefresh(r.pid));
     } catch(err) {
       const reason = claimManyError(err);
