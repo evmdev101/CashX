@@ -1426,6 +1426,12 @@
     .dash-stage,
     .dash-stage *{letter-spacing:0}
     .dash-stage > *{min-width:0}
+    .dashboard-burn-progress{padding:0 0 4px;color:var(--dash-text,#9edbec)}
+    .burn-progress-heading,.burn-progress-details{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12px;line-height:1.5}
+    .burn-progress-heading{font-weight:700;margin-bottom:8px;color:#9edbec}
+    .burn-progress-track{height:12px;border-radius:999px;background:rgba(118,155,171,.18);overflow:hidden}
+    .burn-progress-fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,#e46c82,#bb789e)}
+    .burn-progress-details{margin-top:8px;color:#8faab5;font-size:11px}
     .dashboard-token-switch{
       display:flex;
       align-items:center;
@@ -4995,6 +5001,14 @@
     </button>
   </div>
 
+  <section class="dashboard-burn-progress" aria-label="Token burn progress">
+    <div class="burn-progress-heading"><span id="burn-progress-label">CASHX burned</span><strong id="burn-progress-percent">Loading…</strong></div>
+    <div class="burn-progress-track" id="burn-progress-track" role="progressbar" aria-labelledby="burn-progress-label" aria-valuemin="0" aria-valuemax="100" aria-valuetext="Loading burn data">
+      <div class="burn-progress-fill" id="burn-progress-fill" style="width:0%"></div>
+    </div>
+    <div class="burn-progress-details"><span id="burn-progress-amount">Loading supply data…</span><span id="burn-progress-remaining">— remaining</span></div>
+  </section>
+
   <!-- STAT BAR -->
   <div class="dash-stat-bar">
     <div class="dash-stat-item">
@@ -5195,12 +5209,20 @@
       logo: 'gsx.png',
       token: '0x395127a44ac1cdc609c8cc9d048e096e8e8fc30e',
       pair: '0x3c2FCC4a47470d81433C659FAb6706f7Aa37b51A',
-      initialSupply: null,
-      treasury: null,
-      treasuryAddresses: []
+      // Creation mint: 4,000,000,000 GSX (18 decimals), log 2115 in
+      // 0xddb6576fd8464533b4e288481b185422f934e2a2e4871064857a3f2d625a532e.
+      initialSupply: 4_000_000_000,
+      // Receiver of the buy/sell treasury taxes, confirmed via getTaxes().
+      treasury: '0xfF6669025c039147f1edDc650d8B009d048e297f',
+      treasuryAddresses: ['0xfF6669025c039147f1edDc650d8B009d048e297f']
     }
   };
+  const DASHBOARD_TOKEN_STORAGE_KEY = 'cashx:dashboard:selected-token';
   let currentDashboardToken = 'cashx';
+  try {
+    const savedToken = localStorage.getItem(DASHBOARD_TOKEN_STORAGE_KEY);
+    if (Object.prototype.hasOwnProperty.call(DASHBOARD_TOKEN_CONFIG, savedToken)) currentDashboardToken = savedToken;
+  } catch (_) { /* Use CashX when browser storage is unavailable. */ }
   let explorerWeb = 'https://scan.pulsechain.com';
   let servicesReady = null;
   function getServicesReady() {
@@ -5649,7 +5671,34 @@
     set('dashboard-wallet-usd', usd);
   }
 
+  function updateDashboardBurnProgress(cfg, burned = null, supply = null, remaining = null, status = 'Loading supply data…') {
+    if (currentDashboardToken !== cfg.key) return;
+    const track = document.getElementById('burn-progress-track');
+    const fill = document.getElementById('burn-progress-fill');
+    if (!track || !fill) return;
+    set('burn-progress-label', `${cfg.symbol} burned`);
+    const valid = [burned, supply, remaining].every(n => typeof n === 'number' && Number.isFinite(n) && n >= 0) && supply > 0 && burned <= supply;
+    if (!valid) {
+      fill.style.width = '0%';
+      track.removeAttribute('aria-valuenow');
+      track.setAttribute('aria-valuetext', status);
+      set('burn-progress-percent', '—');
+      set('burn-progress-amount', status);
+      set('burn-progress-remaining', '— remaining');
+      return;
+    }
+    const pct = burned / supply * 100;
+    const percent = pct > 0 && pct < 0.01 ? '<0.01%' : `${pct.toFixed(2)}%`;
+    fill.style.width = `${pct}%`;
+    track.setAttribute('aria-valuenow', String(pct));
+    track.setAttribute('aria-valuetext', `${percent} of ${cfg.initialSupply ? 'original' : 'tracked'} supply burned; ${fmtN(remaining, 2)} ${cfg.symbol} remaining`);
+    set('burn-progress-percent', `${percent} burned`);
+    set('burn-progress-amount', `${fmtN(burned, 2)} / ${fmtN(supply, 2)} ${cfg.symbol} · ${cfg.initialSupply ? 'original supply' : 'tracked supply'}`);
+    set('burn-progress-remaining', `${fmtN(remaining, 2)} ${cfg.symbol} remaining`);
+  }
+
   function setDashboardLoading() {
+    updateDashboardBurnProgress(activeDashboardConfig());
     ['c-price','c-ch','c-burned','c-burned-pct','c-burned-usd','c-dead','c-dead-count','src-community','c-holders','c-txs','t-pls','t-pls-usd'].forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
@@ -5691,6 +5740,7 @@
   function switchDashboardToken(key) {
     const cfg = DASHBOARD_TOKEN_CONFIG[key] || DASHBOARD_TOKEN_CONFIG.cashx;
     if (currentDashboardToken === cfg.key) return;
+    try { localStorage.setItem(DASHBOARD_TOKEN_STORAGE_KEY, cfg.key); } catch (_) {}
     _dashboardLoadPromise = null;
     applyDashboardTokenFrame(cfg.key);
     setDashboardLoading();
@@ -5769,10 +5819,10 @@
       const provider = new ethers.JsonRpcProvider(DASH_RPC, 369);
       const token = new ethers.Contract(cfg.token, DASH_ERC20_ABI, provider);
       const [decimalsRaw, totalSupplyRaw, deadRaw, zeroRaw, treasuryRaw, dexRes, tokenRes, countersRes, transfersRes] = await Promise.all([
-        token.decimals().catch(() => 18),
-        token.totalSupply().catch(() => 0n),
-        token.balanceOf(DEAD).catch(() => 0n),
-        token.balanceOf(ZERO).catch(() => 0n),
+        token.decimals().catch(() => null),
+        token.totalSupply().catch(() => null),
+        token.balanceOf(DEAD).catch(() => null),
+        token.balanceOf(ZERO).catch(() => null),
         cfg.treasury ? provider.getBalance(cfg.treasury).catch(() => null) : Promise.resolve(null),
         fetch(DASH_DEX_API + cfg.token).then(r => r.ok ? r.json() : null).catch(() => null),
         fetch(`${DASH_SCAN_API}/tokens/${cfg.token}`).then(r => r.ok ? r.json() : null).catch(() => null),
@@ -5781,7 +5831,8 @@
       ]);
       // Ignore a response that finished after the visitor selected another tab.
       if (currentDashboardToken !== cfg.key) return;
-      const decimals = Number(decimalsRaw || 18);
+      if ([decimalsRaw, totalSupplyRaw, deadRaw, zeroRaw].some(value => value === null)) throw new Error('Token supply data unavailable');
+      const decimals = Number(decimalsRaw);
       const totalSupply = parseDashboardTokenAmount(totalSupplyRaw, decimals);
       const deadHeld = parseDashboardTokenAmount(deadRaw, decimals) + parseDashboardTokenAmount(zeroRaw, decimals);
       const dex = dashboardTokenPriceFromDex(dexRes);
@@ -5793,10 +5844,13 @@
         .sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
       const transferBurned = burnTransfers.reduce((sum, tx) => sum + (parseFloat(tx.total?.value || 0) / 1e18), 0);
       const supplyBurned = cfg.initialSupply ? Math.max(cfg.initialSupply - totalSupply, 0) + deadHeld : deadHeld;
-      const burned = Math.max(transferBurned, supplyBurned, deadHeld);
+      // GSX burn() and its automatic burn tax reduce totalSupply. Recent
+      // explorer transfers are only a page of activity, not a lifetime total.
+      const burned = cfg.key === 'gsx' ? supplyBurned : Math.max(transferBurned, supplyBurned, deadHeld);
       const remaining = Math.max(totalSupply - deadHeld, 0);
       const denominator = cfg.initialSupply || Math.max(burned + remaining, 1);
       const burnedPct = denominator > 0 ? burned / denominator * 100 : 0;
+      updateDashboardBurnProgress(cfg, burned, denominator, remaining);
       const treasurySet = new Set((cfg.treasuryAddresses || []).map(a => String(a).toLowerCase()));
       const treasuryItems = burnTransfers.filter(tx => treasurySet.has(String(tx.from?.hash || '').toLowerCase()));
       const latestTreasury = treasuryItems[0] || null;
@@ -5816,7 +5870,9 @@
       set('c-burned-pct', `${burnedPct.toFixed(cfg.initialSupply ? 4 : 2)}% burned`);
       set('c-burned-usd', priceUsd ? fmtUSD(burned * priceUsd) : '—');
       set('c-dead', `${fmtN(treasuryItems.reduce((sum, tx) => sum + (parseFloat(tx.total?.value || 0) / 1e18), 0), 2)} ${cfg.symbol}`);
-      set('c-dead-count', treasuryItems.length ? `${treasuryItems.length} treasury burn${treasuryItems.length === 1 ? '' : 's'}` : 'treasury buy & burn');
+      set('c-dead-count', cfg.key === 'gsx'
+        ? (treasuryItems.length ? `${treasuryItems.length} treasury burn${treasuryItems.length === 1 ? '' : 's'} · recent transfers` : 'No treasury burns in recent transfers')
+        : (treasuryItems.length ? `${treasuryItems.length} treasury burn${treasuryItems.length === 1 ? '' : 's'}` : 'treasury buy & burn'));
       set('src-community', Math.floor(remaining).toLocaleString());
       set('c-holders', countersRes?.token_holders_count || tokenRes?.holders || '—');
       set('c-txs', countersRes?.transfers_count ? `${Number(countersRes.transfers_count).toLocaleString('en-US')} transfers` : 'transfers');
@@ -5829,6 +5885,8 @@
       set('last-up', `Updated ${new Date().toLocaleTimeString()} · ${cfg.symbol}`);
     } catch(err) {
       console.warn(`${cfg.symbol} dashboard refresh failed:`, err);
+      if (currentDashboardToken !== cfg.key) return;
+      updateDashboardBurnProgress(cfg, null, null, null, 'Supply data unavailable · retrying');
       ['c-price','c-burned','c-dead','src-community','c-holders'].forEach(id => set(id, 'Unavailable'));
       set('last-up', `${cfg.symbol} data unavailable · retrying`);
     }
@@ -5975,6 +6033,11 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
       const burned = state.totalTrackedBurned || state.supplyBurned || 0;
       const pct = state.burnedPercent || 0;
       const remaining = Math.max(CASHX.initialSupply - burned, 0);
+      if (state.errors?.some(error => /token reads|balance reads/i.test(error))) {
+        updateDashboardBurnProgress(DASHBOARD_TOKEN_CONFIG.cashx, null, null, null, 'Supply data unavailable · retrying');
+      } else {
+        updateDashboardBurnProgress(DASHBOARD_TOKEN_CONFIG.cashx, burned, CASHX.initialSupply, remaining);
+      }
       const routeBurned = (state.deadWalletBalance || 0) + (state.zeroAddressBalance || 0);
       const treasuryTotal = (state.allBurns || state.recentBurns)
         .filter(tx => isTreasuryBurn(tx))
@@ -6074,6 +6137,8 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
       lsDone();
     }catch(e){
       console.warn('CashX services:',e);
+      if (currentDashboardToken !== 'cashx') return;
+      updateDashboardBurnProgress(DASHBOARD_TOKEN_CONFIG.cashx, null, null, null, 'Supply data unavailable · retrying');
       setErr('c-price'); setErr('p-price'); setErr('c-mcap'); setErr('c-treas'); setErr('c-burned');
       set('c-ch','data unavailable');
       set('c-treas-usd','RPC fallback failed');
@@ -6450,9 +6515,13 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
 
   initRevealCards();
   applyDashboardTokenFrame(currentDashboardToken);
-  _dashApply(); // Paint cached dashboard values immediately; live refresh runs in the background.
-  _bcApply(_bcLoad()); // Instantly restore last accurate burn counts from cache
-  _chartCacheApply(); // Paint cached chart immediately
+  if (currentDashboardToken === 'cashx') {
+    _dashApply(); // These caches contain CashX data only.
+    _bcApply(_bcLoad());
+    _chartCacheApply();
+  } else {
+    setDashboardLoading();
+  }
 
   // Run loadBurnCounts with auto-retry — if API is flaky, try again after 45s
   async function runBurnCounts(force = false) {
