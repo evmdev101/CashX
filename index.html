@@ -4596,6 +4596,8 @@
       #reflections-view .reflection-card.divx-card .reflection-metrics{grid-template-columns:1fr}
     }
 </style>
+<link rel="stylesheet" href="./styles/farm-share-popup.css">
+<script src="./lib/farm-share-popup.js"></script>
 </head>
 <body>
 <div id="ls" aria-hidden="true">
@@ -10516,6 +10518,7 @@ const PULSE_ID     = 369;
 
   async function fetchFarms() {
     if (!wProvider || !wAddr) { renderPlaceholderFarms(); return; }
+    const shareWallet = wAddr;
     const el = document.getElementById('farms-body');
     if (!el) return;
     el.innerHTML = '<div class="farm-loading">··· Loading farm balances…</div>';
@@ -10559,7 +10562,7 @@ const PULSE_ID     = 369;
               fetchNexionValuation(rp, farm, poolInfo, totalStaked, staked, pending, prefetchedPrices(priceMaps, farm)),
               fetchLpBreakdown(rp, farm, staked, token0, token1)
             ]);
-            return { farm, pid, staked, pending, walletLp, allowance, totalStaked, poolInfo, valuation, lpBreakdown, lpTokens: token0 && token1 ? [token0, token1] : null, countdownEnd: timing.get(pid) || null, error: null };
+            return { farm, pid, staked, pending, walletLp, allowance, totalStaked, poolInfo, valuation, lpBreakdown, shareValid: typeof (userInfo.amount ?? userInfo[0]) === 'bigint', lpTokens: token0 && token1 ? [token0, token1] : null, countdownEnd: timing.get(pid) || null, error: null };
           } catch(err) {
             console.error(`${farm.label} (pid=${pid}) FAILED:`, err.message || err);
             return { farm, pid, staked: 0n, pending: 0n, walletLp: 0n, totalStaked: null, countdownEnd: timing.get(pid) || null, error: err.message || String(err) };
@@ -10567,6 +10570,7 @@ const PULSE_ID     = 369;
       });
 
       // Step 5: Show ALL farms (not just staked ones)
+      if (wAddr !== shareWallet) return;
       renderFarmResults(results);
 
     } catch(err) {
@@ -10929,11 +10933,18 @@ const PULSE_ID     = 369;
     detail.innerHTML = farmLpBreakdownCardsHTML(breakdown);
   }
 
-  function farmStakedSubText(r, valuation = {}) {
-    const meta = farmMeta(r.farm);
-    const base = withUsdLabel(valuation.userStakedUsd || meta.userStakedUsd || 'LP tokens');
+  function farmStakedSubHTML(r, valuation = {}) {
+    const base = withUsdLabel(valuation.userStakedUsd || farmMeta(r.farm).userStakedUsd || 'LP tokens');
     const share = valuation.userStakedShare || formatFarmPoolSharePercent(r.staked, r.totalStaked);
-    return share && base !== 'LP tokens' ? `${base} (${share})` : base;
+    if (!share || base === 'LP tokens') return farmSafeText(base);
+    const button = FarmSharePopup.button({
+      id: r.pid, name: `${r.farm.name} · ${r.farm.label}`, label: share,
+      key: `369:${FARM_CONTRACT.toLowerCase()}:${r.pid}:${String(wAddr || '').toLowerCase()}`,
+      staked: r.staked, total: poolValue(r.poolInfo, 'lpSupply', 3),
+      connected: Boolean(wAddr) && !r.disconnected,
+      valid: r.shareValid === true && !r.error
+    });
+    return `${farmSafeText(base)} (${button})`;
   }
 
   function renderFarmRichCard(r, displayIndex) {
@@ -10952,7 +10963,7 @@ const PULSE_ID     = 369;
     const remainingRewardsSub = withUsdLabel(valuation.remainingRewardsUsd || meta.remainingRewardsUsd || (liveRemainingRewards ? `${rewardSymbol} rewards` : ''));
     const remainingRewardsSubHTML = `<span id="farm-remaining-usd-${r.pid}"${valuation.rewardScaledPrice ? ' data-farm-remaining-usd' : ''}>${remainingRewardsSub}</span>`;
     const yourStakedDisplay = valuation.userStaked || fmtFarm(r.staked);
-    const yourStakedSub = farmStakedSubText(r, valuation);
+    const yourStakedSub = farmStakedSubHTML(r, valuation);
     const pendingDisplay = valuation.pending || fmtFarm(r.pending);
     const pendingSub = withUsdLabel(valuation.pendingUsd || meta.pendingUsd || '');
     const tvlDisplay = withUsdLabel(valuation.tvl || meta.tvl || (liveTotalStaked !== '—' ? 'Live' : 'Loading'));
@@ -13313,6 +13324,7 @@ const PULSE_ID     = 369;
 
   async function refreshFarmData(pid) {
     if (!wProvider || !wAddr) return;
+    const shareWallet = wAddr;
     const r = lastFarmResults.find(r => r.pid === pid);
     if (!r) return;
     try {
@@ -13334,6 +13346,8 @@ const PULSE_ID     = 369;
         fetchLpBreakdown(rp, r.farm, staked, lpTokens[0], lpTokens[1])
       ]);
       // Update DOM
+      if (wAddr !== shareWallet) return;
+      const shareValid = typeof (info.amount ?? info[0]) === 'bigint';
       const walletEl = document.getElementById(`farm-wallet-${pid}`);
       const stakedEl = document.getElementById(`farm-staked-${pid}`);
       const stakedSubEl = document.getElementById(`farm-staked-sub-${pid}`);
@@ -13347,7 +13361,11 @@ const PULSE_ID     = 369;
       const approveBtn = document.getElementById(`farm-approve-${pid}`);
       if (walletEl)  walletEl.textContent  = fmtFarm(walletLp);
       if (stakedEl)  stakedEl.textContent  = valuation?.userStaked || fmtFarm(staked);
-      if (stakedSubEl) stakedSubEl.textContent = farmStakedSubText({ ...r, staked, totalStaked }, valuation || {});
+      if (stakedSubEl) {
+        const shareFocused = stakedSubEl.contains(document.activeElement);
+        stakedSubEl.innerHTML = farmStakedSubHTML({ ...r, staked, totalStaked, poolInfo, shareValid, error: null }, valuation || {});
+        if (shareFocused) stakedSubEl.querySelector('.farm-share-link')?.focus();
+      }
       if (allowanceEl) allowanceEl.textContent = fmtFarmAllowance(allowance);
       if (walletMaxBtn) walletMaxBtn.disabled = walletLp <= 0n;
       if (stakedMaxBtn) stakedMaxBtn.disabled = staked <= 0n;
@@ -13359,7 +13377,7 @@ const PULSE_ID     = 369;
       // Update cached results so fillInput stays correct
       const idx = lastFarmResults.findIndex(r => r.pid === pid);
       if (idx >= 0) {
-        lastFarmResults[idx] = { ...lastFarmResults[idx], staked, pending, walletLp, allowance, totalStaked, poolInfo, valuation, lpBreakdown };
+        lastFarmResults[idx] = { ...lastFarmResults[idx], staked, pending, walletLp, allowance, totalStaked, poolInfo, valuation, lpBreakdown, shareValid, error: null };
         updateFarmSummaries(lastFarmResults);
         if (farmStakedOnly && !hasStakedFarm(lastFarmResults[idx])) renderFarmResults(lastFarmResults, true);
       }
