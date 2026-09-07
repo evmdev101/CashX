@@ -1,0 +1,37 @@
+{
+  "block": 27478152,
+  "timestamp": "2026-09-06T17:23:55.000Z",
+  "scope": "Same-block public farm inputs; Nexion formula comparison. Claimable uses 10 test tokens, not a wallet.",
+  "rows": [
+    {
+      "label": "#200",
+      "farm": "CASHX / DISTROX LP",
+      "reward": "DISTROX",
+      "decimals": 18,
+      "tvlUsd": 25584.12656650632,
+      "apr": "11.58%",
+      "testTenPendingTokensUsd": 0.000012383428617112644,
+      "matched": true
+    },
+    {
+      "label": "#240",
+      "farm": "DIVX",
+      "reward": "pHEX",
+      "decimals": 8,
+      "tvlUsd": 19173.52674790002,
+      "apr": "8.18%",
+      "testTenPendingTokensUsd": 0.02073152962967319,
+      "matched": true
+    },
+    {
+      "label": "#257",
+      "farm": "GSX",
+      "reward": "PLSX",
+      "decimals": 18,
+      "tvlUsd": 15445.738037785532,
+      "apr": "4.77%",
+      "testTenPendingTokensUsd": 0.00007409701351529375,
+      "matched": true
+    }
+  ]
+}

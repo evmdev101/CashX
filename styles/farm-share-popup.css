@@ -1,19 +1,19 @@
 .farm-share-link { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px; white-space: nowrap; }
 .farm-share-arrow { display: inline-block; margin-left: 3px; font-size: .85em; font-weight: 700; text-decoration: none; }
-.farm-share-link:hover { color: #a2e5f4; }
-.farm-share-link:focus-visible { outline: 2px solid #92d9ed; outline-offset: 3px; border-radius: 2px; }
-.farm-share-dialog { position: fixed; inset: 0; margin: auto; box-sizing: border-box; width: min(360px, calc(100vw - 32px)); max-height: calc(100dvh - 40px); overflow: auto; padding: 24px; border: 1px solid #49616a; border-radius: 12px; background: #1b2427; color: #9edbec; box-shadow: 0 20px 70px #0009; font: 13px/1.6 monospace; }
+.farm-share-link:hover { color: var(--farm-theme-accent,#a2e5f4); }
+.farm-share-link:focus-visible { outline: 2px solid var(--farm-theme-text,#92d9ed); outline-offset: 3px; border-radius: 2px; }
+.farm-share-dialog { position: fixed; inset: 0; margin: auto; box-sizing: border-box; width: min(360px, calc(100vw - 32px)); max-height: calc(100dvh - 40px); overflow: auto; padding: 24px; border: 1px solid var(--farm-theme-border,#49616a); border-radius: 12px; background: var(--farm-theme-panel,#1b2427); color: var(--farm-theme-text,#9edbec); box-shadow: 0 20px 70px #0009; font: 13px/1.6 monospace; }
 .farm-share-dialog::backdrop { background: #0007; }
-.farm-share-dialog h2 { font: inherit; font-size: 17px; margin: 0 24px 3px 0; color: #e0f4f8; }
-.share-close { position: absolute; right: 12px; top: 10px; width: 32px; height: 32px; border: 0; border-radius: 4px; background: transparent; color: #d8a8c0; cursor: pointer; font-size: 25px; }
-.share-close:focus-visible { outline: 2px solid #92d9ed; }
-.share-farm-name, .share-muted { color: #a1b6bd; font-size: 11px; }
+.farm-share-dialog h2 { font: inherit; font-size: 17px; margin: 0 24px 3px 0; color: var(--farm-theme-text,#e0f4f8); }
+.share-close { position: absolute; right: 12px; top: 10px; width: 32px; height: 32px; border: 0; border-radius: 4px; background: transparent; color: var(--farm-theme-accent,#d8a8c0); cursor: pointer; font-size: 25px; }
+.share-close:focus-visible { outline: 2px solid var(--farm-theme-text,#92d9ed); }
+.share-farm-name, .share-muted { color: var(--farm-theme-muted,#a1b6bd); font-size: 11px; }
 .share-farm-name { overflow-wrap: anywhere; }
 .share-current { margin-top: 18px; font-size: 30px; line-height: 1.2; }
-.share-up { color: #91dbb7; }
-.share-down { color: #efadc2; }
-.share-chart { margin-top: 18px; padding-top: 12px; border-top: 1px solid #35474e; }
+.share-up { color: var(--farm-theme-text,#91dbb7); }
+.share-down { color: var(--farm-theme-accent,#efadc2); }
+.share-chart { margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--farm-theme-border,#35474e); }
 .share-chart svg { display: block; width: 100%; }
-.share-dates { display: flex; justify-content: space-between; gap: 16px; font-size: 10px; color: #a1b6bd; }
+.share-dates { display: flex; justify-content: space-between; gap: 16px; font-size: 10px; color: var(--farm-theme-muted,#a1b6bd); }
 .share-dates span:last-child { text-align: right; }
-.share-explanation { margin: 18px 0 0; padding-top: 12px; border-top: 1px solid #35474e; font-size: 11px; color: #a1b6bd; }
+.share-explanation { margin: 18px 0 0; padding-top: 12px; border-top: 1px solid var(--farm-theme-border,#35474e); font-size: 11px; color: var(--farm-theme-muted,#a1b6bd); }

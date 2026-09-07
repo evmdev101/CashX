@@ -113,7 +113,7 @@
     #dashboard-view > .dashboard-nav,
     #farms-view > .dashboard-nav,
     #reflections-view > .dashboard-nav{position:fixed;top:0;left:0;right:0;z-index:3000}
-    
+
 
     /* ── SHARED ── */
 .sec-tag{font-family:'Michroma',sans-serif;font-size:0.75rem;letter-spacing:0.2em;
@@ -888,7 +888,7 @@
       --amber:   #fbbf24;
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    
+
     #dashboard-view{
       background:none;
       color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.5;display:flex;flex-direction:column;min-height:100vh;overflow-x:hidden;
@@ -991,7 +991,7 @@
 
     /* BURN GAUGE */
     .gauge-wrap{display:flex;flex-direction:column;align-items:center;padding:4px 0 0;flex-shrink:0}
-    
+
     .g-track{fill:none;stroke:var(--muted2);stroke-width:13}
     .g-fill{fill:none;stroke-width:13;stroke-linecap:round;stroke-dasharray:540;stroke-dashoffset:540;transition:stroke-dashoffset 1.6s cubic-bezier(.4,0,.2,1);transform-origin:center;transform:rotate(-90deg);stroke:url(#burnGrad)}
     .g-pct{font-family:'DM Sans',sans-serif;font-weight:300;font-size:2.2rem;letter-spacing:-0.04em;fill:url(#gTextGrad)}
@@ -4602,8 +4602,14 @@
       #reflections-view .reflection-card.divx-card .reflection-metrics{grid-template-columns:1fr}
     }
 </style>
-<link rel="stylesheet" href="./styles/farm-share-popup.css">
-<script src="./lib/farm-share-popup.js"></script>
+<link rel="stylesheet" href="./styles/farm-share-popup.css?v=15290fa1de8e">
+<script src="./lib/farm-share-popup.js?v=0a9bbc0e2d4c"></script>
+<link rel="stylesheet" href="./styles/farm-list-tools.css?v=438e4d782110">
+<script src="./lib/farm-list-tools.js?v=f8d05d09d3cf"></script>
+<link rel="stylesheet" href="./styles/farm-changes.css?v=6aafa715bcd6">
+<script src="./lib/farm-changes.js?v=49a42a5ced11"></script>
+<script src="./lib/site-utilities.js?v=e957c18dd047"></script>
+<link rel="stylesheet" href="./styles/site-utilities.css?v=a969ddfb835d">
 </head>
 <body>
 <div id="ls" aria-hidden="true">
@@ -4837,7 +4843,7 @@
       </div>
     </div>
 
-    
+
     <div class="treasury-path-grid">
       <div class="treasury-path-card fade">
         <div class="treasury-path-head">
@@ -5002,6 +5008,7 @@
   </div>
 
   <section class="dashboard-burn-progress" aria-label="Token burn progress">
+    <p class="burn-milestone" id="burn-milestone">Loading milestone…</p>
     <div class="burn-progress-heading"><span id="burn-progress-label">CASHX burned</span><strong id="burn-progress-percent">Loading…</strong></div>
     <div class="burn-progress-track" id="burn-progress-track" role="progressbar" aria-labelledby="burn-progress-label" aria-valuemin="0" aria-valuemax="100" aria-valuetext="Loading burn data">
       <div class="burn-progress-fill" id="burn-progress-fill" style="width:0%"></div>
@@ -5254,6 +5261,8 @@
   let cachedBurnsData = [];
   let cachedRecentBurnsData = [];
   let cachedChartBurnsData = [];
+  let dashboardChartEpoch = 0;
+  let burnChartRenderId = 0;
   let cachedPrice = 0;
   let _burnCountsReady = false; // true once loadBurnCounts has populated accurate data
   let _allBurnsPromise = null; // shared promise so chart + counts make ONE network call
@@ -5634,11 +5643,14 @@
   }
 
   async function loadBurnActivityChart(options = {}) {
+    if (currentDashboardToken !== 'cashx') return;
+    const epoch = dashboardChartEpoch;
     const force = !!options.force;
     if (_burnActivityLoadPromise && !force) return _burnActivityLoadPromise;
     _burnActivityLoadPromise = (async () => {
       try {
         const items = await _getAllBurns(force);
+        if (currentDashboardToken !== 'cashx' || epoch !== dashboardChartEpoch) return;
         cachedChartBurnsData = items;
         renderBurnChart(cachedChartBurnsData, currentChartRange);
         _chartCacheSave(items);
@@ -5685,8 +5697,11 @@
       set('burn-progress-percent', '—');
       set('burn-progress-amount', status);
       set('burn-progress-remaining', '— remaining');
+      set('burn-milestone', 'Milestone unavailable until supply data loads');
       return;
     }
+    const milestone = window.SiteUtilities.milestone(burned, supply);
+    set('burn-milestone', milestone.remaining > 0 ? `Next milestone: ${milestone.percent}% of ${cfg.initialSupply ? 'original' : 'tracked'} supply burned · ${fmtN(milestone.remaining, 2)} ${cfg.symbol} to go` : '100% burned milestone reached');
     const pct = burned / supply * 100;
     const percent = pct > 0 && pct < 0.01 ? '<0.01%' : `${pct.toFixed(2)}%`;
     fill.style.width = `${pct}%`;
@@ -5711,6 +5726,10 @@
   function applyDashboardTokenFrame(key) {
     const cfg = DASHBOARD_TOKEN_CONFIG[key] || DASHBOARD_TOKEN_CONFIG.cashx;
     currentDashboardToken = cfg.key;
+    dashboardChartEpoch++;
+    _burnActivityLoadPromise = null;
+    cachedChartBurnsData = [];
+    renderBurnChart([], currentChartRange);
     document.querySelectorAll('[data-dashboard-token]').forEach(btn => {
       const active = btn.dataset.dashboardToken === cfg.key;
       btn.classList.toggle('active', active);
@@ -5814,6 +5833,7 @@
 
   async function refreshGenericTokenDashboard(cfg) {
     if (!window.ethers) return;
+    const epoch = dashboardChartEpoch;
     try {
       explorerWeb = 'https://scan.pulsechain.com';
       const provider = new ethers.JsonRpcProvider(DASH_RPC, 369);
@@ -5830,7 +5850,7 @@
         fetch(`${DASH_SCAN_API}/tokens/${cfg.token}/transfers`).then(r => r.ok ? r.json() : null).catch(() => null)
       ]);
       // Ignore a response that finished after the visitor selected another tab.
-      if (currentDashboardToken !== cfg.key) return;
+      if (currentDashboardToken !== cfg.key || epoch !== dashboardChartEpoch) return;
       if ([decimalsRaw, totalSupplyRaw, deadRaw, zeroRaw].some(value => value === null)) throw new Error('Token supply data unavailable');
       const decimals = Number(decimalsRaw);
       const totalSupply = parseDashboardTokenAmount(totalSupplyRaw, decimals);
@@ -5870,9 +5890,8 @@
       set('c-burned-pct', `${burnedPct.toFixed(cfg.initialSupply ? 4 : 2)}% burned`);
       set('c-burned-usd', priceUsd ? fmtUSD(burned * priceUsd) : '—');
       set('c-dead', `${fmtN(treasuryItems.reduce((sum, tx) => sum + (parseFloat(tx.total?.value || 0) / 1e18), 0), 2)} ${cfg.symbol}`);
-      set('c-dead-count', cfg.key === 'gsx'
-        ? (treasuryItems.length ? `${treasuryItems.length} treasury burn${treasuryItems.length === 1 ? '' : 's'} · recent transfers` : 'No treasury burns in recent transfers')
-        : (treasuryItems.length ? `${treasuryItems.length} treasury burn${treasuryItems.length === 1 ? '' : 's'}` : 'treasury buy & burn'));
+      set('c-dead-count', transfersRes ? 'Treasury burns · recent transfer sample' : 'Transfer history unavailable');
+      if (!transfersRes) set('c-dead', 'Unavailable');
       set('src-community', Math.floor(remaining).toLocaleString());
       set('c-holders', countersRes?.token_holders_count || tokenRes?.holders || '—');
       set('c-txs', countersRes?.transfers_count ? `${Number(countersRes.transfers_count).toLocaleString('en-US')} transfers` : 'transfers');
@@ -5885,7 +5904,7 @@
       set('last-up', `Updated ${new Date().toLocaleTimeString()} · ${cfg.symbol}`);
     } catch(err) {
       console.warn(`${cfg.symbol} dashboard refresh failed:`, err);
-      if (currentDashboardToken !== cfg.key) return;
+      if (currentDashboardToken !== cfg.key || epoch !== dashboardChartEpoch) return;
       updateDashboardBurnProgress(cfg, null, null, null, 'Supply data unavailable · retrying');
       ['c-price','c-burned','c-dead','src-community','c-holders'].forEach(id => set(id, 'Unavailable'));
       set('last-up', `${cfg.symbol} data unavailable · retrying`);
@@ -5982,19 +6001,20 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
   }
 
   async function load(){
+    const epoch = dashboardChartEpoch;
     const btn=$('rbtn'); if(btn)btn.disabled=true;
     set('last-up','Loading live burn data…');
     lsSet(15);
 
     try{
       const { CASHX, CASHX_BURN_TRACKER_CONFIG, readBurnTrackerState, resolveBurnSource: sourceResolver, formatToken, formatUsd, formatAddress, explorerTxUrl } = await getServicesReady();
-      if (currentDashboardToken !== 'cashx') return;
+      if (currentDashboardToken !== 'cashx' || epoch !== dashboardChartEpoch) return;
       lsSet(40);
       explorerWeb = CASHX.urls.explorer;
       burnTrackerConfig = CASHX_BURN_TRACKER_CONFIG;
       resolveBurnSource = sourceResolver;
       const state = await withTimeout(readBurnTrackerState(), 14000, 'Dashboard live data timed out');
-      if (currentDashboardToken !== 'cashx') return;
+      if (currentDashboardToken !== 'cashx' || epoch !== dashboardChartEpoch) return;
       lsSet(80);
       serviceState = state;
       const items = (state.allBurns || state.recentBurns).map(toDashboardTx);
@@ -6137,7 +6157,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
       lsDone();
     }catch(e){
       console.warn('CashX services:',e);
-      if (currentDashboardToken !== 'cashx') return;
+      if (currentDashboardToken !== 'cashx' || epoch !== dashboardChartEpoch) return;
       updateDashboardBurnProgress(DASHBOARD_TOKEN_CONFIG.cashx, null, null, null, 'Supply data unavailable · retrying');
       setErr('c-price'); setErr('p-price'); setErr('c-mcap'); setErr('c-treas'); setErr('c-burned');
       set('c-ch','data unavailable');
@@ -6284,7 +6304,8 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     document.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     if (cachedChartBurnsData.length > 0) renderBurnChart(cachedChartBurnsData, range);
-    else loadBurnActivityChart();
+    else if (currentDashboardToken === 'cashx') loadBurnActivityChart();
+    else renderBurnChart([], range);
   }
 
   function chartStartOf(date, unit) {
@@ -6345,8 +6366,10 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
   }
 
   async function renderBurnChart(items, range) {
+    const epoch = dashboardChartEpoch;
+    const renderId = ++burnChartRenderId;
     const chartReady = await ensureChartReady();
-    if (!chartReady || !window.Chart) return;
+    if (!chartReady || !window.Chart || epoch !== dashboardChartEpoch || renderId !== burnChartRenderId) return;
     const canvas = document.getElementById('burn-chart');
     if (!canvas) return;
     const now = Date.now();
@@ -7251,7 +7274,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
           <button id="reflections-scan-btn" class="reflections-btn" type="button" onclick="ReflectionApp.scan()">Scan Wallet</button>
         </div>
       </div>
-      <div class="reflections-status" id="reflections-status">Found 5 Flux tokens (held or with pending reflections)</div>
+      <div class="reflections-status" id="reflections-status" role="status">Connect a wallet or enter an address to scan.</div>
       <div class="reflections-grid" id="reflections-grid"></div>
     </div>
   </section>
@@ -7359,22 +7382,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
 </nav>
 <main class="farms-main">
 <div id="farms-loading-screen" class="farms-loading-screen" aria-live="polite"><span class="fls-text">Loading CashX farms</span></div>
-<section class="promo-carousel-section farms-promo-carousel" aria-label="Promoted CashX links">
-  <div class="promo-carousel" data-promo-carousel>
-    <div class="promo-track">
-      <a class="promo-slide active" href="#farms" data-farms-refresh aria-label="Refresh CashX Farms">
-        <img src="promo-cashx-farms.jpg" alt="CashX Farms" style="object-position:center 35%">
-      </a>
-      <a class="promo-slide" href="#farms" data-farms-refresh aria-label="Refresh DividendX Farms">
-        <img src="promo-dividendx-farms.jpg" alt="DividendX Farms">
-      </a>
-    </div>
-    <div class="promo-dots" aria-label="Promo slides">
-      <button class="promo-dot active" type="button" data-promo-dot="0" aria-label="Show CashX Farms ad"></button>
-      <button class="promo-dot" type="button" data-promo-dot="1" aria-label="Show DividendX Farms ad"></button>
-    </div>
-  </div>
-</section>
+
 <div class="farm-total-tvl">Total Value Locked:<span class="farm-summary-value" id="farms-total-tvl">Loading</span><span class="farm-tvl-change" id="farms-tvl-change" hidden></span></div>
 <div class="rv-wrap">
 
@@ -7424,6 +7432,16 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
           </div>
         </div>
       </div>
+      <div class="farm-browse-controls">
+        <label class="farm-browse-search">Search farms<input id="farm-search" type="search" placeholder="Token, farm # or address" oninput="window.FarmsApp.setBrowseFilter('query',this.value)"></label>
+        <label>Reward token<select id="farm-reward-filter" onchange="window.FarmsApp.setBrowseFilter('reward',this.value)"><option value="">All rewards</option></select></label>
+        <label>Sort by<select id="farm-sort" aria-label="Farm sort" onchange="window.FarmsApp.setBrowseFilter('sort',this.value)"><option value="default">Default order</option><option value="rate">Highest APR</option><option value="deposit">Largest deposit (USD)</option><option value="ending">Ending soon</option></select></label>
+        <button type="button" id="farm-favorites-only" aria-pressed="false" onclick="window.FarmsApp.setBrowseFilter('favoritesOnly',this.getAttribute('aria-pressed')!=='true')">★ Favorites</button>
+        <button type="button" onclick="window.FarmsApp.clearBrowseFilters()">Clear filters</button>
+        <p id="farm-refresh-status" class="farm-browse-status" role="status">Waiting for data</p>
+        <button type="button" id="show-farm-comparison" disabled onclick="window.FarmsApp.showFarmComparison()">Compare (0/3)</button>
+        <p class="farm-browse-status" id="farm-browse-status" role="status">Favorites appear first. Totals include all your selected ecosystem farms.</p>
+      </div>
       <div class="farm-claimable-summary">
         <div class="farm-claimable-main">
           <span>Total Staked:</span>
@@ -7458,8 +7476,19 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
             </a>
           </div>
           <div class="farm-filter-controls nexion-farms-actions">
+            <label class="farm-staked-toggle" title="Show only vaults where you have a position"><input id="vault-deposited-only" type="checkbox" aria-label="Staked vaults" onchange="window.FarmsApp.setVaultBrowseFilter('stakedOnly',this.checked)"><span class="farm-toggle-orb" aria-hidden="true"></span><span>Staked</span></label>
             <button class="farm-theme-mini-btn" type="button" onclick="farmsRefreshVaults()">↻ Refresh</button>
           </div>
+        </div>
+        <div class="farm-browse-controls" aria-label="Browse vaults">
+          <label class="farm-browse-search">Search vaults<input id="vault-search" type="search" placeholder="Token, vault # or address" oninput="window.FarmsApp.setVaultBrowseFilter('query',this.value)"></label>
+          <label>Reward token<select id="vault-reward-filter" aria-label="Vault reward token" onchange="window.FarmsApp.setVaultBrowseFilter('reward',this.value)"><option value="">All rewards</option></select></label>
+
+          <label>Sort by<select id="vault-sort" aria-label="Vault sort" onchange="window.FarmsApp.setVaultBrowseFilter('sort',this.value)"><option value="default">Default order</option><option value="rate">Highest APY</option><option value="deposit">Largest deposit (USD)</option><option value="ending">Ending soon</option></select></label>
+        <button type="button" id="vault-favorites-only" aria-pressed="false" onclick="window.FarmsApp.setVaultBrowseFilter('favoritesOnly',this.getAttribute('aria-pressed')!=='true')">★ Favorites</button>
+          <button type="button" onclick="window.FarmsApp.clearVaultBrowseFilters()">Clear filters</button>
+          <p id="vault-refresh-status" class="farm-browse-status" role="status">Waiting for data</p>
+        <p id="vault-browse-status" class="farm-browse-status" role="status">Loading vaults</p>
         </div>
         <div class="vault-summary" aria-label="Auto-compound vault summary">
           <div class="vault-summary-item"><span>Total Deposited:</span><strong id="vaults-total-deposited">Loading</strong></div>
@@ -9094,12 +9123,18 @@ const PULSE_ID     = 369;
   let wProvider = null, wAddr = null, walletProvider = null;
   let farmView = 'grid';
   let farmStakedOnly = false;
+  const farmBrowseFilters = loadBrowsePreferences('farms');
+  farmStakedOnly = farmBrowseFilters.stakedOnly;
+  let farmFavorites = new Set();
+  try { farmFavorites = window.FarmListTools.load(localStorage); } catch (_) {}
   let farmProductView = 'farms';
   let publicFarmStatsLoading = false;
   let lastFarmResults = [];
   let vaultsLoading = false;
   let vaultRequestId = 0;
   let lastVaultResults = [];
+  const vaultBrowseFilters = loadBrowsePreferences('vaults');
+  const browseReadStatus = { farms: { at: 0, failed: false }, vaults: { at: 0, failed: false } };
   let claimAllBusy = false;
   const vaultActionModes = new Map();
   const vaultBusy = new Set();
@@ -9971,7 +10006,7 @@ const PULSE_ID     = 369;
     const connected = Boolean(wAddr);
     const pairName = vaultPairName(vault);
     const poolShare = formatFarmPoolSharePercent(vault.userAssets, vault.totalStaked);
-    const countdownEnd = Number(farmResult?.countdownEnd || 0);
+    const countdownEnd = vaultBrowseEntry(vault).end * 1000;
     const countdownHTML = `<span data-farm-countdown data-countdown-end="${countdownEnd || ''}">${farmCountdownHTML(countdownEnd)}</span>`;
     const lpBreakdownOpen = vaultLpExpanded.has(id);
     const canShowLpBreakdown = Array.isArray(vault.lpBreakdown) && vault.lpBreakdown.length > 0;
@@ -9984,7 +10019,7 @@ const PULSE_ID     = 369;
       : '';
     return `<article class="farm-item farm-rich farm-design-proto vault-farm-card" id="vault-card-${id}">
       <div class="farm-hdr">
-        <div class="farm-hdr-name">${farmTitleHTML(pairName, vault.stakeToken, id, 'Auto-Compound Vault', 'vault')}</div>
+        <div class="farm-hdr-name">${farmTitleHTML(pairName, vault.stakeToken, id, 'Auto-Compound Vault', 'vault')}${farmListToolsHTML(vaultBrowseEntry(vault))}</div>
         <a class="farm-liquidity-btn" href="${manageUrl}" target="_blank" rel="noopener">${vault.isLpStake ? 'Manage Liquidity' : `Buy ${farmSafeText(pairName)}`}</a>
       </div>
       <div class="farm-proto-grid">
@@ -10059,9 +10094,85 @@ const PULSE_ID     = 369;
     </article>`;
   }
 
+  function loadBrowsePreferences(scope) {
+    try {
+      const saved = window.FarmListTools.loadPreferences(localStorage, scope);
+      return saved;
+    }
+    catch (_) { return window.FarmListTools.loadPreferences(null, scope); }
+  }
+
+  function syncBrowsePreferences(scope) {
+    const farm = scope === 'farms', prefix = farm ? 'farm' : 'vault';
+    const filters = farm ? farmBrowseFilters : vaultBrowseFilters;
+    if (farm) filters.stakedOnly = farmStakedOnly;
+    for (const [suffix, key] of [['search','query'], ['sort','sort'], ['reward-filter','reward']]) {
+      const node = document.getElementById(`${prefix}-${suffix}`);
+      if (node && document.activeElement !== node) node.value = filters[key];
+    }
+    if (farm) { const node = document.getElementById('farms-filter-staked'); if (node) node.checked = farmStakedOnly; }
+    try { window.FarmListTools.savePreferences(localStorage, scope, filters); } catch (_) {}
+  }
+
+  function markBrowseRead(scope, failed, success) {
+    const status = browseReadStatus[scope];
+    if (success) status.at = Date.now();
+    status.failed = failed;
+    const prefix = scope === 'farms' ? 'farm' : 'vault';
+    const time = status.at ? new Date(status.at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' }) : '';
+    set(`${prefix}-refresh-status`, `${failed ? 'Some updates unavailable' : 'Data updated'}${time ? ` · Latest successful read ${time}` : ' · Waiting for a successful read'}`);
+  }
+
+  function vaultBrowseEntry(vault) {
+    const farm = vault.wrapsFarm ? vaultFarmResult(vault) : null;
+    const farmEnd = Number(poolValue(farm?.poolInfo, 'endTime', 5) || 0) || Number(farm?.countdownEnd || 0) / 1000;
+    return { kind: 'vault', result: vault, key: `369:${NEXION_FLUX_VAULT_MANAGER.toLowerCase()}:vault:${vault.vaultId}`,
+      name: vaultPairName(vault), label: `Vault #${vault.vaultId}`, address: vault.stakeToken,
+      rewards: [ecosystemVaultSymbol(vault.rewardToken)], staked: vault.userShares > 0n, rate: vaultApy(vault), deposit: vaultUsd(vault.userAssets, vault),
+      end: farmEnd || Number(vault.endTime || 0) };
+  }
+
+  function visibleVaultEntries() {
+    const sorted = [...lastVaultResults].sort((a, b) => (vaultApy(b) || 0) - (vaultApy(a) || 0) || b.vaultId - a.vaultId);
+    return window.FarmListTools.select(sorted.map(vaultBrowseEntry), vaultBrowseFilters, farmFavorites);
+  }
+
+  function setVaultBrowseFilter(key, value) {
+    if (!['query', 'reward', 'favoritesOnly', 'stakedOnly', 'sort'].includes(key)) return;
+    vaultBrowseFilters[key] = ['favoritesOnly', 'stakedOnly'].includes(key) ? Boolean(value) : String(value);
+    renderVaultResults();
+  }
+
+  function clearVaultBrowseFilters() {
+    Object.assign(vaultBrowseFilters, { query: '', reward: '', favoritesOnly: false, stakedOnly: false, sort: 'default' });
+    const search = document.getElementById('vault-search'); if (search) search.value = '';
+    renderVaultResults();
+  }
+
+  function toggleVaultFavorite(key) {
+    if (!lastVaultResults.some(vault => vaultBrowseEntry(vault).key === key)) return;
+    if (farmFavorites.has(key)) farmFavorites.delete(key); else farmFavorites.add(key);
+    let saved = false;
+    try { saved = window.FarmListTools.save(localStorage, farmFavorites); } catch (_) {}
+    renderVaultResults();
+    Array.from(document.querySelectorAll('[data-farm-favorite]')).find(button => button.dataset.farmFavorite === key)?.focus({ preventScroll: true });
+    if (!saved) set('vault-browse-status', 'Favorites are kept for this visit; browser storage is unavailable.');
+  }
+
   function renderVaultResults() {
     const body = document.getElementById('vaults-body');
     if (!body) return;
+    const rewardSelect = document.getElementById('vault-reward-filter');
+    if (rewardSelect) {
+      const rewards = [...new Set(lastVaultResults.map(vault => ecosystemVaultSymbol(vault.rewardToken)))].sort();
+      rewardSelect.innerHTML = '<option value="">All rewards</option>' + rewards.map(reward => `<option value="${farmSafeText(reward)}">${farmSafeText(reward)}</option>`).join('');
+      rewardSelect.value = vaultBrowseFilters.reward;
+    }
+    document.getElementById('vault-favorites-only')?.setAttribute('aria-pressed', String(vaultBrowseFilters.favoritesOnly));
+    const stakedToggle = document.getElementById('vault-deposited-only'); if (stakedToggle) stakedToggle.checked = vaultBrowseFilters.stakedOnly;
+    syncBrowsePreferences('vaults');
+    const visible = visibleVaultEntries();
+    set('vault-browse-status', !lastVaultResults.length && vaultsLoading ? 'Loading vaults' : `${visible.length} of ${lastVaultResults.length} vaults · Favorites appear first. Totals include all your ecosystem vaults.`);
     set('nexion-vaults-count', !lastVaultResults.length && vaultsLoading
       ? 'Loading vaults'
       : `${lastVaultResults.length} ecosystem vault${lastVaultResults.length === 1 ? '' : 's'}`);
@@ -10079,13 +10190,15 @@ const PULSE_ID     = 369;
     set('vaults-your-deposits', fmtUsd(userUsd, 2));
     set('vaults-active-positions', String(positions));
     if (farmProductView === 'vaults') set('farms-total-tvl', fmtUsd(totalUsd, 2));
-    const sorted = [...lastVaultResults].sort((a, b) => (vaultApy(b) || 0) - (vaultApy(a) || 0) || b.vaultId - a.vaultId);
-    body.innerHTML = `<div class="farm-row vault-grid">${sorted.map(vaultCardHTML).join('')}</div>`;
+    body.innerHTML = visible.length ? `<div class="farm-row vault-grid">${visible.map(entry => vaultCardHTML(entry.result)).join('')}</div>`
+      : '<div class="farm-empty">No vaults match these filters. Try Clear filters.</div>';
   }
 
   async function fetchVaults(force = false) {
     if (vaultsLoading && !force) return;
     const requestId = ++vaultRequestId;
+    const requestWallet = wAddr;
+    let vaultReadFailures = 0;
     vaultsLoading = true;
     if (!lastVaultResults.length) renderVaultResults();
     try {
@@ -10096,12 +10209,12 @@ const PULSE_ID     = 369;
         manager.paused().catch(() => false)
       ]);
       const count = Number(rawLength || 0n);
-      const userAddress = wAddr || ethers.ZeroAddress;
+      const userAddress = requestWallet || ethers.ZeroAddress;
       const rows = await mapLimit(Array.from({ length: count }, (_, vaultId) => vaultId), 4, async vaultId => {
         try {
           const [raw, user, pendingRewards] = await Promise.all([
             retry(() => manager.vaults(vaultId)),
-            manager.userVault(vaultId, userAddress).catch(() => [0n, 0n, 0n, 0n, 0n]),
+            manager.userVault(vaultId, userAddress),
             manager.pendingRewards(vaultId).catch(() => 0n)
           ]);
           const vault = {
@@ -10133,6 +10246,7 @@ const PULSE_ID     = 369;
           }
           return isEcosystemVault(vault) ? vault : null;
         } catch (error) {
+          vaultReadFailures++;
           console.warn(`Vault #${vaultId} could not be loaded:`, error);
           return null;
         }
@@ -10169,11 +10283,14 @@ const PULSE_ID     = 369;
           lpBreakdown
         };
       });
-      if (requestId !== vaultRequestId) return;
-      lastVaultResults = nextVaultResults;
+      if (requestId !== vaultRequestId || requestWallet !== wAddr) return;
+      markBrowseRead('vaults', vaultReadFailures > 0 || nextVaultResults.some(v => !v.stakeScaledPrice), true);
+      lastVaultResults = nextVaultResults.map(v => ({...v, observedAt:Date.now()}));
+      window.SiteUtilities.observeVaults(lastVaultResults,NEXION_FLUX_VAULT_MANAGER);
       renderVaultResults();
     } catch (error) {
       if (requestId !== vaultRequestId) return;
+      markBrowseRead('vaults', true, false);
       console.error('Flux vault load failed:', error);
       if (!lastVaultResults.length) {
         set('nexion-vaults-count', 'Vaults unavailable');
@@ -10237,13 +10354,7 @@ const PULSE_ID     = 369;
   }
 
   async function waitForVaultTx(tx, id, label) {
-    vaultStatus(id, txPendingHTML(tx, label), false, true);
-    const receipt = await Promise.race([
-      tx.wait(),
-      new Promise(resolve => setTimeout(() => resolve(null), FARM_TX_WAIT_TIMEOUT_MS))
-    ]);
-    if (!receipt) vaultStatus(id, txPendingHTML(tx, `${label} — still pending`), false, true);
-    return receipt;
+    return window.SiteUtilities.wait(tx, label, FARM_TX_WAIT_TIMEOUT_MS);
   }
 
   function scheduleVaultRefresh() {
@@ -10262,7 +10373,7 @@ const PULSE_ID     = 369;
     try {
       const signer = await wProvider.getSigner();
       const token = new ethers.Contract(vault.stakeToken, LP_ABI, signer);
-      const tx = await token.approve(NEXION_FLUX_VAULT_MANAGER, ethers.MaxUint256);
+      const tx = await window.SiteUtilities.send(() => token.approve(NEXION_FLUX_VAULT_MANAGER, ethers.MaxUint256));
       const receipt = await waitForVaultTx(tx, id, 'Approval submitted');
       if (receipt) {
         vaultStatus(id, '✓ LP spending approved');
@@ -10289,7 +10400,7 @@ const PULSE_ID     = 369;
     try {
       const signer = await wProvider.getSigner();
       const manager = new ethers.Contract(NEXION_FLUX_VAULT_MANAGER, FLUX_VAULT_MANAGER_ABI, signer);
-      const tx = await manager.deposit(id, amount);
+      const tx = await window.SiteUtilities.send(() => manager.deposit(id, amount));
       const receipt = await waitForVaultTx(tx, id, 'Vault deposit submitted');
       if (receipt) {
         vaultStatus(id, '✓ Deposit confirmed');
@@ -10318,7 +10429,7 @@ const PULSE_ID     = 369;
     try {
       const signer = await wProvider.getSigner();
       const manager = new ethers.Contract(NEXION_FLUX_VAULT_MANAGER, FLUX_VAULT_MANAGER_ABI, signer);
-      const tx = await manager.withdraw(id, shares);
+      const tx = await window.SiteUtilities.send(() => manager.withdraw(id, shares));
       const receipt = await waitForVaultTx(tx, id, 'Vault withdrawal submitted');
       if (receipt) {
         vaultStatus(id, '✓ Withdrawal confirmed');
@@ -10340,7 +10451,7 @@ const PULSE_ID     = 369;
     try {
       const signer = await wProvider.getSigner();
       const manager = new ethers.Contract(NEXION_FLUX_VAULT_MANAGER, FLUX_VAULT_MANAGER_ABI, signer);
-      const tx = await manager.withdrawAll(id);
+      const tx = await window.SiteUtilities.send(() => manager.withdrawAll(id));
       const receipt = await waitForVaultTx(tx, id, 'Withdraw all submitted');
       if (receipt) {
         vaultStatus(id, '✓ Full withdrawal confirmed');
@@ -10428,8 +10539,9 @@ const PULSE_ID     = 369;
           return { farm, pid, staked: 0n, pending: 0n, walletLp: 0n, totalStaked: null, countdownEnd: timing.get(pid) || null, disconnected: true };
         }
       });
-      if (!wAddr) renderFarmResults(results);
+      if (!wAddr) { markBrowseRead('farms', results.some(r => !r.valuation || r.error), results.some(r => r.valuation)); renderFarmResults(results); }
     } catch(e) {
+      markBrowseRead('farms', true, false);
       console.warn('Public farm stats unavailable:', e);
     } finally {
       publicFarmStatsLoading = false;
@@ -10617,10 +10729,10 @@ const PULSE_ID     = 369;
           try {
             const lpC = new ethers.Contract(farm.lp, LP_ABI, rp);
             const [userInfo, pending, walletLp, allowance, totalStaked, poolInfo, token0, token1] = await Promise.all([
-              farmC.userInfo(pid, wAddr).catch(() => ({})),
-              farmC.pendingReward(pid, wAddr).catch(() => 0n),
-              lpC.balanceOf(wAddr).catch(() => 0n),
-              lpC.allowance(wAddr, FARM_CONTRACT).catch(() => 0n),
+              farmC.userInfo(pid, wAddr),
+              farmC.pendingReward(pid, wAddr),
+              lpC.balanceOf(wAddr),
+              lpC.allowance(wAddr, FARM_CONTRACT),
               lpC.balanceOf(FARM_CONTRACT).catch(() => null),
               retry(() => farmC.poolInfo(pid)).catch(() => null),
               lpC.token0().catch(() => null),
@@ -10631,18 +10743,20 @@ const PULSE_ID     = 369;
               fetchNexionValuation(rp, farm, poolInfo, totalStaked, staked, pending, prefetchedPrices(priceMaps, farm)),
               fetchLpBreakdown(rp, farm, staked, token0, token1)
             ]);
-            return { farm, pid, staked, pending, walletLp, allowance, totalStaked, poolInfo, valuation, lpBreakdown, shareValid: typeof (userInfo.amount ?? userInfo[0]) === 'bigint', lpTokens: token0 && token1 ? [token0, token1] : null, countdownEnd: timing.get(pid) || null, error: null };
+            return { farm, pid, walletAddress: shareWallet, readAt: Date.now(), staked, pending, walletLp, allowance, totalStaked, poolInfo, valuation, lpBreakdown, shareValid: typeof (userInfo.amount ?? userInfo[0]) === 'bigint', lpTokens: token0 && token1 ? [token0, token1] : null, countdownEnd: timing.get(pid) || null, error: null };
           } catch(err) {
             console.error(`${farm.label} (pid=${pid}) FAILED:`, err.message || err);
-            return { farm, pid, staked: 0n, pending: 0n, walletLp: 0n, totalStaked: null, countdownEnd: timing.get(pid) || null, error: err.message || String(err) };
+            return { farm, pid, walletAddress: shareWallet, staked: 0n, pending: 0n, walletLp: 0n, totalStaked: null, countdownEnd: timing.get(pid) || null, error: 'Readings unavailable' };
           }
       });
 
       // Step 5: Show ALL farms (not just staked ones)
       if (wAddr !== shareWallet) return;
+      markBrowseRead('farms', results.some(r => r.error || !r.valuation), results.some(r => r.valuation));
       renderFarmResults(results);
 
     } catch(err) {
+      markBrowseRead('farms', true, false);
       console.error('Farm fetch error:', err);
       const msg = err.message || String(err);
       el.innerHTML = `<div class="farm-empty" style="color:var(--red)">Error: ${msg}</div>`;
@@ -10771,6 +10885,13 @@ const PULSE_ID     = 369;
       </span>`;
   }
 
+  function nexionPendingUsd(pending, scaledPrice, decimals, remainingValue, totalReward) {
+    if (typeof pending !== 'bigint' || !Number.isFinite(scaledPrice) || scaledPrice <= 0 || !Number.isFinite(remainingValue) || typeof totalReward !== 'bigint') return null;
+    const tokens = Number(ethers.formatUnits(pending, decimals));
+    const original = Number(ethers.formatUnits(totalReward, decimals));
+    return original > 0 ? tokens * (remainingValue / original) : 0;
+  }
+
   async function fetchNexionValuation(provider, farm, poolInfo, totalStaked, staked, pending, prefetched) {
     if (!poolInfo || typeof totalStaked !== 'bigint') return null;
     try {
@@ -10800,20 +10921,12 @@ const PULSE_ID     = 369;
       // Single-stake tokens can overlap with reward buffers, and the same LP token can
       // be used by multiple pools. In both cases balanceOf(farm) over-counts this pool.
       const poolStaked = poolValue(poolInfo, 'lpSupply', 3);
-      const effTotalStaked = (typeof poolStaked === 'bigint' && poolStaked > 0n) ? poolStaked : totalStaked;
+      const effTotalStaked = (typeof poolStaked === 'bigint' && poolStaked >= 0n) ? poolStaked : totalStaked;
       const stakedValue = rawUsd(effTotalStaked, stakeScaledPrice);
       const remainingValue = rawUsd(remainingRaw, rewardScaledPrice, rewardDec);
       const userStakedValue = rawUsd(staked, stakeScaledPrice);
-      // Match Nexion Farm Explorer exactly: it derives the displayed reward
-      // price from remaining reward USD divided by the pool's initial reward
-      // amount, so pending USD decreases with the schedule's remaining fraction.
-      const pendingTokens = Number(ethers.formatUnits(pending, rewardDec));
-      const totalRewardTokens = typeof remainingParams?.totalReward === 'bigint'
-        ? Number(ethers.formatUnits(remainingParams.totalReward, rewardDec))
-        : 0;
-      const pendingValue = Number.isFinite(remainingValue) && totalRewardTokens > 0
-        ? pendingTokens * (remainingValue / totalRewardTokens)
-        : 0;
+      // Nexion Farm Explorer compatibility, verified against its public bundle.
+      const pendingValue = nexionPendingUsd(pending, rewardScaledPrice, rewardDec, remainingValue, remainingParams?.totalReward);
       const endTime = Number(poolValue(poolInfo, 'endTime', 5) ?? 0);
       const secondsLeft = Math.max(endTime - Math.floor(Date.now() / 1000), 0);
       const daysLeft = secondsLeft / 86400;
@@ -10871,6 +10984,10 @@ const PULSE_ID     = 369;
   }
 
   function updateFarmCountdowns() {
+    document.querySelectorAll('[data-farm-ending]').forEach(node => {
+      const label = window.FarmListTools.ending(Number(node.dataset.farmEnding));
+      node.textContent = label; node.hidden = !label;
+    });
     document.querySelectorAll('[data-farm-countdown]').forEach(el => {
       const end = Number(el.dataset.countdownEnd || 0);
       if (!end) {
@@ -11031,9 +11148,9 @@ const PULSE_ID     = 369;
     const remainingRewardsLiveHTML = liveRemainingRewardsHTML(valuation, remainingRewards);
     const remainingRewardsSub = withUsdLabel(valuation.remainingRewardsUsd || meta.remainingRewardsUsd || (liveRemainingRewards ? `${rewardSymbol} rewards` : ''));
     const remainingRewardsSubHTML = `<span id="farm-remaining-usd-${r.pid}"${valuation.rewardScaledPrice ? ' data-farm-remaining-usd' : ''}>${remainingRewardsSub}</span>`;
-    const yourStakedDisplay = valuation.userStaked || fmtFarm(r.staked);
+    const yourStakedDisplay = r.error ? 'Unavailable' : valuation.userStaked || fmtFarm(r.staked);
     const yourStakedSub = farmStakedSubHTML(r, valuation);
-    const pendingDisplay = valuation.pending || fmtFarm(r.pending);
+    const pendingDisplay = r.error ? 'Unavailable' : valuation.pending || fmtFarm(r.pending);
     const pendingSub = withUsdLabel(valuation.pendingUsd || meta.pendingUsd || '');
     const tvlDisplay = withUsdLabel(valuation.tvl || meta.tvl || (liveTotalStaked !== '—' ? 'Live' : 'Loading'));
     const feesDisplay = farmFeesHTML(r.poolInfo, meta.fees);
@@ -11080,7 +11197,7 @@ const PULSE_ID     = 369;
     const footerTimeHTML = isDesignProto
       ? `<span class="farm-footer-time">Time Left: <strong>${countdownHTML}</strong></span>`
       : '';
-    const walletDisplay = fmtFarm(r.walletLp);
+    const walletDisplay = r.error ? 'Unavailable' : fmtFarm(r.walletLp);
     const walletSub = r.disconnected ? 'Connect wallet' : (r.farm.single ? `${farmSafeText(r.farm.name)} in wallet` : 'LP in wallet');
     const stakedMaxDisabled = r.disconnected || r.staked === 0n ? 'disabled' : '';
     const walletMaxDisabled = r.disconnected || r.walletLp === 0n ? 'disabled' : '';
@@ -11092,7 +11209,7 @@ const PULSE_ID     = 369;
       <div class="${cardClass}" id="farm-card-${r.pid}">
         <div class="farm-hdr">
           <div>
-            <div class="farm-hdr-name">${farmTitleHTML(r.farm.name, r.farm.lp, r.pid, r.farm.version || (r.farm.single ? 'Single Stake' : 'PLP V2'))}</div>
+            <div class="farm-hdr-name">${farmTitleHTML(r.farm.name, r.farm.lp, r.pid, r.farm.version || (r.farm.single ? 'Single Stake' : 'PLP V2'))}${farmListToolsHTML(farmBrowseEntry(r))}</div>
           </div>
           ${headerActionHTML}
         </div>
@@ -11151,6 +11268,7 @@ const PULSE_ID     = 369;
         </div>
         ${claimRowHTML}
 
+        <span class="farm-tx-msg err" id="farm-read-msg-${r.pid}" role="status" style="display:${r.error ? 'flex' : 'none'}">${r.error ? 'Readings unavailable · retrying' : ''}</span>
         <span class="farm-tx-msg" id="farm-msg-${r.pid}"></span>
 
         <div class="farm-amount-wrap">
@@ -11183,7 +11301,7 @@ const PULSE_ID     = 369;
           <div class="farm-title">
             <img class="nexion-nft-header-art" src="cashmoney-nft-header.png" alt="CashMoney NFT #348">
             <div class="farm-title-text">
-              <div class="farm-pair-main"><span class="farm-pair-name">CashMoney (CASH) NFT</span></div>
+              <div class="farm-pair-main"><span class="farm-pair-name">CashMoney (CASH) NFT</span></div>${farmListToolsHTML(nftBrowseEntry('nft'))}
             </div>
           </div>
           <a class="farm-liquidity-btn" href="https://nexionpulse.com/farmexplorer" target="_blank" rel="noopener">View on Nexion</a>
@@ -11253,7 +11371,7 @@ const PULSE_ID     = 369;
         <div class="farm-hdr">
           <div class="farm-title">
             <img class="nexion-nft-header-art" src="${normalizeNftUri(CASHX_ECO_NFT_IMAGE_URI)}" alt="CashX Ecosystem NFT">
-            <div class="farm-title-text"><div class="farm-pair-main"><span class="farm-pair-name">CASHX ECO NFT</span></div></div>
+            <div class="farm-title-text"><div class="farm-pair-main"><span class="farm-pair-name">CASHX ECO NFT</span></div>${farmListToolsHTML(nftBrowseEntry('eco'))}</div>
           </div>
           <a class="farm-liquidity-btn" href="https://nexionpulse.com/farmexplorer" target="_blank" rel="noopener">View on Nexion</a>
         </div>
@@ -11309,14 +11427,14 @@ const PULSE_ID     = 369;
   }
 
   function renderFarmGrid(results) {
-    return '<div class="farm-row">' + renderCashxEcoNftFarmCard() + renderNexionNftFarmCard() + results.map((r, index) => renderFarmRichCard(r, index + 3)).join('') + '</div>';
+    return '<div class="farm-row">' + orderedFarmEntries(results).map((entry, index) => entry.kind === 'eco' ? renderCashxEcoNftFarmCard() : entry.kind === 'nft' ? renderNexionNftFarmCard() : renderFarmRichCard(entry.result, index + 1)).join('') + '</div>';
   }
 
   function renderCashxEcoNftFarmTableRow() {
     if (farmStakedOnly && cashxEcoNftState.stakedTokens.length === 0) return '';
     return `
       <tr class="farm-table-nft-row">
-        <td><div class="farm-table-nft-name"><img src="${normalizeNftUri(CASHX_ECO_NFT_IMAGE_URI)}" alt="CashX Ecosystem NFT"><div><div class="ft-name">CASHX ECO NFT</div><div class="ft-badge">Nexion pool #1 · NFT</div></div></div></td>
+        <td><div class="farm-table-nft-name"><img src="${normalizeNftUri(CASHX_ECO_NFT_IMAGE_URI)}" alt="CashX Ecosystem NFT"><div><div class="ft-name">CASHX ECO NFT</div><div class="ft-badge">Nexion pool #1 · NFT</div>${farmListToolsHTML(nftBrowseEntry('eco'))}</div></div></td>
         <td><div class="ft-val" id="cashx-eco-nft-wallet-count">${wAddr ? 'Loading' : '—'}</div><div class="ft-sub">NFTs in wallet</div></td>
         <td><div class="ft-val" id="cashx-eco-nft-staked-count">${wAddr ? 'Loading' : '—'}</div><div class="ft-sub">NFTs staked</div></td>
         <td><div class="ft-val">4 tokens</div><div class="ft-sub">CASHX · DISTROX · DIVX · GSX</div></td>
@@ -11332,7 +11450,7 @@ const PULSE_ID     = 369;
     if (farmStakedOnly && nftFarmState.stakedTokens.length === 0) return '';
     return `
       <tr class="farm-table-nft-row">
-        <td><div class="farm-table-nft-name"><img src="cashmoney-nft-header.png" alt="CashMoney NFT #348"><div><div class="ft-name">CashMoney (CASH) NFT</div><div class="ft-badge">Nexion pool #0 · NFT</div></div></div></td>
+        <td><div class="farm-table-nft-name"><img src="cashmoney-nft-header.png" alt="CashMoney NFT #348"><div><div class="ft-name">CashMoney (CASH) NFT</div><div class="ft-badge">Nexion pool #0 · NFT</div>${farmListToolsHTML(nftBrowseEntry('nft'))}</div></div></td>
         <td><div class="ft-val" id="nft-farm-wallet-count">${wAddr ? 'Loading' : '—'}</div><div class="ft-sub">NFTs in wallet</div></td>
         <td><div class="ft-val" id="nft-farm-staked-count">${wAddr ? 'Loading' : '—'}</div><div class="ft-sub">NFTs staked</div></td>
         <td><div class="ft-val" id="nft-farm-pending">${wAddr ? 'Loading' : 'Connect wallet'}</div><div class="ft-sub">uPLS rewards</div></td>
@@ -11357,26 +11475,27 @@ const PULSE_ID     = 369;
           </tr>
         </thead>
         <tbody>
-          ${renderCashxEcoNftFarmTableRow()}
-          ${renderNexionNftFarmTableRow()}
-          ${results.map(r => {
+          ${orderedFarmEntries(results).map(entry => {
+            if (entry.kind === 'eco') return renderCashxEcoNftFarmTableRow();
+            if (entry.kind === 'nft') return renderNexionNftFarmTableRow();
+            const r = entry.result;
             const liqUrl = pulsexAddLiquidityURL(r.lpTokens, r.farm);
             return `
           <tr class="farm-table-main" id="farm-table-row-${r.pid}" onclick="farmsToggleTableRow(${r.pid})">
             <td>
-              <div class="ft-name">${farmTitleHTML(r.farm.name, r.farm.lp, r.pid, r.farm.version || 'PLP V2')}</div>
+              <div class="ft-name">${farmTitleHTML(r.farm.name, r.farm.lp, r.pid, r.farm.version || 'PLP V2')}${farmListToolsHTML(farmBrowseEntry(r))}</div>
               <div class="ft-badge">${r.farm.label}</div>
             </td>
             <td>
-              <div class="ft-val" id="farm-wallet-${r.pid}">${fmtFarm(r.walletLp)}</div>
+              <div class="ft-val" id="farm-wallet-${r.pid}">${r.error ? 'Unavailable' : fmtFarm(r.walletLp)}</div>
               <div class="ft-sub">Available</div>
             </td>
             <td>
-              <div class="ft-val" id="farm-staked-${r.pid}">${fmtFarm(r.staked)}</div>
+              <div class="ft-val" id="farm-staked-${r.pid}">${r.error ? 'Unavailable' : fmtFarm(r.staked)}</div>
               <div class="ft-sub">${r.farm.single ? r.farm.name : 'LP tokens'}</div>
             </td>
             <td>
-              <div class="ft-val" id="farm-pending-${r.pid}">${fmtFarm(r.pending)}</div>
+              <div class="ft-val" id="farm-pending-${r.pid}">${r.error ? 'Unavailable' : r.valuation?.pending || fmtFarmFixed(r.pending, 2, farmTokenDec(farmRewardAddress(r.farm, r.poolInfo)))}</div>
               <div class="ft-sub">${farmRewardTokenHTML(r.farm, r.poolInfo)}</div>
             </td>
             <td style="text-align:right">
@@ -11389,13 +11508,13 @@ const PULSE_ID     = 369;
             <td colspan="5">
               <div class="farm-table-panel">
                 <div class="farm-table-info">
-                  <div class="farm-table-info-line">Your Staked: ${fmtFarm(r.staked)}</div>
+                  <div class="farm-table-info-line">Your Staked: ${r.error ? 'Unavailable' : fmtFarm(r.staked)}</div>
                   <div class="farm-table-usd">${withUsdLabel(r.valuation?.userStakedUsd || '$0.00')}</div>
                   <a class="farm-table-scan" href="https://scan.pulsechain.com/address/${r.farm.lp}" target="_blank" rel="noopener">View on PulseScan</a>
                 </div>
                 <div class="farm-table-rewards">
                   <div class="farm-table-reward-line">
-                    <span>${fmtFarm(r.pending)}</span>
+                    <span>${r.error ? 'Unavailable' : r.valuation?.pending || fmtFarmFixed(r.pending, 2, farmTokenDec(farmRewardAddress(r.farm, r.poolInfo)))}</span>
                     ${tokenLogoHTML(farmRewardSymbol(r.farm, r.poolInfo))}
                     <span>${farmRewardSymbol(r.farm, r.poolInfo)}</span>
                   </div>
@@ -11408,14 +11527,15 @@ const PULSE_ID     = 369;
                   </div>
                 </div>
                 <div class="farm-table-controls">
-                  <span class="farm-tx-msg" id="farm-msg-${r.pid}"></span>
+                  <span class="farm-tx-msg err" id="farm-read-msg-${r.pid}" role="status" style="display:${r.error ? 'flex' : 'none'}">${r.error ? 'Readings unavailable · retrying' : ''}</span>
+        <span class="farm-tx-msg" id="farm-msg-${r.pid}"></span>
                   <div class="farm-amount-wrap">
                     <input class="farm-amount-input" id="farm-input-${r.pid}"
                       type="number" min="0" step="any" placeholder="${r.disconnected ? 'Connect wallet...' : 'Amount'}" ${r.disconnected ? 'disabled' : ''}/>
                     <button class="farm-max-stake" onclick="farmsFillInput(${r.pid},'wallet')" ${r.disconnected ? 'disabled' : ''}>Max</button>
                   </div>
                   <div class="farm-balance-row">
-                    <span>Wallet: <span>${fmtFarm(r.walletLp)}</span> LP</span>
+                    <span>Wallet: <span>${r.error ? 'Unavailable' : fmtFarm(r.walletLp)}</span> LP</span>
                     <button class="farm-staked-max" onclick="farmsFillInput(${r.pid},'staked')" ${r.disconnected ? 'disabled' : ''}>Staked Max</button>
                   </div>
                   <div class="farm-table-actions">
@@ -11468,8 +11588,82 @@ const PULSE_ID     = 369;
     return typeof r.staked === 'bigint' && r.staked > 0n;
   }
 
+  function farmBrowseEntry(r) {
+    const end = Number(poolValue(r.poolInfo, 'endTime', 5) || 0);
+    const fallback = Number(r.countdownEnd || 0);
+    return { kind: 'token', result: r, key: `369:${FARM_CONTRACT.toLowerCase()}:${r.farm.label}`, name: r.farm.name, label: r.farm.label,
+      address: r.farm.lp, rewards: [farmRewardSymbol(r.farm, r.poolInfo)], staked: hasStakedFarm(r), unavailable: !!r.error, rate: rankNumber(r.valuation?.apr), deposit: r.error ? null : rankNumber(r.valuation?.userStakedUsd),
+      end: end || (fallback > 1e12 ? fallback / 1000 : fallback) };
+  }
+
+  function nftBrowseEntry(kind) {
+    const eco = kind === 'eco';
+    const state = eco ? cashxEcoNftState : nftFarmState;
+    return { kind, key: `369:${NEXION_NFT_FARM_CONTRACT.toLowerCase()}:nft:${eco ? 1 : 0}`,
+      name: eco ? 'CashX ECO NFT' : 'CashMoney CASH NFT', label: `NFT #${eco ? 1 : 0}`,
+      address: eco ? CASHX_ECO_NFT_COLLECTION : CASHMONEY_NFT_COLLECTION,
+      rewards: state.rewards.length ? state.rewards.map(reward => reward.symbol) : eco ? ['CASHX','DISTROX','DIVX','GSX'] : ['uPLS','VPLS','GSX'],
+      rate: state.apr, deposit: state.stakedValueUsd, staked: state.stakedTokens.length > 0, end: Number(state.poolInfo?.endTime ?? state.poolInfo?.[3] ?? 0) };
+  }
+
+  function orderedFarmEntries(results = lastFarmResults) {
+    return window.FarmListTools.select([nftBrowseEntry('eco'), nftBrowseEntry('nft'), ...results.map(farmBrowseEntry)],
+      { ...farmBrowseFilters, stakedOnly: farmStakedOnly }, farmFavorites);
+  }
+
   function visibleFarmResults() {
-    return farmStakedOnly ? lastFarmResults.filter(hasStakedFarm) : lastFarmResults;
+    return orderedFarmEntries().filter(entry => entry.kind === 'token').map(entry => entry.result);
+  }
+
+  function comparisonEntries() {
+    return lastFarmResults.map(r => ({ ...farmBrowseEntry(r), tvl: rankNumber(r.valuation?.tvl),
+      deposit: wAddr ? rankNumber(r.valuation?.userStakedUsd) : null,
+      share: wAddr ? rankNumber(r.valuation?.userStakedShare) : null }));
+  }
+  function compareFarm(pid) { const entry = comparisonEntries().find(e => Number(e.result.pid) === Number(pid)); if (entry) window.SiteUtilities.compare(entry); }
+  function showFarmComparison() { window.SiteUtilities.showComparison(comparisonEntries()); }
+  function showVaultGrowth(id) { const v = vaultResult(id); if(v) window.SiteUtilities.vaultGrowth(v,NEXION_FLUX_VAULT_MANAGER,vaultPairName(v)); }
+
+  function farmListToolsHTML(entry) {
+    const saved = farmFavorites.has(entry.key);
+    const badge = window.FarmListTools.ending(entry.end);
+    return `<span class="farm-list-tools"><button type="button" class="farm-favorite" data-farm-favorite="${farmSafeText(entry.key)}" aria-pressed="${saved}" aria-label="${saved ? 'Remove' : 'Add'} ${farmSafeText(entry.name)} ${farmSafeText(entry.label)} ${saved ? 'from' : 'to'} favorites" onclick="event.stopPropagation();window.FarmsApp.${entry.kind === 'vault' ? 'toggleVaultFavorite' : 'toggleFarmFavorite'}('${entry.key}')">${saved ? '★' : '☆'}</button><span class="farm-ending-badge" data-farm-ending="${entry.end}" ${badge ? '' : 'hidden'}>${farmSafeText(badge)}</span>${entry.kind === 'vault' ? `<button type="button" class="farm-changes-button" onclick="event.stopPropagation();window.FarmsApp.showVaultGrowth(${Number(entry.result.vaultId)})">Growth history</button>` : ''}${entry.kind === 'token' ? `<button type="button" class="farm-changes-button" data-compare-key="${farmSafeText(entry.key)}" aria-pressed="false" aria-label="Compare ${farmSafeText(entry.name)} ${farmSafeText(entry.label)}" onclick="event.stopPropagation();window.FarmsApp.compareFarm(${Number(entry.result.pid)})">Compare</button>` : ''}${entry.kind === 'token' ? `<button type="button" class="farm-changes-button" aria-label="What changed for ${farmSafeText(entry.name)} ${farmSafeText(entry.label)}" onclick="event.stopPropagation();window.FarmsApp.openFarmChanges(${Number(entry.result.pid)})">What changed?</button>` : ''}</span>`;
+  }
+
+  function updateFarmBrowseControls() {
+    syncBrowsePreferences('farms');
+    const rewardSelect = document.getElementById('farm-reward-filter');
+    const rewards = [...new Set([...FARMS.map(farm => farmRewardSymbol(farm)), ...nftBrowseEntry('eco').rewards, ...nftBrowseEntry('nft').rewards].filter(Boolean))].sort();
+    const options = '<option value="">All rewards</option>' + rewards.map(reward => `<option value="${farmSafeText(reward)}">${farmSafeText(reward)}</option>`).join('');
+    if (rewardSelect && rewardSelect.innerHTML !== options) { rewardSelect.innerHTML = options; rewardSelect.value = farmBrowseFilters.reward; }
+    document.getElementById('farm-favorites-only')?.setAttribute('aria-pressed', String(farmBrowseFilters.favoritesOnly));
+    set('farm-browse-status', `${orderedFarmEntries().length} of ${lastFarmResults.length + 2} farms · Favorites appear first. Totals include all your selected ecosystem farms.`);
+  }
+
+  function setBrowseFilter(key, value) {
+    if (!['query','reward','favoritesOnly','sort'].includes(key)) return;
+    farmBrowseFilters[key] = key === 'favoritesOnly' ? Boolean(value) : String(value);
+    renderFarmResults(lastFarmResults, true);
+  }
+
+  function clearBrowseFilters() {
+    farmBrowseFilters.query = ''; farmBrowseFilters.reward = ''; farmBrowseFilters.favoritesOnly = false; farmBrowseFilters.sort = 'default';
+    farmStakedOnly = false;
+    const search = document.getElementById('farm-search'); if (search) search.value = '';
+    const rewards = document.getElementById('farm-reward-filter'); if (rewards) rewards.value = '';
+    const staked = document.getElementById('farms-filter-staked'); if (staked) staked.checked = false;
+    renderFarmResults(lastFarmResults, true);
+  }
+
+  function toggleFarmFavorite(key) {
+    const valid = [nftBrowseEntry('eco'), nftBrowseEntry('nft'), ...lastFarmResults.map(farmBrowseEntry)].some(entry => entry.key === key);
+    if (!valid) return;
+    if (farmFavorites.has(key)) farmFavorites.delete(key); else farmFavorites.add(key);
+    let saved = false;
+    try { saved = window.FarmListTools.save(localStorage, farmFavorites); } catch (_) {}
+    renderFarmResults(lastFarmResults, true);
+    Array.from(document.querySelectorAll('[data-farm-favorite]')).find(button => button.dataset.farmFavorite === key)?.focus({ preventScroll: true });
+    if (!saved) set('farm-browse-status', 'Favorites are kept for this visit; browser storage is unavailable.');
   }
 
   function farmUsdNumber(value) {
@@ -11629,7 +11823,33 @@ const PULSE_ID     = 369;
     else usdEl.removeAttribute('title');
   }
 
+  let changesWallet = '';
+  function recordFarmChanges(results) {
+    const wallet = String(wAddr || '').toLowerCase();
+    if (wallet !== changesWallet) { window.FarmChanges.close(); changesWallet = wallet; }
+    if (!wallet) return;
+    for (const r of results) {
+      if (String(r.walletAddress || '').toLowerCase() !== wallet || r.error || !r.shareValid || !r.valuation || !r.readAt) continue;
+      const total = poolValue(r.poolInfo, 'lpSupply', 3);
+      if (typeof total !== 'bigint' || typeof r.staked !== 'bigint') continue;
+      const share = total > 0n ? Number(r.staked * 100000000n / total) / 1000000 : r.staked === 0n ? 0 : null;
+      window.FarmChanges.observe(`${wallet}:${farmBrowseEntry(r).key}`, {
+        at: r.readAt, share, apr: rankNumber(r.valuation.apr), deposit: rankNumber(r.valuation.userStakedUsd)
+      });
+    }
+  }
+
+  function openFarmChanges(pid) {
+    const result = lastFarmResults.find(r => Number(r.pid) === Number(pid));
+    if (!result) return;
+    recordFarmChanges(lastFarmResults);
+    const wallet = String(wAddr || '').toLowerCase();
+    window.FarmChanges.open(`${wallet}:${farmBrowseEntry(result).key}`, `${result.farm.name} ${result.farm.label}`,
+      Boolean(wallet), !!result.error || staleFarmReads.has(result.pid) || !result.valuation || String(result.walletAddress || '').toLowerCase() !== wallet, result.readAt);
+  }
+
   function updateFarmSummaries(results = lastFarmResults) {
+    recordFarmChanges(results);
     const lpFarmTvl = results.reduce((sum, r) => {
       const valuationTvl = r.valuation?.tvl;
       const metaTvl = farmMeta(r.farm).tvl;
@@ -11644,10 +11864,8 @@ const PULSE_ID     = 369;
     const nftClaimable = nftFarmClaimableUsd() + ecoNftClaimableUsd();
     const totalClaimable = regularClaimable + nftClaimable;
     const lpUserStaked = results.reduce((sum, r) => sum + farmUsdNumber(r.valuation?.userStakedUsd), 0);
-    const ecoNftUserStaked = Number.isFinite(cashxEcoNftState.nftUnitValueUsd)
-      ? cashxEcoNftState.stakedTokens.length * cashxEcoNftState.nftUnitValueUsd
-      : 0;
-    const totalUserStaked = lpUserStaked + ecoNftUserStaked;
+    // Match Nexion's token-stake summary; NFT counts are shown separately.
+    const totalUserStaked = lpUserStaked;
     set('nexion-farms-count', `${FARMS.length + 2} farms`);
     set('farms-total-tvl', totalTvl > 0 ? fmtUsd(totalTvl, 2).replace(' USD', '') : 'Loading');
     set('farms-total-claimable', fmtUsd(totalClaimable, 2));
@@ -11742,13 +11960,15 @@ const PULSE_ID     = 369;
       return;
     }
     updateFarmSummaries(lastFarmResults);
+    updateFarmBrowseControls();
     const visibleResults = visibleFarmResults();
-    if (!visibleResults.length) {
-      el.innerHTML = '<div class="farm-empty">No staked LP farms found for this wallet.</div>';
+    if (!orderedFarmEntries().length) {
+      el.innerHTML = '<div class="farm-empty">No farms match these filters. Try Clear filters.</div>';
       if (lastFarmResults.some(r => r && r.valuation)) revealFarms();
       return;
     }
     el.innerHTML = farmView === 'table' ? renderFarmTable(visibleResults) : renderFarmGrid(visibleResults);
+    window.SiteUtilities.syncCompare();
     renderNftFarmDom();
     renderEcoNftFarmDom();
     renderFarmRankings();
@@ -11769,10 +11989,12 @@ const PULSE_ID     = 369;
     farmStakedOnly = Boolean(checked);
     const input = document.getElementById('farms-filter-staked');
     if (input) input.checked = farmStakedOnly;
+    syncBrowsePreferences('farms');
     if (lastFarmResults.length > 0) renderFarmResults(lastFarmResults, true);
   }
 
   function goToFarm(lp) {
+    if (farmBrowseFilters.query || farmBrowseFilters.reward || farmBrowseFilters.favoritesOnly) clearBrowseFilters();
     if (String(lp).toLowerCase() === '__cashx_eco_nft__') {
       if (farmStakedOnly && cashxEcoNftState.stakedTokens.length === 0) setStakedFilter(false);
       requestAnimationFrame(() => {
@@ -12633,13 +12855,7 @@ const PULSE_ID     = 369;
   }
 
   async function waitForNftFarmTx(tx, label) {
-    const receipt = await Promise.race([
-      tx.wait(),
-      new Promise(resolve => setTimeout(() => resolve(null), FARM_TX_WAIT_TIMEOUT_MS))
-    ]);
-    if (!receipt) return null;
-    if (Number(receipt.status ?? 1) !== 1) throw new Error(`${label} reverted`);
-    return receipt;
+    return window.SiteUtilities.wait(tx, label, FARM_TX_WAIT_TIMEOUT_MS);
   }
 
   function scheduleNftFarmRefresh() {
@@ -12665,7 +12881,7 @@ const PULSE_ID     = 369;
         const nftC = new ethers.Contract(CASHMONEY_NFT_COLLECTION, CASHMONEY_NFT_ABI, signer);
         const approved = await nftC.isApprovedForAll(wAddr, NEXION_NFT_FARM_CONTRACT);
         if (!approved) {
-          const approvalTx = await nftC.setApprovalForAll(NEXION_NFT_FARM_CONTRACT, true);
+          const approvalTx = await window.SiteUtilities.send(() => nftC.setApprovalForAll(NEXION_NFT_FARM_CONTRACT, true));
           const approvalReceipt = await waitForNftFarmTx(approvalTx, 'NFT approval');
           if (!approvalReceipt) return;
           nftFarmState.approved = true;
@@ -12673,11 +12889,11 @@ const PULSE_ID     = 369;
           nftFarmState.approved = true;
         }
         const fee = await farmC.calculateDepositFee(NEXION_NFT_POOL_ID, tokenIds.length);
-        const stakeTx = await farmC.depositNFTs(NEXION_NFT_POOL_ID, tokenIds, { value: fee });
+        const stakeTx = await window.SiteUtilities.send(() => farmC.depositNFTs(NEXION_NFT_POOL_ID, tokenIds, { value: fee }));
         const receipt = await waitForNftFarmTx(stakeTx, `Stake ${tokenIds.length} NFT${tokenIds.length === 1 ? '' : 's'}`);
         if (!receipt) return;
       } else {
-        const unstakeTx = await farmC.withdrawNFTs(NEXION_NFT_POOL_ID, tokenIds);
+        const unstakeTx = await window.SiteUtilities.send(() => farmC.withdrawNFTs(NEXION_NFT_POOL_ID, tokenIds));
         const receipt = await waitForNftFarmTx(unstakeTx, `Unstake ${tokenIds.length} NFT${tokenIds.length === 1 ? '' : 's'}`);
         if (!receipt) return;
       }
@@ -12703,7 +12919,7 @@ const PULSE_ID     = 369;
     try {
       const signer = await wProvider.getSigner();
       const nftC = new ethers.Contract(CASHMONEY_NFT_COLLECTION, CASHMONEY_NFT_ABI, signer);
-      const tx = await nftC.setApprovalForAll(NEXION_NFT_FARM_CONTRACT, true);
+      const tx = await window.SiteUtilities.send(() => nftC.setApprovalForAll(NEXION_NFT_FARM_CONTRACT, true));
       const receipt = await waitForNftFarmTx(tx, 'NFT approval');
       if (receipt) nftFarmState.approved = true;
     } catch(err) {
@@ -12728,7 +12944,7 @@ const PULSE_ID     = 369;
     try {
       const signer = await wProvider.getSigner();
       const farmC = new ethers.Contract(NEXION_NFT_FARM_CONTRACT, NEXION_NFT_FARM_ABI, signer);
-      const tx = await farmC.claimRewards(NEXION_NFT_POOL_ID);
+      const tx = await window.SiteUtilities.send(() => farmC.claimRewards(NEXION_NFT_POOL_ID));
       const rewardLabel = nftFarmState.rewards.map(reward => reward.symbol).filter(Boolean).join(' + ') || nftFarmState.rewardSymbol;
       const receipt = await waitForNftFarmTx(tx, `Claim ${rewardLabel}`);
       if (receipt) {
@@ -13066,6 +13282,7 @@ const PULSE_ID     = 369;
         renderEcoNftFarmDom();
         renderEcoNftModal();
         updateFarmSummaries(lastFarmResults);
+        markBrowseRead('farms', staleFarmReads.size > 0 || lastFarmResults.some(r => r.error || !r.valuation), true);
         if (farmStakedOnly && lastFarmResults.length) renderFarmResults(lastFarmResults, true);
       }
     }
@@ -13191,15 +13408,15 @@ const PULSE_ID     = 369;
       if (mode === 'stake') {
         const nft = new ethers.Contract(CASHX_ECO_NFT_COLLECTION, CASHMONEY_NFT_ABI, signer);
         if (!await nft.isApprovedForAll(wAddr, NEXION_NFT_FARM_CONTRACT)) {
-          const approval = await nft.setApprovalForAll(NEXION_NFT_FARM_CONTRACT, true);
+          const approval = await window.SiteUtilities.send(() => nft.setApprovalForAll(NEXION_NFT_FARM_CONTRACT, true));
           if (!await waitForNftFarmTx(approval, 'CashX Ecosystem NFT approval')) return;
           cashxEcoNftState.approved = true;
         }
         const fee = await farm.calculateDepositFee(CASHX_ECO_NFT_POOL_ID, tokenIds.length);
-        const tx = await farm.depositNFTs(CASHX_ECO_NFT_POOL_ID, tokenIds, { value: fee });
+        const tx = await window.SiteUtilities.send(() => farm.depositNFTs(CASHX_ECO_NFT_POOL_ID, tokenIds, { value: fee }));
         if (!await waitForNftFarmTx(tx, 'Stake CashX Ecosystem NFTs')) return;
       } else {
-        const tx = await farm.withdrawNFTs(CASHX_ECO_NFT_POOL_ID, tokenIds);
+        const tx = await window.SiteUtilities.send(() => farm.withdrawNFTs(CASHX_ECO_NFT_POOL_ID, tokenIds));
         if (!await waitForNftFarmTx(tx, 'Unstake CashX Ecosystem NFTs')) return;
       }
       cashxEcoNftState.selected.clear();
@@ -13225,7 +13442,7 @@ const PULSE_ID     = 369;
     try {
       const signer = await wProvider.getSigner();
       const nft = new ethers.Contract(CASHX_ECO_NFT_COLLECTION, CASHMONEY_NFT_ABI, signer);
-      const tx = await nft.setApprovalForAll(NEXION_NFT_FARM_CONTRACT, true);
+      const tx = await window.SiteUtilities.send(() => nft.setApprovalForAll(NEXION_NFT_FARM_CONTRACT, true));
       if (await waitForNftFarmTx(tx, 'CashX Ecosystem NFT approval')) {
         cashxEcoNftState.approved = true;
         setEcoNftStatus('NFT farm approved.');
@@ -13246,7 +13463,7 @@ const PULSE_ID     = 369;
     try {
       const signer = await wProvider.getSigner();
       const farm = new ethers.Contract(NEXION_NFT_FARM_CONTRACT, NEXION_NFT_FARM_ABI, signer);
-      const tx = await farm.claimRewards(CASHX_ECO_NFT_POOL_ID);
+      const tx = await window.SiteUtilities.send(() => farm.claimRewards(CASHX_ECO_NFT_POOL_ID));
       if (await waitForNftFarmTx(tx, 'Claim CashX Ecosystem NFT rewards')) {
         cashxEcoNftState.pendingRewards = cashxEcoNftState.pendingRewards.map(reward => ({ ...reward, amount: 0n }));
         setEcoNftStatus('Rewards claimed.');
@@ -13284,10 +13501,7 @@ const PULSE_ID     = 369;
   }
 
   async function waitForFarmTx(tx, pid, label) {
-    const timeout = new Promise(resolve => {
-      setTimeout(() => resolve(null), FARM_TX_WAIT_TIMEOUT_MS);
-    });
-    return Promise.race([tx.wait(), timeout]);
+    return window.SiteUtilities.wait(tx, label, FARM_TX_WAIT_TIMEOUT_MS);
   }
 
   function scheduleFarmRefresh(pid) {
@@ -13347,9 +13561,30 @@ const PULSE_ID     = 369;
     }
   }
 
-  function refreshVisibleFarmData() {
-    if (!wProvider || !wAddr || window.location.hash !== '#farms') return;
-    mapLimit(visibleFarmResults(), 4, r => refreshFarmData(r.pid));
+  function setFarmReadStatus(pid, message) {
+    const node = document.getElementById(`farm-read-msg-${pid}`);
+    if (!node) return;
+    node.textContent = message;
+    node.style.display = message ? 'flex' : 'none';
+  }
+  const staleFarmReads = new Set();
+  let farmRefreshRunning = false;
+  async function refreshVisibleFarmData() {
+    if (farmRefreshRunning || document.hidden || !wProvider || !wAddr || window.location.hash !== '#farms' || farmProductView === 'vaults') return;
+    farmRefreshRunning = true;
+    try {
+      // Browsing filters must not freeze the portfolio totals for hidden positions.
+      const results = lastFarmResults.filter(r => !farmStakedOnly || r.error || hasStakedFarm(r));
+      const wallet = wAddr;
+      const priceMaps = await fetchFarmPriceMaps(readProvider(), results);
+      if (wallet !== wAddr || document.hidden || window.location.hash !== '#farms' || farmProductView === 'vaults') return;
+      await mapLimit(results, 4, r => refreshFarmData(r.pid, priceMaps));
+    } catch (error) {
+      markBrowseRead('farms', true, false);
+      console.warn('Farm refresh unavailable:', error);
+    } finally {
+      farmRefreshRunning = false;
+    }
   }
 
   function disableFarmBtns(pid, disabled) {
@@ -13364,16 +13599,16 @@ const PULSE_ID     = 369;
   setInterval(updateFarmCountdowns, 1000);
   setInterval(refreshVisibleFarmData, 20000);
   setInterval(() => {
-    if (window.location.hash === '#farms' && farmProductView === 'vaults') fetchVaults(true);
+    if (!document.hidden && window.location.hash === '#farms' && farmProductView === 'vaults' && !vaultsLoading) fetchVaults();
   }, 30000);
   setInterval(() => {
-    if (window.location.hash === '#farms') {
+    if (!document.hidden && window.location.hash === '#farms' && farmProductView !== 'vaults') {
       refreshNftFarmPending();
       refreshEcoNftPending();
     }
   }, 10000);
   setInterval(() => {
-    if (window.location.hash === '#farms') {
+    if (!document.hidden && window.location.hash === '#farms' && farmProductView !== 'vaults') {
       refreshNftFarmData();
       refreshEcoNftData();
     }
@@ -13385,13 +13620,13 @@ const PULSE_ID     = 369;
     }
   });
   window.addEventListener('focus', () => {
-    if (window.location.hash === '#farms') {
+    if (!document.hidden && window.location.hash === '#farms' && farmProductView !== 'vaults') {
       refreshNftFarmPending();
       refreshEcoNftPending();
     }
   });
 
-  async function refreshFarmData(pid) {
+  async function refreshFarmData(pid, priceMaps = null) {
     if (!wProvider || !wAddr) return;
     const shareWallet = wAddr;
     const r = lastFarmResults.find(r => r.pid === pid);
@@ -13401,21 +13636,23 @@ const PULSE_ID     = 369;
       const farmC = new ethers.Contract(FARM_CONTRACT, FARM_ABI, rp);
       const lpC   = new ethers.Contract(r.farm.lp, LP_ABI, rp);
       const [info, pending, walletLp, allowance, totalStaked, poolInfo] = await Promise.all([
-        farmC.userInfo(pid, wAddr).catch(() => ({})),
-        farmC.pendingReward(pid, wAddr).catch(() => 0n),
-        lpC.balanceOf(wAddr).catch(() => 0n),
-        lpC.allowance(wAddr, FARM_CONTRACT).catch(() => 0n),
+        farmC.userInfo(pid, wAddr),
+        farmC.pendingReward(pid, wAddr),
+        lpC.balanceOf(wAddr),
+        lpC.allowance(wAddr, FARM_CONTRACT),
         lpC.balanceOf(FARM_CONTRACT).catch(() => null),
         farmC.poolInfo(pid).catch(() => null)
       ]);
       const staked = info.amount ?? info[0] ?? 0n;
       const lpTokens = Array.isArray(r.lpTokens) ? r.lpTokens : [];
       const [valuation, lpBreakdown] = await Promise.all([
-        fetchNexionValuation(rp, r.farm, poolInfo, totalStaked, staked, pending),
+        fetchNexionValuation(rp, r.farm, poolInfo, totalStaked, staked, pending, priceMaps ? prefetchedPrices(priceMaps, r.farm) : undefined),
         fetchLpBreakdown(rp, r.farm, staked, lpTokens[0], lpTokens[1])
       ]);
       // Update DOM
       if (wAddr !== shareWallet) return;
+      staleFarmReads.delete(pid);
+      setFarmReadStatus(pid, '');
       const shareValid = typeof (info.amount ?? info[0]) === 'bigint';
       const walletEl = document.getElementById(`farm-wallet-${pid}`);
       const stakedEl = document.getElementById(`farm-staked-${pid}`);
@@ -13446,11 +13683,19 @@ const PULSE_ID     = 369;
       // Update cached results so fillInput stays correct
       const idx = lastFarmResults.findIndex(r => r.pid === pid);
       if (idx >= 0) {
-        lastFarmResults[idx] = { ...lastFarmResults[idx], staked, pending, walletLp, allowance, totalStaked, poolInfo, valuation, lpBreakdown, shareValid, error: null };
+        lastFarmResults[idx] = { ...lastFarmResults[idx], walletAddress: shareWallet, readAt: Date.now(), staked, pending, walletLp, allowance, totalStaked, poolInfo, valuation, lpBreakdown, shareValid, error: null };
         updateFarmSummaries(lastFarmResults);
+        markBrowseRead('farms', staleFarmReads.size > 0 || lastFarmResults.some(r => r.error || !r.valuation), true);
         if (farmStakedOnly && !hasStakedFarm(lastFarmResults[idx])) renderFarmResults(lastFarmResults, true);
       }
-    } catch(e) { console.error('refreshFarmData failed:', e); }
+    } catch(e) {
+      console.error('refreshFarmData failed:', e);
+      if (wAddr === shareWallet) {
+        setFarmReadStatus(pid, 'Update unavailable · showing last successful readings');
+        staleFarmReads.add(pid);
+        markBrowseRead('farms', true, false);
+      }
+    }
   }
 
   // ── Stake ──────────────────────────────────────────────────────────────────
@@ -13498,7 +13743,7 @@ const PULSE_ID     = 369;
         return;
       }
 
-      const tx = await farmC.deposit(pid, amount);
+      const tx = await window.SiteUtilities.send(() => farmC.deposit(pid, amount));
       const receipt = await waitForFarmTx(tx, pid, 'Stake submitted');
       if (!receipt) {
         setFarmStatus(pid, '', false);
@@ -13529,7 +13774,7 @@ const PULSE_ID     = 369;
     try {
       const signer = await wProvider.getSigner();
       const lpC = new ethers.Contract(r.farm.lp, LP_ABI, signer);
-      const tx = await lpC.approve(FARM_CONTRACT, amount);
+      const tx = await window.SiteUtilities.send(() => lpC.approve(FARM_CONTRACT, amount));
       const receipt = await waitForFarmTx(tx, pid, 'Approval submitted');
       if (!receipt) return;
       scheduleFarmRefresh(pid);
@@ -13567,7 +13812,7 @@ const PULSE_ID     = 369;
       const signer = await wProvider.getSigner();
       const farmC  = new ethers.Contract(FARM_CONTRACT, FARM_ABI, signer);
 
-      const tx = await farmC.withdraw(pid, amount);
+      const tx = await window.SiteUtilities.send(() => farmC.withdraw(pid, amount));
       const receipt = await waitForFarmTx(tx, pid, 'Unstake submitted');
       if (!receipt) {
         setFarmStatus(pid, '', false);
@@ -13746,17 +13991,14 @@ const PULSE_ID     = 369;
 
       const nonceState = await readClaimNonceState(provider);
       requireMatchingClaimNonce(nonceState);
-      const tx = await farmC.claimMany(prepared.pids, {
+      const tx = await window.SiteUtilities.send(() => farmC.claimMany(prepared.pids, {
         gasLimit: prepared.gasLimit,
         nonce: nonceState.walletPending
-      });
+      }));
       setClaimAllStatus('Claim submitted');
       prepared.results.forEach(result => setFarmStatus(result.pid, 'Claim submitted', false));
 
-      const receipt = await Promise.race([
-        tx.wait(),
-        new Promise(resolve => setTimeout(() => resolve(null), FARM_TX_WAIT_TIMEOUT_MS))
-      ]);
+      const receipt = await window.SiteUtilities.wait(tx, 'Claim all', FARM_TX_WAIT_TIMEOUT_MS);
       if (!receipt) {
         setClaimAllStatus('Claim submitted. Refreshing rewards...');
         prepared.results.forEach(result => scheduleFarmRefresh(result.pid));
@@ -13799,7 +14041,7 @@ const PULSE_ID     = 369;
     try {
       const signer = await wProvider.getSigner();
       const farmC  = new ethers.Contract(FARM_CONTRACT, FARM_ABI, signer);
-      const tx     = await farmC.claim(pid);
+      const tx     = await window.SiteUtilities.send(() => farmC.claim(pid));
 
       const receipt = await waitForFarmTx(tx, pid, 'Claim submitted');
       if (!receipt) {
@@ -13869,7 +14111,7 @@ const PULSE_ID     = 369;
       closeEcoNftModal();
     }
   });
-  return { init, connectWallet, refreshAll, disconnectWallet, copyAddr, copyLp, setFarmView, setStakedFilter, setProductView, setVaultMode, fillVaultMax, toggleVaultLpBreakdown, fetchVaults, approveVault, depositVault, withdrawVault, withdrawAllVault, goToFarm, fillInput, updateApproveLabel, approveFarm, stakeFarm, unstakeFarm, claimFarm, claimAllPendingFarms, toggleTableRow, toggleLpBreakdown, openNftFarmModal, openNftFarmMaxSelection, closeNftFarmModal, toggleNftSelection, selectAllNfts, submitNftSelection, approveNftFarm, claimNftRewards, tryNextNftImage, openEcoNftModal, openEcoNftMaxSelection, closeEcoNftModal, toggleEcoNftSelection, selectAllEcoNfts, submitEcoNftSelection, approveEcoNftFarm, claimEcoNftRewards };
+  return { init, compareFarm, showFarmComparison, showVaultGrowth, openFarmChanges, setVaultBrowseFilter, clearVaultBrowseFilters, toggleVaultFavorite, setBrowseFilter, clearBrowseFilters, toggleFarmFavorite, connectWallet, refreshAll, disconnectWallet, copyAddr, copyLp, setFarmView, setStakedFilter, setProductView, setVaultMode, fillVaultMax, toggleVaultLpBreakdown, fetchVaults, approveVault, depositVault, withdrawVault, withdrawAllVault, goToFarm, fillInput, updateApproveLabel, approveFarm, stakeFarm, unstakeFarm, claimFarm, claimAllPendingFarms, toggleTableRow, toggleLpBreakdown, openNftFarmModal, openNftFarmMaxSelection, closeNftFarmModal, toggleNftSelection, selectAllNfts, submitNftSelection, approveNftFarm, claimNftRewards, tryNextNftImage, openEcoNftModal, openEcoNftMaxSelection, closeEcoNftModal, toggleEcoNftSelection, selectAllEcoNfts, submitEcoNftSelection, approveEcoNftFarm, claimEcoNftRewards };
 })();
 function farmsConnectWallet(){ return window.FarmsApp.connectWallet(); }
 function farmsRefreshAll(){ return window.FarmsApp.refreshAll(); }
@@ -14115,8 +14357,8 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
           <div class="reflection-tax-state ${status.cls}">${safe(status.text)}</div>
         </div>`;
     }
-    function renderTaxDetails(token, taxes) {
-      const node = el(`reflection-tax-details-${token.key}`);
+    function renderTaxDetails(token, taxes, lookup = el) {
+      const node = lookup(`reflection-tax-details-${token.key}`);
       if (!node) return;
       const rows = Array.isArray(taxes) && taxes.length ? taxes : [];
       if (!rows.length) {
@@ -14262,23 +14504,34 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
       grid.innerHTML = TOKENS.map(cardShell).join('');
       ready = true;
     }
-    async function readToken(provider, token, wallet) {
+    let reflectionScanId = 0;
+    let reflectionScanWallet = '';
+    async function readToken(provider, token, wallet, scanId) {
+      const liveCard = el(`reflection-card-${token.key}`);
+      const stagedCard = liveCard.cloneNode(true);
+      const lookup = id => stagedCard.querySelector(`[id="${id}"]`);
+
+      const commit = () => {
+        if (scanId !== reflectionScanId) return;
+        liveCard.innerHTML = stagedCard.innerHTML;
+        liveCard.querySelector('[data-scan-error]')?.remove();
+      };
       const contract = new ethers.Contract(token.address, token.rewards ? REWARD_ABI : ERC20_ABI, provider);
       const [decimals, balanceRaw, price, plsPriceNative] = await Promise.all([
-        contract.decimals().catch(() => 18),
-        contract.balanceOf(wallet).catch(() => 0n),
+        contract.decimals(),
+        contract.balanceOf(wallet),
         tokenPrice(token.address).catch(() => 0),
         tokenPlsPrice(token.address).catch(() => 0)
       ]);
       const dec = Number(decimals || 18);
       const bal = amount(balanceRaw, dec);
-      const balEl = el(`reflection-bal-${token.key}`);
-      const balUsdEl = el(`reflection-bal-usd-${token.key}`);
+      const balEl = lookup(`reflection-bal-${token.key}`);
+      const balUsdEl = lookup(`reflection-bal-usd-${token.key}`);
       if (balEl) balEl.textContent = fmt(bal);
       if (balUsdEl) balUsdEl.textContent = '-';
 
       if (!token.rewards) {
-        const taxEl = el(`reflection-tax-${token.key}`);
+        const taxEl = lookup(`reflection-tax-${token.key}`);
         const taxContract = new ethers.Contract(token.address, TAX_ABI, provider);
         const [taxes, totalTaxRaw] = await Promise.all([
           taxContract.getTaxes().catch(() => CASHX_TAXES),
@@ -14287,28 +14540,29 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
         if (taxEl) {
           taxEl.innerHTML = `Total Tax<br><strong>${totalTaxPercent(token, totalTaxRaw)}</strong>`;
         }
-        renderTaxDetails(token, taxes);
-        const yieldsEl = el(`reflection-yields-${token.key}`);
+        renderTaxDetails(token, taxes, lookup);
+        const yieldsEl = lookup(`reflection-yields-${token.key}`);
         if (yieldsEl) yieldsEl.innerHTML = '';
+        commit();
         return { key: token.key, found: bal > 0 };
       }
 
       const [pendingRefRaw, yieldTokens, taxes, totalTaxRaw] = await Promise.all([
-        contract.pendingReflections(wallet).catch(() => 0n),
-        contract.getYieldTokens().catch(() => []),
+        contract.pendingReflections(wallet),
+        contract.getYieldTokens(),
         contract.getTaxes().catch(() => []),
         contract.getTotalTaxs().catch(() => null)
       ]);
       const ref = amount(pendingRefRaw, dec);
-      const refEl = el(`reflection-ref-${token.key}`);
-      const refUsdEl = el(`reflection-ref-usd-${token.key}`);
+      const refEl = lookup(`reflection-ref-${token.key}`);
+      const refUsdEl = lookup(`reflection-ref-usd-${token.key}`);
       if (refEl) refEl.textContent = fmt(ref);
       if (refUsdEl) refUsdEl.textContent = plsLine(ref, plsPriceNative);
-      const taxEl = el(`reflection-tax-${token.key}`);
+      const taxEl = lookup(`reflection-tax-${token.key}`);
       if (taxEl) {
         taxEl.innerHTML = `Total Tax<br><strong>${totalTaxPercent(token, totalTaxRaw)}</strong>`;
       }
-      renderTaxDetails(token, taxes);
+      renderTaxDetails(token, taxes, lookup);
 
       const yieldRows = [];
       let totalYieldUsd = 0;
@@ -14316,13 +14570,13 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
       for (let i = 0; i < yieldTokens.length; i++) {
         const yieldToken = String(yieldTokens[i]?.tokenAddress || yieldTokens[i] || '');
         if (!ethers.isAddress(yieldToken)) continue;
-        const pending = await contract.pendingYields(wallet, i).catch(() => 0n);
+        const pending = await contract.pendingYields(wallet, i);
         const meta = await yieldMeta(provider, yieldToken, pending);
         totalYieldUsd += meta.usdValue;
         totalYieldTokens += meta.value;
         yieldRows.push(meta);
       }
-      const yieldsEl = el(`reflection-yields-${token.key}`);
+      const yieldsEl = lookup(`reflection-yields-${token.key}`);
       if (yieldsEl) {
         yieldsEl.innerHTML = yieldRows.length
           ? yieldRows.map(row => `
@@ -14333,6 +14587,7 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
             </div>`).join('')
           : '<div class="reflection-metric yield"><div class="reflection-metric-title"><span class="reflection-mini-fallback">Y</span><div class="reflection-label">Pending Yield</div></div><div class="reflection-value">0</div><div class="reflection-sub">No yield tokens found</div></div>';
       }
+      commit();
       return { key: token.key, found: bal > 0 || ref > 0 || totalYieldTokens > 0 };
     }
     async function scan(address = null) {
@@ -14344,21 +14599,30 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
         setStatus('Connect a wallet or enter a valid address.');
         return;
       }
+      const scanId = ++reflectionScanId;
+      if (reflectionScanWallet !== wallet.toLowerCase()) renderShell();
+      reflectionScanWallet = wallet.toLowerCase();
       if (input) input.value = wallet;
       setStatus(`Scanning ${short(wallet)}...`);
       const provider = new ethers.JsonRpcProvider(RPC);
-      const results = await Promise.all(TOKENS.map(token => readToken(provider, token, wallet).catch(err => {
+      const results = await Promise.all(TOKENS.map(token => readToken(provider, token, wallet, scanId).catch(err => {
+        if (scanId !== reflectionScanId) return null;
         console.warn(`Reflection scan failed for ${token.symbol}:`, err);
-        const node = el(`reflection-ref-${token.key}`);
-        if (node) node.textContent = 'Error';
-        return { key: token.key, found: false };
+        const card = el(`reflection-card-${token.key}`);
+        let note = card.querySelector('[data-scan-error]');
+        if (!note) { note = document.createElement('p'); note.dataset.scanError = ''; note.className = 'reflection-note'; card.appendChild(note); }
+        note.textContent = 'Update unavailable · any displayed readings are from the last successful scan.';
+        return { key: token.key, error: true };
       })));
+      provider.destroy();
+      if (scanId !== reflectionScanId) return;
+      const errors = results.filter(item => item?.error).length;
       const foundKeys = new Set(results.filter(item => item?.found).map(item => item.key));
       TOKENS.forEach(token => {
         const card = el(`reflection-card-${token.key}`);
-        if (card) card.hidden = !foundKeys.has(token.key);
+        if (card) card.hidden = !foundKeys.has(token.key) && !results.some(item => item?.key === token.key && item.error);
       });
-      setStatus(foundKeys.size
+      setStatus(errors ? `Scan incomplete: ${errors} token read${errors === 1 ? '' : 's'} unavailable. Retry the scan.` : foundKeys.size
         ? `Found ${foundKeys.size} Flux token${foundKeys.size === 1 ? '' : 's'} (held or with pending reflections)`
         : 'No supported Flux tokens found for this wallet.');
     }
@@ -14406,7 +14670,7 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
       }
     }
     function init() {
-      renderShell();
+      if (!ready) renderShell();
       const input = el('reflections-wallet-input');
       if (window.sharedWalletAddr) {
         if (input && !input.value) input.value = window.sharedWalletAddr;
@@ -14480,42 +14744,6 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
     requestAnimationFrame(() => {
       window.FarmsApp?.refreshAll?.();
     });
-  }
-
-  function initPromoCarousel() {
-    const root = document.querySelector('[data-promo-carousel]');
-    if (!root || root.dataset.ready === 'true') return;
-    root.dataset.ready = 'true';
-    const slides = Array.from(root.querySelectorAll('.promo-slide'));
-    const dots = Array.from(root.querySelectorAll('.promo-dot'));
-    if (!slides.length) return;
-    let active = 0;
-    let timer = null;
-    const show = index => {
-      active = (index + slides.length) % slides.length;
-      slides.forEach((slide, i) => slide.classList.toggle('active', i === active));
-      dots.forEach((dot, i) => dot.classList.toggle('active', i === active));
-    };
-    const restart = () => {
-      if (timer) clearInterval(timer);
-      timer = setInterval(() => show(active + 1), 6500);
-    };
-    dots.forEach((dot, index) => {
-      dot.addEventListener('click', () => {
-        show(index);
-        restart();
-      });
-    });
-    root.addEventListener('mouseenter', () => { if (timer) clearInterval(timer); });
-    root.addEventListener('mouseleave', restart);
-    root.querySelectorAll('[data-farms-refresh]').forEach(link => {
-      link.addEventListener('click', event => {
-        event.preventDefault();
-        refreshFarmsTab();
-      });
-    });
-    show(0);
-    restart();
   }
 
   function switchTokenomicsTab(key) {
@@ -14599,7 +14827,7 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
     requestAnimationFrame(() => {
       document.body.style.opacity = '1';
       document.body.style.transform = 'none';
-      initPromoCarousel();
+
       Promise.resolve(window.restoreSharedWallet?.()).finally(() => {
         showPage(window.location.hash === '#dashboard' ? 'dashboard' : window.location.hash === '#farms' ? 'farms' : window.location.hash === '#reflections' ? 'reflections' : 'home', { updateHash: false, instant: true });
         setTimeout(() => {

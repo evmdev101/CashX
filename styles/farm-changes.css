@@ -1,0 +1,11 @@
+.farm-changes-button{font:500 11px/1.5 'DM Sans',sans-serif;background:transparent;color:var(--farm-theme-text,#9edbec);border:1px solid var(--farm-theme-muted,#49616a);border-radius:5px;padding:5px 8px;cursor:pointer}
+.farm-changes-button:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+.farm-changes-dialog{position:fixed;inset:0;margin:auto;box-sizing:border-box;width:min(620px,calc(100vw - 24px));max-height:calc(100dvh - 32px);overflow:auto;padding:24px;border:1px solid var(--farm-theme-border,#49616a);border-radius:12px;background:var(--farm-theme-panel,#1b2427);color:var(--farm-theme-text,#c4e3eb);box-shadow:0 20px 70px #0009;font:13px/1.6 'DM Sans',sans-serif}
+.farm-changes-dialog::backdrop{background:#0009}
+.farm-changes-dialog h2{margin:0 24px 4px 0;font-size:20px}
+.farm-changes-dialog table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.farm-changes-dialog th,.farm-changes-dialog td{padding:10px 6px;text-align:right;border-bottom:1px solid var(--farm-theme-border,#49616a);overflow-wrap:anywhere}
+.farm-changes-dialog th:first-child{text-align:left}
+.changes-dates{white-space:pre-line;color:var(--farm-theme-muted,#a1b6bd)}
+.changes-note{font-size:12px;color:var(--farm-theme-muted,#a1b6bd)}
+@media(max-width:480px){.farm-changes-dialog{padding:18px 12px;font-size:11px}.farm-changes-dialog th,.farm-changes-dialog td{padding:8px 3px}}
