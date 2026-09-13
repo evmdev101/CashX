@@ -6,6 +6,5 @@
 .farm-changes-dialog table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
 .farm-changes-dialog th,.farm-changes-dialog td{padding:10px 6px;text-align:right;border-bottom:1px solid var(--farm-theme-border,#49616a);overflow-wrap:anywhere}
 .farm-changes-dialog th:first-child{text-align:left}
-.changes-dates{white-space:pre-line;color:var(--farm-theme-muted,#a1b6bd)}
 .changes-note{font-size:12px;color:var(--farm-theme-muted,#a1b6bd)}
 @media(max-width:480px){.farm-changes-dialog{padding:18px 12px;font-size:11px}.farm-changes-dialog th,.farm-changes-dialog td{padding:8px 3px}}

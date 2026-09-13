@@ -4607,7 +4607,6 @@
 <link rel="stylesheet" href="./styles/farm-list-tools.css?v=438e4d782110">
 <script src="./lib/farm-list-tools.js?v=f8d05d09d3cf"></script>
 <link rel="stylesheet" href="./styles/farm-changes.css?v=6aafa715bcd6">
-<script src="./lib/farm-changes.js?v=49a42a5ced11"></script>
 <script src="./lib/site-utilities.js?v=e957c18dd047"></script>
 <link rel="stylesheet" href="./styles/site-utilities.css?v=a969ddfb835d">
 </head>
@@ -7438,9 +7437,6 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
         <label>Sort by<select id="farm-sort" aria-label="Farm sort" onchange="window.FarmsApp.setBrowseFilter('sort',this.value)"><option value="default">Default order</option><option value="rate">Highest APR</option><option value="deposit">Largest deposit (USD)</option><option value="ending">Ending soon</option></select></label>
         <button type="button" id="farm-favorites-only" aria-pressed="false" onclick="window.FarmsApp.setBrowseFilter('favoritesOnly',this.getAttribute('aria-pressed')!=='true')">★ Favorites</button>
         <button type="button" onclick="window.FarmsApp.clearBrowseFilters()">Clear filters</button>
-        <p id="farm-refresh-status" class="farm-browse-status" role="status">Waiting for data</p>
-        <button type="button" id="show-farm-comparison" disabled onclick="window.FarmsApp.showFarmComparison()">Compare (0/3)</button>
-        <p class="farm-browse-status" id="farm-browse-status" role="status">Favorites appear first. Totals include all your selected ecosystem farms.</p>
       </div>
       <div class="farm-claimable-summary">
         <div class="farm-claimable-main">
@@ -7487,8 +7483,6 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
           <label>Sort by<select id="vault-sort" aria-label="Vault sort" onchange="window.FarmsApp.setVaultBrowseFilter('sort',this.value)"><option value="default">Default order</option><option value="rate">Highest APY</option><option value="deposit">Largest deposit (USD)</option><option value="ending">Ending soon</option></select></label>
         <button type="button" id="vault-favorites-only" aria-pressed="false" onclick="window.FarmsApp.setVaultBrowseFilter('favoritesOnly',this.getAttribute('aria-pressed')!=='true')">★ Favorites</button>
           <button type="button" onclick="window.FarmsApp.clearVaultBrowseFilters()">Clear filters</button>
-          <p id="vault-refresh-status" class="farm-browse-status" role="status">Waiting for data</p>
-        <p id="vault-browse-status" class="farm-browse-status" role="status">Loading vaults</p>
         </div>
         <div class="vault-summary" aria-label="Auto-compound vault summary">
           <div class="vault-summary-item"><span>Total Deposited:</span><strong id="vaults-total-deposited">Loading</strong></div>
@@ -9063,6 +9057,11 @@ const PULSE_ID     = 369;
   // LP token addresses (from PulseX pairs) used to match pools in the contract
   const FARMS = [
     // NFT cards are rendered separately, followed by the newest token farms.
+    // Explicit pool IDs keep farms sharing an LP token and paying different rewards separate.
+    { label: '#289', name: 'pHEX / BurnX LP', lp: '0x31533707DC4eBF5fC3e75b907b7BEb54A77C3684', rewardToken: 'CASHX', pid: 104 },
+    { label: '#287', name: 'CASHX / HBRP LP', lp: '0x542519d397fb3DA07146529Dcf25669a8B33f3bA', rewardToken: 'GSX', pid: 102 },
+    { label: '#286', name: 'GSX / HBRP LP', lp: '0xcA2FF23F14286601573Cb079e18846C0365CeB85', rewardToken: 'GSX', pid: 101 },
+    { label: '#285', name: 'BurnX / HBR LP', lp: '0x69Fff64e06a85a4120e2Fb01ab851e67e9F1E8fa', rewardToken: 'BURNX', pid: 100 },
     { label: '#282', name: 'DISTROX', single: true, version: 'Single Stake', lp: DISTROX_ADDR, rewardToken: 'INC', rewardAddress: '0x2fa878Ab3F87CC1C9737Fc071108F904c0B0C95d', pid: 97 },
     { label: '#257', name: 'GSX', single: true, version: 'Single Stake', lp: '0x395127a44ac1cdc609c8cc9d048e096e8e8fc30e', rewardToken: 'PLSX', pid: 72 },
     { label: '#240', name: 'DIVX', single: true, version: 'Single Stake', lp: '0x6df9CD07BF067b42A700dc679bD9325Ff61Da8f3', rewardToken: 'PHEX' },
@@ -9191,6 +9190,8 @@ const PULSE_ID     = 369;
     lastTxHash: '', requestId: 0
   };
   const TOKEN_LOGOS = {
+    HBR: 'https://nexionpulse.com/images/tokens/HBR.png',
+    HBRP: 'https://nexionpulse.com/images/tokens/HBRP.png',
     BURNX: 'BurnX.png',
     CASHX: 'cashx-logo.png',
     DISTROX: 'distrox.jpg',
@@ -9234,6 +9235,8 @@ const PULSE_ID     = 369;
   }
 
   const TOKEN_ADDRESSES = {
+    HBR: '0xD947b662876aAaAD199826d985Dee35cad569989',
+    HBRP: '0x5eA9674085a81e653FF087B4b86FaAe564a267be',
     BURNX: '0x8577f0FB9D709d5BeBd808dDDd0094FbAEc667B4',
     CASHX: CASHX_ADDR,
     DISTROX: DISTROX_ADDR,
@@ -9396,7 +9399,7 @@ const PULSE_ID     = 369;
       .sort((a, b) => b.score - a.score)
       .slice(0, 3)
       .map((item, index) => `
-        <div class="farm-rank-row" role="button" tabindex="0" onclick="farmsGoToFarm('${item.farm.lp}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();farmsGoToFarm('${item.farm.lp}')}" title="Go to ${item.farm.name}">
+        <div class="farm-rank-row" role="button" tabindex="0" onclick="farmsGoToFarm('${item.farm.lp}', '${item.farm.label}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();farmsGoToFarm('${item.farm.lp}', '${item.farm.label}')}" title="Go to ${item.farm.name}">
           <div class="farm-rank-pos">${index + 1}</div>
           ${farmRankTitleHTML(item.farm)}
           <div class="farm-rank-value">${formatter ? formatter(item.value) : withUsdLabel(item.value)}</div>
@@ -10172,7 +10175,6 @@ const PULSE_ID     = 369;
     const stakedToggle = document.getElementById('vault-deposited-only'); if (stakedToggle) stakedToggle.checked = vaultBrowseFilters.stakedOnly;
     syncBrowsePreferences('vaults');
     const visible = visibleVaultEntries();
-    set('vault-browse-status', !lastVaultResults.length && vaultsLoading ? 'Loading vaults' : `${visible.length} of ${lastVaultResults.length} vaults · Favorites appear first. Totals include all your ecosystem vaults.`);
     set('nexion-vaults-count', !lastVaultResults.length && vaultsLoading
       ? 'Loading vaults'
       : `${lastVaultResults.length} ecosystem vault${lastVaultResults.length === 1 ? '' : 's'}`);
@@ -11615,19 +11617,12 @@ const PULSE_ID     = 369;
     return orderedFarmEntries().filter(entry => entry.kind === 'token').map(entry => entry.result);
   }
 
-  function comparisonEntries() {
-    return lastFarmResults.map(r => ({ ...farmBrowseEntry(r), tvl: rankNumber(r.valuation?.tvl),
-      deposit: wAddr ? rankNumber(r.valuation?.userStakedUsd) : null,
-      share: wAddr ? rankNumber(r.valuation?.userStakedShare) : null }));
-  }
-  function compareFarm(pid) { const entry = comparisonEntries().find(e => Number(e.result.pid) === Number(pid)); if (entry) window.SiteUtilities.compare(entry); }
-  function showFarmComparison() { window.SiteUtilities.showComparison(comparisonEntries()); }
   function showVaultGrowth(id) { const v = vaultResult(id); if(v) window.SiteUtilities.vaultGrowth(v,NEXION_FLUX_VAULT_MANAGER,vaultPairName(v)); }
 
   function farmListToolsHTML(entry) {
     const saved = farmFavorites.has(entry.key);
     const badge = window.FarmListTools.ending(entry.end);
-    return `<span class="farm-list-tools"><button type="button" class="farm-favorite" data-farm-favorite="${farmSafeText(entry.key)}" aria-pressed="${saved}" aria-label="${saved ? 'Remove' : 'Add'} ${farmSafeText(entry.name)} ${farmSafeText(entry.label)} ${saved ? 'from' : 'to'} favorites" onclick="event.stopPropagation();window.FarmsApp.${entry.kind === 'vault' ? 'toggleVaultFavorite' : 'toggleFarmFavorite'}('${entry.key}')">${saved ? '★' : '☆'}</button><span class="farm-ending-badge" data-farm-ending="${entry.end}" ${badge ? '' : 'hidden'}>${farmSafeText(badge)}</span>${entry.kind === 'vault' ? `<button type="button" class="farm-changes-button" onclick="event.stopPropagation();window.FarmsApp.showVaultGrowth(${Number(entry.result.vaultId)})">Growth history</button>` : ''}${entry.kind === 'token' ? `<button type="button" class="farm-changes-button" data-compare-key="${farmSafeText(entry.key)}" aria-pressed="false" aria-label="Compare ${farmSafeText(entry.name)} ${farmSafeText(entry.label)}" onclick="event.stopPropagation();window.FarmsApp.compareFarm(${Number(entry.result.pid)})">Compare</button>` : ''}${entry.kind === 'token' ? `<button type="button" class="farm-changes-button" aria-label="What changed for ${farmSafeText(entry.name)} ${farmSafeText(entry.label)}" onclick="event.stopPropagation();window.FarmsApp.openFarmChanges(${Number(entry.result.pid)})">What changed?</button>` : ''}</span>`;
+    return `<span class="farm-list-tools"><button type="button" class="farm-favorite" data-farm-favorite="${farmSafeText(entry.key)}" aria-pressed="${saved}" aria-label="${saved ? 'Remove' : 'Add'} ${farmSafeText(entry.name)} ${farmSafeText(entry.label)} ${saved ? 'from' : 'to'} favorites" onclick="event.stopPropagation();window.FarmsApp.${entry.kind === 'vault' ? 'toggleVaultFavorite' : 'toggleFarmFavorite'}('${entry.key}')">${saved ? '★' : '☆'}</button><span class="farm-ending-badge" data-farm-ending="${entry.end}" ${badge ? '' : 'hidden'}>${farmSafeText(badge)}</span>${entry.kind === 'vault' ? `<button type="button" class="farm-changes-button" onclick="event.stopPropagation();window.FarmsApp.showVaultGrowth(${Number(entry.result.vaultId)})">Growth history</button>` : ''}</span>`;
   }
 
   function updateFarmBrowseControls() {
@@ -11637,7 +11632,6 @@ const PULSE_ID     = 369;
     const options = '<option value="">All rewards</option>' + rewards.map(reward => `<option value="${farmSafeText(reward)}">${farmSafeText(reward)}</option>`).join('');
     if (rewardSelect && rewardSelect.innerHTML !== options) { rewardSelect.innerHTML = options; rewardSelect.value = farmBrowseFilters.reward; }
     document.getElementById('farm-favorites-only')?.setAttribute('aria-pressed', String(farmBrowseFilters.favoritesOnly));
-    set('farm-browse-status', `${orderedFarmEntries().length} of ${lastFarmResults.length + 2} farms · Favorites appear first. Totals include all your selected ecosystem farms.`);
   }
 
   function setBrowseFilter(key, value) {
@@ -11674,17 +11668,20 @@ const PULSE_ID     = 369;
 
   // TVL 24h change — snapshots of the COMPLETE TVL are kept in localStorage so we
   // can show how it moved vs ~24h ago (no backend, so history is per-browser).
-  const FARM_TVL_HIST_KEY = 'cashx_farms_tvl_hist_v1';
+  const FARM_TVL_HIST_KEY = 'cashx_farms_tvl_hist_v2';
+  // Compare the same farm set; adding a farm is not organic TVL growth.
+  const FARM_TVL_HIST_SCOPE = FARM_CONTRACT.toLowerCase() + '|' + FARMS.map(farm =>
+    [farm.label, farm.pid ?? '', farm.lp.toLowerCase(), farm.rewardToken].join(':')).sort().join('|');
   function recordTvlSnapshot(tvl) {
     try {
       const now = Date.now();
-      let hist = JSON.parse(localStorage.getItem(FARM_TVL_HIST_KEY) || '[]');
-      if (!Array.isArray(hist)) hist = [];
+      const saved = JSON.parse(localStorage.getItem(FARM_TVL_HIST_KEY) || 'null');
+      let hist = saved?.scope === FARM_TVL_HIST_SCOPE && Array.isArray(saved.points) ? saved.points : [];
       hist = hist.filter(e => e && Number.isFinite(e.t) && Number.isFinite(e.v) && now - e.t < 8 * 86400000);
       const last = hist[hist.length - 1];
       if (!last || now - last.t > 30 * 60000) { // at most one snapshot per 30 min
         hist.push({ t: now, v: tvl });
-        localStorage.setItem(FARM_TVL_HIST_KEY, JSON.stringify(hist));
+        localStorage.setItem(FARM_TVL_HIST_KEY, JSON.stringify({ scope: FARM_TVL_HIST_SCOPE, points: hist }));
       }
       return hist;
     } catch (e) { return []; }
@@ -11823,33 +11820,7 @@ const PULSE_ID     = 369;
     else usdEl.removeAttribute('title');
   }
 
-  let changesWallet = '';
-  function recordFarmChanges(results) {
-    const wallet = String(wAddr || '').toLowerCase();
-    if (wallet !== changesWallet) { window.FarmChanges.close(); changesWallet = wallet; }
-    if (!wallet) return;
-    for (const r of results) {
-      if (String(r.walletAddress || '').toLowerCase() !== wallet || r.error || !r.shareValid || !r.valuation || !r.readAt) continue;
-      const total = poolValue(r.poolInfo, 'lpSupply', 3);
-      if (typeof total !== 'bigint' || typeof r.staked !== 'bigint') continue;
-      const share = total > 0n ? Number(r.staked * 100000000n / total) / 1000000 : r.staked === 0n ? 0 : null;
-      window.FarmChanges.observe(`${wallet}:${farmBrowseEntry(r).key}`, {
-        at: r.readAt, share, apr: rankNumber(r.valuation.apr), deposit: rankNumber(r.valuation.userStakedUsd)
-      });
-    }
-  }
-
-  function openFarmChanges(pid) {
-    const result = lastFarmResults.find(r => Number(r.pid) === Number(pid));
-    if (!result) return;
-    recordFarmChanges(lastFarmResults);
-    const wallet = String(wAddr || '').toLowerCase();
-    window.FarmChanges.open(`${wallet}:${farmBrowseEntry(result).key}`, `${result.farm.name} ${result.farm.label}`,
-      Boolean(wallet), !!result.error || staleFarmReads.has(result.pid) || !result.valuation || String(result.walletAddress || '').toLowerCase() !== wallet, result.readAt);
-  }
-
   function updateFarmSummaries(results = lastFarmResults) {
-    recordFarmChanges(results);
     const lpFarmTvl = results.reduce((sum, r) => {
       const valuationTvl = r.valuation?.tvl;
       const metaTvl = farmMeta(r.farm).tvl;
@@ -11968,7 +11939,6 @@ const PULSE_ID     = 369;
       return;
     }
     el.innerHTML = farmView === 'table' ? renderFarmTable(visibleResults) : renderFarmGrid(visibleResults);
-    window.SiteUtilities.syncCompare();
     renderNftFarmDom();
     renderEcoNftFarmDom();
     renderFarmRankings();
@@ -11993,7 +11963,7 @@ const PULSE_ID     = 369;
     if (lastFarmResults.length > 0) renderFarmResults(lastFarmResults, true);
   }
 
-  function goToFarm(lp) {
+  function goToFarm(lp, label = null) {
     if (farmBrowseFilters.query || farmBrowseFilters.reward || farmBrowseFilters.favoritesOnly) clearBrowseFilters();
     if (String(lp).toLowerCase() === '__cashx_eco_nft__') {
       if (farmStakedOnly && cashxEcoNftState.stakedTokens.length === 0) setStakedFilter(false);
@@ -12021,7 +11991,7 @@ const PULSE_ID     = 369;
       });
       return;
     }
-    const target = lastFarmResults.find(r => r.farm.lp.toLowerCase() === String(lp).toLowerCase());
+    const target = lastFarmResults.find(r => r.farm.lp.toLowerCase() === String(lp).toLowerCase() && (!label || r.farm.label === label));
     if (!target) return;
     if (farmStakedOnly && !hasStakedFarm(target)) setStakedFilter(false);
     requestAnimationFrame(() => {
@@ -13574,7 +13544,7 @@ const PULSE_ID     = 369;
     farmRefreshRunning = true;
     try {
       // Browsing filters must not freeze the portfolio totals for hidden positions.
-      const results = lastFarmResults.filter(r => !farmStakedOnly || r.error || hasStakedFarm(r));
+      const results = lastFarmResults;
       const wallet = wAddr;
       const priceMaps = await fetchFarmPriceMaps(readProvider(), results);
       if (wallet !== wAddr || document.hidden || window.location.hash !== '#farms' || farmProductView === 'vaults') return;
@@ -13685,6 +13655,7 @@ const PULSE_ID     = 369;
       if (idx >= 0) {
         lastFarmResults[idx] = { ...lastFarmResults[idx], walletAddress: shareWallet, readAt: Date.now(), staked, pending, walletLp, allowance, totalStaked, poolInfo, valuation, lpBreakdown, shareValid, error: null };
         updateFarmSummaries(lastFarmResults);
+        renderFarmRankings();
         markBrowseRead('farms', staleFarmReads.size > 0 || lastFarmResults.some(r => r.error || !r.valuation), true);
         if (farmStakedOnly && !hasStakedFarm(lastFarmResults[idx])) renderFarmResults(lastFarmResults, true);
       }
@@ -14111,7 +14082,7 @@ const PULSE_ID     = 369;
       closeEcoNftModal();
     }
   });
-  return { init, compareFarm, showFarmComparison, showVaultGrowth, openFarmChanges, setVaultBrowseFilter, clearVaultBrowseFilters, toggleVaultFavorite, setBrowseFilter, clearBrowseFilters, toggleFarmFavorite, connectWallet, refreshAll, disconnectWallet, copyAddr, copyLp, setFarmView, setStakedFilter, setProductView, setVaultMode, fillVaultMax, toggleVaultLpBreakdown, fetchVaults, approveVault, depositVault, withdrawVault, withdrawAllVault, goToFarm, fillInput, updateApproveLabel, approveFarm, stakeFarm, unstakeFarm, claimFarm, claimAllPendingFarms, toggleTableRow, toggleLpBreakdown, openNftFarmModal, openNftFarmMaxSelection, closeNftFarmModal, toggleNftSelection, selectAllNfts, submitNftSelection, approveNftFarm, claimNftRewards, tryNextNftImage, openEcoNftModal, openEcoNftMaxSelection, closeEcoNftModal, toggleEcoNftSelection, selectAllEcoNfts, submitEcoNftSelection, approveEcoNftFarm, claimEcoNftRewards };
+  return { init, showVaultGrowth, setVaultBrowseFilter, clearVaultBrowseFilters, toggleVaultFavorite, setBrowseFilter, clearBrowseFilters, toggleFarmFavorite, connectWallet, refreshAll, disconnectWallet, copyAddr, copyLp, setFarmView, setStakedFilter, setProductView, setVaultMode, fillVaultMax, toggleVaultLpBreakdown, fetchVaults, approveVault, depositVault, withdrawVault, withdrawAllVault, goToFarm, fillInput, updateApproveLabel, approveFarm, stakeFarm, unstakeFarm, claimFarm, claimAllPendingFarms, toggleTableRow, toggleLpBreakdown, openNftFarmModal, openNftFarmMaxSelection, closeNftFarmModal, toggleNftSelection, selectAllNfts, submitNftSelection, approveNftFarm, claimNftRewards, tryNextNftImage, openEcoNftModal, openEcoNftMaxSelection, closeEcoNftModal, toggleEcoNftSelection, selectAllEcoNfts, submitEcoNftSelection, approveEcoNftFarm, claimEcoNftRewards };
 })();
 function farmsConnectWallet(){ return window.FarmsApp.connectWallet(); }
 function farmsRefreshAll(){ return window.FarmsApp.refreshAll(); }
@@ -14129,7 +14100,7 @@ function farmsApproveVault(id){ return window.FarmsApp.approveVault(id); }
 function farmsDepositVault(id){ return window.FarmsApp.depositVault(id); }
 function farmsWithdrawVault(id){ return window.FarmsApp.withdrawVault(id); }
 function farmsWithdrawAllVault(id){ return window.FarmsApp.withdrawAllVault(id); }
-function farmsGoToFarm(lp){ return window.FarmsApp.goToFarm(lp); }
+function farmsGoToFarm(lp, label){ return window.FarmsApp.goToFarm(lp, label); }
 function farmsFillInput(pid, source){ return window.FarmsApp.fillInput(pid, source); }
 function farmsUpdateApproveLabel(pid){ return window.FarmsApp.updateApproveLabel(pid); }
 function farmsApproveFarm(pid){ return window.FarmsApp.approveFarm(pid); }

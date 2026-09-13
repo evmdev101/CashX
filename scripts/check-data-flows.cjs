@@ -8,7 +8,6 @@ const path = require('node:path');
 const source = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
 const ethers = require('../vendor/ethers.umd.min.js');
 const browse = require('../lib/farm-list-tools.js');
-const { createHistory } = require('../lib/farm-changes.js');
 const utilities = require('../lib/site-utilities.js');
 
 test('burn milestones advance at boundaries and reject missing supply', () => {
@@ -34,37 +33,6 @@ test('transaction handling preserves confirmation, reverts and timeouts without 
   assert.equal((await api.wait(tx,'Stake',100)).status,1);
   await assert.rejects(api.wait({...tx,wait:async()=>({status:0})},'Stake',100),/reverted/);
   assert.equal(await api.wait({...tx,wait:()=>new Promise(()=>{})},'Stake',1),null);
-});
-
-test('changes compare the previous visit, not the previous refresh, and isolate wallets', async () => {
-  let saved;
-  const storage = { getItem: () => saved, setItem: (_, value) => { saved = value; } };
-  const point = { at: Date.now() - 10000, share: 3, apr: 20, deposit: 100 };
-  const first = createHistory(storage);
-  first.observe('walletA:farm1', point);
-  assert.equal(first.get('walletA:farm1').before, null);
-  await Promise.resolve();
-  const second = createHistory(storage);
-  second.observe('walletA:farm1', { ...point, at: point.at + 1000, share: 2, deposit: 90 });
-  second.observe('walletA:farm1', { ...point, at: point.at + 2000, share: 1, deposit: 80 });
-  assert.equal(second.get('walletA:farm1').before.share, 3);
-  assert.equal(second.get('walletA:farm1').now.share, 1);
-  second.observe('walletA:farm1', point);
-  assert.equal(second.get('walletA:farm1').now.share, 1);
-  second.observe('walletB:farm1', point);
-  assert.equal(second.get('walletB:farm1').before, null);
-  await Promise.resolve();
-});
-
-test('changes ignore invalid readings and survive blocked browser storage', async () => {
-  const history = createHistory({ getItem() { throw Error('blocked'); }, setItem() { throw Error('blocked'); } });
-  const point = { at: Date.now(), share: 0, apr: 0, deposit: 0 };
-  history.observe('a', { ...point, deposit: null });
-  assert.equal(history.get('a').now, null);
-  history.observe('a', point);
-  await Promise.resolve();
-  assert.equal(history.get('a').now.deposit, 0);
-  assert.equal(history.get('a').persistent, false);
 });
 
 test('farm search combines words, reward, staked and favorites filters', () => {
@@ -187,6 +155,107 @@ function deferred() {
   const promise = new Promise(r => { resolve = r; });
   return { promise, resolve };
 }
+
+function configuredFarms() {
+  const constants = Object.fromEntries([...source.matchAll(/const (\w+)\s*=\s*'(0x[0-9a-fA-F]{40})';/g)].map(m => [m[1], m[2]]));
+  return context(section('  const FARMS = [', '  let wProvider') + '\nglobalThis.farms = FARMS;', constants).farms;
+}
+
+test('all four new farms contribute to totals, wallet rewards, positions and rankings', () => {
+  const farms = configuredFarms();
+  const labels = ['#285', '#286', '#287', '#289'];
+  const results = farms.map(farm => {
+    const i = labels.indexOf(farm.label);
+    return { farm, pid: farm.pid, staked: i >= 0 ? 10n : 0n, pending: i >= 0 ? 1n : 0n,
+      valuation: { tvl: i >= 0 ? 100 + i : 0, pendingUsd: i >= 0 ? 1 + i : 0, userStakedUsd: i >= 0 ? 10 + i : 0 } };
+  });
+  const displayed = {};
+  const ctx = context(section('  function updateFarmSummaries(', '  function farmClaimableResults(') +
+    section('  function farmClaimableResults(', '  function nftFarmClaimableUsd(') +
+    section('  function farmActiveStakedResults(', '  function setClaimAllStatus('), {
+    FARMS: farms, lastFarmResults: results, farmMeta: () => ({}), farmUsdNumber: n => Number(n || 0),
+    nftFarmState: { tvlUsd: 10 }, cashxEcoNftState: { tvlUsd: 20 },
+    nftFarmClaimableUsd: () => 0, ecoNftClaimableUsd: () => 0, fmtUsd: String,
+    set: (id, value) => { displayed[id] = value; }, updateDailyRewardSummary() {}, updateTvlChange() {}, updateClaimAllButton() {},
+  });
+  ctx.updateFarmSummaries();
+  assert.equal(displayed['nexion-farms-count'], '61 farms');
+  assert.equal(displayed['farms-total-tvl'], '436');
+  assert.equal(displayed['farms-total-claimable'], '10');
+  assert.equal(displayed['farms-total-user-staked'], '46');
+  assert.equal(ctx.farmClaimableResults().length, 4);
+  assert.equal(ctx.farmActiveStakedResults().length, 4);
+  const ranked = context(section('  function rankNumber(', '  function renderFarmRankings('), {
+    FARMS: farms, lastFarmResults: results, farmMeta: () => ({}),
+    nftFarmState: {}, cashxEcoNftState: {}, farmRankTitleHTML: f => f.label,
+  });
+  for (const label of labels) for (const metric of ['apr', 'tvl', 'remainingRewardsUsd']) {
+    const row = results.find(r => r.farm.label === label);
+    const previous = row.valuation[metric]; row.valuation[metric] = 9999;
+    const html = ranked.farmRankRows(metric);
+    assert.ok(html.includes(`'${row.farm.lp}', '${label}'`));
+    row.valuation[metric] = previous;
+  }
+});
+
+test('daily projections aggregate the new pools by reward token using each pool supply', () => {
+  const now = Math.floor(Date.now() / 1000);
+  const results = configuredFarms().filter(f => ['#285', '#286', '#287', '#289'].includes(f.label)).map(farm => ({
+    farm, staked: 10n, totalStaked: 99999n,
+    poolInfo: { lpSupply: 100n, totalReward: ethers.parseEther('1000'), startTime: now - 86400, endTime: now + 9 * 86400 },
+    valuation: { rewardScaledPrice: 2e18 },
+  }));
+  const ctx = context(section('  function dailyRewardProjectionEntries(', '  function formatDailyRewardAmount(') +
+    section('  function rewardProjectionRaw(', '  function formatRewardProjection(') + section('  function rawUsd(', '  // pHEX'), {
+    ethers, lastFarmResults: results, wAddr: 'wallet', nftFarmState: { stakedTokens: [] }, cashxEcoNftState: { stakedTokens: [] },
+    farmRewardAddress: f => f.rewardToken, farmRewardSymbol: f => f.rewardToken, farmTokenDec: () => 18,
+    remainingRewardParams: p => p, poolValue: (p, key) => p[key],
+  });
+  const rewards = ctx.dailyRewardProjectionEntries();
+  assert.equal(rewards.length, 3);
+  assert.equal(rewards.find(r => r.symbol === 'GSX').raw, ethers.parseEther('20'));
+  assert.equal(rewards.find(r => r.symbol === 'CASHX').raw, ethers.parseEther('10'));
+  assert.equal(rewards.find(r => r.symbol === 'BURNX').raw, ethers.parseEther('10'));
+  assert.equal(rewards.reduce((sum, r) => sum + r.usd, 0), 80);
+});
+
+test('staked filter still refreshes unshown farms for global statistics', async () => {
+  const rows = [{ pid: 100, staked: 1n }, { pid: 104, staked: 0n }];
+  const refreshed = [];
+  const ctx = context(section('  const staleFarmReads =', '  function disableFarmBtns('), {
+    document: { hidden: false }, window: { location: { hash: '#farms' } },
+    wProvider: {}, wAddr: 'wallet', farmProductView: 'farms', farmStakedOnly: true, lastFarmResults: rows,
+    readProvider: () => ({}), fetchFarmPriceMaps: async () => ({}), hasStakedFarm: r => r.staked > 0n,
+    refreshFarmData: async pid => { refreshed.push(pid); }, mapLimit: (items, _, fn) => Promise.all(items.map(fn)),
+  });
+  await ctx.refreshVisibleFarmData();
+  assert.deepEqual(refreshed, [100, 104]);
+});
+
+test('TVL history excludes previous farm sets but survives sorting the same set', () => {
+  const farms = configuredFarms();
+  let saved;
+  const make = list => context(section('  const FARM_TVL_HIST_KEY =', '  function dailyRewardProjectionEntries('), {
+    FARMS: list, FARM_CONTRACT: '0xFarm', localStorage: { getItem: () => saved, setItem: (_, value) => { saved = value; } },
+  });
+  make(farms.slice(4)).recordTvlSnapshot(100);
+  const expanded = make(farms).recordTvlSnapshot(200);
+  assert.equal(expanded.length, 1); assert.equal(expanded[0].v, 200);
+  const reordered = make([...farms].reverse()).recordTvlSnapshot(201);
+  assert.equal(reordered.length, 1); assert.equal(reordered[0].v, 200);
+});
+
+test('ranking navigation distinguishes farms with the same LP token', () => {
+  let targetId;
+  const ctx = context(section('  function goToFarm(', '  // Fill the amount input'), {
+    farmBrowseFilters: {}, farmStakedOnly: false,
+    lastFarmResults: [{ pid: 104, farm: { lp: '0xLP', label: '#289' } }, { pid: 80, farm: { lp: '0xLP', label: '#265' } }],
+    requestAnimationFrame: fn => fn(), setTimeout() {},
+    document: { getElementById: id => { targetId = id; return { scrollIntoView() {}, classList: { add() {}, remove() {} } }; } },
+  });
+  ctx.goToFarm('0xLP', '#265'); assert.equal(targetId, 'farm-card-80');
+  ctx.goToFarm('0xLP', '#289'); assert.equal(targetId, 'farm-card-104');
+});
 
 test('all classic inline scripts parse', () => {
   for (const [, attrs, body] of source.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) {
