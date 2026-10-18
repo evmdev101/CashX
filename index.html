@@ -5219,7 +5219,7 @@
     if (!servicesReady) {
       servicesReady = Promise.all([
         import('./lib/config.js'),
-        import('./lib/burnTracker.js?v=20261018-all-time-burns'),
+        import('./lib/burnTracker.js?v=20261018-latest-burns'),
         import('./lib/burnSources.js'),
         import('./utils/formatToken.js'),
         import('./utils/formatAddress.js')
@@ -5256,6 +5256,7 @@
   let serviceState = null;
   const topBurnsByToken = new Map();
   const topBurnsCoverage = new Map();
+  const latestBurnsByToken = new Map();
   let burnTrackerConfig = null;
   let resolveBurnSource = null;
 
@@ -5328,9 +5329,9 @@
       const data = JSON.parse(localStorage.getItem(_DASH_KEY) || 'null');
       if (!data || !data._ts) return false;
       Object.entries(data.text || {}).forEach(([id, value]) => {
-        if (value && !/unavailable|retrying|loading|⚠|^—$|^···$/i.test(value)) set(id, value);
+        if (!id.startsWith('latest-') && value && !/unavailable|retrying|loading|⚠|^—$|^···$/i.test(value)) set(id, value);
       });
-      Object.entries(data.html || {}).forEach(([id, value]) => { if (id !== 'top3-burns-body') setHTML(id, value); });
+      Object.entries(data.html || {}).forEach(([id, value]) => { if (id !== 'top3-burns-body' && !id.startsWith('latest-')) setHTML(id, value); });
       Object.entries(data.classes || {}).forEach(([id, value]) => {
         const el = document.getElementById(id);
         if (el) el.className = value;
@@ -5367,7 +5368,10 @@
     relatedAddresses: tx?.relatedAddresses || []
   });
   const getBurnSource = tx => {
-    if(tx?.burnSource) return tx.burnSource;
+    if(tx?.burnSource) {
+      const current = burnTrackerConfig?.sources?.find(source => String(source.address).toLowerCase() === String(tx.burnSource.address || '').toLowerCase());
+      return current ? { ...tx.burnSource, ...current, isUnknown: false } : tx.burnSource;
+    }
     if(resolveBurnSource && burnTrackerConfig) return resolveBurnSource(burnTrackerConfig.sources, txSourceLookup(tx));
     return unknownBurnSource;
   };
@@ -5428,6 +5432,7 @@
   const toDashboardTx = tx => ({
     total: { value: String(tx.rawAmount ?? tx.raw?.total?.value ?? tx.total?.value ?? Math.floor(Number(tx.amount || 0) * 1e18)) },
     log_index: tx.logIndex ?? tx.raw?.log_index ?? tx.log_index,
+    block_number: tx.blockNumber ?? tx.raw?.block_number ?? tx.raw?.blockNumber ?? tx.block_number,
     tx_hash: tx.hash || '',
     from: { hash: tx.from || '' },
     to: { hash: tx.to || (tx.destinationLabel === 'Dead wallet' ? DEAD : ZERO) },
@@ -5602,11 +5607,7 @@
       if (currentDashboardToken !== 'cashx' || epoch !== dashboardChartEpoch) return;
       const allItems = result.items;
       renderTop3Burns(allItems, cachedPrice, { complete: result.complete });
-      if (result.complete) {
-        const newest = [...allItems].sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
-        const treasury = newest.find(tx => isTreasuryBurn(tx));
-        if (treasury) setDashboardLatest('latest-treasury', treasury, DASHBOARD_TOKEN_CONFIG.cashx);
-      }
+      updateLatestBurns(allItems, DASHBOARD_TOKEN_CONFIG.cashx);
       if (result.complete || !_burnCountsReady) {
         if (!summarizeBurnCards(allItems, cachedPrice, { markReady: result.complete, save: result.complete, partial: !result.complete, totalBurned: serviceState?.totalTrackedBurned || serviceState?.supplyBurned || 0 })) {
           throw new Error('No burn transactions returned');
@@ -5625,13 +5626,38 @@
 
   let _burnActivityLoadPromise = null;
   const _CHART_CACHE_KEY = 'cashx_chart_burns_v2';
-  function _chartCacheSave(items, complete = true) {
+  function mergeBurnChartItems(existing, incoming) {
+    const events = new Map();
+    for (const tx of [...(existing || []), ...(incoming || [])]) {
+      const hash = String(tx.tx_hash || '').toLowerCase();
+      const index = tx.log_index;
+      const key = index !== null && index !== undefined
+        ? `${hash}:${String(index)}`
+        : `${hash}:${String(tx.from?.hash || tx.from || '').toLowerCase()}:${String(tx.to?.hash || tx.to || '').toLowerCase()}:${tx.total?.value || ''}`;
+      events.set(key, tx);
+    }
+    return [...events.values()];
+  }
+
+  function mergeLiveBurnChart(items) {
+    // A completed saved scan can be older than the newest live burn feed.
+    const merged = mergeBurnChartItems(cachedChartBurnsData, items);
+    const changed = merged.length !== cachedChartBurnsData.length;
+    cachedChartBurnsData = merged;
+    if (changed) {
+      chartHistoryComplete = false;
+      _chartCacheSave(merged, false, { preservesHistory: true });
+      renderBurnChart(merged, currentChartRange);
+    }
+  }
+
+  function _chartCacheSave(items, complete = true, { preservesHistory = false } = {}) {
     if (!Array.isArray(items) || !items.length) return false;
     try {
       if (!complete) {
         let saved = null;
         try { saved = JSON.parse(localStorage.getItem(_CHART_CACHE_KEY) || 'null'); } catch (_) {}
-        if (saved && saved.complete === true && Array.isArray(saved.items) && saved.items.length) return false;
+        if (!preservesHistory && saved && saved.complete === true && Array.isArray(saved.items) && saved.items.length) return false;
       }
       localStorage.setItem(_CHART_CACHE_KEY, JSON.stringify({ _ts: Date.now(), items, complete: !!complete }));
       return true;
@@ -5644,6 +5670,7 @@
       cachedChartBurnsData = d.items;
       chartHistoryComplete = d.complete === true;
       renderBurnChart(cachedChartBurnsData, currentChartRange);
+      updateLatestBurns(d.items, DASHBOARD_TOKEN_CONFIG.cashx);
       return true;
     } catch(e) { return false; }
   }
@@ -5668,6 +5695,7 @@
           onProgress: progress => {
             if (currentDashboardToken !== 'cashx' || epoch !== dashboardChartEpoch) return;
             renderTop3Burns((progress.added?.length ? progress.added : progress.items).map(toDashboardTx), cachedPrice, { complete: progress.complete });
+            updateLatestBurns((progress.added?.length ? progress.added : progress.items).map(toDashboardTx), DASHBOARD_TOKEN_CONFIG.cashx);
           }
         }), 55000, 'All burns request timed out');
         return { ...all, items: all.items.map(toDashboardTx) };
@@ -5688,9 +5716,9 @@
         const items = result.items;
         if (!items.length) throw new Error('Burn history has not loaded yet');
         chartHistoryComplete = result.complete;
-        cachedChartBurnsData = items;
+        cachedChartBurnsData = mergeBurnChartItems(cachedChartBurnsData, items);
         renderBurnChart(cachedChartBurnsData, currentChartRange);
-        _chartCacheSave(items, result.complete);
+        _chartCacheSave(cachedChartBurnsData, result.complete);
       } catch(e) {
         console.warn('Burn activity chart fetch failed:', e);
         if (currentDashboardToken === 'cashx' && epoch === dashboardChartEpoch && !cachedChartBurnsData.length) {
@@ -5806,6 +5834,7 @@
     set('last-up', `Loading ${cfg.symbol} dashboard...`);
     renderDashboardWalletCard();
     renderTop3Burns([], cachedPrice);
+    restoreDashboardLatest(cfg);
   }
 
   function switchDashboardToken(key) {
@@ -5869,20 +5898,86 @@
     };
   }
 
-  function setDashboardLatest(prefix, tx, cfg) {
+  function validLatestBurn(tx) {
+    if (!tx || !/^0x[0-9a-f]{64}$/i.test(tx.tx_hash || '')) return null;
+    const from = String(tx.from?.hash || tx.from || '').toLowerCase();
+    const to = String(tx.to?.hash || tx.to || '').toLowerCase();
+    const at = Date.parse(tx.timestamp);
+    const amount = Number(tx.total?.value);
+    if (!/^0x[0-9a-f]{40}$/.test(from) || from === ZERO.toLowerCase() || !isBurnDestination(to)
+      || !Number.isFinite(at) || at <= 0 || at > Date.now() + 300000 || !Number.isFinite(amount) || amount <= 0) return null;
+    return { ...tx, from: {hash: from}, to: {hash: to}, timestamp: new Date(at).toISOString() };
+  }
+
+  function compareLatestBurn(a, b) {
+    const time = Date.parse(a.timestamp) - Date.parse(b.timestamp);
+    if (time) return time;
+    const ordinal = value => { try { return BigInt(value ?? -1); } catch (_) { return -1n; } };
+    for (const field of ['block_number', 'log_index']) {
+      const left = ordinal(a[field]), right = ordinal(b[field]);
+      if (left !== right) return left > right ? 1 : -1;
+    }
+    return 0;
+  }
+
+  function renderDashboardLatest(prefix, tx, cfg) {
     if (!tx) {
       set(`${prefix}-amt`, '—');
-      set(`${prefix}-time`, 'No burns found yet');
+      set(`${prefix}-time`, 'Checking latest burns…');
       setHTML(`${prefix}-addr`, '—');
       return;
     }
     const amt = parseFloat(tx.total?.value || 0) / 1e18;
-    const ts = tx.timestamp ? Math.floor(new Date(tx.timestamp).getTime() / 1000) : 0;
-    set(`${prefix}-amt`, `${fmtN(amt, 2)} ${cfg.symbol}`);
-    set(`${prefix}-time`, ts ? ago(ts) : '—');
+    const ts = Math.floor(Date.parse(tx.timestamp) / 1000);
+    setHTML(`${prefix}-amt`, `<a href="${explorerWeb}/tx/${tx.tx_hash}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none" title="View burn transaction">${fmtN(amt, 2)} ${cfg.symbol}</a>`);
+    set(`${prefix}-time`, ago(ts));
+    const time = $(`${prefix}-time`);
+    if (time) { time.title = new Date(ts * 1000).toLocaleString(); time.dataset.burnAt = String(ts); }
     const addr = tx.from?.hash || '';
     setHTML(`${prefix}-addr`, addr ? `<span class="addr-chip" data-addr="${addr}" onclick="amOpen(event,this.dataset.addr)">${addr.slice(0, 10)}...${addr.slice(-6)}</span>` : '—');
   }
+
+  function setDashboardLatest(prefix, tx, cfg) {
+    if (currentDashboardToken !== cfg.key) return;
+    const key = `${cfg.key}:${prefix}`;
+    const previous = latestBurnsByToken.get(key);
+    const candidate = validLatestBurn(tx);
+    const latest = candidate && (!previous || compareLatestBurn(candidate, previous) >= 0) ? candidate : previous;
+    if (latest) {
+      latestBurnsByToken.set(key, latest);
+      try {
+        const items = Object.fromEntries(['latest-treasury', 'latest-community'].map(category => [category, latestBurnsByToken.get(`${cfg.key}:${category}`) || null]));
+        localStorage.setItem(`cashx:latest-burns:v1:369:${cfg.token.toLowerCase()}`, JSON.stringify({token: cfg.token.toLowerCase(), items}));
+      } catch (_) {}
+    }
+    renderDashboardLatest(prefix, latest, cfg);
+  }
+
+  function restoreDashboardLatest(cfg) {
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem(`cashx:latest-burns:v1:369:${cfg.token.toLowerCase()}`) || 'null'); } catch (_) {}
+    for (const prefix of ['latest-treasury', 'latest-community']) {
+      const tx = saved?.token === cfg.token.toLowerCase() ? saved.items?.[prefix] : null;
+      setDashboardLatest(prefix, tx, cfg);
+    }
+  }
+
+  function updateLatestBurns(items, cfg) {
+    const newest = (items || []).map(validLatestBurn).filter(Boolean).sort((a, b) => compareLatestBurn(b, a));
+    const treasury = newest.find(tx => isTreasuryBurn(tx));
+    const community = newest.find(tx => !isTreasuryBurn(tx));
+    if (treasury) setDashboardLatest('latest-treasury', treasury, cfg);
+    if (community) setDashboardLatest('latest-community', community, cfg);
+  }
+
+  setInterval(() => {
+    if (window.location.hash !== '#dashboard') return;
+    const cfg = activeDashboardConfig();
+    for (const prefix of ['latest-treasury', 'latest-community']) {
+      const tx = latestBurnsByToken.get(`${cfg.key}:${prefix}`);
+      if (tx) set(`${prefix}-time`, ago(Math.floor(Date.parse(tx.timestamp) / 1000)));
+    }
+  }, 15000);
 
   async function refreshGenericTokenDashboard(cfg) {
     if (!window.ethers) return;
@@ -5926,8 +6021,9 @@
       updateDashboardBurnProgress(cfg, burned, denominator, remaining);
       const treasurySet = new Set((cfg.treasuryAddresses || []).map(a => String(a).toLowerCase()));
       const treasuryItems = burnTransfers.filter(tx => treasurySet.has(String(tx.from?.hash || '').toLowerCase()));
-      const latestTreasury = treasuryItems[0] || null;
-      const latestCommunity = burnTransfers.find(tx => !treasurySet.has(String(tx.from?.hash || '').toLowerCase())) || null;
+      const latestTreasury = treasuryItems.sort((a, b) => compareLatestBurn(b, a))[0] || null;
+      const latestCommunity = burnTransfers.filter(tx => !treasurySet.has(String(tx.from?.hash || '').toLowerCase()))
+        .sort((a, b) => compareLatestBurn(b, a))[0] || null;
       const plsPriceUsd = (dex.priceUsd > 0 && dex.priceNative > 0) ? dex.priceUsd / dex.priceNative : 0;
       const treasuryPls = typeof treasuryRaw === 'bigint' ? Number(ethers.formatUnits(treasuryRaw, 18)) : null;
 
@@ -6100,22 +6196,17 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
       set('c-txs', Number(state.transfers).toLocaleString() + ' transfers');
       set('p-txs', Number(state.transfers).toLocaleString());
     }
+    if (available.treasuryBurnHistory && state.treasuryBurns?.length) {
+      updateLatestBurns(state.treasuryBurns.map(toDashboardTx), DASHBOARD_TOKEN_CONFIG.cashx);
+    }
     if (available.burnHistory && state.allBurns.length) {
       const items = state.allBurns.map(toDashboardTx);
       const recent = state.recentBurns.map(toDashboardTx);
       cachedBurnsData = items; cachedRecentBurnsData = recent;
       if (!_burnCountsReady) summarizeBurnCards(items, cachedPrice, { partial: true, totalBurned: serviceState.totalTrackedBurned || serviceState.supplyBurned || 0 });
       renderRecentBurnEvents(recent.length ? recent : items, 25);
-      const treasury = items.find(tx => isTreasuryBurn(tx));
-      const community = (recent.length ? recent : items).find(tx => !isTreasuryBurn(tx));
-      if (treasury) setDashboardLatest('latest-treasury', treasury, DASHBOARD_TOKEN_CONFIG.cashx);
-      if (community) setDashboardLatest('latest-community', community, DASHBOARD_TOKEN_CONFIG.cashx);
-      // The recent feed can draw immediately while the complete history loads.
-      if (!chartHistoryComplete) {
-        cachedChartBurnsData = items;
-        _chartCacheSave(items, false);
-        renderBurnChart(items, currentChartRange);
-      }
+      updateLatestBurns(items, DASHBOARD_TOKEN_CONFIG.cashx);
+      mergeLiveBurnChart(items);
     }
     if (Object.values(available).some(Boolean)) _dashSave();
   }

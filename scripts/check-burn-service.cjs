@@ -18,6 +18,8 @@ const TOKEN = '0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665';
 const DEAD = '0x000000000000000000000000000000000000dEaD';
 const ZERO = '0x0000000000000000000000000000000000000000';
 const BURNER = '0x1111111111111111111111111111111111111111';
+const TREASURY = '0xEda3aa737947337b425227dB8174519f623C041F';
+const SECOND_TREASURY = '0x86F4a6b17e91305F697bEf2723EaA24A69E8A70D';
 const response = data => ({ ok: true, json: async () => data });
 const accountFetch = read => url => new URL(url).searchParams.has('module')
   ? read(url) : response({ items: [] });
@@ -53,6 +55,7 @@ function setup(overrides = {}) {
       const data = String(url).includes('dexscreener')
         ? { pairs: [{ priceUsd: '0.001', liquidity: { usd: 2500 } }] }
         : /\/tokens\/[^/]+$/.test(String(url)) ? { holders_count: '123', transfers_count: '456' }
+        : new URL(url).searchParams.get('module') === 'account' ? { status: '1', result: [] }
         : { items: [] };
       return { ok: true, json: async () => data };
     },
@@ -72,6 +75,79 @@ function setup(overrides = {}) {
     },
   };
 }
+
+test('latest treasury reads both newest wallet feeds and strictly verifies token, sender and burn destination', async () => {
+  const { ctx, requests } = setup({ fetch: async url => {
+    const query = accountQuery(url);
+    assert.equal(query.get('sort'), 'desc');
+    assert.equal(query.get('page'), '1');
+    const from = query.get('address');
+    if (from === SECOND_TREASURY.toLowerCase()) return response({ status: '0', message: 'No transactions found', result: [] });
+    assert.equal(from, TREASURY.toLowerCase());
+    return response({ status: '1', result: [
+      burn('latest-real', { from: TREASURY, to: ZERO, value: '45134844315994476255760', timeStamp: '1791387265', logIndex: '169', blockNumber: '27737558', transactionIndex: '23' }),
+      burn('ordinary-transfer', { from, to: BURNER }),
+      burn('incoming-transfer', { from: BURNER, to: ZERO }),
+      burn('other-token', { from, to: ZERO, contractAddress: BURNER }),
+      burn('zero-amount', { from, value: '0' }),
+      burn('invalid-time', { from, timeStamp: 'unknown' }),
+      burn('other-wallet-burn', { from: SECOND_TREASURY }),
+    ] });
+  } });
+  const latest = await ctx.readLatestTreasuryBurns();
+  assert.equal(requests.length, 2);
+  assert.equal(latest.available, true);
+  assert.equal(latest.errors.length, 0);
+  assert.deepEqual(Array.from(latest.items, row => row.hash), ['latest-real']);
+  const row = latest.items[0];
+  assert.equal(row.rawAmount, '45134844315994476255760');
+  assert.equal(row.timestamp, '2026-10-07T15:34:25.000Z');
+  assert.equal(row.burnSource.type, 'treasury');
+  assert.equal(row.logIndex, '169');
+  assert.equal(row.blockNumber, '27737558');
+  assert.equal(row.transactionIndex, '23');
+});
+
+test('one failed treasury feed keeps the other wallet verified and exposes partial availability', async () => {
+  const { ctx } = setup({ fetch: async url => {
+    const address = accountQuery(url).get('address');
+    if (address === TREASURY.toLowerCase()) throw new Error('Explorer offline');
+    return response({ status: '1', result: [burn('secondary-burn', { from: SECOND_TREASURY })] });
+  } });
+  const latest = await ctx.readLatestTreasuryBurns();
+  assert.equal(latest.available, true);
+  assert.deepEqual(Array.from(latest.items, row => row.hash), ['secondary-burn']);
+  assert.equal(latest.errors.length, 1);
+  assert.match(latest.errors[0], /eda3aa/i);
+});
+
+test('newest treasury burns publish before global history and never enter the quick activity chart', async () => {
+  const blocked = deferred();
+  const updates = [];
+  const { ctx, expire } = setup({ fetch: async url => {
+    const query = new URL(url).searchParams;
+    if (query.get('module') === 'account') return response({ status: '1', result:
+      query.get('address') === TREASURY.toLowerCase()
+        ? [burn('treasury-latest', { from: TREASURY, to: ZERO, timeStamp: '1791387265' })] : [] });
+    if (url.includes('/token-transfers?')) return blocked.promise;
+    return response(url.includes('dexscreener') ? { pairs: [{ priceUsd: '0.001' }] } : { holders_count: '1' });
+  } });
+  const pending = ctx.readBurnTrackerState({ onUpdate: state => updates.push(state) });
+  await flush();
+  const early = updates.find(state => state.available.treasuryBurnHistory);
+  assert.ok(early, 'latest treasury burns publish while global history is blocked');
+  assert.equal(early.loading, true);
+  assert.equal(early.available.burnHistory, false);
+  assert.equal(early.treasuryBurns[0].hash, 'treasury-latest');
+  assert.equal(early.allBurns.length, 0, 'old wallet burns do not imply the recent chart is complete');
+  expire(5500);
+  const final = await pending;
+  assert.equal(final.treasuryBurns[0].hash, 'treasury-latest');
+  assert.equal(final.available.treasuryBurnHistory, true);
+  assert.equal(final.available.burnHistory, false);
+  blocked.resolve(response({ items: [] }));
+  await flush();
+});
 
 test('supply publishes while optional explorer requests are pending and final state is bounded', async () => {
   const blocked = deferred();
