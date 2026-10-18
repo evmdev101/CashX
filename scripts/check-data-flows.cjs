@@ -156,6 +156,46 @@ function deferred() {
   return { promise, resolve };
 }
 
+test('token USD fallback never uses another base token or another chain', async () => {
+  const pairs = [
+    {chainId:'pulsechain',baseToken:{address:'cashx'},quoteToken:{address:'distrox'},priceUsd:'0.00006364',liquidity:{usd:37722}},
+    {chainId:'ethereum',baseToken:{address:'distrox'},priceUsd:'99',liquidity:{usd:999999}},
+    {chainId:'pulsechain',baseToken:{address:'DISTROX'},priceUsd:'0.000001787',liquidity:{usd:15524}},
+    {chainId:'pulsechain',baseToken:{address:'distrox'},priceUsd:'NaN',liquidity:{usd:99999}}
+  ];
+  let reads=0;
+  const ctx=context(section('    function bestPair(', '    function isPlsSymbol('),{
+    prices:{},dexCache:{},DEX_API:'https://example.test/',fetch:async()=>{reads++;return {ok:true,json:async()=>({pairs})};}
+  });
+  assert.equal(await ctx.tokenPrice('distrox'),.000001787);
+  assert.equal(await ctx.tokenPrice('missing'),0);
+  const before=reads;
+  await ctx.tokenPrice('distrox');assert.equal(reads,before);
+  pairs[2].priceUsd='0.000002';
+  assert.equal(await ctx.tokenPrice('distrox',true),.000002);
+  assert.equal(reads,before+1);
+});
+
+test('portfolio uses fresh calculator prices for wallet, reflections and yield on every scan',async()=>{
+  let scaled=ethers.parseUnits('0.0000018',18),reads=0,destroyed=0;
+  const token={address:'distrox',rewards:true,key:'distrox'};
+  const rewardContract={balanceOf:async()=>ethers.parseUnits('16448181.7242',18),decimals:async()=>18,
+    pendingReflections:async()=>ethers.parseUnits('100',18),getYieldTokens:async()=>[{tokenAddress:'distrox'}],pendingYields:async()=>ethers.parseUnits('2',18)};
+  const ctx=context(section('    async function readPortfolio(', '    return { init, scan,'),{
+    TOKENS:[token],RPC:'rpc',PULSE_ID:369,REWARD_ABI:[],ERC20_ABI:[],
+    amount:(raw,decimals)=>Number(ethers.formatUnits(raw,decimals)),
+    tokenPrice:()=>assert.fail('Valid calculator price must not use Dex fallback'),
+    yieldMeta:async(provider,address,raw,readPrice)=>({token:address,value:Number(ethers.formatUnits(raw,18)),usdValue:Number(ethers.formatUnits(raw,18))*await readPrice(address)}),
+    ethers:{...ethers,JsonRpcProvider:class{destroy(){destroyed++;}},Contract:class{constructor(address){return address==='distrox'?rewardContract:{getBatchPrice:async()=>{reads++;return [scaled];}};}}}
+  });
+  let result=(await ctx.readPortfolio('wallet'))[0];
+  assert.ok(Math.abs(result.balance*result.price-29.60672710356)<1e-8);
+  assert.equal(result.price,.0000018);assert.equal(result.yields[0].usdValue,.0000036);assert.equal(reads,1);
+  scaled=ethers.parseUnits('0.000002',18);
+  result=(await ctx.readPortfolio('wallet'))[0];
+  assert.equal(result.price,.000002);assert.equal(reads,2);assert.equal(destroyed,2);
+});
+
 function configuredFarms() {
   const constants = Object.fromEntries([...source.matchAll(/const (\w+)\s*=\s*'(0x[0-9a-fA-F]{40})';/g)].map(m => [m[1], m[2]]));
   return context(section('  const FARMS = [', '  let wProvider') + '\nglobalThis.farms = FARMS;', constants).farms;
@@ -163,7 +203,7 @@ function configuredFarms() {
 
 test('all four new farms contribute to totals, wallet rewards, positions and rankings', () => {
   const farms = configuredFarms();
-  const labels = ['#285', '#286', '#287', '#289'];
+  const labels = ['#293', '#292', '#291', '#290'];
   const results = farms.map(farm => {
     const i = labels.indexOf(farm.label);
     return { farm, pid: farm.pid, staked: i >= 0 ? 10n : 0n, pending: i >= 0 ? 1n : 0n,
@@ -179,7 +219,7 @@ test('all four new farms contribute to totals, wallet rewards, positions and ran
     set: (id, value) => { displayed[id] = value; }, updateDailyRewardSummary() {}, updateTvlChange() {}, updateClaimAllButton() {},
   });
   ctx.updateFarmSummaries();
-  assert.equal(displayed['nexion-farms-count'], '61 farms');
+  assert.equal(displayed['nexion-farms-count'], '65 farms');
   assert.equal(displayed['farms-total-tvl'], '436');
   assert.equal(displayed['farms-total-claimable'], '10');
   assert.equal(displayed['farms-total-user-staked'], '46');
@@ -224,7 +264,7 @@ test('staked filter still refreshes unshown farms for global statistics', async 
   const refreshed = [];
   const ctx = context(section('  const staleFarmReads =', '  function disableFarmBtns('), {
     document: { hidden: false }, window: { location: { hash: '#farms' } },
-    wProvider: {}, wAddr: 'wallet', farmProductView: 'farms', farmStakedOnly: true, lastFarmResults: rows,
+    wProvider: {}, wAddr: 'wallet', farmInitialLoading:false, saveFarmSnapshot(){}, farmProductView: 'farms', farmStakedOnly: true, lastFarmResults: rows,
     readProvider: () => ({}), fetchFarmPriceMaps: async () => ({}), hasStakedFarm: r => r.staked > 0n,
     refreshFarmData: async pid => { refreshed.push(pid); }, mapLimit: (items, _, fn) => Promise.all(items.map(fn)),
   });
@@ -274,15 +314,19 @@ test('reward dollars follow Nexion for active and ended farms, including 8 decim
       remainingRewardRawNexion: p => p.remaining,
       fmtUsd: v => v, fmtFarmFixed: v => String(v), formatFarmPoolSharePercent: () => '',
     });
+    const portfolioPending = section('              const remainingValue = rawUsd(remainingRewardRawNexion(pool)', "              return {kind:farm.single?");
+    vm.runInContext(`function portfolioPending(pool,pending,rewardPrices,rewardMeta){${portfolioPending}return pendingUsd;}`,ctx);
     for (const remaining of [100, 50, 0]) {
       const pool = { totalReward: ethers.parseUnits('100', decimals), remaining: ethers.parseUnits(String(remaining), decimals), lpSupply: 100n, endTime: 0 };
       const result = await ctx.fetchNexionValuation(null, {}, pool, 100n, 1n, ethers.parseUnits('10', decimals), { stakeScaledPrice: 1e18, rewardScaledPrice: 1e18 });
       assert.equal(result.pendingUsd, remaining / 10);
+      assert.equal(ctx.portfolioPending(pool,ethers.parseUnits('10',decimals),[1e18],{decimals}),result.pendingUsd);
     }
     const emptyPool = { totalReward: ethers.parseUnits('100', decimals), remaining: 0n, lpSupply: 0n, endTime: 0 };
     const empty = await ctx.fetchNexionValuation(null, {}, emptyPool, ethers.parseUnits('999', 18), 0n, 0n,
       { stakeScaledPrice: 1e18, rewardScaledPrice: 1e18 });
     assert.equal(empty.totalStakedUsd, 0, 'reward buffer must not become staked supply');
+    assert.equal(ctx.portfolioPending(emptyPool,0n,[],{decimals}),0);
   }
 });
 
@@ -322,11 +366,26 @@ test('delayed chart-library initialization cannot render a stale token', async (
   await render;
 });
 
+test('public farm totals refresh without a wallet and pause on hidden tabs and Vaults', async () => {
+  let reads = 0;
+  const ctx = context(section('  const staleFarmReads =', '  function disableFarmBtns('), {
+    document: { hidden: false }, window: { location: { hash: '#farms' } },
+    wProvider: null, wAddr: null, farmInitialLoading:false, farmProductView: 'farms',
+    fetchPublicFarmStats: async () => { reads++; },
+  });
+  await ctx.refreshVisibleFarmData(); assert.equal(reads, 1);
+  ctx.document.hidden = true; await ctx.refreshVisibleFarmData(); assert.equal(reads, 1);
+  ctx.document.hidden = false; ctx.farmProductView = 'vaults';
+  await ctx.refreshVisibleFarmData(); assert.equal(reads, 1);
+  ctx.farmProductView = 'farms'; ctx.window.location.hash = '#portfolio';
+  await ctx.refreshVisibleFarmData(); assert.equal(reads, 1);
+});
+
 test('farm refresh cannot overlap and pauses on hidden tabs and Vaults', async () => {
   const request = deferred(); let passes = 0;
   const ctx = context(section('  const staleFarmReads =', '  function disableFarmBtns('), {
     document: { hidden: false }, window: { location: { hash: '#farms' } },
-    wProvider: {}, wAddr: 'wallet', farmProductView: 'farms',
+    wProvider: {}, wAddr: 'wallet', farmInitialLoading:false, saveFarmSnapshot(){}, farmProductView: 'farms',
     readProvider: () => ({}), fetchFarmPriceMaps: async () => ({}),
     lastFarmResults: [], farmStakedOnly: false, refreshFarmData() {}, mapLimit: () => { passes++; return request.promise; },
   });

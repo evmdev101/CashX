@@ -1,0 +1,91 @@
+/* Shared navigation with comfortable tab and icon sizing. */
+body nav,
+body #dashboard-view .dashboard-nav,
+body #farms-view .dashboard-nav,
+body #reflections-view .dashboard-nav,
+body #portfolio-view .dashboard-nav {
+  height:72px;
+  min-height:72px;
+  padding:0 max(24px,calc((100% - 1480px)/2));
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  gap:24px;
+  background:linear-gradient(90deg,var(--farm-theme-bg),color-mix(in srgb,var(--farm-theme-panel) 82%,var(--farm-theme-accent)) 50%,var(--farm-theme-bg));
+  border-bottom:0;
+  box-shadow:none;
+  backdrop-filter:blur(16px);
+}
+body nav .nav-left {justify-self:start;gap:10px}
+body nav .nav-center {justify-self:center;gap:4px;min-height:38px;overflow:visible}
+body nav .nav-right {justify-self:end;gap:12px}
+body nav .nav-tab,
+body nav .top-nav-item {
+  min-height:38px;
+  padding:0 14px;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:15px;
+  font-weight:700;
+  line-height:20px;
+  color:var(--farm-theme-muted);
+  border:0;
+  border-radius:8px;
+  letter-spacing:0;
+  box-shadow:none;
+}
+body nav .nav-tab:hover,
+body nav .top-nav-item:hover {color:var(--farm-theme-text);background:color-mix(in srgb,var(--farm-theme-accent) 15%,var(--farm-theme-panel));transform:none;border:0}
+body nav .nav-tab.active,
+body nav .top-nav-item.active {color:#fff;background:color-mix(in srgb,var(--farm-theme-accent) 32%,#091422);border:0;box-shadow:none}
+body nav .nav-dash-btn,
+body nav .h-wallet-chip,
+body nav .nav-theme-btn,
+body nav #home-wallet-connect-btn,
+body nav #wallet-connect-btn,
+body nav #farms-wallet-connect-btn {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  height:44px;
+  padding:0 20px;
+  font-family:'DM Sans',Arial,sans-serif;
+  font-size:13px;
+  font-weight:700;
+  line-height:1;
+  letter-spacing:0;
+  text-transform:none;
+  color:var(--farm-theme-text);
+  background:var(--farm-theme-panel);
+  border:1px solid var(--farm-theme-border);
+  border-radius:999px;
+  box-shadow:none;
+}
+body nav .nav-theme-btn > span[aria-hidden] {display:none}
+body nav .nav-dash-btn:hover,
+body nav .h-wallet-chip:hover,
+body nav .nav-theme-btn:hover {color:var(--farm-theme-text);background:color-mix(in srgb,var(--farm-theme-accent) 15%,var(--farm-theme-panel));border-color:var(--farm-theme-accent);box-shadow:none;transform:none}
+body nav .nav-icon {width:40px;height:40px;color:var(--farm-theme-text);background:color-mix(in srgb,var(--farm-theme-text) 8%,var(--farm-theme-panel));border-color:var(--farm-theme-border);box-shadow:none}
+body nav .nav-icon:hover {background:color-mix(in srgb,var(--farm-theme-accent) 15%,var(--farm-theme-panel));border-color:var(--farm-theme-accent);box-shadow:none}
+body nav button:focus-visible,
+body nav a:focus-visible {outline:2px solid var(--farm-theme-text);outline-offset:3px}
+@media(max-width:900px) {
+  body nav,
+  body #dashboard-view .dashboard-nav,
+  body #farms-view .dashboard-nav,
+  body #reflections-view .dashboard-nav,
+  body #portfolio-view .dashboard-nav {
+    height:auto;
+    min-height:104px;
+    padding:10px 18px;
+    grid-template-columns:1fr auto;
+    gap:8px 12px;
+  }
+  body nav .nav-center {grid-column:1 / -1;grid-row:2;width:100%;gap:3px}
+  body nav .nav-tab {padding:0 11px;font-size:13px}
+}
+@media(max-width:480px) {
+  body nav .nav-left {gap:6px}
+  body nav .nav-icon {width:30px;height:30px}
+  body nav .nav-right {gap:6px}
+  body nav .nav-right > button {padding:0 12px;font-size:11px;height:36px}
+  body nav .nav-tab {padding:0 9px;font-size:12px}
+}

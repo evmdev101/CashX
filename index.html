@@ -1317,6 +1317,10 @@
     .chart-btn.active{background:var(--purple);color:#fff;border-color:var(--purple)}
     .chart-btn:hover:not(.active){color:var(--purple);border-color:var(--purple)}
     .chart-wrap{position:relative;height:220px;width:100%}
+    .burn-chart-status{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:var(--dash-muted);font-size:0.85rem}
+    .burn-chart-status[hidden]{display:none}
+    .dashboard-data-status{margin:0 0 16px;color:var(--dash-muted);font-size:0.8rem;line-height:1.5}
+    .dashboard-data-status[hidden]{display:none}
 
     /* BURN DETAIL MODAL */
     #burn-modal{position:fixed;inset:0;z-index:9998;display:none;align-items:center;justify-content:center;padding:20px}
@@ -1428,10 +1432,10 @@
     .dash-stage > *{min-width:0}
     .dashboard-burn-progress{padding:0 0 4px;color:var(--dash-text,#9edbec)}
     .burn-progress-heading,.burn-progress-details{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12px;line-height:1.5}
-    .burn-progress-heading{font-weight:700;margin-bottom:8px;color:#9edbec}
-    .burn-progress-track{height:12px;border-radius:999px;background:rgba(118,155,171,.18);overflow:hidden}
-    .burn-progress-fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,#e46c82,#bb789e)}
-    .burn-progress-details{margin-top:8px;color:#8faab5;font-size:11px}
+    .burn-progress-heading{font-weight:700;margin-bottom:8px;color:var(--farm-theme-text)}
+    .burn-progress-track{height:12px;border-radius:999px;background:color-mix(in srgb,var(--farm-theme-text) 18%,transparent);overflow:hidden}
+    .burn-progress-fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--farm-theme-accent),var(--farm-theme-text))}
+    .burn-progress-details{margin-top:8px;color:var(--farm-theme-muted);font-size:11px}
     .dashboard-token-switch{
       display:flex;
       align-items:center;
@@ -1441,7 +1445,7 @@
       width:100%;
       margin:0 auto 16px;
       padding:0 0 12px;
-      border-bottom:1px solid rgba(109,205,235,0.28);
+      border-bottom:1px solid var(--farm-theme-border);
     }
     .dashboard-token-btn{
       position:relative;
@@ -1452,7 +1456,7 @@
       padding:0 0 14px;
       border:0;
       background:transparent;
-      color:#6d98ab;
+      color:var(--farm-theme-muted);
       font-family:'Permanent Marker',cursive;
       font-size:1.35rem;
       font-weight:400;
@@ -1464,16 +1468,16 @@
     }
     .dashboard-token-btn img{display:none}
     .dashboard-token-btn.active{
-      color:#a8e9ff;
+      color:var(--farm-theme-text);
       background:transparent;
       box-shadow:none;
     }
     .dashboard-token-btn.active::after{
       content:'';position:absolute;left:0;right:0;bottom:-13px;height:3px;
-      background:#f05f7e;box-shadow:0 0 10px rgba(240,95,126,0.45);
+      background:var(--farm-theme-accent);box-shadow:0 0 10px var(--farm-theme-shadow);
     }
     .dashboard-token-btn:hover:not(.active){
-      color:#b9dce9;background:transparent;
+      color:var(--farm-theme-text);background:transparent;
     }
     .dash-stage > .rv-top{order:-1;width:100%;align-self:stretch}
     .dash-stage > .rv-top .rv-card{display:grid;grid-template-columns:1fr;gap:12px;align-items:stretch;padding:0;border-radius:0;background:transparent;border:none;box-shadow:none}
@@ -1818,15 +1822,6 @@
       flex:1;display:flex;flex-direction:column;align-items:center;
       padding:118px 34px 48px;gap:24px;position:relative;z-index:1;
     }
-    /* DEGEN-style single loader: only this shows until all farm data is ready */
-    .farms-loading-screen{
-      display:none;width:100%;min-height:46vh;align-items:center;justify-content:center;
-      font-family:'Space Mono',monospace;font-size:0.95rem;letter-spacing:0.14em;text-transform:uppercase;
-      color:var(--farm-theme-accent,#9b6dff);
-    }
-    .farms-loading-screen .fls-text::after{content:'';animation:ls-dots 1.2s steps(1) infinite}
-    .farms-main.farms-loading > #farms-loading-screen{display:flex}
-    .farms-main.farms-loading > *:not(#farms-loading-screen){display:none !important}
     #farms-view .nav-dash-btn.active{
       background:linear-gradient(135deg,rgba(79,142,247,0.24),rgba(155,109,255,0.38));
       border-color:rgba(255,255,255,0.24);
@@ -3780,8 +3775,8 @@
       --dash-panel:color-mix(in srgb,var(--farm-theme-panel,#10151c) 92%,var(--farm-theme-bg,#080b10));
       --dash-panel-strong:var(--farm-theme-card,#080b10);
       --dash-panel-soft:color-mix(in srgb,var(--farm-theme-text,#e8edf2) 7%,transparent);
-      --dash-border:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 36%,transparent);
-      --dash-border-strong:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 62%,transparent);
+      --dash-border:color-mix(in srgb,var(--farm-theme-text,#e8edf2) 9%,transparent);
+      --dash-border-strong:color-mix(in srgb,var(--farm-theme-text,#e8edf2) 14%,transparent);
       --dash-text:var(--farm-theme-text,#e8edf2);
       --dash-muted:var(--farm-theme-muted,#8ea0ad);
       --dash-faint:color-mix(in srgb,var(--farm-theme-muted,#8ea0ad) 62%,var(--farm-theme-bg,#080b10));
@@ -3789,7 +3784,7 @@
       --dash-accent-2:color-mix(in srgb,var(--farm-theme-text,#e8edf2) 46%,var(--farm-theme-accent,#9b6dff));
       --dash-accent-3:color-mix(in srgb,var(--farm-theme-text,#e8edf2) 78%,var(--farm-theme-accent,#9b6dff));
       --dash-chart-fill:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 18%,transparent);
-      --dash-shadow:inset 0 1px 0 rgba(255,255,255,0.055),0 12px 34px rgba(0,0,0,0.24),0 0 24px var(--farm-theme-shadow,rgba(155,109,255,0.22));
+      --dash-shadow:none;
     }
     #dashboard-view .card,
     #dashboard-view .panel,
@@ -3814,7 +3809,7 @@
     #dashboard-view .dash-top-burns-shell,
     #dashboard-view .dash-top-burns{
       background:color-mix(in srgb,var(--farm-theme-panel,#10151c) 88%,var(--farm-theme-bg,#080b10))!important;
-      border-color:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 38%,transparent)!important;
+      border-color:var(--dash-border)!important;
       color:var(--farm-theme-text,#e8edf2)!important;
       box-shadow:var(--dash-shadow)!important;
     }
@@ -3824,6 +3819,8 @@
       padding:14px;
       overflow:hidden;
     }
+    #dashboard-view .dash-top-burns > .panel-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    #dashboard-view #top3-burns-status{font-size:11px;font-weight:400;text-transform:none;letter-spacing:0}
     #dashboard-view .dash-chart-wrap,
     #dashboard-view .chart-wrap,
     #dashboard-view .mg,
@@ -3832,7 +3829,7 @@
     #dashboard-view .activity-note,
     #dashboard-view .rv-wallet-row{
       background:color-mix(in srgb,var(--farm-theme-bg,#080b10) 76%,var(--farm-theme-panel,#10151c))!important;
-      border-color:color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 22%,transparent)!important;
+      border-color:color-mix(in srgb,var(--farm-theme-text,#e8edf2) 6%,transparent)!important;
     }
     #dashboard-view .dash-stat-label,
     #dashboard-view .dash-metric-label,
@@ -4601,14 +4598,23 @@
       #reflections-view .reflection-metrics,
       #reflections-view .reflection-card.divx-card .reflection-metrics{grid-template-columns:1fr}
     }
+    /* Keep the Farms / Vaults section outline crisp without a surrounding glow. */
+    #farms-view #rv-connected > .rv-card{box-shadow:none!important}
+    #farms-view .farm-item.farm-rich.farm-design-proto{
+      border-color:color-mix(in srgb,var(--farm-theme-accent) 18%,transparent);
+      box-shadow:0 8px 20px rgba(0,0,0,0.18),0 0 12px color-mix(in srgb,var(--farm-theme-accent) 8%,transparent),inset 0 1px 0 rgba(255,255,255,0.06);
+    }
 </style>
 <link rel="stylesheet" href="./styles/farm-share-popup.css?v=15290fa1de8e">
 <script src="./lib/farm-share-popup.js?v=0a9bbc0e2d4c"></script>
 <link rel="stylesheet" href="./styles/farm-list-tools.css?v=438e4d782110">
 <script src="./lib/farm-list-tools.js?v=f8d05d09d3cf"></script>
+<script src="./lib/farm-snapshots.js?v=20261011"></script>
+<script src="./lib/burn-rankings.js?v=20261018-all-time"></script>
 <link rel="stylesheet" href="./styles/farm-changes.css?v=6aafa715bcd6">
 <script src="./lib/site-utilities.js?v=e957c18dd047"></script>
 <link rel="stylesheet" href="./styles/site-utilities.css?v=a969ddfb835d">
+<link rel="stylesheet" href="./styles/navigation.css?v=20261017-larger-nav">
 </head>
 <body>
 <div id="ls" aria-hidden="true">
@@ -4674,31 +4680,6 @@
         <span class="hero-title hero-title-alt">GSX</span>
       </div>
     </div>
-  <div class="hero-social-links">
-    <a href="https://t.me/+Ruw3dQPRTv00NDRl" target="_blank" class="hero-social-btn" >
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-        <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z" fill="black"/>
-      </svg>
-    </a>
-    <a href="https://x.com/TomkiwMich70997" target="_blank" class="hero-social-btn">
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.261 5.636 5.903-5.636zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-      </svg>
-    </a>
-   <a href="https://dexscreener.com/pulsechain/0xda942580cee2a69c5fc74109090816157730c64d" target="_blank" class="hero-social-btn">
-  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" fill-rule="evenodd" viewBox="0 0 252 300">
-    <path d="M151.818 106.866c9.177-4.576 20.854-11.312 32.545-20.541 2.465 5.119 2.735 9.586 1.465 13.193-.9 2.542-2.596 4.753-4.826 6.512-2.415 1.901-5.431 3.285-8.765 4.033-6.326 1.425-13.712.593-20.419-3.197m1.591 46.886l12.148 7.017c-24.804 13.902-31.547 39.716-39.557 64.859-8.009-25.143-14.753-50.957-39.556-64.859l12.148-7.017a5.95 5.95 0 003.84-5.845c-1.113-23.547 5.245-33.96 13.821-40.498 3.076-2.342 6.434-3.518 9.747-3.518s6.671 1.176 9.748 3.518c8.576 6.538 14.934 16.951 13.821 40.498a5.95 5.95 0 003.84 5.845zM126 0c14.042.377 28.119 3.103 40.336 8.406 8.46 3.677 16.354 8.534 23.502 14.342 3.228 2.622 5.886 5.155 8.814 8.071 7.897.273 19.438-8.5 24.796-16.709-9.221 30.23-51.299 65.929-80.43 79.589-.012-.005-.02-.012-.029-.018-5.228-3.992-11.108-5.988-16.989-5.988s-11.76 1.996-16.988 5.988c-.009.005-.017.014-.029.018-29.132-13.66-71.209-49.359-80.43-79.589 5.357 8.209 16.898 16.982 24.795 16.709 2.929-2.915 5.587-5.449 8.814-8.071C69.31 16.94 77.204 12.083 85.664 8.406 97.882 3.103 111.959.377 126 0m-25.818 106.866c-9.176-4.576-20.854-11.312-32.544-20.541-2.465 5.119-2.735 9.586-1.466 13.193.901 2.542 2.597 4.753 4.826 6.512 2.416 1.901 5.432 3.285 8.766 4.033 6.326 1.425 13.711.593 20.418-3.197"></path>
-    <path d="M197.167 75.016c6.436-6.495 12.107-13.684 16.667-20.099l2.316 4.359c7.456 14.917 11.33 29.774 11.33 46.494l-.016 26.532.14 13.754c.54 33.766 7.846 67.929 24.396 99.193l-34.627-27.922-24.501 39.759-25.74-24.231L126 299.604l-41.132-66.748-25.739 24.231-24.501-39.759L0 245.25c16.55-31.264 23.856-65.427 24.397-99.193l.14-13.754-.016-26.532c0-16.721 3.873-31.578 11.331-46.494l2.315-4.359c4.56 6.415 10.23 13.603 16.667 20.099l-2.01 4.175c-3.905 8.109-5.198 17.176-2.156 25.799 1.961 5.554 5.54 10.317 10.154 13.953 4.48 3.531 9.782 5.911 15.333 7.161 3.616.814 7.3 1.149 10.96 1.035-.854 4.841-1.227 9.862-1.251 14.978L53.2 160.984l25.206 14.129a41.926 41.926 0 015.734 3.869c20.781 18.658 33.275 73.855 41.861 100.816 8.587-26.961 21.08-82.158 41.862-100.816a41.865 41.865 0 015.734-3.869l25.206-14.129-32.665-18.866c-.024-5.116-.397-10.137-1.251-14.978 3.66.114 7.344-.221 10.96-1.035 5.551-1.25 10.854-3.63 15.333-7.161 4.613-3.636 8.193-8.399 10.153-13.953 3.043-8.623 1.749-17.689-2.155-25.799l-2.01-4.175z"></path>
-  </svg>
-</a>
-
-  <a href="https://www.youtube.com/watch?v=UefZfzeoU_M" target="_blank" class="hero-social-btn">
-  <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-  </svg>
-</a>
-
-  </div>
   <div class="hero-cta-buttons">
     <button class="hero-farms-cta" type="button" onclick="showPage('farms')">Open Farms</button>
     <button class="hero-farms-cta hero-ipfs-cta" type="button" onclick="openIpfsModal()">IPFS Version</button>
@@ -5006,6 +4987,7 @@
     </button>
   </div>
 
+  <p class="dashboard-data-status" id="dashboard-data-status" role="status" hidden></p>
   <section class="dashboard-burn-progress" aria-label="Token burn progress">
     <p class="burn-milestone" id="burn-milestone">Loading milestone…</p>
     <div class="burn-progress-heading"><span id="burn-progress-label">CASHX burned</span><strong id="burn-progress-percent">Loading…</strong></div>
@@ -5056,7 +5038,9 @@
         </div>
         <div class="chart-wrap">
           <canvas id="burn-chart"></canvas>
+          <div class="burn-chart-status" id="burn-chart-status" role="status">Loading burn activity…</div>
         </div>
+        <p class="dashboard-data-status" id="burn-chart-note" hidden>Loading earlier burn activity…</p>
         <div class="dash-latest-pair" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 0 4px">
           <div class="activity-item">
             <div class="section-label">Latest Treasury Burn</div>
@@ -5117,7 +5101,7 @@
   <!-- ROW 4: Top Burns -->
   <div class="dash-top-burns-shell">
   <div class="panel dash-top-burns">
-    <div class="panel-head">Top Burns</div>
+    <div class="panel-head">Top 3 Burns <span class="section-meta" id="top3-burns-status" role="status">Checking burn history…</span></div>
     <div class="panel-body" style="padding:0;gap:0">
       <div class="btx-table-head">
         <div class="btx-th">Rank</div>
@@ -5235,7 +5219,7 @@
     if (!servicesReady) {
       servicesReady = Promise.all([
         import('./lib/config.js'),
-        import('./lib/burnTracker.js'),
+        import('./lib/burnTracker.js?v=20261018-all-time-burns'),
         import('./lib/burnSources.js'),
         import('./utils/formatToken.js'),
         import('./utils/formatAddress.js')
@@ -5251,7 +5235,10 @@
         formatUsd: tokenFormatters.formatUsd,
         formatAddress: addressFormatters.formatAddress,
         explorerTxUrl: addressFormatters.explorerTxUrl
-      }));
+      })).catch(error => {
+        servicesReady = null;
+        throw error;
+      });
     }
     return servicesReady;
   }
@@ -5260,21 +5247,25 @@
   let cachedBurnsData = [];
   let cachedRecentBurnsData = [];
   let cachedChartBurnsData = [];
+  let chartHistoryComplete = false;
   let dashboardChartEpoch = 0;
   let burnChartRenderId = 0;
   let cachedPrice = 0;
   let _burnCountsReady = false; // true once loadBurnCounts has populated accurate data
   let _allBurnsPromise = null; // shared promise so chart + counts make ONE network call
   let serviceState = null;
+  const topBurnsByToken = new Map();
+  const topBurnsCoverage = new Map();
   let burnTrackerConfig = null;
   let resolveBurnSource = null;
 
   // ── Burn counts cache (localStorage) ────────────────────────────────────────
-  const _BC_KEY = 'cashx_burn_counts_v1';
+  const _BC_KEY = 'cashx_burn_counts_v2';
   const _DASH_KEY = 'cashx_dashboard_fast_cache_v1';
   const _DASH_IDS = [
     'last-up','c-price','p-price','c-mcap','p-mcap','p-vol','p-liq','p-5m','p-1h','c-ch','c-ch2','p-ch',
-    'c-treas','t-pls','p-tpls','c-treas-usd','t-pls-usd','c-burned','c-burned-usd','c-bpct',
+    'c-treas','t-pls','p-tpls','c-treas-usd','t-pls-usd','c-burned','c-burned-pct','c-burned-usd','c-bpct','src-community',
+    'burn-milestone','burn-progress-percent','burn-progress-amount','burn-progress-remaining',
     'bs-burned','bs-remain','bs-dead','s-pct','s-rpct','g-sub','sp-pct','sp-sub','c-holders','p-holders','c-txs','p-txs',
     'latest-treasury-amt','latest-treasury-time','latest-community-amt','latest-community-time'
   ];
@@ -5308,15 +5299,11 @@
       const el = document.getElementById('burn-source-rankings');
       if (el) el.innerHTML = c['burn-source-rankings-html'];
     }
-    if (c['top3-burns-html']) {
-      const el = document.getElementById('top3-burns-body');
-      if (el && !/could not load burn data|retrying/i.test(c['top3-burns-html'])) el.innerHTML = c['top3-burns-html'];
-    }
     if (c['recent-burn-events-html']) {
       const el = document.getElementById('recent-burn-events');
       if (el) el.innerHTML = c['recent-burn-events-html'];
     }
-    _burnCountsReady = !topBurnsNeedsLoad();
+    _burnCountsReady = c.complete === true;
   }
 
   function _dashSave() {
@@ -5340,12 +5327,22 @@
     try {
       const data = JSON.parse(localStorage.getItem(_DASH_KEY) || 'null');
       if (!data || !data._ts) return false;
-      Object.entries(data.text || {}).forEach(([id, value]) => set(id, value));
-      Object.entries(data.html || {}).forEach(([id, value]) => setHTML(id, value));
+      Object.entries(data.text || {}).forEach(([id, value]) => {
+        if (value && !/unavailable|retrying|loading|⚠|^—$|^···$/i.test(value)) set(id, value);
+      });
+      Object.entries(data.html || {}).forEach(([id, value]) => { if (id !== 'top3-burns-body') setHTML(id, value); });
       Object.entries(data.classes || {}).forEach(([id, value]) => {
         const el = document.getElementById(id);
         if (el) el.className = value;
       });
+      const pct = parseFloat(data.text?.['burn-progress-percent']);
+      const track = $('burn-progress-track');
+      const fill = $('burn-progress-fill');
+      if (track && fill && Number.isFinite(pct) && pct >= 0 && pct <= 100) {
+        fill.style.width = `${pct}%`;
+        track.setAttribute('aria-valuenow', String(pct));
+        track.setAttribute('aria-valuetext', `Last saved reading: ${pct}% burned`);
+      }
       set('last-up', 'Showing cached data · refreshing…');
       return true;
     } catch(e) { return false; }
@@ -5429,7 +5426,8 @@
   }
   const pctText = (n, d=2) => (Number(n||0) >= 0 ? '+' : '') + Number(n||0).toFixed(d) + '%';
   const toDashboardTx = tx => ({
-    total: { value: String(Math.floor(Number(tx.amount || 0) * 1e18)) },
+    total: { value: String(tx.rawAmount ?? tx.raw?.total?.value ?? tx.total?.value ?? Math.floor(Number(tx.amount || 0) * 1e18)) },
+    log_index: tx.logIndex ?? tx.raw?.log_index ?? tx.log_index,
     tx_hash: tx.hash || '',
     from: { hash: tx.from || '' },
     to: { hash: tx.to || (tx.destinationLabel === 'Dead wallet' ? DEAD : ZERO) },
@@ -5445,16 +5443,22 @@
     btn.classList.add('active');
   }
 
-  function renderTop3Burns(items, priceUsd) {
+  function renderTop3Burns(items, priceUsd, options = {}) {
     const el = document.getElementById('top3-burns-body');
     if (!el) return;
-    const top3 = [...items].sort((a, b) => {
-      const av = parseFloat(a.total?.value || 0);
-      const bv = parseFloat(b.total?.value || 0);
-      return bv - av;
-    }).slice(0, 3);
+    const cfg = activeDashboardConfig();
+    const rankings = window.BurnRankings;
+    let previous = topBurnsByToken.get(cfg.key);
+    if (!previous) {
+      try { previous = rankings.load(localStorage, cfg.token); } catch (_) { previous = []; }
+    }
+    const top3 = rankings.merge(previous, items || []);
+    topBurnsByToken.set(cfg.key, top3);
+    if (options.complete) topBurnsCoverage.set(cfg.key, true);
+    try { rankings.save(localStorage, cfg.token, top3); } catch (_) {}
+    set('top3-burns-status', topBurnsCoverage.get(cfg.key) ? 'All-time' : cfg.key === 'cashx' ? 'Checking earlier burns…' : 'Largest burns loaded');
     if (!top3.length) {
-      el.innerHTML = '<div class="no-data" style="padding:24px">🔥 No burns found</div>';
+      el.innerHTML = '<div class="no-data" style="padding:24px">Checking burn history…</div>';
       return;
     }
     el.innerHTML = top3.map((tx, i) => {
@@ -5463,11 +5467,10 @@
       const src = burnSourceHTML(tx);
       const ts  = tx.timestamp ? Math.floor(new Date(tx.timestamp).getTime() / 1000) : 0;
       const hash = tx.tx_hash || '';
-      const link = hash ? `<a href="${explorerWeb}/tx/${hash}" target="_blank" style="color:var(--purple);text-decoration:none">${hash.slice(0,8)}…</a>` : '—';
       const symbol = activeDashboardSymbol();
-      return `<div class="btx-row" style="display:grid;grid-template-columns:40px 1fr 1fr 1fr 1fr;align-items:center;padding:12px 20px;border:1px solid rgba(200,100,255,0.15);border-radius:10px;margin:6px 10px;background:rgba(255,255,255,0.03)">
+      return `<div class="btx-row" style="display:grid;grid-template-columns:40px 1fr 1fr 1fr 1fr;align-items:center;padding:12px 16px;border:1px solid var(--dash-border);border-radius:10px;margin:6px 0;background:rgba(255,255,255,0.025)">
         <div style="font-weight:700;color:var(--purple)">#${i + 1}</div>
-        <div style="font-family:'Space Mono',monospace;font-size:0.82rem"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--dash-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:3px;flex-shrink:0"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg> ${fmtN(amt, 2)} ${symbol}</div>
+        <div style="font-family:'Space Mono',monospace;font-size:0.82rem"><a href="${explorerWeb}/tx/${hash}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none" title="View burn transaction: ${amt.toLocaleString('en-US', { maximumFractionDigits: 8 })} ${symbol}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--dash-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:3px;flex-shrink:0"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg> ${fmtN(amt, 2)} ${symbol}</a></div>
         <div style="font-size:0.8rem;color:rgba(237,232,245,0.6)">≈ ${usd}</div>
         <div>${src}</div>
         <div style="font-size:0.75rem;color:rgba(237,232,245,0.5)">${ts ? ago(ts) : '—'}</div>
@@ -5561,7 +5564,7 @@
     set('c-dead', cDeadVal);
     set('c-dead-count', cDeadCount + (options.partial ? ' · latest page' : ''));
     renderBurnSourceRankings(allItems);
-    renderTop3Burns(allItems, p);
+    renderTop3Burns(allItems, p, { complete: options.markReady === true });
 
     if (options.markReady) _burnCountsReady = true;
     if (options.save) {
@@ -5569,6 +5572,7 @@
       const top3El = document.getElementById('top3-burns-body');
       const recentEl = document.getElementById('recent-burn-events');
       _bcSave({
+        complete: true,
         'c-dead': cDeadVal,
         'c-dead-count': cDeadCount,
         'burns-total-count': totalCountDisplay,
@@ -5592,13 +5596,27 @@
   }
 
   async function loadBurnCounts(force = false) {
+    const epoch = dashboardChartEpoch;
     try {
-      const allItems = await _getAllBurns(force);
-      if (!summarizeBurnCards(allItems, cachedPrice, { markReady: true, save: true, totalBurned: serviceState?.totalTrackedBurned || serviceState?.supplyBurned || 0 })) {
-        throw new Error('No burn transactions returned');
+      const result = await _getAllBurns(force);
+      if (currentDashboardToken !== 'cashx' || epoch !== dashboardChartEpoch) return;
+      const allItems = result.items;
+      renderTop3Burns(allItems, cachedPrice, { complete: result.complete });
+      if (result.complete) {
+        const newest = [...allItems].sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+        const treasury = newest.find(tx => isTreasuryBurn(tx));
+        if (treasury) setDashboardLatest('latest-treasury', treasury, DASHBOARD_TOKEN_CONFIG.cashx);
       }
+      if (result.complete || !_burnCountsReady) {
+        if (!summarizeBurnCards(allItems, cachedPrice, { markReady: result.complete, save: result.complete, partial: !result.complete, totalBurned: serviceState?.totalTrackedBurned || serviceState?.supplyBurned || 0 })) {
+          throw new Error('No burn transactions returned');
+        }
+      }
+      return result.complete;
     } catch(e) {
       console.warn('Burn count fetch failed:', e);
+      if (currentDashboardToken !== 'cashx' || epoch !== dashboardChartEpoch) return;
+      if (_burnCountsReady) return;
       if (!summarizeBurnCards(cachedBurnsData, cachedPrice, { partial: true, totalBurned: serviceState?.totalTrackedBurned || serviceState?.supplyBurned || 0 })) {
         renderBurnSummaryFallback(serviceState?.totalTrackedBurned || serviceState?.supplyBurned || 0, cachedPrice);
       }
@@ -5606,15 +5624,25 @@
   }
 
   let _burnActivityLoadPromise = null;
-  const _CHART_CACHE_KEY = 'cashx_chart_burns_v1';
-  function _chartCacheSave(items) {
-    try { localStorage.setItem(_CHART_CACHE_KEY, JSON.stringify({ _ts: Date.now(), items })); } catch(e) {}
+  const _CHART_CACHE_KEY = 'cashx_chart_burns_v2';
+  function _chartCacheSave(items, complete = true) {
+    if (!Array.isArray(items) || !items.length) return false;
+    try {
+      if (!complete) {
+        let saved = null;
+        try { saved = JSON.parse(localStorage.getItem(_CHART_CACHE_KEY) || 'null'); } catch (_) {}
+        if (saved && saved.complete === true && Array.isArray(saved.items) && saved.items.length) return false;
+      }
+      localStorage.setItem(_CHART_CACHE_KEY, JSON.stringify({ _ts: Date.now(), items, complete: !!complete }));
+      return true;
+    } catch(e) { return false; }
   }
   function _chartCacheApply() {
     try {
       const d = JSON.parse(localStorage.getItem(_CHART_CACHE_KEY) || 'null');
       if (!d || !Array.isArray(d.items) || !d.items.length) return false;
       cachedChartBurnsData = d.items;
+      chartHistoryComplete = d.complete === true;
       renderBurnChart(cachedChartBurnsData, currentChartRange);
       return true;
     } catch(e) { return false; }
@@ -5628,14 +5656,21 @@
         if (!force) {
           try {
             const d = JSON.parse(localStorage.getItem(_CHART_CACHE_KEY) || 'null');
-            if (d && Array.isArray(d.items) && d.items.length && Date.now() - d._ts < _ALL_BURNS_TTL) {
-              return d.items;
+            if (d && d.complete === true && Array.isArray(d.items) && d.items.length && Date.now() - d._ts < _ALL_BURNS_TTL) {
+              return { items: d.items, complete: true };
             }
           } catch(e) {}
         }
         const { readAllBurnTransactions } = await getServicesReady();
-        const all = await withTimeout(readAllBurnTransactions(), 60000, 'All burns request timed out');
-        return all.map(toDashboardTx);
+        const epoch = dashboardChartEpoch;
+        const all = await withTimeout(readAllBurnTransactions({
+          budgetMs: 45000,
+          onProgress: progress => {
+            if (currentDashboardToken !== 'cashx' || epoch !== dashboardChartEpoch) return;
+            renderTop3Burns((progress.added?.length ? progress.added : progress.items).map(toDashboardTx), cachedPrice, { complete: progress.complete });
+          }
+        }), 55000, 'All burns request timed out');
+        return { ...all, items: all.items.map(toDashboardTx) };
       })().finally(() => { _allBurnsPromise = null; });
     }
     return _allBurnsPromise;
@@ -5648,13 +5683,19 @@
     if (_burnActivityLoadPromise && !force) return _burnActivityLoadPromise;
     _burnActivityLoadPromise = (async () => {
       try {
-        const items = await _getAllBurns(force);
+        const result = await _getAllBurns(force);
         if (currentDashboardToken !== 'cashx' || epoch !== dashboardChartEpoch) return;
+        const items = result.items;
+        if (!items.length) throw new Error('Burn history has not loaded yet');
+        chartHistoryComplete = result.complete;
         cachedChartBurnsData = items;
         renderBurnChart(cachedChartBurnsData, currentChartRange);
-        _chartCacheSave(items);
+        _chartCacheSave(items, result.complete);
       } catch(e) {
         console.warn('Burn activity chart fetch failed:', e);
+        if (currentDashboardToken === 'cashx' && epoch === dashboardChartEpoch && !cachedChartBurnsData.length) {
+          set('burn-chart-status', 'Burn activity is taking longer to load. Retrying…');
+        }
       } finally {
         _burnActivityLoadPromise = null;
       }
@@ -5664,7 +5705,16 @@
 
 
   const $   = id => document.getElementById(id);
-  const set = (id,v) => { const e=$(id); if(e){e.textContent=v;e.classList.remove('rv-loading')} };
+  const set = (id,v) => {
+    const e=$(id); if(e){e.textContent=v;e.classList.remove('rv-loading')}
+    if (id === 'last-up') {
+      const status = $('dashboard-data-status');
+      if (status) {
+        status.textContent = v;
+        status.hidden = !/cached|delayed|still updating/i.test(String(v));
+      }
+    }
+  };
   const setHTML = (id,v) => { const e=$(id); if(e) e.innerHTML=v };
   const setErr = id => setHTML(id,'<span class="err">⚠</span>');
   const activeDashboardConfig = () => DASHBOARD_TOKEN_CONFIG[currentDashboardToken] || DASHBOARD_TOKEN_CONFIG.cashx;
@@ -5727,6 +5777,8 @@
     currentDashboardToken = cfg.key;
     dashboardChartEpoch++;
     _burnActivityLoadPromise = null;
+    chartHistoryComplete = false;
+    cachedPrice = 0;
     cachedChartBurnsData = [];
     renderBurnChart([], currentChartRange);
     document.querySelectorAll('[data-dashboard-token]').forEach(btn => {
@@ -5753,6 +5805,7 @@
     set('dashboard-burn-symbol', cfg.symbol);
     set('last-up', `Loading ${cfg.symbol} dashboard...`);
     renderDashboardWalletCard();
+    renderTop3Burns([], cachedPrice);
   }
 
   function switchDashboardToken(key) {
@@ -5762,6 +5815,7 @@
     _dashboardLoadPromise = null;
     applyDashboardTokenFrame(cfg.key);
     setDashboardLoading();
+    if (cfg.key === 'cashx') { _dashApply(); _bcApply(_bcLoad()); _chartCacheApply(); }
     refreshDashboard({ force: true });
   }
   window.switchDashboardToken = switchDashboardToken;
@@ -5999,176 +6053,118 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     set('flow-burn', fmtN(tTotal||0, 2) + ' 🔥');
   }
 
+  function applyCashxDashboardState(state) {
+    const available = state.available || {};
+    serviceState = {
+      ...state,
+      totalTrackedBurned: state.supplyAvailable ? state.totalTrackedBurned : (serviceState?.totalTrackedBurned ?? null),
+      supplyBurned: available.token ? state.supplyBurned : (serviceState?.supplyBurned ?? null)
+    };
+    if (available.market) {
+      cachedPrice = state.priceUsd;
+      renderTop3Burns([], cachedPrice);
+      const price = fmtPrice(state.priceUsd);
+      set('c-price', price); set('p-price', price);
+      ['c-mcap','p-mcap'].forEach(id => set(id, fmtUSD(state.marketCap)));
+      set('p-vol', fmtUSD(state.volume24h)); set('p-liq', fmtUSD(state.liquidity));
+      set('p-5m', pctText(state.priceChange5m)); set('p-1h', pctText(state.priceChange1h));
+      const change = pctText(state.priceChange24h) + ' (24h)';
+      ['c-ch','c-ch2','p-ch'].forEach(id => set(id, change));
+      const priceChange = $('c-ch');
+      if (priceChange) priceChange.className = 'rv-price-change ' + (state.priceChange24h > 0 ? 'pct-up' : state.priceChange24h < 0 ? 'pct-dn' : 'pct-neu');
+      const badge = $('p-ch');
+      if (badge) badge.className = 'ch-badge ' + (state.priceChange24h > 0 ? 'badge-up' : state.priceChange24h < 0 ? 'badge-dn' : 'badge-neu');
+    }
+    if (available.treasury) {
+      ['c-treas','t-pls','p-tpls'].forEach(id => set(id, fmtN(state.treasuryPls, 2) + ' PLS'));
+      set('c-treas-usd', state.treasuryUsd ? '≈ ' + fmtUSD(state.treasuryUsd) : 'deployer wallet');
+      set('t-pls-usd', state.treasuryUsd ? '≈ ' + fmtUSD(state.treasuryUsd) : '');
+    }
+    if (state.supplyAvailable) {
+      const burned = state.totalTrackedBurned;
+      const pct = state.burnedPercent;
+      const remaining = Math.max(DASHBOARD_TOKEN_CONFIG.cashx.initialSupply - burned, 0);
+      updateDashboardBurnProgress(DASHBOARD_TOKEN_CONFIG.cashx, burned, DASHBOARD_TOKEN_CONFIG.cashx.initialSupply, remaining);
+      set('c-burned', fmtN(burned, 2)); set('c-burned-pct', pct.toFixed(2) + '% burned');
+      set('c-bpct', pct.toFixed(6) + '% of supply');
+      set('src-community', Math.floor(remaining).toLocaleString());
+      if (cachedPrice > 0) set('c-burned-usd', fmtUSD(burned * cachedPrice));
+      set('bs-burned', fmtN(burned, 2) + ' CASHX'); set('bs-remain', fmtN(remaining, 2) + ' CASHX');
+      set('s-pct', pct.toFixed(4) + '%'); set('s-rpct', (100 - pct).toFixed(4) + '%');
+      window._totalBurned = burned; window._totalBurnedPct = pct;
+    }
+    if (available.holders) {
+      ['c-holders','p-holders'].forEach(id => set(id, Number(state.holders).toLocaleString()));
+    }
+    if (available.transfers) {
+      set('c-txs', Number(state.transfers).toLocaleString() + ' transfers');
+      set('p-txs', Number(state.transfers).toLocaleString());
+    }
+    if (available.burnHistory && state.allBurns.length) {
+      const items = state.allBurns.map(toDashboardTx);
+      const recent = state.recentBurns.map(toDashboardTx);
+      cachedBurnsData = items; cachedRecentBurnsData = recent;
+      if (!_burnCountsReady) summarizeBurnCards(items, cachedPrice, { partial: true, totalBurned: serviceState.totalTrackedBurned || serviceState.supplyBurned || 0 });
+      renderRecentBurnEvents(recent.length ? recent : items, 25);
+      const treasury = items.find(tx => isTreasuryBurn(tx));
+      const community = (recent.length ? recent : items).find(tx => !isTreasuryBurn(tx));
+      if (treasury) setDashboardLatest('latest-treasury', treasury, DASHBOARD_TOKEN_CONFIG.cashx);
+      if (community) setDashboardLatest('latest-community', community, DASHBOARD_TOKEN_CONFIG.cashx);
+      // The recent feed can draw immediately while the complete history loads.
+      if (!chartHistoryComplete) {
+        cachedChartBurnsData = items;
+        _chartCacheSave(items, false);
+        renderBurnChart(items, currentChartRange);
+      }
+    }
+    if (Object.values(available).some(Boolean)) _dashSave();
+  }
+
   async function load(){
     const epoch = dashboardChartEpoch;
-    const btn=$('rbtn'); if(btn)btn.disabled=true;
-    set('last-up','Loading live burn data…');
+    const isCurrent = () => currentDashboardToken === 'cashx' && epoch === dashboardChartEpoch;
+    const btn = $('rbtn'); if (btn) btn.disabled = true;
+    set('last-up', 'Updating live burn data…');
     lsSet(15);
-
-    try{
-      const { CASHX, CASHX_BURN_TRACKER_CONFIG, readBurnTrackerState, resolveBurnSource: sourceResolver, formatToken, formatUsd, formatAddress, explorerTxUrl } = await getServicesReady();
-      if (currentDashboardToken !== 'cashx' || epoch !== dashboardChartEpoch) return;
-      lsSet(40);
-      explorerWeb = CASHX.urls.explorer;
-      burnTrackerConfig = CASHX_BURN_TRACKER_CONFIG;
-      resolveBurnSource = sourceResolver;
-      const state = await withTimeout(readBurnTrackerState(), 14000, 'Dashboard live data timed out');
-      if (currentDashboardToken !== 'cashx' || epoch !== dashboardChartEpoch) return;
-      lsSet(80);
-      serviceState = state;
-      const items = (state.allBurns || state.recentBurns).map(toDashboardTx);
-      const recentItems = state.recentBurns.map(toDashboardTx);
-      cachedBurnsData = items;
-      cachedRecentBurnsData = recentItems;
-      cachedPrice = state.priceUsd || 0;
-      if (!_burnCountsReady) summarizeBurnCards(items, cachedPrice, { partial: true, totalBurned: state.totalTrackedBurned || state.supplyBurned || 0 });
-
-      const dashPriceState = state;
-      const ps = fmtPrice(dashPriceState.priceUsd);
-      const ch24 = pctText(dashPriceState.priceChange24h);
-      set('c-price', ps); set('p-price', ps);
-      set('c-mcap', fmtUSD(dashPriceState.marketCap)); set('p-mcap', fmtUSD(dashPriceState.marketCap));
-      set('p-vol', fmtUSD(dashPriceState.volume24h));
-      set('p-liq', fmtUSD(dashPriceState.liquidity));
-      set('p-5m', pctText(dashPriceState.priceChange5m));
-      set('p-1h', pctText(dashPriceState.priceChange1h));
-      set('c-ch', ch24 + ' (24h)'); set('c-ch2', ch24 + ' (24h)');
-      const cChEl = $('c-ch'); if(cChEl){cChEl.className='rv-price-change '+(dashPriceState.priceChange24h>0?'pct-up':dashPriceState.priceChange24h<0?'pct-dn':'pct-neu')}
-      const badge=$('p-ch');
-      if(badge){badge.textContent=ch24+' (24h)';badge.className='ch-badge '+(dashPriceState.priceChange24h>0?'badge-up':dashPriceState.priceChange24h<0?'badge-dn':'badge-neu')}
-      if(dashPriceState.txns24h) set('p-txs', (dashPriceState.txns24h.buys||0)+' / '+(dashPriceState.txns24h.sells||0));
-
-      if(state.treasuryPls === null){
-        set('c-treas','Unavailable'); set('t-pls','Unavailable'); set('p-tpls','Unavailable');
-        set('c-treas-usd','RPC fallback active'); set('t-pls-usd','');
-      }else{
-        set('c-treas', fmtN(state.treasuryPls,2)+' PLS');
-        set('c-treas-usd', state.treasuryUsd ? '≈ '+fmtUSD(state.treasuryUsd) : 'deployer wallet');
-        set('t-pls', fmtN(state.treasuryPls,2)+' PLS');
-        set('p-tpls', fmtN(state.treasuryPls,2)+' PLS');
-        set('t-pls-usd', state.treasuryUsd ? '≈ '+fmtUSD(state.treasuryUsd) : '');
+    try {
+      const services = await getServicesReady();
+      if (!isCurrent()) return;
+      explorerWeb = services.CASHX.urls.explorer;
+      burnTrackerConfig = services.CASHX_BURN_TRACKER_CONFIG;
+      resolveBurnSource = services.resolveBurnSource;
+      const state = await withTimeout(services.readBurnTrackerState({
+        onUpdate: partial => { if (isCurrent()) applyCashxDashboardState(partial); }
+      }), 14000, 'Dashboard live data timed out');
+      if (!isCurrent()) return;
+      applyCashxDashboardState(state);
+      if (!state.supplyAvailable && !$('burn-progress-track')?.hasAttribute('aria-valuenow')) {
+        updateDashboardBurnProgress(DASHBOARD_TOKEN_CONFIG.cashx, null, null, null, 'Supply is taking longer to load · retrying…');
       }
-
-      const burned = state.totalTrackedBurned || state.supplyBurned || 0;
-      const pct = state.burnedPercent || 0;
-      const remaining = Math.max(CASHX.initialSupply - burned, 0);
-      if (state.errors?.some(error => /token reads|balance reads/i.test(error))) {
-        updateDashboardBurnProgress(DASHBOARD_TOKEN_CONFIG.cashx, null, null, null, 'Supply data unavailable · retrying');
-      } else {
-        updateDashboardBurnProgress(DASHBOARD_TOKEN_CONFIG.cashx, burned, CASHX.initialSupply, remaining);
+      set('last-up', state.errors?.length
+        ? 'Some data is still updating. Showing the latest available readings.'
+        : 'Updated ' + new Date().toLocaleTimeString());
+      if (state.errors?.length) scheduleDashboardRetry();
+    } catch(error) {
+      console.warn('CashX services:', error);
+      if (!isCurrent()) return;
+      // A failed refresh must never erase prices, supply or history already read.
+      set('last-up', 'Live update delayed. Showing the latest available readings while we retry.');
+      if (!$('burn-progress-track')?.hasAttribute('aria-valuenow')) {
+        updateDashboardBurnProgress(DASHBOARD_TOKEN_CONFIG.cashx, null, null, null, 'Supply is taking longer to load · retrying…');
       }
-      const routeBurned = (state.deadWalletBalance || 0) + (state.zeroAddressBalance || 0);
-      const treasuryTotal = (state.allBurns || state.recentBurns)
-        .filter(tx => isTreasuryBurn(tx))
-        .reduce((sum, tx) => sum + Number(tx.amount || 0), 0);
-
-      if (!_burnCountsReady && (!items.length || !items.some(tx => (parseFloat(tx.total?.value || 0) / 1e18) > 0))) {
-        renderBurnSummaryFallback(burned, state.priceUsd);
-      }
-
-      set('c-burned',fmtN(burned,2));
-      set('c-burned-pct', pct.toFixed(2)+'% burned');
-      set('c-burned-usd', state.priceUsd > 0 ? fmtUSD(burned * state.priceUsd) : '—');
-      set('c-bpct',pct.toFixed(6)+'% of supply');
-      set('bs-burned',fmtN(burned,2)+' CASHX');
-      set('bs-remain',fmtN(remaining,2)+' CASHX');
-      set('bs-dead',fmtN(routeBurned,2)+' CASHX');
-      // Only overwrite treasury card + burn source rankings if accurate data
-      // hasn't loaded yet — prevents the 60s interval from reverting correct values
-      if (!_burnCountsReady) {
-        // Only update treasury card if fast data actually has treasury burns —
-        // if the recent 100 burns are all community/DEX, don't overwrite with 0.00
-        if (treasuryTotal > 0) {
-          const fastTreasuryItems = items.filter(tx => isTreasuryBurn(tx));
-          set('c-dead', fmtN(treasuryTotal, 2) + ' CASHX');
-          set('c-dead-count', fastTreasuryItems.length + ' burn event' + (fastTreasuryItems.length !== 1 ? 's' : '') + ' · updating…');
-        }
-        // Only render burn source rankings if the fast data has partner burns —
-        // otherwise keep showing ··· rather than "No partner burns found yet"
-        const hasPartnerBurns = items.some(tx => { const s = getBurnSource(tx); return !s.isUnknown && s.type !== 'treasury'; });
-        if (hasPartnerBurns) renderBurnSourceRankings(items);
-      }
-      set('s-pct',pct.toFixed(4)+'%');
-      set('s-rpct',(100-pct).toFixed(4)+'%');
-      window._totalBurned = burned;
-      window._totalBurnedPct = pct;
-      setGauge(pct, 0);
-      setFlasks(burned, routeBurned, CASHX.initialSupply);
-      setSources(burned, routeBurned, treasuryTotal);
-      set('flow-buy', fmtN(routeBurned,2)+' CASHX');
-      const sf=$('s-fill'); if(sf)sf.style.width=Math.max(pct,0.1)+'%';
-      const sr=$('s-rfill'); if(sr)sr.style.width=Math.max(100-pct,0)+'%';
-      set('g-sub',burned>0
-        ?fmtN(burned,2)+' CASHX burned permanently · '+fmtN(remaining,2)+' remaining'
-        :'Awaiting first burn — treasury deploying');
-
-      if(state.holders !== null){
-        const h = formatToken(state.holders, { maximumFractionDigits: 0 });
-        set('c-holders',h); set('p-holders',h);
-      }else{
-        set('c-holders','Unavailable');
-      }
-      if(state.transfers !== null){
-        const txCount = formatToken(state.transfers, { maximumFractionDigits: 0 });
-        set('c-txs',txCount+' transfers');
-        set('p-txs',txCount);
-      }else{
-        set('c-txs','');
-      }
-
-      renderRecentBurnEvents(recentItems.length ? recentItems : items, 25);
-      if (!_burnCountsReady) renderTop3Burns(items, cachedPrice);
-
-      const latestTreasury = items.find(tx => isTreasuryBurn(tx));
-      const latestCommunity = recentItems.find(tx => !isTreasuryBurn(tx));
-      if(latestTreasury){
-        const amt = parseFloat(latestTreasury.total?.value||0)/1e18;
-        const ts = latestTreasury.timestamp ? Math.floor(new Date(latestTreasury.timestamp).getTime()/1000) : 0;
-        setHTML('latest-treasury-amt', '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--dash-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;flex-shrink:0"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>'+fmtN(amt, 2)+' CASHX');
-        set('latest-treasury-time', ts ? ago(ts) : '—');
-        const tAddr = latestTreasury.from?.hash || '';
-        setHTML('latest-treasury-addr', tAddr ? `<span class="addr-chip" data-addr="${tAddr}" onclick="amOpen(event,this.dataset.addr)">${formatAddress(tAddr,10,6)}</span>` : '—');
-      } else {
-        set('latest-treasury-amt', '—');
-        set('latest-treasury-time', '—');
-        setHTML('latest-treasury-addr', '—');
-      }
-      if(latestCommunity){
-        const amt = parseFloat(latestCommunity.total?.value||0)/1e18;
-        const ts = latestCommunity.timestamp ? Math.floor(new Date(latestCommunity.timestamp).getTime()/1000) : 0;
-        setHTML('latest-community-amt', '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--dash-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;flex-shrink:0"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>'+fmtN(amt, 2)+' CASHX');
-        set('latest-community-time', ts ? ago(ts) : '—');
-        const cAddr = latestCommunity.from?.hash || '';
-        setHTML('latest-community-addr', cAddr ? `<span class="addr-chip" data-addr="${cAddr}" onclick="amOpen(event,this.dataset.addr)">${formatAddress(cAddr,10,6)}</span>` : '—');
-      } else {
-        set('latest-community-amt', '—');
-        set('latest-community-time', '—');
-        setHTML('latest-community-addr', '—');
-      }
-
-
-      if(state.errors?.length){
-        set('last-up','Updated '+new Date().toLocaleTimeString()+' · some data unavailable');
-      }else{
-        set('last-up','Updated '+new Date().toLocaleTimeString());
-      }
-      _dashSave();
-      lsDone();
-    }catch(e){
-      console.warn('CashX services:',e);
-      if (currentDashboardToken !== 'cashx' || epoch !== dashboardChartEpoch) return;
-      updateDashboardBurnProgress(DASHBOARD_TOKEN_CONFIG.cashx, null, null, null, 'Supply data unavailable · retrying');
-      setErr('c-price'); setErr('p-price'); setErr('c-mcap'); setErr('c-treas'); setErr('c-burned');
-      set('c-ch','data unavailable');
-      set('c-treas-usd','RPC fallback failed');
-      set('c-bpct','data unavailable');
-      if (topBurnsNeedsLoad()) setHTML('top3-burns-body','<div class="no-data" style="padding:24px">Could not load burn data. Retrying…</div>');
-      set('last-up','Live data unavailable · retrying');
-      const note=document.getElementById('cors-note');
-      if(note) note.style.display='block';
-      lsDone();
+      scheduleDashboardRetry();
+    } finally {
+      if (isCurrent()) { if (btn) btn.disabled = false; lsDone(); }
     }
-    if(btn)btn.disabled=false;
+  }
+
+  let _dashboardRetryTimer = null;
+  function scheduleDashboardRetry() {
+    if (_dashboardRetryTimer) return;
+    _dashboardRetryTimer = setTimeout(() => {
+      _dashboardRetryTimer = null;
+      if (window.location.hash === '#dashboard' && currentDashboardToken === 'cashx') refreshDashboard({ force: true });
+    }, 15000);
   }
 
   let _dashboardLoadPromise = null;
@@ -6185,12 +6181,13 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     if (!force && _dashboardLastLoadAt && now - _dashboardLastLoadAt < 30000) return Promise.resolve();
 
     _dashboardLastLoadAt = now;
-    _dashboardLoadPromise = load()
-      .then(() => {
-        loadBurnActivityChart({ force });
-        return runBurnCounts(force);
-      })
-      .finally(() => { _dashboardLoadPromise = null; });
+    // History has its own loading cycle; it cannot delay the live stat cards.
+    loadBurnActivityChart({ force });
+    runBurnCounts(force);
+    const request = load().finally(() => {
+      if (_dashboardLoadPromise === request) _dashboardLoadPromise = null;
+    });
+    _dashboardLoadPromise = request;
     return _dashboardLoadPromise;
   }
 
@@ -6371,6 +6368,13 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     if (!chartReady || !window.Chart || epoch !== dashboardChartEpoch || renderId !== burnChartRenderId) return;
     const canvas = document.getElementById('burn-chart');
     if (!canvas) return;
+    const status = document.getElementById('burn-chart-status');
+    const hasHistory = Array.isArray(items) && items.length > 0;
+    canvas.style.visibility = hasHistory ? 'visible' : 'hidden';
+    if (status) { status.hidden = hasHistory; if (!hasHistory) status.textContent = 'Loading burn activity…'; }
+    const note = document.getElementById('burn-chart-note');
+    if (note) note.hidden = !hasHistory || currentDashboardToken !== 'cashx' || chartHistoryComplete;
+    if (!hasHistory) { if (burnChart) { burnChart.destroy(); burnChart = null; } return; }
     const now = Date.now();
     const cutoffs = { '24H': now - 86400000, '7D': now - 7*86400000, '30D': now - 30*86400000, 'ALL': 0 };
     const cutoff = cutoffs[range] || 0;
@@ -6545,11 +6549,15 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     setDashboardLoading();
   }
 
-  // Run loadBurnCounts with auto-retry — if API is flaky, try again after 45s
+  // Continue the saved history cursor until every burn has been checked.
+  let _burnCountsRetryTimer = null;
   async function runBurnCounts(force = false) {
     if (window.location.hash !== '#dashboard' || currentDashboardToken !== 'cashx') return;
-    await loadBurnCounts(force);
-    if (!_burnCountsReady && window.location.hash === '#dashboard' && currentDashboardToken === 'cashx') setTimeout(runBurnCounts, 45000);
+    if (_burnCountsRetryTimer) { clearTimeout(_burnCountsRetryTimer); _burnCountsRetryTimer = null; }
+    const complete = await loadBurnCounts(force);
+    if (!complete && !_burnCountsRetryTimer && window.location.hash === '#dashboard' && currentDashboardToken === 'cashx') {
+      _burnCountsRetryTimer = setTimeout(() => { _burnCountsRetryTimer = null; runBurnCounts(); }, 5000);
+    }
   }
 
   if (window.location.hash === '#dashboard') {
@@ -6900,22 +6908,22 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
   }
 
   function setMainWalletConnectState(isConnected, displayAddr = '') {
-    ['home-wallet-connect-btn', 'wallet-connect-btn', 'reflections-wallet-connect-btn'].forEach(id => {
+    ['home-wallet-connect-btn', 'wallet-connect-btn', 'reflections-wallet-connect-btn', 'portfolio-wallet-connect-btn'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.style.display = isConnected ? 'none' : '';
     });
-    ['home-wallet-connected-btn', 'wallet-connected-btn', 'reflections-wallet-connected-btn'].forEach(id => {
+    ['home-wallet-connected-btn', 'wallet-connected-btn', 'reflections-wallet-connected-btn', 'portfolio-wallet-connected-btn'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.style.display = isConnected ? '' : 'none';
     });
-    ['home-wc-addr', 'wc-addr', 'reflections-wc-addr'].forEach(id => {
+    ['home-wc-addr', 'wc-addr', 'reflections-wc-addr', 'portfolio-wc-addr'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.textContent = displayAddr;
     });
   }
 
   function setMainWalletConnectBusy(isBusy) {
-    ['home-wallet-connect-btn', 'wallet-connect-btn', 'reflections-wallet-connect-btn'].forEach(id => {
+    ['home-wallet-connect-btn', 'wallet-connect-btn', 'reflections-wallet-connect-btn', 'portfolio-wallet-connect-btn'].forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
       el.textContent = isBusy ? 'Connecting…' : 'Connect Wallet';
@@ -6974,6 +6982,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     fetchBalances();
     fetchRewards();
     if (window.location.hash === '#reflections' && window.ReflectionApp) window.ReflectionApp.scan(wAddr);
+    if (window.location.hash === '#portfolio') window.PortfolioApp?.scan(wAddr);
   }
 
   function openPanel()  { wPanelOpen = true; }
@@ -7380,7 +7389,6 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
   </div>
 </nav>
 <main class="farms-main">
-<div id="farms-loading-screen" class="farms-loading-screen" aria-live="polite"><span class="fls-text">Loading CashX farms</span></div>
 
 <div class="farm-total-tvl">Total Value Locked:<span class="farm-summary-value" id="farms-total-tvl">Loading</span><span class="farm-tvl-change" id="farms-tvl-change" hidden></span></div>
 <div class="rv-wrap">
@@ -7473,7 +7481,6 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
           </div>
           <div class="farm-filter-controls nexion-farms-actions">
             <label class="farm-staked-toggle" title="Show only vaults where you have a position"><input id="vault-deposited-only" type="checkbox" aria-label="Staked vaults" onchange="window.FarmsApp.setVaultBrowseFilter('stakedOnly',this.checked)"><span class="farm-toggle-orb" aria-hidden="true"></span><span>Staked</span></label>
-            <button class="farm-theme-mini-btn" type="button" onclick="farmsRefreshVaults()">↻ Refresh</button>
           </div>
         </div>
         <div class="farm-browse-controls" aria-label="Browse vaults">
@@ -7928,6 +7935,7 @@ function setFarmTheme(name, options = {}) {
   }
   try { localStorage.setItem(FARM_THEME_KEY, key); } catch(e) {}
   updateFarmThemeUI(key, theme);
+  window.dispatchEvent(new CustomEvent('cashx-theme-change'));
   if (typeof renderBurnChart === 'function' && Array.isArray(cachedChartBurnsData) && cachedChartBurnsData.length) {
     renderBurnChart(cachedChartBurnsData, currentChartRange || '24H');
   }
@@ -9058,6 +9066,10 @@ const PULSE_ID     = 369;
   const FARMS = [
     // NFT cards are rendered separately, followed by the newest token farms.
     // Explicit pool IDs keep farms sharing an LP token and paying different rewards separate.
+    { label: '#293', name: 'CASHX / HBMC LP', lp: '0x128F7134F986dD4d62Af5De5d105f2AeA8f6a71a', rewardToken: 'GSX', pid: 108 },
+    { label: '#292', name: 'GSX / HBMC LP', lp: '0xcf371faf0CF9d4520126F09d927022cC01b78D2B', rewardToken: 'GSX', pid: 107 },
+    { label: '#291', name: 'HBRP / DIVX LP', lp: '0xc5769C2255748746b95ccac55f8DFBf50da4bEFB', rewardToken: 'GSX', pid: 106 },
+    { label: '#290', name: 'HBRP / DISTROX LP', lp: '0xd13Ba361C7C7204E2ebd969E357d39cE5d653852', rewardToken: 'GSX', pid: 105 },
     { label: '#289', name: 'pHEX / BurnX LP', lp: '0x31533707DC4eBF5fC3e75b907b7BEb54A77C3684', rewardToken: 'CASHX', pid: 104 },
     { label: '#287', name: 'CASHX / HBRP LP', lp: '0x542519d397fb3DA07146529Dcf25669a8B33f3bA', rewardToken: 'GSX', pid: 102 },
     { label: '#286', name: 'GSX / HBRP LP', lp: '0xcA2FF23F14286601573Cb079e18846C0365CeB85', rewardToken: 'GSX', pid: 101 },
@@ -9192,6 +9204,7 @@ const PULSE_ID     = 369;
   const TOKEN_LOGOS = {
     HBR: 'https://nexionpulse.com/images/tokens/HBR.png',
     HBRP: 'https://nexionpulse.com/images/tokens/HBRP.png',
+    HBMC: 'https://nexionpulse.com/images/tokens/HBMC.png',
     BURNX: 'BurnX.png',
     CASHX: 'cashx-logo.png',
     DISTROX: 'distrox.jpg',
@@ -9237,6 +9250,7 @@ const PULSE_ID     = 369;
   const TOKEN_ADDRESSES = {
     HBR: '0xD947b662876aAaAD199826d985Dee35cad569989',
     HBRP: '0x5eA9674085a81e653FF087B4b86FaAe564a267be',
+    HBMC: '0xB4FD57E92483c895743503B77827948643C30BBA',
     BURNX: '0x8577f0FB9D709d5BeBd808dDDd0094FbAEc667B4',
     CASHX: CASHX_ADDR,
     DISTROX: DISTROX_ADDR,
@@ -9426,9 +9440,8 @@ const PULSE_ID     = 369;
   async function init() {
     if (farmsInitialized) return;
     farmsInitialized = true;
-    showFarmsLoading();
     renderFarmRankings();
-    renderPlaceholderFarms();
+    renderPlaceholderFarms(false);
     fetchVaults();
     const provider = window.CashXWallets?.getActiveProvider?.() || window.ethereum;
     if (!provider) { showDisconnected(); return; }
@@ -10493,7 +10506,7 @@ const PULSE_ID     = 369;
     };
   }
 
-  function renderPlaceholderFarms() {
+  function renderPlaceholderFarms(loadPublic = true) {
     renderFarmResults(FARMS.map(farm => ({
       farm,
       pid: Number(farm.label.replace('#', '')),
@@ -10503,16 +10516,53 @@ const PULSE_ID     = 369;
       totalStaked: null,
       disconnected: true
     })));
-    fetchPublicFarmStats();
-    refreshNftFarmPublicStats();
-    refreshEcoNftPublicStats();
+    if (loadPublic) {
+      fetchPublicFarmStats();
+      refreshNftFarmPublicStats();
+      refreshEcoNftPublicStats();
+    }
   }
+
+  async function restoreFarmSnapshot(wallet) {
+    let saved;
+    try { saved = window.FarmSnapshots.load(localStorage, FARM_CONTRACT, wallet, FARMS); } catch (_) { return; }
+    if (!saved.length) return;
+    const restored = await Promise.all(saved.map(async r => ({...r,
+      valuation: await fetchNexionValuation(null, r.farm, r.poolInfo, r.totalStaked, r.staked, r.pending, r.prices)
+    })));
+    if ((wAddr || '').toLowerCase() !== wallet.toLowerCase()) return;
+    const entries = new Map(restored.map(r => [r.farm.label, r]));
+    renderFarmResults(lastFarmResults.map(r => entries.get(r.farm.label) || r));
+    const at = Math.min(...restored.map(r => r.readAt));
+    set('farm-refresh-status', `Saved readings from ${new Date(at).toLocaleString()} · Updating…`);
+  }
+
+  function saveFarmSnapshot() {
+    try { window.FarmSnapshots.save(localStorage, FARM_CONTRACT, wAddr || '', lastFarmResults); } catch (_) {}
+  }
+
+  function farmBatchProgress(isCurrent) {
+    const completed = new Map();
+    return result => {
+      completed.set(result.farm.label, result);
+      if (isCurrent() && completed.size % 8 === 0 && !document.activeElement?.closest('#farms-body input')) {
+        renderFarmResults(lastFarmResults.map(r => completed.get(r.farm.label) || r));
+        set('farm-refresh-status', `Updating farms · ${completed.size} of ${FARMS.length} checked`);
+      }
+      return result;
+    };
+  }
+
+  let farmLoadId = 0, farmInitialLoading = false;
 
   async function fetchPublicFarmStats() {
     if (publicFarmStatsLoading || wAddr || !window.ethers) return;
     publicFarmStatsLoading = true;
+    let provider;
     try {
-      const provider = new ethers.JsonRpcProvider('https://rpc.pulsechain.com', PULSE_ID);
+      if (!lastFarmResults.some(r => r.valuation)) await restoreFarmSnapshot('');
+      if (wAddr) return;
+      provider = new ethers.JsonRpcProvider('https://rpc.pulsechain.com', PULSE_ID);
       const farmC = new ethers.Contract(FARM_CONTRACT, FARM_TIME_ABI, provider);
       let matched = matchFarmPools(getCachedFarmPools());
       if (matched.length !== FARMS.length) {
@@ -10521,31 +10571,31 @@ const PULSE_ID     = 369;
       if (!matched.length) {
         matched = FARMS.map(farm => ({ farm, pid: Number(farm.label.replace('#', '')) }));
       }
-      const timing = await fetchFarmTiming(farmC, matched).catch(err => {
-        console.warn('Farm timing unavailable:', err);
-        return new Map();
-      });
       const priceMaps = await fetchFarmPriceMaps(provider, matched);
-      const results = await mapLimit(matched, 4, async ({ farm, pid }) => {
+      const publish = farmBatchProgress(() => !wAddr);
+      const results = await mapLimit(matched, 8, async ({ farm, pid }) => {
         try {
           const lpC = new ethers.Contract(farm.lp, LP_ABI, provider);
           const [poolInfo, totalStaked, token0, token1] = await Promise.all([
             retry(() => farmC.poolInfo(pid)).catch(() => null),
             lpC.balanceOf(FARM_CONTRACT).catch(() => null),
-            lpC.token0().catch(() => null),
-            lpC.token1().catch(() => null)
+            farm.single ? null : lpC.token0().catch(() => null),
+            farm.single ? null : lpC.token1().catch(() => null)
           ]);
           const valuation = await fetchNexionValuation(provider, farm, poolInfo, totalStaked, 0n, 0n, prefetchedPrices(priceMaps, farm));
-          return { farm, pid, staked: 0n, pending: 0n, walletLp: 0n, poolInfo, totalStaked, valuation, lpTokens: token0 && token1 ? [token0, token1] : null, countdownEnd: timing.get(pid) || null, disconnected: true };
+          return publish({ farm, pid, readAt: Date.now(), staked: 0n, pending: 0n, walletLp: 0n, poolInfo, totalStaked, valuation, lpTokens: token0 && token1 ? [token0, token1] : null, countdownEnd: Number(poolInfo?.endTime ?? poolInfo?.[5] ?? 0) * 1000 || null, disconnected: true });
         } catch(e) {
-          return { farm, pid, staked: 0n, pending: 0n, walletLp: 0n, totalStaked: null, countdownEnd: timing.get(pid) || null, disconnected: true };
+          const previous = lastFarmResults.find(r => r.pid === pid && r.valuation);
+          if (previous) return publish({ ...previous, error: 'Public farm refresh unavailable' });
+          return publish({ farm, pid, staked: 0n, pending: 0n, walletLp: 0n, totalStaked: null, countdownEnd: null, disconnected: true });
         }
       });
-      if (!wAddr) { markBrowseRead('farms', results.some(r => !r.valuation || r.error), results.some(r => r.valuation)); renderFarmResults(results); }
+      if (!wAddr) { markBrowseRead('farms', results.some(r => !r.valuation || r.error), results.some(r => r.valuation)); renderFarmResults(results); saveFarmSnapshot(); }
     } catch(e) {
-      markBrowseRead('farms', true, false);
+      if (!wAddr) markBrowseRead('farms', true, false);
       console.warn('Public farm stats unavailable:', e);
     } finally {
+      provider?.destroy();
       publicFarmStatsLoading = false;
     }
   }
@@ -10704,22 +10754,23 @@ const PULSE_ID     = 369;
     const shareWallet = wAddr;
     const el = document.getElementById('farms-body');
     if (!el) return;
-    el.innerHTML = '<div class="farm-loading">··· Loading farm balances…</div>';
+    const loadId = ++farmLoadId;
+    farmInitialLoading = true;
+    const isCurrent = () => wAddr === shareWallet && farmLoadId === loadId;
+    if (!lastFarmResults.length || lastFarmResults.some(r => r.walletAddress && r.walletAddress.toLowerCase() !== shareWallet.toLowerCase())) renderPlaceholderFarms(false);
+    set('farm-refresh-status', 'Updating farm balances…');
 
     try {
+      if (!lastFarmResults.some(r => r.walletAddress === shareWallet && r.valuation && !r.cached)) await restoreFarmSnapshot(shareWallet);
+      if (!isCurrent()) return;
       const rp = readProvider();
       const farmC = new ethers.Contract(FARM_CONTRACT, FARM_TIME_ABI, rp);
       let matched = matchFarmPools(getCachedFarmPools());
       if (matched.length !== FARMS.length) {
-        matched = matchFarmPools(await discoverFarmPools(farmC, el));
+        matched = matchFarmPools(await discoverFarmPools(farmC));
       }
-      const timing = await fetchFarmTiming(farmC, matched).catch(err => {
-        console.warn('Farm timing unavailable:', err);
-        return new Map();
-      });
-
       if (matched.length === 0) {
-        el.innerHTML = '<div class="farm-empty">Could not match any farm LP tokens to pool IDs.</div>';
+        if (wAddr === shareWallet) markBrowseRead('farms', true, false);
         return;
       }
 
@@ -10727,41 +10778,45 @@ const PULSE_ID     = 369;
       const priceMaps = await fetchFarmPriceMaps(rp, matched);
 
       // Step 4: Fetch user data + wallet LP balance for ALL matched farms
-      const results = await mapLimit(matched, 4, async ({ farm, pid }) => {
+      const publish = farmBatchProgress(isCurrent);
+      const results = await mapLimit(matched, 8, async ({ farm, pid }) => {
           try {
             const lpC = new ethers.Contract(farm.lp, LP_ABI, rp);
             const [userInfo, pending, walletLp, allowance, totalStaked, poolInfo, token0, token1] = await Promise.all([
-              farmC.userInfo(pid, wAddr),
-              farmC.pendingReward(pid, wAddr),
-              lpC.balanceOf(wAddr),
-              lpC.allowance(wAddr, FARM_CONTRACT),
+              farmC.userInfo(pid, shareWallet),
+              farmC.pendingReward(pid, shareWallet),
+              lpC.balanceOf(shareWallet),
+              lpC.allowance(shareWallet, FARM_CONTRACT),
               lpC.balanceOf(FARM_CONTRACT).catch(() => null),
               retry(() => farmC.poolInfo(pid)).catch(() => null),
-              lpC.token0().catch(() => null),
-              lpC.token1().catch(() => null)
+              farm.single ? null : lpC.token0().catch(() => null),
+              farm.single ? null : lpC.token1().catch(() => null)
             ]);
             const staked = userInfo.amount ?? userInfo[0] ?? 0n;
             const [valuation, lpBreakdown] = await Promise.all([
               fetchNexionValuation(rp, farm, poolInfo, totalStaked, staked, pending, prefetchedPrices(priceMaps, farm)),
               fetchLpBreakdown(rp, farm, staked, token0, token1)
             ]);
-            return { farm, pid, walletAddress: shareWallet, readAt: Date.now(), staked, pending, walletLp, allowance, totalStaked, poolInfo, valuation, lpBreakdown, shareValid: typeof (userInfo.amount ?? userInfo[0]) === 'bigint', lpTokens: token0 && token1 ? [token0, token1] : null, countdownEnd: timing.get(pid) || null, error: null };
+            return publish({ farm, pid, walletAddress: shareWallet, readAt: Date.now(), staked, pending, walletLp, allowance, totalStaked, poolInfo, valuation, lpBreakdown, shareValid: typeof (userInfo.amount ?? userInfo[0]) === 'bigint', lpTokens: token0 && token1 ? [token0, token1] : null, countdownEnd: Number(poolInfo?.endTime ?? poolInfo?.[5] ?? 0) * 1000 || null, error: null });
           } catch(err) {
             console.error(`${farm.label} (pid=${pid}) FAILED:`, err.message || err);
-            return { farm, pid, walletAddress: shareWallet, staked: 0n, pending: 0n, walletLp: 0n, totalStaked: null, countdownEnd: timing.get(pid) || null, error: 'Readings unavailable' };
+            const previous = lastFarmResults.find(r => r.farm.label === farm.label && r.walletAddress === shareWallet && r.valuation);
+            return publish(previous ? { ...previous, error: 'Readings unavailable' } : { farm, pid, walletAddress: shareWallet, staked: 0n, pending: 0n, walletLp: 0n, totalStaked: null, countdownEnd: null, error: 'Readings unavailable' });
           }
       });
 
       // Step 5: Show ALL farms (not just staked ones)
-      if (wAddr !== shareWallet) return;
+      if (!isCurrent()) return;
       markBrowseRead('farms', results.some(r => r.error || !r.valuation), results.some(r => r.valuation));
       renderFarmResults(results);
+      saveFarmSnapshot();
 
     } catch(err) {
+      if (!isCurrent()) return;
       markBrowseRead('farms', true, false);
       console.error('Farm fetch error:', err);
-      const msg = err.message || String(err);
-      el.innerHTML = `<div class="farm-empty" style="color:var(--red)">Error: ${msg}</div>`;
+    } finally {
+      if (farmLoadId === loadId) farmInitialLoading = false;
     }
   }
 
@@ -10946,6 +11001,7 @@ const PULSE_ID     = 369;
         remainingRewardStart: remainingParams?.startTime || 0,
         remainingRewardEnd: remainingParams?.endTime || 0,
         rewardScaledPrice: Number.isFinite(rewardScaledPrice) ? String(rewardScaledPrice) : '',
+        stakeScaledPrice: Number.isFinite(stakeScaledPrice) ? String(stakeScaledPrice) : '',
         userStaked: fmtFarmFixed(staked, 2),
         userStakedUsd: fmtUsd(userStakedValue, 2),
         userStakedShare: formatFarmPoolSharePercent(staked, effTotalStaked),
@@ -11180,7 +11236,7 @@ const PULSE_ID     = 369;
       : `<div class="farm-proto-sub" id="farm-pending-usd-${r.pid}">${pendingSub}</div>`;
     const claimButtonHTML = `<button class="farm-claim-btn" id="farm-btn-${r.pid}"
                 onclick="farmsClaimFarm(${r.pid}, '${r.farm.label}')"
-                ${r.pending === 0n || r.disconnected ? 'disabled' : ''}>Claim</button>`;
+                ${r.pending === 0n || (r.disconnected || r.cached) ? 'disabled' : ''}>Claim</button>`;
     const claimRowHTML = isDesignProto ? `<div class="farm-claim-row">${claimButtonHTML}</div>` : '';
     const headerActionHTML = isDesignProto
       ? `<a class="farm-liquidity-btn" href="${pulsexAddLiquidityURL(r.lpTokens, r.farm)}" target="_blank" rel="noopener">${r.farm.single ? `Buy ${farmSafeText(r.farm.name)}` : 'Manage Liquidity'}</a>`
@@ -11200,10 +11256,10 @@ const PULSE_ID     = 369;
       ? `<span class="farm-footer-time">Time Left: <strong>${countdownHTML}</strong></span>`
       : '';
     const walletDisplay = r.error ? 'Unavailable' : fmtFarm(r.walletLp);
-    const walletSub = r.disconnected ? 'Connect wallet' : (r.farm.single ? `${farmSafeText(r.farm.name)} in wallet` : 'LP in wallet');
-    const stakedMaxDisabled = r.disconnected || r.staked === 0n ? 'disabled' : '';
-    const walletMaxDisabled = r.disconnected || r.walletLp === 0n ? 'disabled' : '';
-    const approveDisabled = r.disconnected || (r.walletLp === 0n && r.staked === 0n) ? 'disabled' : '';
+    const walletSub = r.cached ? 'Saved balance · updating' : r.disconnected ? 'Connect wallet' : (r.farm.single ? `${farmSafeText(r.farm.name)} in wallet` : 'LP in wallet');
+    const stakedMaxDisabled = (r.disconnected || r.cached) || r.staked === 0n ? 'disabled' : '';
+    const walletMaxDisabled = (r.disconnected || r.cached) || r.walletLp === 0n ? 'disabled' : '';
+    const approveDisabled = (r.disconnected || r.cached) || (r.walletLp === 0n && r.staked === 0n) ? 'disabled' : '';
     const allowanceDisplay = r.allowance !== undefined ? fmtFarmAllowance(r.allowance) : '0';
     const lpBreakdownOpen = farmLpExpanded.has(r.pid);
     const lpToggleText = lpBreakdownOpen ? '[-]' : '[+]';
@@ -11275,14 +11331,14 @@ const PULSE_ID     = 369;
 
         <div class="farm-amount-wrap">
           <input class="farm-amount-input" id="farm-input-${r.pid}"
-            type="number" min="0" step="any" placeholder="${r.disconnected ? 'Connect wallet...' : 'Amount'}"
-            oninput="farmsUpdateApproveLabel(${r.pid})" ${r.disconnected ? 'disabled' : ''}/>
+            type="number" min="0" step="any" placeholder="${r.cached ? 'Updating…' : r.disconnected ? 'Connect wallet...' : 'Amount'}"
+            oninput="farmsUpdateApproveLabel(${r.pid})" ${(r.disconnected || r.cached) ? 'disabled' : ''}/>
         </div>
         <div class="farm-proto-actions">
           <button class="farm-stake-btn" id="farm-stake-${r.pid}"
-            onclick="farmsStakeFarm(${r.pid})" ${r.disconnected ? 'disabled' : ''}>Stake</button>
+            onclick="farmsStakeFarm(${r.pid})" ${(r.disconnected || r.cached) ? 'disabled' : ''}>Stake</button>
           <button class="farm-unstake-btn" id="farm-unstake-${r.pid}"
-            onclick="farmsUnstakeFarm(${r.pid})" ${r.disconnected ? 'disabled' : ''}>Unstake</button>
+            onclick="farmsUnstakeFarm(${r.pid})" ${(r.disconnected || r.cached) ? 'disabled' : ''}>Unstake</button>
         </div>
         <button class="farm-approve-max-btn" id="farm-approve-${r.pid}"
           onclick="farmsApproveFarm(${r.pid})" ${approveDisabled}>Approve <span id="farm-approve-label-${r.pid}">MAX</span></button>
@@ -11524,7 +11580,7 @@ const PULSE_ID     = 369;
                   <div class="farm-table-claim-row">
                     <button class="farm-claim-btn" id="farm-btn-${r.pid}"
                       onclick="farmsClaimFarm(${r.pid}, '${r.farm.label}')"
-                      ${r.pending === 0n || r.disconnected ? 'disabled' : ''}>Claim</button>
+                      ${r.pending === 0n || (r.disconnected || r.cached) ? 'disabled' : ''}>Claim</button>
                     <a class="farm-liquidity-btn" href="${liqUrl}" target="_blank" rel="noopener">${r.farm.single ? `Buy ${farmSafeText(r.farm.name)}` : 'Manage Liquidity'}</a>
                   </div>
                 </div>
@@ -11533,18 +11589,18 @@ const PULSE_ID     = 369;
         <span class="farm-tx-msg" id="farm-msg-${r.pid}"></span>
                   <div class="farm-amount-wrap">
                     <input class="farm-amount-input" id="farm-input-${r.pid}"
-                      type="number" min="0" step="any" placeholder="${r.disconnected ? 'Connect wallet...' : 'Amount'}" ${r.disconnected ? 'disabled' : ''}/>
-                    <button class="farm-max-stake" onclick="farmsFillInput(${r.pid},'wallet')" ${r.disconnected ? 'disabled' : ''}>Max</button>
+                      type="number" min="0" step="any" placeholder="${r.cached ? 'Updating…' : r.disconnected ? 'Connect wallet...' : 'Amount'}" ${(r.disconnected || r.cached) ? 'disabled' : ''}/>
+                    <button class="farm-max-stake" onclick="farmsFillInput(${r.pid},'wallet')" ${(r.disconnected || r.cached) ? 'disabled' : ''}>Max</button>
                   </div>
                   <div class="farm-balance-row">
                     <span>Wallet: <span>${r.error ? 'Unavailable' : fmtFarm(r.walletLp)}</span> LP</span>
-                    <button class="farm-staked-max" onclick="farmsFillInput(${r.pid},'staked')" ${r.disconnected ? 'disabled' : ''}>Staked Max</button>
+                    <button class="farm-staked-max" onclick="farmsFillInput(${r.pid},'staked')" ${(r.disconnected || r.cached) ? 'disabled' : ''}>Staked Max</button>
                   </div>
                   <div class="farm-table-actions">
                     <button class="farm-stake-btn" id="farm-stake-${r.pid}"
-                      onclick="farmsStakeFarm(${r.pid})" ${r.disconnected ? 'disabled' : ''}>Stake</button>
+                      onclick="farmsStakeFarm(${r.pid})" ${(r.disconnected || r.cached) ? 'disabled' : ''}>Stake</button>
                     <button class="farm-unstake-btn" id="farm-unstake-${r.pid}"
-                      onclick="farmsUnstakeFarm(${r.pid})" ${r.disconnected ? 'disabled' : ''}>Unstake</button>
+                      onclick="farmsUnstakeFarm(${r.pid})" ${(r.disconnected || r.cached) ? 'disabled' : ''}>Unstake</button>
                   </div>
                 </div>
               </div>
@@ -11844,7 +11900,7 @@ const PULSE_ID     = 369;
     updateDailyRewardSummary(results);
     // Only trust a COMPLETE load for the 24h-change history (partial sums would poison it).
     if (totalTvl > 0 && Number.isFinite(nftFarmState.tvlUsd) && Number.isFinite(cashxEcoNftState.tvlUsd) &&
-        results.length >= FARMS.length && results.every(r => r && r.valuation)) {
+        results.length >= FARMS.length && results.every(r => r && r.valuation && !r.cached && !r.error)) {
       updateTvlChange(totalTvl);
     }
     updateClaimAllButton(results);
@@ -11856,7 +11912,7 @@ const PULSE_ID     = 369;
       localLabels.has(r.farm?.label) &&
       typeof r.pending === 'bigint' &&
       r.pending > 0n &&
-      !r.disconnected
+      !r.disconnected && !r.cached && !r.error
     );
   }
 
@@ -11876,7 +11932,7 @@ const PULSE_ID     = 369;
       localLabels.has(r.farm?.label) &&
       typeof r.staked === 'bigint' &&
       r.staked > 0n &&
-      !r.disconnected
+      !r.disconnected && !r.cached && !r.error
     );
   }
 
@@ -11906,20 +11962,6 @@ const PULSE_ID     = 369;
     btn.disabled = !connected || claimables.length === 0 || btn.classList.contains('claiming');
   }
 
-  // DEGEN-style single loader: keep everything hidden behind one "Loading" message
-  // until the first batch of REAL farm data (results with a valuation) is rendered.
-  let farmsRevealed = true; // true = no loader; set false by showFarmsLoading() during the initial load
-  function showFarmsLoading() {
-    farmsRevealed = false;
-    document.querySelector('#farms-view .farms-main')?.classList.add('farms-loading');
-    setTimeout(() => revealFarms(), 15000); // safety: never stay stuck on the loader
-  }
-  function revealFarms() {
-    if (farmsRevealed) return;
-    farmsRevealed = true;
-    document.querySelector('#farms-view .farms-main')?.classList.remove('farms-loading');
-  }
-
   function renderFarmResults(results, preserveSource = false) {
     if (!preserveSource) lastFarmResults = results;
     const el = document.getElementById('farms-body');
@@ -11927,7 +11969,6 @@ const PULSE_ID     = 369;
     if (!lastFarmResults.length) {
       updateFarmSummaries([]);
       el.innerHTML = '<div class="farm-empty">Could not match any farm LP tokens to pool IDs.</div>';
-      revealFarms();
       return;
     }
     updateFarmSummaries(lastFarmResults);
@@ -11935,7 +11976,6 @@ const PULSE_ID     = 369;
     const visibleResults = visibleFarmResults();
     if (!orderedFarmEntries().length) {
       el.innerHTML = '<div class="farm-empty">No farms match these filters. Try Clear filters.</div>';
-      if (lastFarmResults.some(r => r && r.valuation)) revealFarms();
       return;
     }
     el.innerHTML = farmView === 'table' ? renderFarmTable(visibleResults) : renderFarmGrid(visibleResults);
@@ -11944,8 +11984,6 @@ const PULSE_ID     = 369;
     renderFarmRankings();
     if (lastVaultResults.length) renderVaultResults();
     updateFarmCountdowns();
-    // Reveal once we have real on-chain data (placeholders have no valuation).
-    if (lastFarmResults.some(r => r && r.valuation)) revealFarms();
   }
 
   function setFarmView(view) {
@@ -13540,7 +13578,9 @@ const PULSE_ID     = 369;
   const staleFarmReads = new Set();
   let farmRefreshRunning = false;
   async function refreshVisibleFarmData() {
-    if (farmRefreshRunning || document.hidden || !wProvider || !wAddr || window.location.hash !== '#farms' || farmProductView === 'vaults') return;
+    if (farmInitialLoading || farmRefreshRunning || document.hidden || window.location.hash !== '#farms' || farmProductView === 'vaults') return;
+    if (!wAddr) { await fetchPublicFarmStats(); return; }
+    if (!wProvider) return;
     farmRefreshRunning = true;
     try {
       // Browsing filters must not freeze the portfolio totals for hidden positions.
@@ -13549,6 +13589,7 @@ const PULSE_ID     = 369;
       const priceMaps = await fetchFarmPriceMaps(readProvider(), results);
       if (wallet !== wAddr || document.hidden || window.location.hash !== '#farms' || farmProductView === 'vaults') return;
       await mapLimit(results, 4, r => refreshFarmData(r.pid, priceMaps));
+      if (wallet === wAddr) saveFarmSnapshot();
     } catch (error) {
       markBrowseRead('farms', true, false);
       console.warn('Farm refresh unavailable:', error);
@@ -13653,11 +13694,11 @@ const PULSE_ID     = 369;
       // Update cached results so fillInput stays correct
       const idx = lastFarmResults.findIndex(r => r.pid === pid);
       if (idx >= 0) {
-        lastFarmResults[idx] = { ...lastFarmResults[idx], walletAddress: shareWallet, readAt: Date.now(), staked, pending, walletLp, allowance, totalStaked, poolInfo, valuation, lpBreakdown, shareValid, error: null };
+        lastFarmResults[idx] = { ...lastFarmResults[idx], cached: false, disconnected: false, walletAddress: shareWallet, readAt: Date.now(), staked, pending, walletLp, allowance, totalStaked, poolInfo, valuation, lpBreakdown, shareValid, error: null };
         updateFarmSummaries(lastFarmResults);
         renderFarmRankings();
         markBrowseRead('farms', staleFarmReads.size > 0 || lastFarmResults.some(r => r.error || !r.valuation), true);
-        if (farmStakedOnly && !hasStakedFarm(lastFarmResults[idx])) renderFarmResults(lastFarmResults, true);
+        if (r.cached || r.disconnected || (farmStakedOnly && !hasStakedFarm(lastFarmResults[idx]))) renderFarmResults(lastFarmResults, true);
       }
     } catch(e) {
       console.error('refreshFarmData failed:', e);
@@ -14082,7 +14123,116 @@ const PULSE_ID     = 369;
       closeEcoNftModal();
     }
   });
-  return { init, showVaultGrowth, setVaultBrowseFilter, clearVaultBrowseFilters, toggleVaultFavorite, setBrowseFilter, clearBrowseFilters, toggleFarmFavorite, connectWallet, refreshAll, disconnectWallet, copyAddr, copyLp, setFarmView, setStakedFilter, setProductView, setVaultMode, fillVaultMax, toggleVaultLpBreakdown, fetchVaults, approveVault, depositVault, withdrawVault, withdrawAllVault, goToFarm, fillInput, updateApproveLabel, approveFarm, stakeFarm, unstakeFarm, claimFarm, claimAllPendingFarms, toggleTableRow, toggleLpBreakdown, openNftFarmModal, openNftFarmMaxSelection, closeNftFarmModal, toggleNftSelection, selectAllNfts, submitNftSelection, approveNftFarm, claimNftRewards, tryNextNftImage, openEcoNftModal, openEcoNftMaxSelection, closeEcoNftModal, toggleEcoNftSelection, selectAllEcoNfts, submitEcoNftSelection, approveEcoNftFarm, claimEcoNftRewards };
+  async function readPortfolioPositions(wallet) {
+    const provider = new ethers.JsonRpcProvider('https://rpc.pulsechain.com', PULSE_ID);
+    const farmC = new ethers.Contract(FARM_CONTRACT, FARM_ABI, provider);
+    const manager = new ethers.Contract(NEXION_FLUX_VAULT_MANAGER, FLUX_VAULT_MANAGER_ABI, provider);
+    const calculator = new ethers.Contract(NEXION_LP_CALCULATOR, NEXION_PRICE_ABI, provider);
+    const failures = [];
+    const metaCache = new Map();
+    const meta = address => {
+      const key = address.toLowerCase();
+      if (!metaCache.has(key)) metaCache.set(key, (async () => {
+        const token = new ethers.Contract(address, TOKEN_META_ABI, provider);
+        const [decimals, symbol] = await Promise.all([token.decimals(), token.symbol()]);
+        return {decimals:Number(decimals), symbol};
+      })());
+      return metaCache.get(key);
+    };
+    const priced = (raw, price, decimals) => raw === 0n ? 0 : rawUsd(raw, Number(price), decimals);
+    const ecosystem = ['CASHX','DISTROX','GSX','DIVX','BURNX'].map(symbol => TOKEN_ADDRESSES[symbol].toLowerCase());
+    const allocationCache = new Map();
+    const allocations = (address, isLp) => {
+      const key = address.toLowerCase();
+      if (!allocationCache.has(key)) allocationCache.set(key, (async () => {
+        if (!isLp) return [{address,weight:1}];
+        const pair = new ethers.Contract(address, LP_ABI, provider);
+        const [token0,token1,reserves] = await Promise.all([pair.token0(),pair.token1(),pair.getReserves()]);
+        const members = [token0,token1].map((token,index)=>({address:token,raw:reserves[index]})).filter(token=>ecosystem.includes(token.address.toLowerCase()));
+        if (members.length === 1) return [{address:members[0].address,weight:1}];
+        if (!members.length) return [{address:'other',weight:1}];
+        const prices = await calculator.getBatchPrice(members.map(token=>token.address));
+        const values = await Promise.all(members.map(async (token,index)=>priced(token.raw,prices[index],(await meta(token.address)).decimals)));
+        const total = values.reduce((sum,value)=>sum+value,0);
+        if (values.some(value=>!Number.isFinite(value)) || !(total>0)) throw Error('LP attribution price unavailable');
+        return members.map((token,index)=>({address:token.address,weight:values[index]/total}));
+      })().catch(()=>{failures.push(`LP attribution unavailable for ${address}.`);return [{address:'other',weight:1}];}));
+      return allocationCache.get(key);
+    };
+    try {
+      const farms = (async () => {
+        try {
+          let matched = matchFarmPools(getCachedFarmPools());
+          if (matched.length !== FARMS.length) matched = matchFarmPools(await discoverFarmPools(farmC));
+          if (matched.length !== FARMS.length) failures.push('Some farm pools could not be matched.');
+          const results = await mapLimit(matched, 8, async ({farm,pid}) => {
+            try {
+              const [user, pending, pool] = await Promise.all([farmC.userInfo(pid,wallet),farmC.pendingReward(pid,wallet),farmC.poolInfo(pid)]);
+              if (String(pool.lpToken ?? pool[0]).toLowerCase() !== farm.lp.toLowerCase()) throw Error('Pool stake token mismatch');
+              const raw = BigInt(user.amount ?? user[0]);
+              const rewardAddress = pool.rewardToken ?? pool[1];
+              if (raw === 0n && pending === 0n) return null;
+              const [stakeMeta, rewardMeta, stakePrices, rewardPrices] = await Promise.all([
+                meta(farm.lp), meta(rewardAddress),
+                (farm.single ? calculator.getBatchPrice([farm.lp]) : calculator.getBatchLpValue([farm.lp])).catch(() => []),
+                calculator.getBatchPrice([rewardAddress]).catch(() => [])
+              ]);
+              const remainingValue = rawUsd(remainingRewardRawNexion(pool),Number(rewardPrices[0]),rewardMeta.decimals);
+              const pendingUsd = pending === 0n ? 0 : nexionPendingUsd(pending,Number(rewardPrices[0]),rewardMeta.decimals,remainingValue,remainingRewardParams(pool)?.totalReward);
+              return {kind:farm.single?'stake':'farm',id:pid,name:`${farm.name} ${farm.label}`,stakeToken:farm.lp,rewardToken:rewardAddress,
+                allocations:await allocations(farm.lp,!farm.single),
+                symbol:stakeMeta.symbol,decimals:stakeMeta.decimals,rawAmount:String(raw),amount:Number(ethers.formatUnits(raw,stakeMeta.decimals)),
+                value:priced(raw,stakePrices[0],stakeMeta.decimals),rewardSymbol:rewardMeta.symbol,rewardDecimals:rewardMeta.decimals,
+                pending:Number(ethers.formatUnits(pending,rewardMeta.decimals)),pendingUsd,
+                endTime:Number(pool.endTime ?? pool[5]),fee:Number(pool.withdrawFeeBP ?? pool[9])/100};
+            } catch(error) { failures.push(`Farm ${farm.label} unavailable.`);return null; }
+          });
+          return results.filter(Boolean);
+        } catch(error) { failures.push('Farm positions unavailable.');return []; }
+      })();
+      const vaults = (async () => {
+        try {
+          const count = Number(await manager.vaultsLength());
+          const results = await mapLimit(Array.from({length:count},(_,id)=>id),4,async id => {
+            try {
+              const raw = await manager.vaults(id);
+              const vault = {stakeToken:raw.stakeToken ?? raw[0],rewardToken:raw.rewardToken ?? raw[1],isLpStake:Boolean(raw.isLpStake ?? raw[2]),token0:raw.token0 ?? raw[3],token1:raw.token1 ?? raw[4]};
+              if (!isEcosystemVault(vault)) return null;
+              const user = await manager.userVault(id,wallet);
+              const shares = BigInt(user.userShares ?? user[0]);
+              if (shares === 0n) return null;
+              const assets = BigInt(user.userAssets ?? user[1]);
+              const [stakeMeta,prices] = await Promise.all([meta(vault.stakeToken),
+                (vault.isLpStake ? calculator.getBatchLpValue([vault.stakeToken]) : calculator.getBatchPrice([vault.stakeToken])).catch(()=>[])]);
+              return {kind:'vault',id,name:`${vaultPairName(vault)} vault #${id}`,stakeToken:vault.stakeToken,rewardToken:vault.rewardToken,
+                allocations:await allocations(vault.stakeToken,vault.isLpStake),
+                symbol:stakeMeta.symbol,decimals:stakeMeta.decimals,amount:Number(ethers.formatUnits(assets,stakeMeta.decimals)),value:priced(assets,prices[0],stakeMeta.decimals),
+                shares:Number(ethers.formatUnits(shares,18)),ppfs:Number(ethers.formatUnits(user.ppfs ?? user[2],18)),
+                endTime:Number(raw.endTime ?? raw[12]),pending:0,pendingUsd:0};
+            } catch(error) { failures.push(`Vault #${id} unavailable.`);return null; }
+          });
+          return results.filter(Boolean);
+        } catch(error) { failures.push('Vault positions unavailable.');return []; }
+      })();
+      const nft = new ethers.Contract(NEXION_NFT_FARM_CONTRACT,NEXION_NFT_FARM_ABI,provider);
+      const nfts = mapLimit([0,1],2,async id => {
+        try {
+          const [ids,pending] = await Promise.all([nft.getUserStakedTokens(id,wallet),nft.pendingRewards(id,wallet)]);
+          if (!ids.length && !pending.amounts.some(amount=>amount>0n)) return null;
+          const rewards = await Promise.all(pending.tokens.map(async (address,index)=> {
+            const [tokenMeta,price] = await Promise.all([meta(address),calculator.getBatchPrice([address]).catch(()=>[])]);
+            return {address,symbol:tokenMeta.symbol,amount:Number(ethers.formatUnits(pending.amounts[index],tokenMeta.decimals)),value:priced(pending.amounts[index],price[0],tokenMeta.decimals)};
+          }));
+          return {kind:'nft',id,name:id===0?'CashMoney NFT farm':'CashX ecosystem NFT farm',amount:ids.length,symbol:'NFTs',value:null,rewards};
+        } catch(error) { failures.push(`NFT farm #${id} unavailable.`);return null; }
+      }).then(results => results.filter(Boolean));
+      const groups = await Promise.all([farms,vaults,nfts]);
+      return {positions:groups.flat(),failures,
+        contracts:{farm:FARM_CONTRACT,vault:NEXION_FLUX_VAULT_MANAGER,nft:NEXION_NFT_FARM_CONTRACT},
+        farmTokens:FARMS.map(f=>({address:f.lp,name:f.name,single:Boolean(f.single)}))};
+    } finally { provider.destroy(); }
+  }
+  return { readPortfolioPositions, init, showVaultGrowth, setVaultBrowseFilter, clearVaultBrowseFilters, toggleVaultFavorite, setBrowseFilter, clearBrowseFilters, toggleFarmFavorite, connectWallet, refreshAll, disconnectWallet, copyAddr, copyLp, setFarmView, setStakedFilter, setProductView, setVaultMode, fillVaultMax, toggleVaultLpBreakdown, fetchVaults, approveVault, depositVault, withdrawVault, withdrawAllVault, goToFarm, fillInput, updateApproveLabel, approveFarm, stakeFarm, unstakeFarm, claimFarm, claimAllPendingFarms, toggleTableRow, toggleLpBreakdown, openNftFarmModal, openNftFarmMaxSelection, closeNftFarmModal, toggleNftSelection, selectAllNfts, submitNftSelection, approveNftFarm, claimNftRewards, tryNextNftImage, openEcoNftModal, openEcoNftMaxSelection, closeEcoNftModal, toggleEcoNftSelection, selectAllEcoNfts, submitEcoNftSelection, approveEcoNftFarm, claimEcoNftRewards };
 })();
 function farmsConnectWallet(){ return window.FarmsApp.connectWallet(); }
 function farmsRefreshAll(){ return window.FarmsApp.refreshAll(); }
@@ -14352,22 +14502,25 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
           <strong>Queued</strong> = tokens sitting in the contract's tax buffer waiting for the next trade to trigger a swap. This is a global amount, not yours to claim directly. Applies to Burn, Treasury, Yield, and Support taxes.
         </div>`;
     }
-    function bestPair(res) {
-      const pairs = Array.isArray(res?.pairs) ? res.pairs : [];
+    function bestPair(res, address) {
+      const target = String(address).toLowerCase();
+      const pairs = (Array.isArray(res?.pairs) ? res.pairs : []).filter(pair =>
+        pair.chainId === 'pulsechain' && String(pair.baseToken?.address).toLowerCase() === target &&
+        Number.isFinite(Number(pair.priceUsd)) && Number(pair.priceUsd) > 0);
       return pairs.sort((a, b) => Number(b?.liquidity?.usd || 0) - Number(a?.liquidity?.usd || 0))[0] || null;
     }
-    async function dexPairs(address) {
+    async function dexPairs(address, fresh = false) {
       const key = String(address).toLowerCase();
-      if (dexCache[key]) return dexCache[key];
+      if (!fresh && dexCache[key]) return dexCache[key];
       const res = await fetch(DEX_API + address).then(r => r.ok ? r.json() : null).catch(() => null);
       const pairs = Array.isArray(res?.pairs) ? res.pairs : [];
       dexCache[key] = pairs;
       return pairs;
     }
-    async function tokenPrice(address) {
+    async function tokenPrice(address, fresh = false) {
       const key = String(address).toLowerCase();
-      if (prices[key]) return prices[key];
-      const price = Number(bestPair({ pairs: await dexPairs(address) })?.priceUsd || 0);
+      if (!fresh && prices[key]) return prices[key];
+      const price = Number(bestPair({ pairs: await dexPairs(address, fresh) }, address)?.priceUsd || 0);
       if (price) prices[key] = price;
       return price;
     }
@@ -14396,12 +14549,12 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
       if (price) plsPrices[key] = price;
       return price;
     }
-    async function yieldMeta(provider, yieldToken, raw) {
+    async function yieldMeta(provider, yieldToken, raw, priceReader = tokenPrice) {
       const contract = new ethers.Contract(yieldToken, ERC20_ABI, provider);
       const [decimals, symbol, price, plsPriceNative] = await Promise.all([
         contract.decimals().catch(() => 18),
         contract.symbol().catch(() => 'TOKEN'),
-        tokenPrice(yieldToken).catch(() => 0),
+        priceReader(yieldToken).catch(() => 0),
         tokenPlsPrice(yieldToken).catch(() => 0)
       ]);
       const value = amount(raw, Number(decimals || 18));
@@ -14477,6 +14630,7 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
     }
     let reflectionScanId = 0;
     let reflectionScanWallet = '';
+    let reflectionScanStartedAt = 0;
     async function readToken(provider, token, wallet, scanId) {
       const liveCard = el(`reflection-card-${token.key}`);
       const stagedCard = liveCard.cloneNode(true);
@@ -14571,6 +14725,7 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
         return;
       }
       const scanId = ++reflectionScanId;
+      reflectionScanStartedAt = Date.now();
       if (reflectionScanWallet !== wallet.toLowerCase()) renderShell();
       reflectionScanWallet = wallet.toLowerCase();
       if (input) input.value = wallet;
@@ -14645,14 +14800,47 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
       const input = el('reflections-wallet-input');
       if (window.sharedWalletAddr) {
         if (input && !input.value) input.value = window.sharedWalletAddr;
-        scan(window.sharedWalletAddr);
+        if (reflectionScanWallet !== window.sharedWalletAddr.toLowerCase() || Date.now() - reflectionScanStartedAt >= 60000) scan(window.sharedWalletAddr);
       }
     }
-    return { init, scan, claimAll, claimYield, toggleCard };
+    async function readPortfolio(wallet) {
+      const provider = new ethers.JsonRpcProvider(RPC, PULSE_ID);
+      const calculator = new ethers.Contract('0xC3864afC169C6110cB8f0cCaC4fE1B935951A66F', ['function getBatchPrice(address[] tokens) view returns (uint256[])'], provider);
+      const priceCache = new Map();
+      const readPrice = address => {
+        const key = address.toLowerCase();
+        if (!priceCache.has(key)) priceCache.set(key, (async () => {
+          const prices = await calculator.getBatchPrice([address]).catch(() => []);
+          const price = prices[0] === undefined ? 0 : Number(ethers.formatUnits(prices[0], 18));
+          return Number.isFinite(price) && price > 0 ? price : tokenPrice(address, true);
+        })());
+        return priceCache.get(key);
+      };
+      return Promise.all(TOKENS.map(async token => {
+        try {
+          const contract = new ethers.Contract(token.address, token.rewards ? REWARD_ABI : ERC20_ABI, provider);
+          const [raw, decimals, price] = await Promise.all([contract.balanceOf(wallet), contract.decimals(), readPrice(token.address)]);
+          const balance = amount(raw, Number(decimals));
+          let reflections = 0, yields = [], rewardsError = false;
+          if (token.rewards) {
+            try {
+              const [pending, yieldTokens] = await Promise.all([contract.pendingReflections(wallet), contract.getYieldTokens()]);
+              reflections = amount(pending, Number(decimals));
+              yields = await Promise.all(yieldTokens.map(async (entry, index) => {
+                const yieldAddress = entry.tokenAddress ?? entry[0];
+                return yieldMeta(provider, yieldAddress, await contract.pendingYields(wallet, index), readPrice);
+              }));
+            } catch (error) { rewardsError = true; }
+          }
+          return { ...token, balance, decimals: Number(decimals), price, reflections, yields, rewardsError };
+        } catch (error) { return { ...token, error: true }; }
+      })).finally(() => provider.destroy());
+    }
+    return { init, scan, claimAll, claimYield, toggleCard, readPortfolio, tokens: TOKENS };
   })();
 
   function showPage(page, options = {}) {
-    const targetPage = ['home', 'dashboard', 'farms', 'reflections'].includes(page) ? page : 'home';
+    const targetPage = ['home', 'dashboard', 'farms', 'reflections', 'portfolio'].includes(page) ? page : 'home';
     const isHome = targetPage === 'home';
     const isDashboard = targetPage === 'dashboard';
     const isFarms = targetPage === 'farms';
@@ -14667,6 +14855,8 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
     dashboardView.hidden = !isDashboard;
     farmsView.hidden = !isFarms;
     reflectionsView.hidden = !isReflections;
+    const portfolioView = document.getElementById('portfolio-view');
+    if (portfolioView) portfolioView.hidden = targetPage !== 'portfolio';
     document.body.classList.toggle('dashboard-active', isDashboard);
     document.body.classList.toggle('farms-active', isFarms);
     document.body.classList.toggle('reflections-active', isReflections);
@@ -14681,10 +14871,11 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
       if (window.location.hash !== targetHash) history.pushState(null, '', targetHash);
     }
 
-    window.scrollTo({ top: 0, behavior: options.instant ? 'auto' : 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'auto' });
     if (isDashboard && typeof refreshDashboard === 'function') refreshDashboard();
     if (isFarms && window.FarmsApp) window.FarmsApp.init();
     if (isReflections && window.ReflectionApp) window.ReflectionApp.init();
+    if (targetPage === 'portfolio') window.PortfolioApp?.init();
   }
 
   window.addEventListener('hashchange', () => {
@@ -14694,12 +14885,13 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
         ? 'farms'
         : window.location.hash === '#reflections'
           ? 'reflections'
-          : 'home';
+          : window.location.hash === '#portfolio' ? 'portfolio' : 'home';
     showPage(hashPage, { updateHash: false, instant: true });
   });
 
 
   function navigateTo(url) {
+    if (url === '#portfolio' || url === 'index.html#portfolio') { showPage('portfolio'); return; }
     if (url === '#dashboard' || url === 'index.html#dashboard') { showPage('dashboard'); return; }
     if (url === '#farms' || url === 'index.html#farms' || url === 'rewards.html') { showPage('farms'); return; }
     if (url === '#reflections' || url === 'index.html#reflections' || url === 'reflections.html') { showPage('reflections'); return; }
@@ -14800,7 +14992,7 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
       document.body.style.transform = 'none';
 
       Promise.resolve(window.restoreSharedWallet?.()).finally(() => {
-        showPage(window.location.hash === '#dashboard' ? 'dashboard' : window.location.hash === '#farms' ? 'farms' : window.location.hash === '#reflections' ? 'reflections' : 'home', { updateHash: false, instant: true });
+        showPage(window.location.hash.slice(1), { updateHash: false, instant: true });
         setTimeout(() => {
           if (typeof lsDone === 'function') lsDone();
           else {
@@ -14814,5 +15006,9 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
 
 </script>
 <div class="page-bg"></div>
+<link rel="stylesheet" href="./styles/portfolio.css?v=20261017-larger-numbers">
+<script src="./lib/portfolio-model.js?v=20261011-farm-start"></script>
+<script src="./lib/portfolio-history.js?v=20261011-fast-rewards"></script>
+<script src="./lib/portfolio.js?v=20261018-burns-before-reflections"></script>
 </body>
 </html>
