@@ -7,13 +7,12 @@
   <title>CashX Ecosystem — CashX, DistroX, DIVX &amp; GSX</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link rel="preconnect" href="https://api.fontshare.com"/>
+  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin/>
   <link rel="dns-prefetch" href="https://cdn.jsdelivr.net"/>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&family=Michroma&family=Bebas+Neue&family=Black+Han+Sans&family=Nunito:wght@900&family=Permanent+Marker&display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
-<link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&family=Michroma&family=Bebas+Neue&family=Black+Han+Sans&family=Nunito:wght@900&family=Permanent+Marker&display=optional" rel="stylesheet" media="print" onload="this.media='all'"/>
+<link href="./styles/fonts.css?v=20261024" rel="stylesheet"/>
 <noscript>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&family=Michroma&family=Bebas+Neue&family=Black+Han+Sans&family=Nunito:wght@900&family=Permanent+Marker&display=swap" rel="stylesheet"/>
-  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&family=Michroma&family=Bebas+Neue&family=Black+Han+Sans&family=Nunito:wght@900&family=Permanent+Marker&display=optional" rel="stylesheet"/>
 </noscript>
 <style>
 :root {
@@ -1447,6 +1446,12 @@
       padding:0 0 12px;
       border-bottom:1px solid var(--farm-theme-border);
     }
+    .dashboard-contract{display:flex;align-items:center;flex-wrap:wrap;gap:8px;color:var(--farm-theme-muted);font-size:12px;min-height:32px;margin-bottom:16px}
+    .dashboard-contract code{font-size:12px;overflow-wrap:anywhere;user-select:all;color:var(--farm-theme-text)}
+    .dashboard-contract-copy{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;padding:0;border:1px solid var(--farm-theme-border);border-radius:6px;background:transparent;color:var(--farm-theme-text);cursor:pointer}
+    .dashboard-contract-copy:hover{background:var(--farm-theme-panel)}
+    .dashboard-contract-copy:focus-visible{outline:2px solid var(--farm-theme-accent);outline-offset:2px}
+    .dashboard-contract-status{min-width:46px}
     .dashboard-token-btn{
       position:relative;
       min-height:42px;
@@ -4609,12 +4614,15 @@
 <script src="./lib/farm-share-popup.js?v=0a9bbc0e2d4c"></script>
 <link rel="stylesheet" href="./styles/farm-list-tools.css?v=438e4d782110">
 <script src="./lib/farm-list-tools.js?v=f8d05d09d3cf"></script>
-<script src="./lib/farm-snapshots.js?v=20261011"></script>
+<script src="./lib/farm-snapshots.js?v=20261027-migration"></script>
 <script src="./lib/burn-rankings.js?v=20261018-all-time"></script>
 <link rel="stylesheet" href="./styles/farm-changes.css?v=6aafa715bcd6">
 <script src="./lib/site-utilities.js?v=e957c18dd047"></script>
 <link rel="stylesheet" href="./styles/site-utilities.css?v=a969ddfb835d">
 <link rel="stylesheet" href="./styles/navigation.css?v=20261017-larger-nav">
+<link rel="stylesheet" href="./styles/portfolio.css?v=20261024-stable-layout-2">
+<link rel="stylesheet" href="./styles/layout-stability.css?v=20261024-2">
+<link rel="stylesheet" href="./styles/token-migration.css?v=20261027-2">
 </head>
 <body>
 <div id="ls" aria-hidden="true">
@@ -4636,7 +4644,7 @@
       
       </svg>
     </a>
-   <a href="https://dexscreener.com/pulsechain/0xda942580cee2a69c5fc74109090816157730c64d" target="_blank" class="nav-icon" aria-label="DexScreener">
+   <a href="https://dexscreener.com/pulsechain/0x8C59DC0d5C73Ee21748B526F93F512bd098d3ecb" target="_blank" class="nav-icon" aria-label="DexScreener">
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" fill-rule="evenodd" viewBox="0 0 252 300">
     <path d="M151.818 106.866c9.177-4.576 20.854-11.312 32.545-20.541 2.465 5.119 2.735 9.586 1.465 13.193-.9 2.542-2.596 4.753-4.826 6.512-2.415 1.901-5.431 3.285-8.765 4.033-6.326 1.425-13.712.593-20.419-3.197m1.591 46.886l12.148 7.017c-24.804 13.902-31.547 39.716-39.557 64.859-8.009-25.143-14.753-50.957-39.556-64.859l12.148-7.017a5.95 5.95 0 003.84-5.845c-1.113-23.547 5.245-33.96 13.821-40.498 3.076-2.342 6.434-3.518 9.747-3.518s6.671 1.176 9.748 3.518c8.576 6.538 14.934 16.951 13.821 40.498a5.95 5.95 0 003.84 5.845zM126 0c14.042.377 28.119 3.103 40.336 8.406 8.46 3.677 16.354 8.534 23.502 14.342 3.228 2.622 5.886 5.155 8.814 8.071 7.897.273 19.438-8.5 24.796-16.709-9.221 30.23-51.299 65.929-80.43 79.589-.012-.005-.02-.012-.029-.018-5.228-3.992-11.108-5.988-16.989-5.988s-11.76 1.996-16.988 5.988c-.009.005-.017.014-.029.018-29.132-13.66-71.209-49.359-80.43-79.589 5.357 8.209 16.898 16.982 24.795 16.709 2.929-2.915 5.587-5.449 8.814-8.071C69.31 16.94 77.204 12.083 85.664 8.406 97.882 3.103 111.959.377 126 0m-25.818 106.866c-9.176-4.576-20.854-11.312-32.544-20.541-2.465 5.119-2.735 9.586-1.466 13.193.901 2.542 2.597 4.753 4.826 6.512 2.416 1.901 5.432 3.285 8.766 4.033 6.326 1.425 13.711.593 20.418-3.197"></path>
     <path d="M197.167 75.016c6.436-6.495 12.107-13.684 16.667-20.099l2.316 4.359c7.456 14.917 11.33 29.774 11.33 46.494l-.016 26.532.14 13.754c.54 33.766 7.846 67.929 24.396 99.193l-34.627-27.922-24.501 39.759-25.74-24.231L126 299.604l-41.132-66.748-25.739 24.231-24.501-39.759L0 245.25c16.55-31.264 23.856-65.427 24.397-99.193l.14-13.754-.016-26.532c0-16.721 3.873-31.578 11.331-46.494l2.315-4.359c4.56 6.415 10.23 13.603 16.667 20.099l-2.01 4.175c-3.905 8.109-5.198 17.176-2.156 25.799 1.961 5.554 5.54 10.317 10.154 13.953 4.48 3.531 9.782 5.911 15.333 7.161 3.616.814 7.3 1.149 10.96 1.035-.854 4.841-1.227 9.862-1.251 14.978L53.2 160.984l25.206 14.129a41.926 41.926 0 015.734 3.869c20.781 18.658 33.275 73.855 41.861 100.816 8.587-26.961 21.08-82.158 41.862-100.816a41.865 41.865 0 015.734-3.869l25.206-14.129-32.665-18.866c-.024-5.116-.397-10.137-1.251-14.978 3.66.114 7.344-.221 10.96-1.035 5.551-1.25 10.854-3.63 15.333-7.161 4.613-3.636 8.193-8.399 10.153-13.953 3.043-8.623 1.749-17.689-2.155-25.799l-2.01-4.175z"></path>
@@ -4654,7 +4662,6 @@
     <div class="top-nav-group"><button class="nav-tab top-nav-item" data-page-tab="home" onclick="showPage('home')">Home</button></div>
     <div class="top-nav-group"><button class="nav-tab top-nav-item" data-page-tab="dashboard" onclick="showPage('dashboard')">Burns</button></div>
     <div class="top-nav-group"><button class="nav-tab top-nav-item" data-page-tab="farms" onclick="showPage('farms')">Farms</button></div>
-    <div class="top-nav-group"><button class="nav-tab top-nav-item" data-page-tab="reflections" onclick="showPage('reflections')">Reflections</button></div>
   </div>
 
   <div class="nav-right">
@@ -4857,8 +4864,8 @@
   <div class="footer-logo">CashX</div>
 <div class="footer-links">
     <a href="https://t.me/+Ruw3dQPRTv00NDRl" target="_blank">Telegram</a>
-    <a href="https://dexscreener.com/pulsechain/0xda942580cee2a69c5fc74109090816157730c64d" target="_blank">DexScreener</a>
-    <a href="https://scan.pulsechain.com/token/0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665" target="_blank">Explorer</a>
+    <a href="https://dexscreener.com/pulsechain/0x8C59DC0d5C73Ee21748B526F93F512bd098d3ecb" target="_blank">DexScreener</a>
+    <a href="https://scan.pulsechain.com/token/0x510c547318032275e41D1362A465783320d8152f" target="_blank">Explorer</a>
     <a href="https://www.youtube.com/watch?v=UefZfzeoU_M" target="_blank">Learn More</a>
     <a href="#" onclick="openIpfsModal();return false;" title="Open the decentralized (IPFS) version">Decentralized (IPFS)</a>
   </div>
@@ -4922,7 +4929,7 @@
       
       </svg>
     </a>
-   <a href="https://dexscreener.com/pulsechain/0xda942580cee2a69c5fc74109090816157730c64d" target="_blank" class="nav-icon" aria-label="DexScreener">
+   <a href="https://dexscreener.com/pulsechain/0x8C59DC0d5C73Ee21748B526F93F512bd098d3ecb" target="_blank" class="nav-icon" aria-label="DexScreener">
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" fill-rule="evenodd" viewBox="0 0 252 300">
     <path d="M151.818 106.866c9.177-4.576 20.854-11.312 32.545-20.541 2.465 5.119 2.735 9.586 1.465 13.193-.9 2.542-2.596 4.753-4.826 6.512-2.415 1.901-5.431 3.285-8.765 4.033-6.326 1.425-13.712.593-20.419-3.197m1.591 46.886l12.148 7.017c-24.804 13.902-31.547 39.716-39.557 64.859-8.009-25.143-14.753-50.957-39.556-64.859l12.148-7.017a5.95 5.95 0 003.84-5.845c-1.113-23.547 5.245-33.96 13.821-40.498 3.076-2.342 6.434-3.518 9.747-3.518s6.671 1.176 9.748 3.518c8.576 6.538 14.934 16.951 13.821 40.498a5.95 5.95 0 003.84 5.845zM126 0c14.042.377 28.119 3.103 40.336 8.406 8.46 3.677 16.354 8.534 23.502 14.342 3.228 2.622 5.886 5.155 8.814 8.071 7.897.273 19.438-8.5 24.796-16.709-9.221 30.23-51.299 65.929-80.43 79.589-.012-.005-.02-.012-.029-.018-5.228-3.992-11.108-5.988-16.989-5.988s-11.76 1.996-16.988 5.988c-.009.005-.017.014-.029.018-29.132-13.66-71.209-49.359-80.43-79.589 5.357 8.209 16.898 16.982 24.795 16.709 2.929-2.915 5.587-5.449 8.814-8.071C69.31 16.94 77.204 12.083 85.664 8.406 97.882 3.103 111.959.377 126 0m-25.818 106.866c-9.176-4.576-20.854-11.312-32.544-20.541-2.465 5.119-2.735 9.586-1.466 13.193.901 2.542 2.597 4.753 4.826 6.512 2.416 1.901 5.432 3.285 8.766 4.033 6.326 1.425 13.711.593 20.418-3.197"></path>
     <path d="M197.167 75.016c6.436-6.495 12.107-13.684 16.667-20.099l2.316 4.359c7.456 14.917 11.33 29.774 11.33 46.494l-.016 26.532.14 13.754c.54 33.766 7.846 67.929 24.396 99.193l-34.627-27.922-24.501 39.759-25.74-24.231L126 299.604l-41.132-66.748-25.739 24.231-24.501-39.759L0 245.25c16.55-31.264 23.856-65.427 24.397-99.193l.14-13.754-.016-26.532c0-16.721 3.873-31.578 11.331-46.494l2.315-4.359c4.56 6.415 10.23 13.603 16.667 20.099l-2.01 4.175c-3.905 8.109-5.198 17.176-2.156 25.799 1.961 5.554 5.54 10.317 10.154 13.953 4.48 3.531 9.782 5.911 15.333 7.161 3.616.814 7.3 1.149 10.96 1.035-.854 4.841-1.227 9.862-1.251 14.978L53.2 160.984l25.206 14.129a41.926 41.926 0 015.734 3.869c20.781 18.658 33.275 73.855 41.861 100.816 8.587-26.961 21.08-82.158 41.862-100.816a41.865 41.865 0 015.734-3.869l25.206-14.129-32.665-18.866c-.024-5.116-.397-10.137-1.251-14.978 3.66.114 7.344-.221 10.96-1.035 5.551-1.25 10.854-3.63 15.333-7.161 4.613-3.636 8.193-8.399 10.153-13.953 3.043-8.623 1.749-17.689-2.155-25.799l-2.01-4.175z"></path>
@@ -4940,7 +4947,6 @@
     <div class="top-nav-group"><button class="nav-tab top-nav-item" data-page-tab="home" onclick="showPage('home')">Home</button></div>
     <div class="top-nav-group"><button class="nav-tab top-nav-item" data-page-tab="dashboard" onclick="showPage('dashboard')">Burns</button></div>
     <div class="top-nav-group"><button class="nav-tab top-nav-item" data-page-tab="farms" onclick="showPage('farms')">Farms</button></div>
-    <div class="top-nav-group"><button class="nav-tab top-nav-item" data-page-tab="reflections" onclick="showPage('reflections')">Reflections</button></div>
   </div>
 
   <div class="nav-right">
@@ -4987,8 +4993,15 @@
     </button>
   </div>
 
-  <p class="dashboard-data-status" id="dashboard-data-status" role="status" hidden></p>
+  <div class="dashboard-contract" aria-label="Selected token contract">
+    <span id="dashboard-contract-symbol">CASHX</span>
+    <code id="dashboard-contract-address">0x510c547318032275e41D1362A465783320d8152f</code>
+    <button id="dashboard-contract-copy" class="dashboard-contract-copy" type="button" onclick="copyDashboardContract()" aria-label="Copy CASHX contract address" title="Copy contract address"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h3"/></svg></button>
+    <span id="dashboard-contract-status" class="dashboard-contract-status" role="status" aria-live="polite"></span>
+  </div>
+
   <section class="dashboard-burn-progress" aria-label="Token burn progress">
+    <p class="dashboard-data-status" id="dashboard-data-status" role="status" hidden></p>
     <p class="burn-milestone" id="burn-milestone">Loading milestone…</p>
     <div class="burn-progress-heading"><span id="burn-progress-label">CASHX burned</span><strong id="burn-progress-percent">Loading…</strong></div>
     <div class="burn-progress-track" id="burn-progress-track" role="progressbar" aria-labelledby="burn-progress-label" aria-valuemin="0" aria-valuemax="100" aria-valuetext="Loading burn data">
@@ -5066,7 +5079,7 @@
           <img class="rv-token-logo" id="dashboard-price-logo" src="cashx-logo.png" alt="">
           <div class="rv-token-title cashx" id="dashboard-price-title">CashX</div>
         </div>
-        <a id="dashboard-price-link" href="https://dexscreener.com/pulsechain/0xda942580cee2a69c5fc74109090816157730c64d" target="_blank" rel="noopener" style="text-decoration:none;cursor:pointer">
+        <a id="dashboard-price-link" href="https://dexscreener.com/pulsechain/0x8C59DC0d5C73Ee21748B526F93F512bd098d3ecb" target="_blank" rel="noopener" style="text-decoration:none;cursor:pointer">
           <div class="rv-tok-val rv-price-val rv-loading" id="c-price" style="transition:opacity 0.15s">—</div>
         </a>
         <div class="rv-price-change pct-neu rv-loading" id="c-ch">—</div>
@@ -5141,7 +5154,7 @@
 </div>
 <script src="./vendor/ethers.umd.min.js"></script>
 <script>
-  const CONTRACT  = '0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665';
+  const CONTRACT  = '0x510c547318032275e41D1362A465783320d8152f';
   const DEAD      = '0x000000000000000000000000000000000000dead';
   const ZERO      = '0x0000000000000000000000000000000000000000';
   const DASH_SCAN_API = 'https://api.scan.pulsechain.com/api/v2';
@@ -5159,7 +5172,7 @@
       symbol: 'CASHX',
       logo: 'cashx-logo.png',
       token: CONTRACT,
-      pair: '0xda942580cee2a69c5fc74109090816157730c64d',
+      pair: '0x8C59DC0d5C73Ee21748B526F93F512bd098d3ecb',
       initialSupply: 3_700_000_000,
       treasury: '0xEda3aa737947337b425227dB8174519f623C041F',
       treasuryAddresses: ['0xEda3aa737947337b425227dB8174519f623C041F', '0x86F4a6b17e91305F697bEf2723EaA24A69E8A70D']
@@ -5169,8 +5182,8 @@
       name: 'DistroX',
       symbol: 'DISTROX',
       logo: 'distrox.jpg',
-      token: '0xA1198e47Ac3D89903D7eCFd04a14b8Bfd72d7B03',
-      pair: '0xd9fC692d863be25Fe9d3c80584a4aB31A178f955',
+      token: '0xec03E43e21B337F60F6a63944bC7b61B531c035F',
+      pair: '0xaCd00251161A67Ea58A8c2526C0d08A026852fB8',
       initialSupply: 120_000_000_000,
       treasury: '0x47B958E4D898f8694A8BD2FB6Dc0083E1e7Affe9',
       treasuryAddresses: [
@@ -5183,8 +5196,8 @@
       name: 'DIVX',
       symbol: 'DIVX',
       logo: 'divx.png',
-      token: '0x6df9CD07BF067b42A700dc679bD9325Ff61Da8f3',
-      pair: '0x3fC50eb7dBA7d3Ca3cfFb30073f8a9Cc376E5d66',
+      token: '0xB528AFfc72Dfc7Da5d3184C4e233Fc9fc156c4E0',
+      pair: '0x1dA62612E22152895d5A0205A04F84Dc8Ad87EBa',
       initialSupply: 1_000_000_000,
       treasury: '0x24F3aBD69D9B3b5f8e99e53c3531113Dba82486c',
       treasuryAddresses: [
@@ -5197,11 +5210,10 @@
       name: 'GSX',
       symbol: 'GSX',
       logo: 'gsx.png',
-      token: '0x395127a44ac1cdc609c8cc9d048e096e8e8fc30e',
-      pair: '0x3c2FCC4a47470d81433C659FAb6706f7Aa37b51A',
-      // Creation mint: 4,000,000,000 GSX (18 decimals), log 2115 in
-      // 0xddb6576fd8464533b4e288481b185422f934e2a2e4871064857a3f2d625a532e.
-      initialSupply: 4_000_000_000,
+      token: '0xFA490c52FD934c7b8629E30Ea4c14683ee000b5d',
+      pair: '0x763a22af0f5FF89D36399f79eC71B3A924a6a2bE',
+      // Original supply is retained as the pre-migration burn baseline.
+            initialSupply: 4_000_000_000,
       // Receiver of the buy/sell treasury taxes, confirmed via getTaxes().
       treasury: '0xfF6669025c039147f1edDc650d8B009d048e297f',
       treasuryAddresses: ['0xfF6669025c039147f1edDc650d8B009d048e297f']
@@ -5218,8 +5230,8 @@
   function getServicesReady() {
     if (!servicesReady) {
       servicesReady = Promise.all([
-        import('./lib/config.js'),
-        import('./lib/burnTracker.js?v=20261018-latest-burns'),
+        import('./lib/config.js?v=20261027-migration'),
+        import('./lib/burnTracker.js?v=20261027-migration'),
         import('./lib/burnSources.js'),
         import('./utils/formatToken.js'),
         import('./utils/formatAddress.js')
@@ -5261,8 +5273,8 @@
   let resolveBurnSource = null;
 
   // ── Burn counts cache (localStorage) ────────────────────────────────────────
-  const _BC_KEY = 'cashx_burn_counts_v2';
-  const _DASH_KEY = 'cashx_dashboard_fast_cache_v1';
+  const _BC_KEY = 'cashx_burn_counts_20261027';
+  const _DASH_KEY = 'cashx_dashboard_fast_cache_20261027';
   const _DASH_IDS = [
     'last-up','c-price','p-price','c-mcap','p-mcap','p-vol','p-liq','p-5m','p-1h','c-ch','c-ch2','p-ch',
     'c-treas','t-pls','p-tpls','c-treas-usd','t-pls-usd','c-burned','c-burned-pct','c-burned-usd','c-bpct','src-community',
@@ -5625,7 +5637,7 @@
   }
 
   let _burnActivityLoadPromise = null;
-  const _CHART_CACHE_KEY = 'cashx_chart_burns_v2';
+  const _CHART_CACHE_KEY = 'cashx_chart_burns_20261027';
   function mergeBurnChartItems(existing, incoming) {
     const events = new Map();
     for (const tx of [...(existing || []), ...(incoming || [])]) {
@@ -5803,6 +5815,14 @@
   function applyDashboardTokenFrame(key) {
     const cfg = DASHBOARD_TOKEN_CONFIG[key] || DASHBOARD_TOKEN_CONFIG.cashx;
     currentDashboardToken = cfg.key;
+    const contractAddress = document.getElementById('dashboard-contract-address');
+    if (contractAddress) contractAddress.textContent = cfg.token;
+    const contractSymbol = document.getElementById('dashboard-contract-symbol');
+    if (contractSymbol) contractSymbol.textContent = cfg.symbol;
+    const contractCopy = document.getElementById('dashboard-contract-copy');
+    if (contractCopy) contractCopy.setAttribute('aria-label', `Copy ${cfg.symbol} contract address`);
+    const contractStatus = document.getElementById('dashboard-contract-status');
+    if (contractStatus) contractStatus.textContent = '';
     dashboardChartEpoch++;
     _burnActivityLoadPromise = null;
     chartHistoryComplete = false;
@@ -5835,6 +5855,17 @@
     renderDashboardWalletCard();
     renderTop3Burns([], cachedPrice);
     restoreDashboardLatest(cfg);
+  }
+
+  async function copyDashboardContract() {
+    const cfg = activeDashboardConfig();
+    const status = document.getElementById('dashboard-contract-status');
+    try {
+      await navigator.clipboard.writeText(cfg.token);
+      if (status && currentDashboardToken === cfg.key) status.textContent = 'Copied';
+    } catch (_) {
+      if (status && currentDashboardToken === cfg.key) status.textContent = 'Select the address to copy';
+    }
   }
 
   function switchDashboardToken(key) {
@@ -6103,7 +6134,7 @@
     if(p<0.01)return'$'+p.toFixed(8)+' USD';
     return'$'+p.toFixed(4)+' USD';
   }
-  const DASHBOARD_DIVX_PAIR = '0x3fc50eb7dba7d3ca3cffb30073f8a9cc376e5d66';
+  const DASHBOARD_DIVX_PAIR = '0x1dA62612E22152895d5A0205A04F84Dc8Ad87EBa';
   async function readDashboardDivxPair() {
     const data = await fetch(`https://api.dexscreener.com/latest/dex/pairs/pulsechain/${DASHBOARD_DIVX_PAIR}`).then(r => r.ok ? r.json() : null);
     const pair = data?.pair || data?.pairs?.[0];
@@ -6661,9 +6692,9 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
   // ── WALLET CONNECT ──────────────────────────────────────────
   const PULSE_ID  = 369;
   const PULSE_HEX = '0x171';
-  const CASHX_ADDR   = '0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665';
-  const DISTROX_ADDR = '0xA1198e47Ac3D89903D7eCFd04a14b8Bfd72d7B03';
-  const DIVX_ADDR    = '0x6df9CD07BF067b42A700dc679bD9325Ff61Da8f3';
+  const CASHX_ADDR   = '0x510c547318032275e41D1362A465783320d8152f';
+  const DISTROX_ADDR = '0xec03E43e21B337F60F6a63944bC7b61B531c035F';
+  const DIVX_ADDR    = '0xB528AFfc72Dfc7Da5d3184C4e233Fc9fc156c4E0';
   const NEXION_PRICE_CALCULATOR = '0xC3864afC169C6110cB8f0cCaC4fE1B935951A66F';
   const ERC20_ABI = [
     'function balanceOf(address) view returns (uint256)',
@@ -7192,30 +7223,9 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
 
   async function fetchRewards() {
     if (!wProvider || !wAddr) return;
-    const loading = '<span class="wp-tok-muted">Loading…</span>';
-    document.getElementById('wp-distx-reflect').innerHTML = loading;
-    document.getElementById('wp-cashx-yield').innerHTML  = loading;
-    try {
-      const distxC = new ethers.Contract(DISTROX_ADDR, DISTX_REWARDS_ABI, wProvider);
-      const [reflections, yieldTokens, yieldAmt] = await Promise.all([
-        distxC.pendingReflections(wAddr),
-        distxC.getYieldTokens(),
-        distxC.pendingYields(wAddr, 0)
-      ]);
-      // Confirm yield token label from on-chain data
-      const yieldAddr = yieldTokens?.[0]?.toLowerCase();
-      const yieldLabel = yieldAddr === CASHX_ADDR.toLowerCase() ? 'CASHX Yield' : 'Yield Token';
-      const reflectVal = fmtBal(reflections, 18);
-      const yieldVal   = fmtBal(yieldAmt, 18);
-      document.getElementById('wp-yield-label').textContent  = yieldLabel;
-      document.getElementById('wp-distx-reflect').textContent = reflectVal;
-      document.getElementById('wp-cashx-yield').textContent   = yieldVal;
-    } catch(err) {
-      console.error('Rewards fetch error:', err);
-      const e = '<span class="wp-tok-muted">Error</span>';
-      document.getElementById('wp-distx-reflect').innerHTML = e;
-      document.getElementById('wp-cashx-yield').innerHTML  = e;
-    }
+    document.getElementById('wp-yield-label').textContent = 'CASHX Yield';
+    document.getElementById('wp-distx-reflect').textContent = 'Automatic';
+    document.getElementById('wp-cashx-yield').textContent = 'In wallet';
   }
 
   function copyWalletAddr() {
@@ -7330,7 +7340,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     <a href="https://x.com/TomkiwMich70997" target="_blank" class="nav-icon" aria-label="X">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="black"/></svg>
     </a>
-    <a href="https://dexscreener.com/pulsechain/0xda942580cee2a69c5fc74109090816157730c64d" target="_blank" class="nav-icon" aria-label="DexScreener">
+    <a href="https://dexscreener.com/pulsechain/0x8C59DC0d5C73Ee21748B526F93F512bd098d3ecb" target="_blank" class="nav-icon" aria-label="DexScreener">
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" fill-rule="evenodd" viewBox="0 0 252 300">
         <path d="M151.818 106.866c9.177-4.576 20.854-11.312 32.545-20.541 2.465 5.119 2.735 9.586 1.465 13.193-.9 2.542-2.596 4.753-4.826 6.512-2.415 1.901-5.431 3.285-8.765 4.033-6.326 1.425-13.712.593-20.419-3.197m1.591 46.886l12.148 7.017c-24.804 13.902-31.547 39.716-39.557 64.859-8.009-25.143-14.753-50.957-39.556-64.859l12.148-7.017a5.95 5.95 0 003.84-5.845c-1.113-23.547 5.245-33.96 13.821-40.498 3.076-2.342 6.434-3.518 9.747-3.518s6.671 1.176 9.748 3.518c8.576 6.538 14.934 16.951 13.821 40.498a5.95 5.95 0 003.84 5.845zM126 0c14.042.377 28.119 3.103 40.336 8.406 8.46 3.677 16.354 8.534 23.502 14.342 3.228 2.622 5.886 5.155 8.814 8.071 7.897.273 19.438-8.5 24.796-16.709-9.221 30.23-51.299 65.929-80.43 79.589-.012-.005-.02-.012-.029-.018-5.228-3.992-11.108-5.988-16.989-5.988s-11.76 1.996-16.988 5.988c-.009.005-.017.014-.029.018-29.132-13.66-71.209-49.359-80.43-79.589 5.357 8.209 16.898 16.982 24.795 16.709 2.929-2.915 5.587-5.449 8.814-8.071C69.31 16.94 77.204 12.083 85.664 8.406 97.882 3.103 111.959.377 126 0m-25.818 106.866c-9.176-4.576-20.854-11.312-32.544-20.541-2.465 5.119-2.735 9.586-1.466 13.193.901 2.542 2.597 4.753 4.826 6.512 2.416 1.901 5.432 3.285 8.766 4.033 6.326 1.425 13.711.593 20.418-3.197"></path>
         <path d="M197.167 75.016c6.436-6.495 12.107-13.684 16.667-20.099l2.316 4.359c7.456 14.917 11.33 29.774 11.33 46.494l-.016 26.532.14 13.754c.54 33.766 7.846 67.929 24.396 99.193l-34.627-27.922-24.501 39.759-25.74-24.231L126 299.604l-41.132-66.748-25.739 24.231-24.501-39.759L0 245.25c16.55-31.264 23.856-65.427 24.397-99.193l.14-13.754-.016-26.532c0-16.721 3.873-31.578 11.331-46.494l2.315-4.359c4.56 6.415 10.23 13.603 16.667 20.099l-2.01 4.175c-3.905 8.109-5.198 17.176-2.156 25.799 1.961 5.554 5.54 10.317 10.154 13.953 4.48 3.531 9.782 5.911 15.333 7.161 3.616.814 7.3 1.149 10.96 1.035-.854 4.841-1.227 9.862-1.251 14.978L53.2 160.984l25.206 14.129a41.926 41.926 0 015.734 3.869c20.781 18.658 33.275 73.855 41.861 100.816 8.587-26.961 21.08-82.158 41.862-100.816a41.865 41.865 0 015.734-3.869l25.206-14.129-32.665-18.866c-.024-5.116-.397-10.137-1.251-14.978 3.66.114 7.344-.221 10.96-1.035 5.551-1.25 10.854-3.63 15.333-7.161 4.613-3.636 8.193-8.399 10.153-13.953 3.043-8.623 1.749-17.689-2.155-25.799l-2.01-4.175z"></path>
@@ -7346,7 +7356,6 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     <div class="top-nav-group"><button class="nav-tab top-nav-item" data-page-tab="home" onclick="showPage('home')">Home</button></div>
     <div class="top-nav-group"><button class="nav-tab top-nav-item" data-page-tab="dashboard" onclick="showPage('dashboard')">Burns</button></div>
     <div class="top-nav-group"><button class="nav-tab top-nav-item" data-page-tab="farms" onclick="showPage('farms')">Farms</button></div>
-    <div class="top-nav-group"><button class="nav-tab top-nav-item" data-page-tab="reflections" onclick="showPage('reflections')">Reflections</button></div>
   </div>
   <div class="nav-right">
     <button class="farm-theme-btn nav-theme-btn" type="button" onclick="openFarmThemeModal()" aria-haspopup="dialog">
@@ -7367,7 +7376,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
         <span>Nexion Factory</span>
       </a>
       <div class="reflections-head">
-        <div class="reflections-sub">Scan supported Flux Factory tokens for a wallet. Shows balances, pending reflections, yield, and tax config.</div>
+        <div class="reflections-sub">The migrated DISTROX, DIVX and GSX contracts pay reflections and yield automatically into your wallet. BurnX claims remain available below.</div>
         <div class="reflections-scan">
           <input id="reflections-wallet-input" class="reflections-input" placeholder="Connect wallet or paste address">
           <button id="reflections-scan-btn" class="reflections-btn" type="button" onclick="ReflectionApp.scan()">Scan Wallet</button>
@@ -7448,7 +7457,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
       
       </svg>
     </a>
-   <a href="https://dexscreener.com/pulsechain/0xda942580cee2a69c5fc74109090816157730c64d" target="_blank" class="nav-icon" aria-label="DexScreener">
+   <a href="https://dexscreener.com/pulsechain/0x8C59DC0d5C73Ee21748B526F93F512bd098d3ecb" target="_blank" class="nav-icon" aria-label="DexScreener">
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" fill-rule="evenodd" viewBox="0 0 252 300">
     <path d="M151.818 106.866c9.177-4.576 20.854-11.312 32.545-20.541 2.465 5.119 2.735 9.586 1.465 13.193-.9 2.542-2.596 4.753-4.826 6.512-2.415 1.901-5.431 3.285-8.765 4.033-6.326 1.425-13.712.593-20.419-3.197m1.591 46.886l12.148 7.017c-24.804 13.902-31.547 39.716-39.557 64.859-8.009-25.143-14.753-50.957-39.556-64.859l12.148-7.017a5.95 5.95 0 003.84-5.845c-1.113-23.547 5.245-33.96 13.821-40.498 3.076-2.342 6.434-3.518 9.747-3.518s6.671 1.176 9.748 3.518c8.576 6.538 14.934 16.951 13.821 40.498a5.95 5.95 0 003.84 5.845zM126 0c14.042.377 28.119 3.103 40.336 8.406 8.46 3.677 16.354 8.534 23.502 14.342 3.228 2.622 5.886 5.155 8.814 8.071 7.897.273 19.438-8.5 24.796-16.709-9.221 30.23-51.299 65.929-80.43 79.589-.012-.005-.02-.012-.029-.018-5.228-3.992-11.108-5.988-16.989-5.988s-11.76 1.996-16.988 5.988c-.009.005-.017.014-.029.018-29.132-13.66-71.209-49.359-80.43-79.589 5.357 8.209 16.898 16.982 24.795 16.709 2.929-2.915 5.587-5.449 8.814-8.071C69.31 16.94 77.204 12.083 85.664 8.406 97.882 3.103 111.959.377 126 0m-25.818 106.866c-9.176-4.576-20.854-11.312-32.544-20.541-2.465 5.119-2.735 9.586-1.466 13.193.901 2.542 2.597 4.753 4.826 6.512 2.416 1.901 5.432 3.285 8.766 4.033 6.326 1.425 13.711.593 20.418-3.197"></path>
     <path d="M197.167 75.016c6.436-6.495 12.107-13.684 16.667-20.099l2.316 4.359c7.456 14.917 11.33 29.774 11.33 46.494l-.016 26.532.14 13.754c.54 33.766 7.846 67.929 24.396 99.193l-34.627-27.922-24.501 39.759-25.74-24.231L126 299.604l-41.132-66.748-25.739 24.231-24.501-39.759L0 245.25c16.55-31.264 23.856-65.427 24.397-99.193l.14-13.754-.016-26.532c0-16.721 3.873-31.578 11.331-46.494l2.315-4.359c4.56 6.415 10.23 13.603 16.667 20.099l-2.01 4.175c-3.905 8.109-5.198 17.176-2.156 25.799 1.961 5.554 5.54 10.317 10.154 13.953 4.48 3.531 9.782 5.911 15.333 7.161 3.616.814 7.3 1.149 10.96 1.035-.854 4.841-1.227 9.862-1.251 14.978L53.2 160.984l25.206 14.129a41.926 41.926 0 015.734 3.869c20.781 18.658 33.275 73.855 41.861 100.816 8.587-26.961 21.08-82.158 41.862-100.816a41.865 41.865 0 015.734-3.869l25.206-14.129-32.665-18.866c-.024-5.116-.397-10.137-1.251-14.978 3.66.114 7.344-.221 10.96-1.035 5.551-1.25 10.854-3.63 15.333-7.161 4.613-3.636 8.193-8.399 10.153-13.953 3.043-8.623 1.749-17.689-2.155-25.799l-2.01-4.175z"></path>
@@ -7466,7 +7475,6 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
     <div class="top-nav-group"><button class="nav-tab top-nav-item" data-page-tab="home" onclick="showPage('home')">Home</button></div>
     <div class="top-nav-group"><button class="nav-tab top-nav-item" data-page-tab="dashboard" onclick="showPage('dashboard')">Burns</button></div>
     <div class="top-nav-group"><button class="nav-tab top-nav-item" data-page-tab="farms" onclick="showPage('farms')">Farms</button></div>
-    <div class="top-nav-group"><button class="nav-tab top-nav-item" data-page-tab="reflections" onclick="showPage('reflections')">Reflections</button></div>
   </div>
 
   <div class="nav-right">
@@ -9041,9 +9049,9 @@ initFarmThemeDrag();
 window.FarmsApp = (() => {
 const PULSE_ID     = 369;
   const PULSE_HEX    = '0x171';
-  const CASHX_ADDR   = '0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665';
-  const DISTROX_ADDR = '0xA1198e47Ac3D89903D7eCFd04a14b8Bfd72d7B03';
-  const DIVX_ADDR    = '0x6df9CD07BF067b42A700dc679bD9325Ff61Da8f3';
+  const CASHX_ADDR   = '0x510c547318032275e41D1362A465783320d8152f';
+  const DISTROX_ADDR = '0xec03E43e21B337F60F6a63944bC7b61B531c035F';
+  const DIVX_ADDR    = '0xB528AFfc72Dfc7Da5d3184C4e233Fc9fc156c4E0';
   const ERC20_ABI = [
     'function balanceOf(address) view returns (uint256)',
     'function decimals() view returns (uint8)'
@@ -9063,9 +9071,9 @@ const PULSE_ID     = 369;
   const NEXION_WPLS_ADDRESS = '0xA1077a294DDE1B09BB078844DF40758a5D0f9a27';
   const CASHMONEY_NFT_COLLECTION = '0x1b9C3cebE3E6e6Db92d525CC5cF3bECa86397ee6';
   const NFT_VALUE_WPLS_ADDRESS = '0xA1077a294DDE1B09BB078844DF40758a5D0f9a27';
-  const NFT_VALUE_GSX_WPLS_PAIR = '0x3c2FCC4a47470d81433C659FAb6706f7Aa37b51A';
-  const NFT_VALUE_GSX_UPLS_PAIR = '0xb52ad4becf857ef9c3b11a47b81943d46d5054bd';
-  const NFT_VALUE_GSX_VOUCHPLS_PAIR = '0x01ad76d33012c4b21da4070c23ebfbd7ebb222e4';
+  const NFT_VALUE_GSX_WPLS_PAIR = '0x763a22af0f5FF89D36399f79eC71B3A924a6a2bE';
+  const NFT_VALUE_GSX_UPLS_PAIR = '0x1BfC5a3213B119D9Ccf88C3019824d928fEE2E8a';
+  const NFT_VALUE_GSX_VOUCHPLS_PAIR = '0xe7addf5572B571efC7c6108762f470cEE08790fC';
   const CASHMONEY_NFT_METADATA_CID = 'bafybeidd7ftycyesgsbmequfwkidbq662edinpa37sk5qsfbyebyiub54a';
   const CASHMONEY_NFT_IMAGE_CID = 'QmREkdPdykKcFb8xippuwLUyk8Tw1WN61bSqLS4ftugna5';
   const NEXION_NFT_POOL_ID = 0;
@@ -9106,7 +9114,7 @@ const PULSE_ID     = 369;
     ...CASHMONEY_NFT_ABI,
     'function nftPrice() view returns (uint256)'
   ];
-  const FARM_POOL_CACHE_KEY = 'cashx_farm_pool_ids_v1';
+  const FARM_POOL_CACHE_KEY = 'cashx_farm_pool_ids_20261027';
   const FARM_ABI = [
     'function poolInfo(uint256 pid) view returns (address lpToken, address rewardToken, uint256 totalRewards, uint256 lpSupply, uint256 startTime, uint256 endTime, uint256 lastRewardTime, uint256 accRewardPerShare, uint256 depositFeeBP, uint256 withdrawFeeBP, address creator, uint256 remainingRewards)',
     'function userInfo(uint256 pid, address user) view returns (uint256 amount, uint256 rewardDebt)',
@@ -9157,69 +9165,69 @@ const PULSE_ID     = 369;
   const FARMS = [
     // NFT cards are rendered separately, followed by the newest token farms.
     // Explicit pool IDs keep farms sharing an LP token and paying different rewards separate.
-    { label: '#293', name: 'CASHX / HBMC LP', lp: '0x128F7134F986dD4d62Af5De5d105f2AeA8f6a71a', rewardToken: 'GSX', pid: 108 },
-    { label: '#292', name: 'GSX / HBMC LP', lp: '0xcf371faf0CF9d4520126F09d927022cC01b78D2B', rewardToken: 'GSX', pid: 107 },
-    { label: '#291', name: 'HBRP / DIVX LP', lp: '0xc5769C2255748746b95ccac55f8DFBf50da4bEFB', rewardToken: 'GSX', pid: 106 },
-    { label: '#290', name: 'HBRP / DISTROX LP', lp: '0xd13Ba361C7C7204E2ebd969E357d39cE5d653852', rewardToken: 'GSX', pid: 105 },
+    { label: '#293', name: 'CASHX / HBMC LP', lp: '0xf35a0eBE30C6A5B9181b9b2844D2B0e0b1383D60', rewardToken: 'GSX', pid: 108 },
+    { label: '#292', name: 'GSX / HBMC LP', lp: '0xAC4a90c8D2Fc57C0E7631194BcBbd5C72e1A3c12', rewardToken: 'GSX', pid: 107 },
+    { label: '#291', name: 'HBRP / DIVX LP', lp: '0x3E11CecE6EE2084d80f593357c0fbe74b577622D', rewardToken: 'GSX', pid: 106 },
+    { label: '#290', name: 'HBRP / DISTROX LP', lp: '0x2Bb98f37F2691699ebbE031ED7E12c47F848E5B0', rewardToken: 'GSX', pid: 105 },
     { label: '#289', name: 'pHEX / BurnX LP', lp: '0x31533707DC4eBF5fC3e75b907b7BEb54A77C3684', rewardToken: 'CASHX', pid: 104 },
-    { label: '#287', name: 'CASHX / HBRP LP', lp: '0x542519d397fb3DA07146529Dcf25669a8B33f3bA', rewardToken: 'GSX', pid: 102 },
-    { label: '#286', name: 'GSX / HBRP LP', lp: '0xcA2FF23F14286601573Cb079e18846C0365CeB85', rewardToken: 'GSX', pid: 101 },
+    { label: '#287', name: 'CASHX / HBRP LP', lp: '0x00F6E6620894C2C74b29E4b26f25e1da43201ffc', rewardToken: 'GSX', pid: 102 },
+    { label: '#286', name: 'GSX / HBRP LP', lp: '0xD47311feAc812Ec7f36E748CdA523B96abD1AbF4', rewardToken: 'GSX', pid: 101 },
     { label: '#285', name: 'BurnX / HBR LP', lp: '0x69Fff64e06a85a4120e2Fb01ab851e67e9F1E8fa', rewardToken: 'BURNX', pid: 100 },
     { label: '#282', name: 'DISTROX', single: true, version: 'Single Stake', lp: DISTROX_ADDR, rewardToken: 'INC', rewardAddress: '0x2fa878Ab3F87CC1C9737Fc071108F904c0B0C95d', pid: 97 },
-    { label: '#257', name: 'GSX', single: true, version: 'Single Stake', lp: '0x395127a44ac1cdc609c8cc9d048e096e8e8fc30e', rewardToken: 'PLSX', pid: 72 },
-    { label: '#240', name: 'DIVX', single: true, version: 'Single Stake', lp: '0x6df9CD07BF067b42A700dc679bD9325Ff61Da8f3', rewardToken: 'PHEX' },
-    { label: '#277', name: 'GSX / LGSX LP', lp: '0x63aEDb300849581029d6d5A7B63Ac3C809c362BB', rewardToken: 'GSX', pid: 92 },
+    { label: '#257', name: 'GSX', single: true, version: 'Single Stake', lp: '0xFA490c52FD934c7b8629E30Ea4c14683ee000b5d', rewardToken: 'PLSX', pid: 72 },
+    { label: '#240', name: 'DIVX', single: true, version: 'Single Stake', lp: '0xB528AFfc72Dfc7Da5d3184C4e233Fc9fc156c4E0', rewardToken: 'PHEX', pid: 55 },
+    { label: '#277', name: 'GSX / LGSX LP', lp: '0x01AaddD156392fE811FdAE236f2d4341b6a7f129', rewardToken: 'GSX', pid: 92 },
     { label: '#276', name: 'WPLS / LGSX LP', lp: '0xbF5B80f368d8563A7ae3d8c2c481770F4d236e3a', rewardToken: 'GSX', pid: 91 },
-    { label: '#275', name: 'DIVX / LDIVX LP', lp: '0x68AaaBABF33EFcC16b2f18251e2dB7e50A103272', rewardToken: 'DIVX', pid: 90 },
+    { label: '#275', name: 'DIVX / LDIVX LP', lp: '0x4333B9fD8e4C33BB373F94e95b6Bbf9e84273fA0', rewardToken: 'DIVX', pid: 90 },
     { label: '#274', name: 'LDIVX / WPLS LP', lp: '0x33692D8679b3F9c2bd5Ac28d7D3A25F677eCB68A', rewardToken: 'DIVX', pid: 89 },
-    { label: '#273', name: 'DISTROX / LDISTROX LP', lp: '0x35b7F3c964a47Ff273ffa916756c95bD9662556E', rewardToken: 'DISTROX', pid: 88 },
+    { label: '#273', name: 'DISTROX / LDISTROX LP', lp: '0xeEf1dBd3Bd19859CbfB9e330A5B3FC1Fd0df2294', rewardToken: 'DISTROX', pid: 88 },
     { label: '#272', name: 'WPLS / LDISTROX LP', lp: '0x6955f02Bd012f6cFF0e5030ac5D123785C6b66FC', rewardToken: 'DISTROX', pid: 87 },
-    { label: '#271', name: 'CASHX / LCASHX LP', lp: '0xe9fF1b8bd6f54b37BA0C104539C88592805Be15F', rewardToken: 'GSX', pid: 86 },
+    { label: '#271', name: 'CASHX / LCASHX LP', lp: '0x4c2336077207f06c890a7eb92346D59e40abFc09', rewardToken: 'GSX', pid: 86 },
     { label: '#270', name: 'LCASHX / WPLS LP', lp: '0x207c74d16D659C9627142bf5178aaB6DFb813657', rewardToken: 'GSX', pid: 85 },
-    { label: '#265', name: 'pHEX / BurnX LP', lp: '0x31533707dc4ebf5fc3e75b907b7beb54a77c3684', rewardToken: 'BURNX', pid: 80 },
-    { label: '#262', name: 'DISTROX / PRVX LP', lp: '0x6c7de1cde40c9ccc44647a2e857273af8e9c9b15', rewardToken: 'DISTROX', pid: 77 },
-    { label: '#261', name: 'GSX / WPLS LP', lp: '0x3c2fcc4a47470d81433c659fab6706f7aa37b51a', rewardToken: 'DIVX', pid: 76 },
-    { label: '#260', name: 'DIVX / PRVX LP', lp: '0xf805312ec0830e94339cfd6105459e5211683576', rewardToken: 'DIVX', pid: 75 },
-    { label: '#259', name: 'CASHX / PRVX LP', lp: '0x0aeaa8976f723cdaa3d91c9193a82e9335b064ca', rewardToken: 'GSX', pid: 74 },
-    { label: '#258', name: 'GSX / PRVX LP', lp: '0xcf92488ff807d58bc468251d8aebdfd3a743b247', rewardToken: 'GSX', pid: 73 },
-    { label: '#256', name: 'GSX / BurnX LP', lp: '0xe1bad3573af7ee4a3d2376b56592276edf87176a', rewardToken: 'GSX', pid: 71 },
-    { label: '#255', name: 'GSX / DIVX LP', lp: '0xebf402555f75bd5ffd323fe962c97d6e61405866', rewardToken: 'GSX', pid: 70 },
-    { label: '#254', name: 'GSX / DISTROX LP', lp: '0x09b44ff5684f7cc2e99b2a2f62eb3e91d46fbf56', rewardToken: 'GSX', pid: 69 },
-    { label: '#253', name: 'GSX / CASHX LP', lp: '0x0043a420c5fa915526cc55c863bfc28d5e8cea31', rewardToken: 'GSX', pid: 68 },
-    { label: '#252', name: 'DIVX / WPLS LP', lp: '0x3fC50eb7dBA7d3Ca3cfFb30073f8a9Cc376E5d66', rewardToken: 'GSX', pid: 67 },
-    { label: '#251', name: 'WPLS / DISTROX LP', lp: '0xd9fC692d863be25Fe9d3c80584a4aB31A178f955', rewardToken: 'GSX', pid: 66 },
-    { label: '#250', name: 'CASHX / WPLS LP', lp: '0xdA942580ceE2a69C5Fc74109090816157730C64D', rewardToken: 'GSX', pid: 65 },
-    { label: '#244', name: 'GSX / PLSX LP', lp: '0x5303a4fc8a452520430695116581Ceba0EB15017', rewardToken: 'GSX', pid: 59 },
-    { label: '#243', name: 'GSX / WPLS LP', lp: '0x3c2FCC4a47470d81433C659FAb6706f7Aa37b51A', rewardToken: 'GSX', pid: 58 },
-    { label: '#249', name: 'GSX / vouchPLS LP', lp: '0x01ad76d33012c4b21da4070c23ebfbd7ebb222e4', rewardToken: 'GSX', pid: 64 },
-    { label: '#248', name: 'GSX / uPLS LP', lp: '0xb52ad4becf857ef9c3b11a47b81943d46d5054bd', rewardToken: 'GSX', pid: 63 },
-    { label: '#245', name: 'INC / GSX LP', lp: '0xD5ed279b18622faa251f080b0Ee9D4C3e09d3382', rewardToken: 'GSX', pid: 60 },
-    { label: '#247', name: 'GSX / eHEX LP', lp: '0x531338ebe1E96616c571dc2ea301871b701C3d8E', rewardToken: 'GSX', pid: 62 },
-    { label: '#246', name: 'pHEX / GSX LP', lp: '0x8FFadAb0a43f011bf54CD1DA50d5E99bAFD71C6d', rewardToken: 'GSX', pid: 61 },
-    { label: '#239', name: 'vouchPLS / DISTROX LP', lp: '0x9B30acB096aAa3Aa4377683fa5815A03d76f78D5', rewardToken: 'DIVX' },
-    { label: '#238', name: 'eHEX / DISTROX LP', lp: '0xab120BBA30e6f8C3Ff05a3c644a9547896cAA8fc', rewardToken: 'DIVX' },
-    { label: '#237', name: 'CASHX / eHEX LP', lp: '0x234A656b5FB43631C74ba38CCaf4Ce03A6013aff', rewardToken: 'DIVX' },
-    { label: '#236', name: 'CASHX / WPLS LP', lp: '0xdA942580ceE2a69C5Fc74109090816157730C64D', rewardToken: 'DIVX', pid: 51 },
-    { label: '#235', name: 'DIVX / vouchPLS LP', lp: '0xCEe8b7B4032597B1f6fEb2a7c947196C97F67D12', rewardToken: 'DIVX' },
-    { label: '#234', name: 'eHEX / DIVX LP', lp: '0x8122240039536bd9041De9aC4D88da5041de5Faf', rewardToken: 'DIVX' },
-    { label: '#233', name: 'CASHX / DIVX LP', lp: '0xf5890A42713527d83E56f7166D81A97390dB4EA4', rewardToken: 'DIVX' },
-    { label: '#232', name: 'pHEX / DIVX LP', lp: '0xda01f29f6a507441f8aafce3761e64edecd9778f', rewardToken: 'DIVX' },
-    { label: '#231', name: 'DIVX / DISTROX LP', lp: '0x0Eb5adE6d05F61f318d41593015Bd829Ae021F22', rewardToken: 'DIVX' },
-    { label: '#230', name: 'INC / DIVX LP', lp: '0x9bbe0a8Ba453CF0863604eD12267BB457E3E2815', rewardToken: 'DIVX' },
-    { label: '#229', name: 'DIVX / PLSX LP', lp: '0x6Bd4aaDF0316677a3DB34711440096E5Eb65ea03', rewardToken: 'DIVX' },
-    { label: '#228', name: 'DIVX / WPLS LP', lp: '0x3fC50eb7dBA7d3Ca3cfFb30073f8a9Cc376E5d66', rewardToken: 'DIVX', pid: 43 },
-    { label: '#205', name: 'CASHX / PLSX LP',     lp: '0x5D3fabDa11B0609ED8edB1C4522C520Dd67F07D9', rewardToken: 'DISTROX' },
-    { label: '#204', name: 'pHEX / CASHX LP',     lp: '0x9A9b57A2CAe4b8Fc94560070cB8785781851c52E', rewardToken: 'DISTROX' },
-    { label: '#203', name: 'INC / CASHX LP',      lp: '0x457FafaFD06EDA4c465A9eD8b8ba62103CDEe678', rewardToken: 'DISTROX' },
-    { label: '#202', name: 'CASHX / uPLS LP',     lp: '0x0f6d26b62272Efb8D8C85B0A7fbcda225130C0F5', rewardToken: 'DISTROX' },
-    { label: '#201', name: 'CASHX / vouchPLS LP', lp: '0x6713a3C0fa90b5C9fa7dbaFfc5DCA6E1D010352D', rewardToken: 'DISTROX' },
-    { label: '#200', name: 'CASHX / DISTROX LP',  lp: '0xBB3538d01F2aE0256323C34E34f60C7D74902127', rewardToken: 'DISTROX' },
-    { label: '#199', name: 'PLSX / DISTROX LP',   lp: '0xf2ea08A371b7D93227BF032d973B44007D70122E', rewardToken: 'DISTROX' },
-    { label: '#198', name: 'pHEX / DISTROX LP',   lp: '0xbC0F07696f5759b996472FBAd445E35f852f9596', rewardToken: 'DISTROX' },
-    { label: '#197', name: 'INC / DISTROX LP',    lp: '0xc08fe8c728c79f46CA1f1B9218Bf2bBC7371f1e1', rewardToken: 'DISTROX' },
-    { label: '#196', name: 'uPLS / DISTROX LP',   lp: '0xD4299366C2E4C6bCaC6AdfA1ae07016717514599', rewardToken: 'DISTROX' },
-    { label: '#195', name: 'WPLS / DISTROX LP',   lp: '0xd9fC692d863be25Fe9d3c80584a4aB31A178f955', rewardToken: 'DISTROX', pid: 10 },
-    { label: '#241', name: 'BurnX / WPLS LP', lp: '0x30a3ab6093a942deeCE0eEE52BdE4E0fa1FB3879', rewardToken: 'BURNX' },
+    { label: '#265', name: 'pHEX / BurnX LP', lp: '0x31533707DC4eBF5fC3e75b907b7BEb54A77C3684', rewardToken: 'BURNX', pid: 80 },
+    { label: '#262', name: 'DISTROX / PRVX LP', lp: '0x9d661db9be1653Af9d4af2892fCa6f5dDf14720C', rewardToken: 'DISTROX', pid: 77 },
+    { label: '#261', name: 'GSX / WPLS LP', lp: '0x763a22af0f5FF89D36399f79eC71B3A924a6a2bE', rewardToken: 'DIVX', pid: 76 },
+    { label: '#260', name: 'DIVX / PRVX LP', lp: '0x410E59A4d13562596414775211699b7F3ad5FfBc', rewardToken: 'DIVX', pid: 75 },
+    { label: '#259', name: 'CASHX / PRVX LP', lp: '0xa969E089063EA3Df520496b343feb97804663c2F', rewardToken: 'GSX', pid: 74 },
+    { label: '#258', name: 'GSX / PRVX LP', lp: '0x92EB6C51706AE2A8137f256fE51F8d36100f5bca', rewardToken: 'GSX', pid: 73 },
+    { label: '#256', name: 'GSX / BurnX LP', lp: '0x16E47f82FBf96722E4B7312eB68199f6dd3f78bC', rewardToken: 'GSX', pid: 71 },
+    { label: '#255', name: 'GSX / DIVX LP', lp: '0x8A362528205CAf39A5cD08eeb7DB507DfD7A11c0', rewardToken: 'GSX', pid: 70 },
+    { label: '#254', name: 'GSX / DISTROX LP', lp: '0xB0AA9b1bA7d9780bb1D12d763E7E00554224D506', rewardToken: 'GSX', pid: 69 },
+    { label: '#253', name: 'GSX / CASHX LP', lp: '0x82027438dbEEBE3e45a9972F3AAC1DcE94fCe75A', rewardToken: 'GSX', pid: 68 },
+    { label: '#252', name: 'DIVX / WPLS LP', lp: '0x1dA62612E22152895d5A0205A04F84Dc8Ad87EBa', rewardToken: 'GSX', pid: 67 },
+    { label: '#251', name: 'WPLS / DISTROX LP', lp: '0xaCd00251161A67Ea58A8c2526C0d08A026852fB8', rewardToken: 'GSX', pid: 66 },
+    { label: '#250', name: 'CASHX / WPLS LP', lp: '0x8C59DC0d5C73Ee21748B526F93F512bd098d3ecb', rewardToken: 'GSX', pid: 65 },
+    { label: '#244', name: 'GSX / PLSX LP', lp: '0xFD44321467262Be1f3b262F936cB58e833bAa433', rewardToken: 'GSX', pid: 59 },
+    { label: '#243', name: 'GSX / WPLS LP', lp: '0x763a22af0f5FF89D36399f79eC71B3A924a6a2bE', rewardToken: 'GSX', pid: 58 },
+    { label: '#249', name: 'GSX / vouchPLS LP', lp: '0xe7addf5572B571efC7c6108762f470cEE08790fC', rewardToken: 'GSX', pid: 64 },
+    { label: '#248', name: 'GSX / uPLS LP', lp: '0x1BfC5a3213B119D9Ccf88C3019824d928fEE2E8a', rewardToken: 'GSX', pid: 63 },
+    { label: '#245', name: 'INC / GSX LP', lp: '0xa5011008ceF7d5Ee86ce3AdeF745A92ee3DDCFE7', rewardToken: 'GSX', pid: 60 },
+    { label: '#247', name: 'GSX / eHEX LP', lp: '0xfCD8093e51c63B1CA9eD823B443169c4a1cdaE8d', rewardToken: 'GSX', pid: 62 },
+    { label: '#246', name: 'pHEX / GSX LP', lp: '0x5D179fb34FC8Da09f98926F3816b7aF6CeC4A5A5', rewardToken: 'GSX', pid: 61 },
+    { label: '#239', name: 'vouchPLS / DISTROX LP', lp: '0x97BF0A431d318333d5d11e737f65a294C60147cf', rewardToken: 'DIVX', pid: 54 },
+    { label: '#238', name: 'eHEX / DISTROX LP', lp: '0x052A74e1D071d921E1BC92A13Bff9AEc7F0A9B31', rewardToken: 'DIVX', pid: 53 },
+    { label: '#237', name: 'CASHX / eHEX LP', lp: '0x9fb609c0183B4F69C09AaaAF023A73e9eeBf8692', rewardToken: 'DIVX', pid: 52 },
+    { label: '#236', name: 'CASHX / WPLS LP', lp: '0x8C59DC0d5C73Ee21748B526F93F512bd098d3ecb', rewardToken: 'DIVX', pid: 51 },
+    { label: '#235', name: 'DIVX / vouchPLS LP', lp: '0x49Aa2d64D5cB2377019444108588743E4839A81f', rewardToken: 'DIVX', pid: 50 },
+    { label: '#234', name: 'eHEX / DIVX LP', lp: '0xB0609c105A9319e22a1B42019e2B2F0bFc301FBC', rewardToken: 'DIVX', pid: 49 },
+    { label: '#233', name: 'CASHX / DIVX LP', lp: '0x5162126478E78dA1f0Fab37964139A5259BDF4CE', rewardToken: 'DIVX', pid: 48 },
+    { label: '#232', name: 'pHEX / DIVX LP', lp: '0xF576fA81849B183867445bE182aa0025A8eD5D25', rewardToken: 'DIVX', pid: 47 },
+    { label: '#231', name: 'DIVX / DISTROX LP', lp: '0xDC4D0A41E2358A56FF08371D9FA878dEaaBEFbb2', rewardToken: 'DIVX', pid: 46 },
+    { label: '#230', name: 'INC / DIVX LP', lp: '0x055bfd2c7Bfeb407D9F38B430aD30b816e54a2d3', rewardToken: 'DIVX', pid: 45 },
+    { label: '#229', name: 'DIVX / PLSX LP', lp: '0xB696aF122336284ea2407f1db72178175f55AE1a', rewardToken: 'DIVX', pid: 44 },
+    { label: '#228', name: 'DIVX / WPLS LP', lp: '0x1dA62612E22152895d5A0205A04F84Dc8Ad87EBa', rewardToken: 'DIVX', pid: 43 },
+    { label: '#205', name: 'CASHX / PLSX LP',     lp: '0xbcE974a771e6bcD9713EC632e5D2a6A4C14781AA', rewardToken: 'DISTROX', pid: 20 },
+    { label: '#204', name: 'pHEX / CASHX LP',     lp: '0x6E9765e8c3b6C1B3588eFF3F7a37ECbf8a9589DA', rewardToken: 'DISTROX', pid: 19 },
+    { label: '#203', name: 'INC / CASHX LP',      lp: '0x8eACa1981b7991de11a65938d6E16e207B5E0Baf', rewardToken: 'DISTROX', pid: 18 },
+    { label: '#202', name: 'CASHX / uPLS LP',     lp: '0xbA1f1DBC58a478D15f69F7b5aE3C96Ced3dB0bd8', rewardToken: 'DISTROX', pid: 17 },
+    { label: '#201', name: 'CASHX / vouchPLS LP', lp: '0x5eDd3865A393869766b5FB605967C87cBa66c305', rewardToken: 'DISTROX', pid: 16 },
+    { label: '#200', name: 'CASHX / DISTROX LP',  lp: '0x2bFD09980E0682D78d5cE5ADbf68D9a7CfDB1b93', rewardToken: 'DISTROX', pid: 15 },
+    { label: '#199', name: 'PLSX / DISTROX LP',   lp: '0xBD2dFBB7b2Db8640C157767f126355CD75D9BAAB', rewardToken: 'DISTROX', pid: 14 },
+    { label: '#198', name: 'pHEX / DISTROX LP',   lp: '0xA38fAEAf8b8d44E07770857a09942AfFCE1A0e3C', rewardToken: 'DISTROX', pid: 13 },
+    { label: '#197', name: 'INC / DISTROX LP',    lp: '0xF32eeCE9EEC24E7b003ab1D7e394f5cE0FeeFe91', rewardToken: 'DISTROX', pid: 12 },
+    { label: '#196', name: 'uPLS / DISTROX LP',   lp: '0x33f410A0c1569384B6d2b9498Db788EB6664655A', rewardToken: 'DISTROX', pid: 11 },
+    { label: '#195', name: 'WPLS / DISTROX LP',   lp: '0xaCd00251161A67Ea58A8c2526C0d08A026852fB8', rewardToken: 'DISTROX', pid: 10 },
+    { label: '#241', name: 'BurnX / WPLS LP', lp: '0x30a3ab6093a942deeCE0eEE52BdE4E0fa1FB3879', rewardToken: 'BURNX', pid: 56 },
   ];
 
   let wProvider = null, wAddr = null, walletProvider = null;
@@ -9346,7 +9354,7 @@ const PULSE_ID     = 369;
     CASHX: CASHX_ADDR,
     DISTROX: DISTROX_ADDR,
     DIVX: DIVX_ADDR,
-    GSX: '0x395127a44Ac1CDc609C8CC9d048E096e8E8fC30e',
+    GSX: '0xFA490c52FD934c7b8629E30Ea4c14683ee000b5d',
     WPLS: NEXION_WPLS_ADDRESS,
     PRVX: '0xF6f8Db0aBa00007681F8fAF16A0FDa1c9B030b11',
     PHEX: '0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39',
@@ -9868,25 +9876,9 @@ const PULSE_ID     = 369;
 
   async function fetchRewards() {
     if (!wProvider || !wAddr) return;
-    const ld = '<span class="rv-tok-muted">Loading…</span>';
-    setHTML('rv-distx-reflect', ld); setHTML('rv-cashx-yield', ld);
-    try {
-      const distxC = new ethers.Contract(DISTROX_ADDR, DISTX_REWARDS_ABI, readProvider());
-      const [reflections, yieldTokens, yieldAmt] = await Promise.all([
-        distxC.pendingReflections(wAddr),
-        distxC.getYieldTokens(),
-        distxC.pendingYields(wAddr, 0)
-      ]);
-      const yieldAddr  = yieldTokens?.[0]?.toLowerCase();
-      const yieldLabel = yieldAddr === CASHX_ADDR.toLowerCase() ? 'CASHX Yield' : 'Yield Token';
-      set('rv-yield-label',    yieldLabel);
-      set('rv-distx-reflect',  fmtBal(reflections, 18));
-      set('rv-cashx-yield',    fmtBal(yieldAmt, 18));
-    } catch(err) {
-      console.error('Rewards fetch error:', err);
-      const e = '<span class="rv-tok-muted">Error</span>';
-      setHTML('rv-distx-reflect', e); setHTML('rv-cashx-yield', e);
-    }
+    set('rv-yield-label', 'CASHX Yield');
+    set('rv-distx-reflect', 'Automatic');
+    set('rv-cashx-yield', 'In wallet');
   }
 
   // Limit how many farm loads run at once so we don't flood (and get rate-limited by) the RPC.
@@ -10600,7 +10592,7 @@ const PULSE_ID     = 369;
   function renderPlaceholderFarms(loadPublic = true) {
     renderFarmResults(FARMS.map(farm => ({
       farm,
-      pid: Number(farm.label.replace('#', '')),
+      pid: farm.pid ?? Number(farm.label.replace('#', '')),
       staked: 0n,
       pending: 0n,
       walletLp: 0n,
@@ -10710,10 +10702,9 @@ const PULSE_ID     = 369;
   }
 
   function matchFarmPools(lpToPool) {
-    if (!lpToPool) return [];
     return FARMS
       .map(farm => {
-        const discoveredPid = lpToPool[farm.lp.toLowerCase()];
+        const discoveredPid = lpToPool?.[farm.lp.toLowerCase()];
         return { farm, pid: farm.pid !== undefined ? farm.pid : discoveredPid };
       })
       .filter(({ pid }) => pid !== undefined);
@@ -14436,10 +14427,10 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
     const WPLS_ADDRESS = '0xA1077a294DDE1B09BB078844DF40758a5D0f9a27';
     const TOKENS = [
       { key: 'burnx', name: 'BurnX', symbol: 'BURNX', address: '0x8577f0FB9D709d5BeBd808dDDd0094FbAEc667B4', logo: 'BurnX.png', rewards: true },
-      { key: 'distrox', name: 'DistributionX', symbol: 'DISTROX', address: '0xA1198e47Ac3D89903D7eCFd04a14b8Bfd72d7B03', logo: 'distrox.jpg', rewards: true },
-      { key: 'divx', name: 'DividendX', symbol: 'DIVX', address: '0x6df9CD07BF067b42A700dc679bD9325Ff61Da8f3', logo: 'divx.png', rewards: true },
-      { key: 'gsx', name: 'Grand Slam X', symbol: 'GSX', address: '0x395127a44Ac1CDc609C8CC9d048E096e8E8fC30e', logo: 'gsx.png', rewards: true },
-      { key: 'cashx', name: 'CashX', symbol: 'CASHX', address: '0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665', logo: 'cashx-logo.png', rewards: false }
+      { key: 'distrox', name: 'DistributionX', symbol: 'DISTROX', address: '0xec03E43e21B337F60F6a63944bC7b61B531c035F', logo: 'distrox.jpg', rewards: true, autoRewards: true, automaticYields: ['CASHX'] },
+      { key: 'divx', name: 'DividendX', symbol: 'DIVX', address: '0xB528AFfc72Dfc7Da5d3184C4e233Fc9fc156c4E0', logo: 'divx.png', rewards: true, autoRewards: true, automaticYields: ['CASHX','DISTROX'] },
+      { key: 'gsx', name: 'Grand Slam X', symbol: 'GSX', address: '0xFA490c52FD934c7b8629E30Ea4c14683ee000b5d', logo: 'gsx.png', rewards: true, autoRewards: true, automaticYields: ['CASHX','DISTROX','DIVX'] },
+      { key: 'cashx', name: 'CashX', symbol: 'CASHX', address: '0x510c547318032275e41D1362A465783320d8152f', logo: 'cashx-logo.png', rewards: false, autoRewards: true }
     ];
     const ERC20_ABI = [
       'function balanceOf(address) view returns (uint256)',
@@ -14492,11 +14483,11 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
         GSX: 'gsx.png'
       };
       const byAddress = {
-        '0x4c450b3c2b89a2dabe5a3ee39ff475134a30d665': 'cashx-logo.png',
-        '0xa1198e47ac3d89903d7ecfd04a14b8bfd72d7b03': 'distrox.jpg',
+        '0x510c547318032275e41D1362A465783320d8152f': 'cashx-logo.png',
+        '0xec03E43e21B337F60F6a63944bC7b61B531c035F': 'distrox.jpg',
         '0x8577f0fb9d709d5bebd808dddd0094fbaec667b4': 'BurnX.png',
-        '0x6df9cd07bf067b42a700dc679bd9325ff61da8f3': 'divx.png',
-        '0x395127a44ac1cdc609c8cc9d048e096e8e8fc30e': 'gsx.png'
+        '0xB528AFfc72Dfc7Da5d3184C4e233Fc9fc156c4E0': 'divx.png',
+        '0xFA490c52FD934c7b8629E30Ea4c14683ee000b5d': 'gsx.png'
       };
       const src = byAddress[String(address).toLowerCase()] || bySymbol[String(symbol || '').toUpperCase()];
       return src
@@ -14651,6 +14642,9 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
       const value = amount(raw, Number(decimals || 18));
       return { token: yieldToken, symbol, value, usdValue: price ? value * price : 0, plsValue: plsPriceNative ? value * plsPriceNative : 0 };
     }
+    function automaticYieldRows(token) {
+      return (token.automaticYields || []).map(symbol => `<div class="reflection-metric yield"><div class="reflection-metric-title"><span class="reflection-mini-fallback">${safe(symbol.slice(0,1))}</span><div class="reflection-label">${safe(symbol)} yield</div></div><div class="reflection-value">Automatic</div><div class="reflection-sub">Paid into your wallet</div></div>`).join('');
+    }
     function cardShell(token) {
       const logo = token.logo
         ? `<img src="${token.logo}" alt="">`
@@ -14658,10 +14652,11 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
       const miniLogo = token.logo
         ? `<img class="reflection-mini-logo" src="${token.logo}" alt="">`
         : `<span class="reflection-mini-fallback">${safe(token.symbol.slice(0, 1))}</span>`;
-      const rewardBadges = token.rewards
+      const rewardBadges = token.autoRewards && token.rewards
+        ? '<span class="reflection-badge">Automatic payouts</span>' : token.rewards
         ? '<span class="reflection-badge">Reflection</span><span class="reflection-badge">Yield</span>'
         : '';
-      const cardClass = token.key === 'divx' ? 'reflection-card divx-card' : token.rewards ? 'reflection-card' : 'reflection-card cashx-balance-only';
+      const cardClass = (token.key === 'divx' ? 'reflection-card divx-card' : token.rewards ? 'reflection-card' : 'reflection-card cashx-balance-only') + (token.autoRewards ? ' automatic-rewards-card' : '');
       return `
         <article class="${cardClass}" id="reflection-card-${token.key}">
           <div class="reflection-card-head">
@@ -14687,16 +14682,16 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
             ${rewardBadges ? `<div class="reflection-badges">${rewardBadges}</div>` : ''}
             <div class="reflection-metrics">
               <div class="reflection-metric">
-                <div class="reflection-metric-title">${miniLogo}<div class="reflection-label">Pending Reflections</div></div>
-                <div><span class="reflection-value accent" id="reflection-ref-${token.key}">${token.rewards ? '-' : '0'}</span> <span class="reflection-sub">${safe(token.symbol)}</span></div>
-                <div class="reflection-sub" id="reflection-ref-usd-${token.key}">-</div>
+                <div class="reflection-metric-title">${miniLogo}<div class="reflection-label">${token.autoRewards ? 'Reflections' : 'Pending Reflections'}</div></div>
+                <div><span class="reflection-value accent" id="reflection-ref-${token.key}">${token.autoRewards ? 'Automatic' : token.rewards ? '-' : '0'}</span> <span class="reflection-sub">${token.autoRewards ? '' : safe(token.symbol)}</span></div>
+                <div class="reflection-sub" id="reflection-ref-usd-${token.key}">${token.autoRewards ? 'Included in wallet balance' : '-'}</div>
               </div>
-              <div class="reflection-yields" id="reflection-yields-${token.key}"></div>
+              <div class="reflection-yields" id="reflection-yields-${token.key}">${token.autoRewards ? automaticYieldRows(token) : ''}</div>
             </div>
             <div class="reflection-actions">
-              <button class="reflections-btn" type="button" onclick="ReflectionApp.claimAll('${token.key}')" ${token.rewards ? '' : 'disabled'}>${token.rewards ? 'Claim (Reflections + Yield)' : 'Claim'}</button>
-              <button class="reflections-btn secondary" type="button" onclick="ReflectionApp.claimYield('${token.key}')" ${token.rewards ? '' : 'disabled'}>Claim Yield</button>
-              <div class="reflection-note">${token.rewards ? 'Sends 1 wei to yourself - triggers payout of all pending reflections and yield tokens' : 'CashX is shown as a balance-only Flux token.'}</div>
+              <button class="reflections-btn" type="button" onclick="ReflectionApp.claimAll('${token.key}')" ${token.rewards && !token.autoRewards ? '' : 'disabled'}>${token.autoRewards ? 'Paid automatically' : token.rewards ? 'Claim (Reflections + Yield)' : 'Claim'}</button>
+              <button class="reflections-btn secondary" type="button" onclick="ReflectionApp.claimYield('${token.key}')" ${token.rewards && !token.autoRewards ? '' : 'disabled'}>Claim Yield</button>
+              <div class="reflection-note">${token.autoRewards ? 'Reflections and yield go straight into your wallet. No manual claim needed.' : token.rewards ? 'Sends 1 wei to yourself - triggers payout of all pending reflections and yield tokens' : 'CashX is shown as a balance-only Flux token.'}</div>
             </div>
             <div class="reflection-tax-details" id="reflection-tax-details-${token.key}"></div>
           </div>
@@ -14746,19 +14741,19 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
       if (balEl) balEl.textContent = fmt(bal);
       if (balUsdEl) balUsdEl.textContent = '-';
 
-      if (!token.rewards) {
+      if (!token.rewards || token.autoRewards) {
         const taxEl = lookup(`reflection-tax-${token.key}`);
         const taxContract = new ethers.Contract(token.address, TAX_ABI, provider);
         const [taxes, totalTaxRaw] = await Promise.all([
-          taxContract.getTaxes().catch(() => CASHX_TAXES),
-          taxContract.getTotalTaxs().catch(() => 800n)
+          taxContract.getTaxes().catch(() => token.key === 'cashx' ? CASHX_TAXES : []),
+          taxContract.getTotalTaxs().catch(() => TOTAL_TAX_FALLBACKS[token.key] ?? null)
         ]);
         if (taxEl) {
           taxEl.innerHTML = `Total Tax<br><strong>${totalTaxPercent(token, totalTaxRaw)}</strong>`;
         }
         renderTaxDetails(token, taxes, lookup);
         const yieldsEl = lookup(`reflection-yields-${token.key}`);
-        if (yieldsEl) yieldsEl.innerHTML = '';
+        if (yieldsEl) yieldsEl.innerHTML = token.autoRewards ? automaticYieldRows(token) : '';
         commit();
         return { key: token.key, found: bal > 0 };
       }
@@ -14837,13 +14832,15 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
       const foundKeys = new Set(results.filter(item => item?.found).map(item => item.key));
       TOKENS.forEach(token => {
         const card = el(`reflection-card-${token.key}`);
-        if (card) card.hidden = !foundKeys.has(token.key) && !results.some(item => item?.key === token.key && item.error);
+        // Keep each token in its original slot when a scan finds a zero balance.
+        if (card) card.hidden = false;
       });
       setStatus(errors ? `Scan incomplete: ${errors} token read${errors === 1 ? '' : 's'} unavailable. Retry the scan.` : foundKeys.size
         ? `Found ${foundKeys.size} Flux token${foundKeys.size === 1 ? '' : 's'} (held or with pending reflections)`
         : 'No supported Flux tokens found for this wallet.');
     }
     async function signerContract(token) {
+      if (token.autoRewards) throw new Error('This token pays rewards automatically. No manual claim is needed.');
       const injected = walletProvider || window.CashXWallets?.getActiveProvider?.() || window.ethereum;
       if (!injected) throw new Error('Connect wallet first.');
       const chainHex = await injected.request({ method: 'eth_chainId' });
@@ -14856,7 +14853,7 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
     }
     async function claimAll(key) {
       const token = TOKENS.find(item => item.key === key);
-      if (!token?.rewards) return;
+      if (!token?.rewards || token.autoRewards) return;
       try {
         setStatus(`Submitting ${token.symbol} claim-all transaction...`);
         const contract = await signerContract(token);
@@ -14872,7 +14869,7 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
     }
     async function claimYield(key) {
       const token = TOKENS.find(item => item.key === key);
-      if (!token?.rewards) return;
+      if (!token?.rewards || token.autoRewards) return;
       try {
         setStatus(`Submitting ${token.symbol} yield claim...`);
         const contract = await signerContract(token);
@@ -14913,7 +14910,7 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
           const [raw, decimals, price] = await Promise.all([contract.balanceOf(wallet), contract.decimals(), readPrice(token.address)]);
           const balance = amount(raw, Number(decimals));
           let reflections = 0, yields = [], rewardsError = false;
-          if (token.rewards) {
+          if (token.rewards && !token.autoRewards) {
             try {
               const [pending, yieldTokens] = await Promise.all([contract.pendingReflections(wallet), contract.getYieldTokens()]);
               reflections = amount(pending, Number(decimals));
@@ -14931,7 +14928,11 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
   })();
 
   function showPage(page, options = {}) {
-    const targetPage = ['home', 'dashboard', 'farms', 'reflections', 'portfolio'].includes(page) ? page : 'home';
+    if (page === 'reflections') {
+      page = 'portfolio';
+      history.replaceState(null, '', '#portfolio');
+    }
+    const targetPage = ['home', 'dashboard', 'farms', 'portfolio'].includes(page) ? page : 'home';
     const isHome = targetPage === 'home';
     const isDashboard = targetPage === 'dashboard';
     const isFarms = targetPage === 'farms';
@@ -15068,38 +15069,27 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
 
   // Copy contract address
   function copyAddr(btn) {
-    navigator.clipboard.writeText('0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665');
+    navigator.clipboard.writeText('0x510c547318032275e41D1362A465783320d8152f');
     const o = btn.textContent; btn.textContent = 'Copied!';
     setTimeout(() => btn.textContent = o, 1800);
   }
 
-  // Fade in on page load
-  document.body.style.opacity = '0';
-  document.body.style.transform = 'translateY(8px)';
-  document.body.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      document.body.style.opacity = '1';
-      document.body.style.transform = 'none';
-
-      Promise.resolve(window.restoreSharedWallet?.()).finally(() => {
-        showPage(window.location.hash.slice(1), { updateHash: false, instant: true });
-        setTimeout(() => {
-          if (typeof lsDone === 'function') lsDone();
-          else {
-            const loader = document.getElementById('ls');
-            if (loader) loader.classList.add('ls-out');
-          }
-        }, 650);
-      });
-    });
-  });
+  // Mount the selected tab before wallet/network work; never reset it afterwards.
+  function startInitialPage() {
+    showPage(window.location.hash.slice(1), { updateHash: false, instant: true });
+    if (typeof lsDone === 'function') lsDone();
+    else document.getElementById('ls')?.classList.add('ls-out');
+    Promise.resolve().then(() => window.restoreSharedWallet?.())
+      .catch(error => console.warn('Wallet restore unavailable:', error));
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', startInitialPage, { once: true });
+  } else startInitialPage();
 
 </script>
 <div class="page-bg"></div>
-<link rel="stylesheet" href="./styles/portfolio.css?v=20261017-larger-numbers">
 <script src="./lib/portfolio-model.js?v=20261011-farm-start"></script>
 <script src="./lib/portfolio-history.js?v=20261011-fast-rewards"></script>
-<script src="./lib/portfolio.js?v=20261018-burns-before-reflections"></script>
+<script src="./lib/portfolio.js?v=20261027-navigation"></script>
 </body>
 </html>

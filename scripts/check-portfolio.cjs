@@ -22,13 +22,13 @@ test('fast reward queries filter both sender and recipient, with all required AN
 test('cached rewards restore immediately for the matching wallet and reject invalid cached amounts',()=>{
   const caches=new Map();
   const valid={complete:true,block:100,at:Date.now()-1000,events:[{at:100,amount:3,token:'a',symbol:'A',hash:'tx',index:1,reward:true}],prices:[['a',2]]};
-  caches.set('cashx:rewards:v1:wallet',JSON.stringify(valid));
+  caches.set('cashx:rewards:v2:migration20261027:wallet',JSON.stringify(valid));
   const context=vm.createContext({localStorage:{getItem:key=>caches.get(key)},rewardSnapshot:null,rewardReady:false,rewardBlock:-1,historyAsOf:0,rewardPrices:new Map()});
   vm.runInContext(chartSource.slice(chartSource.indexOf('  function restoreRewards('),chartSource.indexOf('  async function loadFastRewards(')),context);
   context.restoreRewards('other-wallet');assert.equal(context.rewardSnapshot,null);
   context.restoreRewards('WALLET');assert.equal(context.rewardSnapshot[0].amount,3);assert.equal(context.rewardReady,true);assert.equal(context.rewardBlock,100);
   context.rewardSnapshot=null;
-  caches.set('cashx:rewards:v1:wallet',JSON.stringify({...valid,events:[{...valid.events[0],amount:-1}]}));
+  caches.set('cashx:rewards:v2:migration20261027:wallet',JSON.stringify({...valid,events:[{...valid.events[0],amount:-1}]}));
   context.restoreRewards('wallet');assert.equal(context.rewardSnapshot,null);
 });
 test('fast reward refresh merges overlapping logs, retries unknown payouts, and excludes withdrawals',async()=>{
@@ -169,7 +169,7 @@ test('LP and vault principal follows deposited assets, not reward tokens, withou
 });
 
 test('portfolio reads LP members and weights shared pairs by priced reserves',async()=>{
-  const source=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
+  const source=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8').replace(/\r/g,'');
   const start=source.indexOf("    const ecosystem = ['CASHX'");
   const end=source.indexOf('    try {\n      const farms',start);
   const context=vm.createContext({TOKEN_ADDRESSES:{CASHX:'cashx',DISTROX:'distrox',GSX:'gsx',DIVX:'divx',BURNX:'burnx'},

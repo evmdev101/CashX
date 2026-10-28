@@ -16,12 +16,20 @@ CashX is a community-driven token on PulseChain with a fixed supply, a 4% buy/se
 | Field | Value |
 |---|---|
 | **Network** | PulseChain (PRC-20) |
-| **Contract** | `0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665` |
+| **Contract** | `0x510c547318032275e41D1362A465783320d8152f` |
 | **Supply** | 3,700,000,000 (fixed) |
 | **Tax** | 4% buy / 4% sell |
-| **Pair** | `0xda942580cee2a69c5fc74109090816157730c64d` |
+| **Pair** | `0x8C59DC0d5C73Ee21748B526F93F512bd098d3ecb` |
 
 ---
+
+## October 2026 contract migration
+
+The active site uses the migrated CASHX, DISTROX, DIVX and GSX contracts. Farm IDs remain the same; LP and reward addresses were verified against Nexion poolInfo at block 27909259. The 63 supported token farms plus two NFT farms remain available.
+
+DISTROX, DIVX and GSX now pay reflections and yield automatically. Their wallet balances already contain these payouts, so the site does not call the removed pending-reward functions or offer manual claims. BurnX retains its existing claim flow. Browser readings use a new cache namespace so retired-contract values do not populate current balances or charts.
+
+Run `node --test scripts/check-migration.cjs` for offline migration checks, and `node scripts/compare-nexion.cjs` for a read-only same-block valuation comparison. The verified pool snapshot is in `scripts/fixtures/migration-20261027.json`.
 
 ## Current Structure
 

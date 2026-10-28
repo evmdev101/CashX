@@ -1,0 +1,4 @@
+#reflections-view .automatic-rewards-card .reflection-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+#reflections-view .reflection-metric{padding:10px;scrollbar-width:thin;scrollbar-color:var(--farm-theme-muted) transparent}
+#reflections-view .automatic-rewards-card .reflection-value{font-size:clamp(13px,1.25vw,17px)}
+#reflections-view .automatic-rewards-card .reflection-actions .reflections-btn:disabled{opacity:1;background:var(--reflection-accent-soft);color:var(--reflection-text)}

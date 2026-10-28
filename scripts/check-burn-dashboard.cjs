@@ -258,7 +258,7 @@ test('a failed history refresh keeps the completed burn totals instead of replac
 });
 
 function chartCacheUI(initial) {
-  const storage = new Map(initial ? [['cashx_chart_burns_v2', JSON.stringify(initial)]] : []);
+  const storage = new Map(initial ? [['cashx_chart_burns_20261027', JSON.stringify(initial)]] : []);
   let reads = 0;
   const completeRows = [{tx_hash: 'complete', timestamp: '2026-10-01T00:00:00Z'}];
   const rendered = [];
@@ -280,7 +280,7 @@ test('a saved recent burn feed renders on reload while complete history still lo
   const {ctx, storage, rendered, completeRows, reads} = chartCacheUI();
   const recent = [{tx_hash: 'recent', timestamp: '2026-10-17T00:00:00Z'}];
   assert.equal(ctx._chartCacheSave(recent, false), true);
-  assert.equal(JSON.parse(storage.get('cashx_chart_burns_v2')).complete, false);
+  assert.equal(JSON.parse(storage.get('cashx_chart_burns_20261027')).complete, false);
   assert.equal(ctx._chartCacheApply(), true);
   assert.equal(ctx.chartHistoryComplete, false);
   assert.equal(rendered[0][0].tx_hash, 'recent');
@@ -298,7 +298,7 @@ test('a complete saved chart accepts the latest live burns without discarding ol
   assert.equal(ctx.chartHistoryComplete, false, 'new head activity requires a fresh coverage check');
   assert.deepEqual(Array.from(ctx.cachedChartBurnsData, row => row.tx_hash), [older.tx_hash, newest.tx_hash]);
   assert.equal(rendered.length, 2, 'a duplicate live page does not redraw or count the same log twice');
-  const saved = JSON.parse(storage.get('cashx_chart_burns_v2'));
+  const saved = JSON.parse(storage.get('cashx_chart_burns_20261027'));
   assert.equal(saved.complete, false);
   assert.equal(saved.items.length, 2);
   await ctx._getAllBurns();
@@ -321,7 +321,7 @@ test('a slow all-time chart response cannot erase a newer live event that arrive
   assert.equal(ctx.chartHistoryComplete, true);
   assert.deepEqual(Array.from(ctx.cachedChartBurnsData, row => row.tx_hash), [newest.tx_hash, older.tx_hash]);
   assert.equal(rendered.at(-1).length, 2);
-  const saved = JSON.parse(storage.get('cashx_chart_burns_v2'));
+  const saved = JSON.parse(storage.get('cashx_chart_burns_20261027'));
   assert.equal(saved.complete, true);
   assert.equal(saved.items.length, 2);
 });
@@ -331,9 +331,9 @@ test('a recent page cannot replace saved complete history', async () => {
     const saved = {_ts: Date.now(), items: [{tx_hash: 'all-history'}]};
     if (complete !== undefined) saved.complete = complete;
     const {ctx, storage, reads} = chartCacheUI(saved);
-    const before = storage.get('cashx_chart_burns_v2');
+    const before = storage.get('cashx_chart_burns_20261027');
     assert.equal(ctx._chartCacheSave([{tx_hash: 'recent'}], false), false);
-    assert.equal(storage.get('cashx_chart_burns_v2'), before);
+    assert.equal(storage.get('cashx_chart_burns_20261027'), before);
     assert.equal(ctx._chartCacheApply(), true);
     assert.equal(ctx.chartHistoryComplete, true);
     assert.equal((await ctx._getAllBurns()).items[0].tx_hash, 'all-history');
@@ -345,7 +345,7 @@ test('complete history replaces an earlier saved recent feed and forced refresh 
   const {ctx, storage, reads} = chartCacheUI();
   ctx._chartCacheSave([{tx_hash: 'recent'}], false);
   assert.equal(ctx._chartCacheSave([{tx_hash: 'complete'}]), true);
-  assert.equal(JSON.parse(storage.get('cashx_chart_burns_v2')).complete, true);
+  assert.equal(JSON.parse(storage.get('cashx_chart_burns_20261027')).complete, true);
   assert.equal(ctx._chartCacheApply(), true);
   assert.equal(ctx.chartHistoryComplete, true);
   await ctx._getAllBurns(true);
@@ -354,7 +354,7 @@ test('complete history replaces an earlier saved recent feed and forced refresh 
 
 test('a fresh recent feed repairs a corrupt chart cache', () => {
   const {ctx, storage} = chartCacheUI();
-  storage.set('cashx_chart_burns_v2', '{broken');
+  storage.set('cashx_chart_burns_20261027', '{broken');
   assert.equal(ctx._chartCacheSave([{tx_hash: 'recent'}], false), true);
   assert.equal(ctx._chartCacheApply(), true);
   assert.equal(ctx.cachedChartBurnsData[0].tx_hash, 'recent');

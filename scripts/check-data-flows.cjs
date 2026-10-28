@@ -10,6 +10,42 @@ const ethers = require('../vendor/ethers.umd.min.js');
 const browse = require('../lib/farm-list-tools.js');
 const utilities = require('../lib/site-utilities.js');
 
+test('the requested tab mounts before wallet restoration and a late restore cannot reset navigation', async () => {
+  const pending = deferred(), routes = [], listeners = new Map();
+  let dismissed = false;
+  const ctx = context(section('  function startInitialPage()', '\n</script>'), {
+    window: {location: {hash: '#portfolio'}, restoreSharedWallet: () => pending.promise},
+    document: {readyState: 'loading', addEventListener: (name, callback, options) => {
+      assert.equal(options.once, true); listeners.set(name, callback);
+    }},
+    showPage: page => routes.push(page), lsDone: () => {dismissed = true;},
+  });
+  assert.deepEqual(routes, []);
+  listeners.get('DOMContentLoaded')();
+  assert.deepEqual(routes, ['portfolio']);
+  assert.equal(dismissed, true);
+  ctx.window.location.hash = '#farms';
+  await new Promise(setImmediate);
+  pending.resolve(true);
+  await new Promise(setImmediate);
+  assert.deepEqual(routes, ['portfolio'], 'wallet restoration must not remount a tab or reset its scroll position');
+});
+
+test('reflection scans keep zero-balance tokens in their existing layout slots', async () => {
+  const cards = new Map(['one', 'two'].map(key => [`reflection-card-${key}`, {hidden: false}]));
+  const ctx = context(section('    async function scan(address = null)', '    async function signerContract('), {
+    ready: true, reflectionScanId: 0, reflectionScanStartedAt: 0, reflectionScanWallet: '',
+    window: {}, el: id => cards.get(id), setStatus() {}, short: value => value,
+    TOKENS: [{key: 'one'}, {key: 'two'}],
+    readToken: async (_, token) => ({key: token.key, found: false}),
+    ethers: {isAddress: () => true, JsonRpcProvider: function () {this.destroy = () => {}; }}, RPC: 'rpc',
+    renderShell() {},
+  });
+  await ctx.scan('wallet');
+  assert.equal(cards.get('reflection-card-one').hidden, false);
+  assert.equal(cards.get('reflection-card-two').hidden, false);
+});
+
 test('burn milestones advance at boundaries and reject missing supply', () => {
   assert.equal(utilities.milestone(0,0),null);
   assert.deepEqual(utilities.milestone(1,100),{percent:5,remaining:4});

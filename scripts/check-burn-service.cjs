@@ -14,7 +14,7 @@ const deferred = () => {
   const promise = new Promise(r => { resolve = r; });
   return { promise, resolve };
 };
-const TOKEN = '0x4C450b3C2b89a2DAbE5A3eE39FF475134A30d665';
+const TOKEN = '0x510c547318032275e41D1362A465783320d8152f';
 const DEAD = '0x000000000000000000000000000000000000dEaD';
 const ZERO = '0x0000000000000000000000000000000000000000';
 const BURNER = '0x1111111111111111111111111111111111111111';
@@ -451,7 +451,7 @@ test('legacy fallback validates the actual token and destination and scans the v
 
 test('optional source matching runs beside history, keeps verified associations and stops after three pages', async () => {
   const related = '0x8577f0FB9D709d5BeBd808dDDd0094FbAEc667B4';
-  const pair = '0xda942580cee2a69c5fc74109090816157730c64d';
+  const pair = '0x8C59DC0d5C73Ee21748B526F93F512bd098d3ecb';
   let relatedFails = false;
   const { ctx, requests } = setup({ fetch: async url => {
     const query = new URL(url).searchParams;

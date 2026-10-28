@@ -1,0 +1,15 @@
+/* Fontshare's generated CSS always swaps; keep the same faces without a late reflow. */
+@font-face {
+  font-family:'Clash Display';
+  src:url('https://cdn.fontshare.com/wf/FPDAZ2S6SW4QMSRIIKNNGTPM6VIXYMKO/5HNPQ453FRLIQWV2FNOBUU3FKTDZQVSG/Z3MGHFHX6DCTLQ55LJYRJ5MDCZPMFZU6.woff2') format('woff2');
+  font-weight:600;
+  font-style:normal;
+  font-display:optional;
+}
+@font-face {
+  font-family:'Clash Display';
+  src:url('https://cdn.fontshare.com/wf/BFBSY7LX5W2U2EROCLVVTQP4VS7S4PC3/IIUX4FGTMD2LK2VWD3RVTAS4SSMUN7B5/53RZKGODFYDW3QHTIL7IPOWTBCSUEZK7.woff2') format('woff2');
+  font-weight:700;
+  font-style:normal;
+  font-display:optional;
+}

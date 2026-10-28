@@ -1,0 +1,94 @@
+/* Keep asynchronous readings inside the space occupied by their placeholders. */
+html { overflow-y:scroll; scrollbar-gutter:stable; scroll-behavior:auto }
+:root { --site-nav-height:72px }
+body nav,
+body #dashboard-view .dashboard-nav,
+body #farms-view .dashboard-nav,
+body #reflections-view .dashboard-nav,
+body #portfolio-view .dashboard-nav { height:var(--site-nav-height); min-height:var(--site-nav-height) }
+body { transform:none !important }
+.page-view { animation:none !important }
+.reveal-card { translate:none !important; transform:none !important }
+body nav .nav-right > .nav-dash-btn,
+body nav .nav-right > .h-wallet-chip { width:146px; white-space:nowrap }
+.page-view strong,.page-view [class*="value"],.page-view [class*="amount"] { font-variant-numeric:tabular-nums }
+
+/* Status changes must not move the cards or the chart below them. */
+#dashboard-data-status,#burn-chart-note {
+  display:block !important; height:24px; min-height:24px; overflow:auto;
+}
+#dashboard-data-status[hidden],#burn-chart-note[hidden] { visibility:hidden }
+.burn-milestone { min-height:22px }
+.burn-progress-details { min-height:22px }
+.section-stat .section-value { min-height:34px; white-space:nowrap }
+.section-stat .section-meta,.activity-item .section-meta { min-height:22px }
+#top3-burns-body { min-height:186px }
+
+/* Rankings have three rows even before their prices and order are known. */
+#farms-view .farm-rank-list { height:164px; overflow:auto; scrollbar-gutter:stable }
+#farms-view .farm-rank-row { height:50px; min-height:50px; flex-shrink:0 }
+#farms-view .farm-rank-row:hover { transform:none }
+.farm-claimable-main { height:54px; overflow:auto }
+.farm-daily-projection { height:76px; overflow:auto; align-content:center }
+.farm-claim-all-status { display:block; min-height:22px }
+.farm-design-proto .farm-hdr { min-height:64px }
+.farm-design-proto:not(.nexion-nft-farm):not(.cashx-eco-nft-farm):not(.vault-farm-card) .farm-proto-main { height:128px }
+.farm-design-proto .farm-proto-metric.farm-proto-compact { height:76px; min-height:76px }
+.farm-design-proto .farm-proto-sub { min-height:30px; max-height:30px; overflow:auto }
+.farm-design-proto .farm-proto-value.long { min-height:24px }
+.farm-design-proto [id^="farm-read-msg-"] { display:flex !important; height:31px; min-height:31px; margin:0; overflow:auto }
+.farm-design-proto [id^="farm-read-msg-"][style*="none"] { visibility:hidden }
+.nexion-nft-farm .farm-proto-metric:not(.farm-proto-compact),
+.cashx-eco-nft-farm .farm-proto-metric:not(.farm-proto-compact) { height:180px; overflow:auto }
+.farm-footer-staked { display:block; min-height:40px; max-height:40px; overflow:auto }
+.farm-total-tvl { min-height:40px }
+
+/* Reserve yield slots before the wallet's supported yield tokens are known. */
+#reflections-view .reflection-card-head { min-height:76px }
+#reflections-view .reflection-metrics,
+#reflections-view .reflection-card.divx-card .reflection-metrics {
+  height:232px; grid-auto-rows:104px; align-content:start; overflow:auto; scrollbar-gutter:stable;
+}
+#reflections-view .reflection-metric { min-height:104px; overflow:auto }
+#reflections-view .reflection-note { min-height:38px }
+#reflections-view .reflection-card > [data-scan-error] {
+  position:absolute; inset:auto 12px 4px; margin:0; min-height:0;
+  background:var(--farm-theme-card); font-size:10px;
+}
+#reflections-view .reflections-status { height:42px; overflow:auto }
+
+/* Portfolio uses the same nav size immediately, without a post-paint correction. */
+.portfolio-main { padding-top:calc(var(--site-nav-height) + 36px) }
+.pf-total { height:60px; min-height:60px; white-space:nowrap; overflow:auto }
+.pf-breakdown { grid-auto-rows:330px }
+.pf-coin { overflow:auto; scrollbar-gutter:stable }
+.pf-line { flex-shrink:0 }
+#pf-coverage,#pf-defi-status,#pf-snapshot-note,#pf-history-status {
+  height:58px; min-height:58px; overflow:auto;
+}
+.pf-stat { min-height:112px }
+.pf-scroll { height:min(420px,55vh); scrollbar-gutter:stable }
+.pf-table { table-layout:fixed; min-width:720px }
+.pf-table td { overflow-wrap:anywhere; white-space:normal }
+.pf-position-panels,.pf-chart:has(#pf-position-chart) { height:min(560px,65vh); min-height:min(560px,65vh) }
+#pf-earned { height:76px; min-height:76px; overflow:auto; align-content:start; scrollbar-gutter:stable }
+#pf-earned-status { display:block !important; height:40px; min-height:40px; overflow:auto }
+#pf-earned-status[hidden] { visibility:hidden }
+.pf-chart-legend { height:52px; overflow:auto; align-content:start }
+.pf-reward-controls { min-height:36px }
+
+@media(max-width:900px) {
+  :root { --site-nav-height:110px }
+}
+@media(max-width:800px) {
+  .portfolio-main { padding-top:calc(var(--site-nav-height) + 28px) }
+  #dashboard-data-status,#burn-chart-note { height:48px; min-height:48px }
+  .burn-milestone { min-height:42px }
+  .burn-progress-details { min-height:44px }
+}
+@media(max-width:480px) {
+  :root { --site-nav-height:104px }
+  body nav .nav-right > .nav-dash-btn,
+  body nav .nav-right > .h-wallet-chip { width:120px }
+  .pf-total { height:56px; min-height:56px }
+}
