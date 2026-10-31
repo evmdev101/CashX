@@ -1,0 +1,28 @@
+/* Palette browser and color controls shared by every page. */
+.farm-theme-dialog {max-height:calc(100dvh - 32px);font-family:Arial,Helvetica,sans-serif}
+.farm-theme-dialog .farm-theme-head {padding:12px 10px}
+.farm-theme-dialog .farm-theme-title {font-size:15px}
+.farm-theme-dialog .farm-theme-head-reset {width:auto;padding:0 6px}
+.farm-theme-dialog .farm-theme-tab {font-family:inherit;font-size:10px;padding:16px 10px 10px}
+.farm-theme-dialog .farm-theme-grid {grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.farm-theme-dialog .farm-theme-classics-title {margin-top:18px}
+.farm-theme-dialog .farm-theme-swatch {font-family:inherit;font-size:10px;min-height:48px;text-transform:capitalize;letter-spacing:0}
+.farm-theme-dialog .farm-theme-swatch:hover {transform:none;border-color:var(--farm-theme-accent)}
+.farm-theme-dialog .farm-theme-swatch:focus-visible {outline:2px solid var(--farm-theme-accent);outline-offset:2px}
+.farm-theme-dialog .farm-theme-swatch.active {box-shadow:0 0 0 2px color-mix(in srgb,var(--farm-theme-accent) 18%,transparent)}
+.farm-theme-dialog .farm-theme-custom-grid {grid-template-columns:1fr;gap:8px}
+.farm-theme-dialog .farm-theme-color-row {min-height:52px;padding:10px;border:1px solid var(--farm-theme-border);border-radius:8px;font-family:inherit;color:var(--farm-theme-text);font-size:10px}
+.farm-theme-dialog .farm-theme-color-row input[type=color] {width:34px;height:25px;border-radius:0}
+.farm-theme-dialog .farm-theme-color-row input[type=color]::-webkit-color-swatch {border-radius:0}
+.farm-theme-dialog .farm-theme-color-row input[type=color]::-moz-color-swatch {border-radius:0}
+.farm-theme-dialog .farm-theme-color-row output {min-width:64px;text-align:right;font-size:9px;font-family:monospace}
+.farm-theme-dialog .farm-theme-color-row .farm-theme-reset-color {width:20px;min-width:20px}
+.farm-theme-dialog .farm-theme-apply {margin:12px 0 0;background:transparent;box-shadow:none;border:1px solid var(--farm-theme-accent);color:var(--farm-theme-text);font-family:inherit;font-size:14px;text-transform:none;letter-spacing:0}
+.farm-theme-dialog .farm-theme-control-grid {grid-template-columns:1fr}
+.farm-theme-dialog .farm-theme-control {display:flex;flex-direction:row;align-items:center;justify-content:space-between;min-height:38px;font-family:inherit}
+.farm-theme-dialog .farm-theme-control select {width:132px;min-width:100px;max-width:60%}
+.farm-theme-dialog .farm-theme-control input[type=range] {width:180px;max-width:60%;accent-color:var(--farm-theme-accent)}
+.farm-theme-dialog .farm-theme-switch {justify-content:space-between;flex-direction:row-reverse}
+.farm-theme-advanced {margin-top:18px;border-top:1px solid var(--farm-theme-border);padding-top:12px}
+.farm-theme-advanced summary {cursor:pointer;font-size:12px;color:var(--farm-theme-muted);margin-bottom:12px}
+@media(max-width:480px) {.farm-theme-dialog .farm-theme-grid {grid-template-columns:repeat(3,minmax(0,1fr))}}

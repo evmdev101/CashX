@@ -16,31 +16,31 @@
 </noscript>
 <style>
 :root {
-  --bg:       #282c34;
-  --surface:  #111111;
-  --surface2: #111111;
-  --border:   #355a66;
-  --border2:  rgba(224,108,117,0.42);
-  --blue:     #9cdef2;
-  --purple:   #e06c75;
-  --pink:     #e06c75;
-  --grad:     linear-gradient(135deg,#e06c75,#9cdef2);
-  --grad-btn: linear-gradient(135deg,#e06c75,#111111);
-  --text:     #9cdef2;
-  --muted:    rgba(156,222,242,0.62);
-  --muted2:   rgba(156,222,242,0.38);
+  --bg:       #0d1117;
+  --surface:  #161b22;
+  --surface2: #161b22;
+  --border:   rgba(48,54,61,0.72);
+  --border2:  rgba(248,81,73,0.42);
+  --blue:     #c9d1d9;
+  --purple:   #f85149;
+  --pink:     #f85149;
+  --grad:     linear-gradient(135deg,#f85149,#c9d1d9);
+  --grad-btn: linear-gradient(135deg,#f85149,#161b22);
+  --text:     #c9d1d9;
+  --muted:    rgba(201,209,217,0.62);
+  --muted2:   rgba(201,209,217,0.38);
   --green:    #39ff7e;
-  --glow-p:   rgba(224,108,117,0.18);
-  --glow-b:   rgba(156,222,242,0.12);
-  --farm-theme-bg:#282c34;
-  --farm-theme-panel:#111111;
-  --farm-theme-card:#111111;
-  --farm-theme-metric:rgba(156,222,242,0.08);
-  --farm-theme-border:rgba(53,90,102,0.72);
-  --farm-theme-text:#9cdef2;
-  --farm-theme-muted:rgba(156,222,242,0.62);
-  --farm-theme-accent:#e06c75;
-  --farm-theme-shadow:rgba(224,108,117,0.24);
+  --glow-p:   rgba(248,81,73,0.18);
+  --glow-b:   rgba(201,209,217,0.12);
+  --farm-theme-bg:#0d1117;
+  --farm-theme-panel:#161b22;
+  --farm-theme-card:#161b22;
+  --farm-theme-metric:rgba(201,209,217,0.08);
+  --farm-theme-border:rgba(48,54,61,0.72);
+  --farm-theme-text:#c9d1d9;
+  --farm-theme-muted:rgba(201,209,217,0.62);
+  --farm-theme-accent:#f85149;
+  --farm-theme-shadow:rgba(248,81,73,0.24);
 }
 
 
@@ -2793,7 +2793,23 @@
       height:100vh;
       pointer-events:none;
       z-index:0;
-      opacity:var(--farm-bg-effect-opacity,0.72);
+    }
+    /* OINK Starlight: layered fixed stars and a soft glow; no frame loop. */
+    body.farm-bg-pattern-starlight::before{
+      content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+      --starlight-star:color-mix(in srgb,var(--farm-bg-effect-color,var(--text)) calc(48% * var(--farm-bg-effect-opacity,1)),transparent);
+      background-image:
+        radial-gradient(circle at 23px 41px,var(--starlight-star) .6px,transparent 1.3px),
+        radial-gradient(circle at 157px 113px,var(--starlight-star) .8px,transparent 1.6px),
+        radial-gradient(circle at 71px 227px,var(--starlight-star) .5px,transparent 1.2px),
+        radial-gradient(circle at 347px 67px,color-mix(in srgb,var(--farm-theme-accent) calc(35% * var(--farm-bg-effect-opacity,1)),transparent) .6px,transparent 1.4px),
+        radial-gradient(ellipse at 50% 0%,color-mix(in srgb,var(--text) calc(4% * var(--farm-bg-effect-opacity,1)),transparent),transparent 65%);
+      background-size:
+        calc(227px * var(--farm-bg-effect-scale,1)) calc(317px * var(--farm-bg-effect-scale,1)),
+        calc(373px * var(--farm-bg-effect-scale,1)) calc(419px * var(--farm-bg-effect-scale,1)),
+        calc(557px * var(--farm-bg-effect-scale,1)) calc(491px * var(--farm-bg-effect-scale,1)),
+        calc(643px * var(--farm-bg-effect-scale,1)) calc(593px * var(--farm-bg-effect-scale,1)),100% 100%;
+      background-attachment:fixed;
     }
     body.farm-bg-pattern-dots::before{
       content:"";
@@ -4626,6 +4642,7 @@
 <link rel="stylesheet" href="./styles/layout-stability.css?v=20261030-rewards">
 <link rel="stylesheet" href="./styles/token-migration.css?v=20261027-2">
 <link rel="stylesheet" href="./styles/scrollbars.css?v=20261030">
+<link rel="stylesheet" href="./styles/theme-picker.css?v=20261031-animation-2">
 </head>
 <body>
 <div id="ls" aria-hidden="true">
@@ -7606,20 +7623,23 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
       <div id="farm-theme-modal" class="farm-theme-modal" hidden role="dialog" aria-modal="true" aria-labelledby="farm-theme-title">
         <div class="farm-theme-dialog">
           <div class="farm-theme-head">
-            <div class="farm-theme-title" id="farm-theme-title">☯ Theme</div>
+            <div class="farm-theme-title" id="farm-theme-title">Theme</div>
             <div class="farm-theme-actions">
-              <button class="farm-theme-peek" id="farm-theme-peek" type="button" onclick="toggleFarmThemePeek()" aria-pressed="false" title="Fade this window to preview the page behind it">⊙ Peek</button>
+              <button class="farm-theme-close farm-theme-head-reset" type="button" onclick="resetFarmThemeDefaults()">Reset</button>
+              <button class="farm-theme-peek" id="farm-theme-peek" type="button" onclick="toggleFarmThemePeek()" aria-pressed="false" title="Fade this window to preview the page behind it">Preview</button>
               <button class="farm-theme-close" type="button" onclick="minimizeFarmThemeModal()" aria-label="Minimize theme picker">−</button>
               <button class="farm-theme-close" type="button" onclick="closeFarmThemeModal()" aria-label="Close theme picker">×</button>
             </div>
           </div>
           <div class="farm-theme-tabs" role="tablist" aria-label="Farm theme settings">
-            <button class="farm-theme-tab active" id="farm-theme-tab-themes" type="button" onclick="showFarmThemeTab('themes')" role="tab" aria-selected="true">☯ Themes</button>
-            <button class="farm-theme-tab" id="farm-theme-tab-customize" type="button" onclick="showFarmThemeTab('customize')" role="tab" aria-selected="false">☄ Customize</button>
+            <button class="farm-theme-tab active" id="farm-theme-tab-themes" type="button" onclick="showFarmThemeTab('themes')" role="tab" aria-selected="true">Themes</button>
+            <button class="farm-theme-tab" id="farm-theme-tab-customize" type="button" onclick="showFarmThemeTab('customize')" role="tab" aria-selected="false">Customize</button>
           </div>
           <div class="farm-theme-body">
             <div id="farm-theme-panel-themes" class="farm-theme-panel" role="tabpanel" aria-labelledby="farm-theme-tab-themes">
-              <div class="farm-theme-section-title">Default Themes</div>
+              <div class="farm-theme-section-title">New colors</div>
+              <div id="farm-theme-new-grid" class="farm-theme-grid"></div>
+              <div class="farm-theme-section-title farm-theme-classics-title">Classic themes</div>
               <div id="farm-theme-grid" class="farm-theme-grid"></div>
               <div id="farm-theme-user-card" class="farm-theme-user-card" hidden>
                 <div class="farm-theme-section-title" style="margin-top:12px">Your Themes</div>
@@ -7629,13 +7649,39 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
             <div id="farm-theme-panel-customize" class="farm-theme-panel" role="tabpanel" aria-labelledby="farm-theme-tab-customize" hidden>
               <div class="farm-theme-section-title">Colors</div>
               <div class="farm-theme-custom-grid">
-                <div class="farm-theme-color-row"><label>Background</label><input id="farm-theme-custom-bg" type="color"><button class="farm-theme-reset-color" type="button" data-farm-reset-color="bg" title="Reset color">↺</button></div>
-                <div class="farm-theme-color-row"><label>Text</label><input id="farm-theme-custom-fg" type="color"><button class="farm-theme-reset-color" type="button" data-farm-reset-color="fg" title="Reset color">↺</button></div>
-                <div class="farm-theme-color-row"><label>Panel</label><input id="farm-theme-custom-panel" type="color"><button class="farm-theme-reset-color" type="button" data-farm-reset-color="panel" title="Reset color">↺</button></div>
-                <div class="farm-theme-color-row"><label>Border</label><input id="farm-theme-custom-border" type="color"><button class="farm-theme-reset-color" type="button" data-farm-reset-color="border" title="Reset color">↺</button></div>
-                <div class="farm-theme-color-row"><label>Accent</label><input id="farm-theme-custom-red" type="color"><button class="farm-theme-reset-color" type="button" data-farm-reset-color="red" title="Reset color">↺</button></div>
-                <div class="farm-theme-color-row"><label>Effect</label><input id="farm-theme-effect-color" type="color"><button class="farm-theme-reset-color" type="button" data-farm-reset-effect title="Reset effect">↺</button></div>
+                <div class="farm-theme-color-row"><label for="farm-theme-custom-bg">Background</label><input id="farm-theme-custom-bg" type="color" oninput="this.nextElementSibling.value=this.value"><output for="farm-theme-custom-bg" id="farm-theme-hex-bg"></output><button class="farm-theme-reset-color" type="button" data-farm-reset-color="bg" title="Reset color">↺</button></div>
+                <div class="farm-theme-color-row"><label for="farm-theme-custom-fg">Text</label><input id="farm-theme-custom-fg" type="color" oninput="this.nextElementSibling.value=this.value"><output for="farm-theme-custom-fg" id="farm-theme-hex-fg"></output><button class="farm-theme-reset-color" type="button" data-farm-reset-color="fg" title="Reset color">↺</button></div>
+                <div class="farm-theme-color-row"><label for="farm-theme-custom-panel">Panel</label><input id="farm-theme-custom-panel" type="color" oninput="this.nextElementSibling.value=this.value"><output for="farm-theme-custom-panel" id="farm-theme-hex-panel"></output><button class="farm-theme-reset-color" type="button" data-farm-reset-color="panel" title="Reset color">↺</button></div>
+                <div class="farm-theme-color-row"><label for="farm-theme-custom-border">Border</label><input id="farm-theme-custom-border" type="color" oninput="this.nextElementSibling.value=this.value"><output for="farm-theme-custom-border" id="farm-theme-hex-border"></output><button class="farm-theme-reset-color" type="button" data-farm-reset-color="border" title="Reset color">↺</button></div>
+                <div class="farm-theme-color-row"><label for="farm-theme-custom-red">Accent</label><input id="farm-theme-custom-red" type="color" oninput="this.nextElementSibling.value=this.value"><output for="farm-theme-custom-red" id="farm-theme-hex-red"></output><button class="farm-theme-reset-color" type="button" data-farm-reset-color="red" title="Reset color">↺</button></div>
               </div>
+              <button class="farm-theme-apply" type="button" onclick="applyFarmCustomTheme()">Apply Custom Theme</button>
+              <div class="farm-theme-section-title" style="margin-top:14px">Background</div>
+              <div class="farm-theme-control-grid">
+                <label class="farm-theme-control">Animation
+                  <select id="farm-theme-effect-pattern">
+                    <option value="none">None</option>
+                    <option value="dots">Dots</option>
+                    <option value="starlight">Starlight</option>
+                    <option value="synapse">Synapse</option>
+                    <option value="rain">Rain</option>
+                    <option value="constellations">Constellations</option>
+                    <option value="perlin-flow">Perlin Flow</option>
+                    <option value="petals">Petals</option>
+                    <option value="sparkles">Sparkles</option>
+                    <option value="embers">Embers</option>
+                  </select>
+                </label>
+              <div class="farm-theme-color-row"><label for="farm-theme-effect-color">Effect color</label><input id="farm-theme-effect-color" type="color"><button class="farm-theme-reset-color" type="button" data-farm-reset-effect title="Reset effect">↺</button></div>
+                <label class="farm-theme-control">Intensity
+                  <input id="farm-theme-effect-intensity" type="range" min="0" max="100" step="5" value="70">
+                </label>
+                <label class="farm-theme-control">Size
+                  <input id="farm-theme-effect-size" type="range" min="30" max="250" step="5" value="90">
+                </label>
+              </div>
+              <label class="farm-theme-switch"><input id="farm-theme-frosted-toggle" type="checkbox"> Frosted glass panels</label>
+              <details class="farm-theme-advanced"><summary>More options</summary>
               <div class="farm-theme-section-title" style="margin-top:14px">Color Harmony</div>
               <div class="farm-theme-harmony-row">
                 <label class="farm-theme-control">Accent
@@ -7681,30 +7727,6 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
                   </select>
                 </label>
               </div>
-              <div class="farm-theme-section-title" style="margin-top:14px">Background / Effect</div>
-              <div class="farm-theme-control-grid">
-                <label class="farm-theme-control">Animation
-                  <select id="farm-theme-effect-pattern">
-                    <option value="none">None</option>
-                    <option value="dots">Dots</option>
-                    <option value="rain">Rain</option>
-                    <option value="synapse">Synapse</option>
-                    <option value="constellations">Constellations</option>
-                    <option value="perlin-flow">Perlin Flow</option>
-                    <option value="petals">Petals</option>
-                    <option value="sparkles">Sparkles</option>
-                    <option value="embers">Embers</option>
-                  </select>
-                </label>
-                <label class="farm-theme-control">Intensity
-                  <input id="farm-theme-effect-intensity" type="range" min="0" max="100" step="5" value="70">
-                </label>
-                <label class="farm-theme-control">Size
-                  <input id="farm-theme-effect-size" type="range" min="40" max="180" step="5" value="90">
-                </label>
-              </div>
-              <label class="farm-theme-switch"><input id="farm-theme-frosted-toggle" type="checkbox"> Frosted glass panels</label>
-              <button class="farm-theme-apply" type="button" onclick="applyFarmCustomTheme()">Apply Custom Theme</button>
               <div class="farm-theme-section-title" style="margin-top:14px">Save / Share</div>
               <div class="farm-theme-save-row">
                 <input id="farm-theme-save-name" type="text" placeholder="Theme name..." maxlength="32">
@@ -7721,6 +7743,7 @@ set('src-community', Math.floor(totalBurned > 0 ? 3_700_000_000 - totalBurned : 
                 <button class="farm-theme-io-btn" type="button" onclick="importFarmThemeJson()">Apply</button>
                 <button class="farm-theme-io-btn" type="button" onclick="toggleFarmThemeImport(false)">Cancel</button>
               </div>
+              </details>
             </div>
           </div>
         </div>
@@ -7812,14 +7835,25 @@ const FARM_THEME_LAYOUT_KEY = 'cashx_farm_theme_layout_v2';
 const FARM_CUSTOM_THEMES_KEY = 'cashx_custom_themes_v2';
 const FARM_THEME_SNAP_KEY = 'cashx_farm_theme_snap_v1';
 const FARM_THEME_TIP_KEY = 'cashx_farm_theme_snap_tip_seen_v2';
-const FARM_DEFAULT_THEME = 'dark';
+const FARM_DEFAULT_THEME = 'midnight';
 const FARM_DEFAULT_FONT = 'mono';
 const FARM_DEFAULT_DENSITY = 'comfortable';
 const FARM_DEFAULT_TEXT_SIZE = '100';
 let farmThemeAnimation = null;
 let currentFarmThemeName = FARM_DEFAULT_THEME;
 let farmThemeTipTimer = null;
+const FARM_NEW_THEME_KEYS = ['obsidian', 'aurora', 'amethyst', 'sunset', 'gold', 'glacier', 'matcha', 'cherry', 'slate'];
 const FARM_THEMES = {
+  obsidian: { label: 'Obsidian', bg:'#09090f', fg:'#f4f4f5', panel:'#131318', border:'#34333d', red:'#f5b331' },
+  aurora: { label: 'Aurora', bg:'#071a18', fg:'#e5fff5', panel:'#0b2420', border:'#2f6d5c', red:'#60f0b6' },
+  amethyst: { label: 'Amethyst', bg:'#171127', fg:'#f3efff', panel:'#211832', border:'#665080', red:'#bea1ff' },
+  sunset: { label: 'Sunset', bg:'#251714', fg:'#fff0e8', panel:'#301f1b', border:'#895747', red:'#ffa58e' },
+  gold: { label: 'Gold', bg:'#18150d', fg:'#fff6df', panel:'#221d12', border:'#796638', red:'#ffd36e' },
+  glacier: { label: 'Glacier', bg:'#091629', fg:'#eef5ff', panel:'#10213a', border:'#365b89', red:'#80b6ff' },
+  matcha: { label: 'Matcha', bg:'#151c10', fg:'#f0f7e8', panel:'#1b2516', border:'#566d3c', red:'#bce18a' },
+  cherry: { label: 'Cherry', bg:'#231219', fg:'#ffe9f1', panel:'#301922', border:'#7c4357', red:'#ff96b7' },
+  slate: { label: 'Slate', bg:'#111820', fg:'#edf2f7', panel:'#19232e', border:'#4d6177', red:'#b8d2ed' },
+  oink: { label: 'Oink', bg:'#241a20', fg:'#f2cfde', panel:'#171013', border:'#5c3a4b', red:'#ff6b9d' },
   dark: { label: 'original', bg:'#282c34', fg:'#9cdef2', panel:'#111111', border:'#355a66', red:'#e06c75' },
   light: { label: 'light', bg:'#f0ebe3', fg:'#5a5248', panel:'#faf6f0', border:'#d4cdc2', red:'#c47d5a' },
   midnight: { label: 'midnight', bg:'#0d1117', fg:'#c9d1d9', panel:'#161b22', border:'#30363d', red:'#f85149' },
@@ -7838,7 +7872,9 @@ const FARM_THEMES = {
   cute: { label: 'cute', bg:'#fff0f5', fg:'#d4608a', panel:'#fff8fa', border:'#f0c0d0', red:'#ff6b9d' },
 };
 const FARM_THEME_EFFECT_DEFAULTS = {
-  dark: 'synapse',
+  obsidian: 'starlight',
+  oink: 'sparkles',
+  dark: 'none',
   light: 'dots',
   midnight: 'rain',
   paper: 'dots',
@@ -7857,12 +7893,16 @@ const FARM_THEME_EFFECT_DEFAULTS = {
   custom: 'constellations',
 };
 const FARM_THEME_EFFECT_COLOR_DEFAULTS = {
+  obsidian: '#f4f4f5',
+  oink: '#ff8cb8',
   midnight: '#ffffff',
   organs: '#451616',
   cute: '#ff8cb8',
   ume: '#f5a0c0',
 };
 const FARM_THEME_EFFECT_INTENSITY_DEFAULTS = {
+  obsidian: 60,
+  oink: 60,
   midnight: 50,
   terminal: 80,
   organs: 65,
@@ -8004,10 +8044,10 @@ function defaultFarmEffectSettings(key, theme) {
 function normalizeFarmEffectSettings(effect, key, theme) {
   const fallback = defaultFarmEffectSettings(key, theme);
   return {
-    pattern: ['none','dots','rain','synapse','constellations','perlin-flow','petals','sparkles','embers'].includes(effect?.pattern) ? effect.pattern : fallback.pattern,
+    pattern: ['none','dots','starlight','synapse','rain','constellations','perlin-flow','petals','sparkles','embers'].includes(effect?.pattern) ? effect.pattern : fallback.pattern,
     color: /^#[0-9a-f]{6}$/i.test(effect?.color || '') ? effect.color : fallback.color,
     intensity: Math.min(100, Math.max(0, Number(effect?.intensity ?? fallback.intensity))),
-    size: Math.min(180, Math.max(40, Number(effect?.size ?? fallback.size))),
+    size: Math.min(250, Math.max(30, Number(effect?.size ?? fallback.size))),
     frosted: Boolean(effect?.frosted ?? fallback.frosted),
   };
 }
@@ -8058,8 +8098,8 @@ function initFarmTheme() {
 function renderFarmThemeGrid() {
   const grid = document.getElementById('farm-theme-grid');
   if (!grid) return;
-  grid.innerHTML = Object.entries(FARM_THEMES).map(([key, theme]) => `
-    <button class="farm-theme-swatch" type="button" data-farm-theme="${key}" onclick="setFarmTheme('${key}')" style="--swatch-bg:${theme.bg};--swatch-fg:${theme.fg}">
+  const renderSwatches = entries => entries.map(([key, theme]) => `
+    <button class="farm-theme-swatch${key === currentFarmThemeName ? ' active' : ''}" type="button" aria-pressed="${key === currentFarmThemeName}" data-farm-theme="${key}" onclick="setFarmTheme('${key}')" style="--swatch-bg:${theme.bg};--swatch-fg:${theme.fg}">
       <span class="farm-theme-dots" aria-hidden="true">
         <span class="farm-theme-dot" style="background:${theme.bg}"></span>
         <span class="farm-theme-dot" style="background:${theme.panel}"></span>
@@ -8068,6 +8108,10 @@ function renderFarmThemeGrid() {
       </span>
       <span>${theme.label}</span>
     </button>`).join('');
+  const entries = Object.entries(FARM_THEMES);
+  grid.innerHTML = renderSwatches(entries.filter(([key]) => !FARM_NEW_THEME_KEYS.includes(key)));
+  const newGrid = document.getElementById('farm-theme-new-grid');
+  if (newGrid) newGrid.innerHTML = renderSwatches(entries.filter(([key]) => FARM_NEW_THEME_KEYS.includes(key)));
   renderFarmUserThemes();
 }
 
@@ -8094,6 +8138,7 @@ function renderFarmUserThemes() {
 function updateFarmThemeUI(key, theme) {
   document.querySelectorAll('[data-farm-theme]').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.farmTheme === key);
+    btn.setAttribute('aria-pressed', String(btn.dataset.farmTheme === key));
   });
   const inputs = {
     bg: document.getElementById('farm-theme-custom-bg'),
@@ -8103,7 +8148,11 @@ function updateFarmThemeUI(key, theme) {
     red: document.getElementById('farm-theme-custom-red'),
   };
   Object.entries(inputs).forEach(([field, input]) => {
-    if (input && theme[field]) input.value = theme[field];
+    if (input && theme[field]) {
+      input.value = theme[field];
+      const hex = document.getElementById(`farm-theme-hex-${field}`);
+      if (hex) hex.value = theme[field];
+    }
   });
 }
 
@@ -8193,8 +8242,50 @@ function applyFarmThemeLayout(settings, shouldSave = true) {
   }
 }
 
+// One bounded animation loop per background, paused offscreen and for reduced motion.
+function startFarmThemeFrameLoop(draw, isAlive = () => true) {
+  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let stopped = false, frame = null, last = -Infinity;
+  const visible = () => document.visibilityState !== 'hidden';
+  const canAnimate = () => !stopped && isAlive() && visible() && !motion.matches;
+  const cancel = () => {
+    if (frame !== null) cancelAnimationFrame(frame);
+    frame = null;
+  };
+  const schedule = () => {
+    if (frame === null && canAnimate()) frame = requestAnimationFrame(tick);
+  };
+  function tick(time) {
+    frame = null;
+    if (!canAnimate()) return;
+    if (time - last >= 1000 / 60 - 0.5) {
+      last = time;
+      draw();
+    }
+    schedule();
+  }
+  const redraw = () => {
+    cancel();
+    last = -Infinity;
+    if (!stopped && isAlive() && visible()) draw();
+    schedule();
+  };
+  document.addEventListener('visibilitychange', redraw);
+  motion.addEventListener('change', redraw);
+  redraw();
+  return {
+    redraw,
+    stop() {
+      stopped = true;
+      cancel();
+      document.removeEventListener('visibilitychange', redraw);
+      motion.removeEventListener('change', redraw);
+    },
+  };
+}
+
 function stopFarmThemeAnimation() {
-  if (farmThemeAnimation?.frame) cancelAnimationFrame(farmThemeAnimation.frame);
+  farmThemeAnimation?.loop?.stop();
   if (farmThemeAnimation?.resizeCleanup) farmThemeAnimation.resizeCleanup();
   if (farmThemeAnimation?.canvas?.parentNode) farmThemeAnimation.canvas.parentNode.removeChild(farmThemeAnimation.canvas);
   farmThemeAnimation = null;
@@ -8203,7 +8294,7 @@ function stopFarmThemeAnimation() {
 function applyFarmThemeEffect(effect, shouldSave = true) {
   const root = document.documentElement;
   document.body.classList.remove(
-    'farm-bg-pattern-none','farm-bg-pattern-dots','farm-bg-pattern-rain','farm-bg-pattern-synapse',
+    'farm-bg-pattern-none','farm-bg-pattern-dots','farm-bg-pattern-starlight','farm-bg-pattern-rain','farm-bg-pattern-synapse',
     'farm-bg-pattern-constellations','farm-bg-pattern-perlin-flow','farm-bg-pattern-petals','farm-bg-pattern-sparkles','farm-bg-pattern-embers'
   );
   document.body.classList.add(`farm-bg-pattern-${effect.pattern}`);
@@ -8211,8 +8302,9 @@ function applyFarmThemeEffect(effect, shouldSave = true) {
   root.style.setProperty('--farm-bg-effect-color', effect.color);
   root.style.setProperty('--farm-bg-effect-opacity', String(effect.intensity / 100));
   root.style.setProperty('--farm-bg-effect-size', String(effect.size));
+  root.style.setProperty('--farm-bg-effect-scale', String(effect.size / 100));
   stopFarmThemeAnimation();
-  if (!['none', 'dots'].includes(effect.pattern)) startFarmThemeAnimation(effect);
+  if (!['none', 'dots', 'starlight'].includes(effect.pattern)) startFarmThemeAnimation(effect);
   syncFarmEffectControls(effect);
   if (shouldSave) {
     try { localStorage.setItem(FARM_THEME_EFFECT_KEY, JSON.stringify(effect)); } catch(e) {}
@@ -8220,14 +8312,14 @@ function applyFarmThemeEffect(effect, shouldSave = true) {
 }
 
 function startFarmThemeAnimation(effect) {
-  // Per-pattern background animations — faithful ports of the odysseus theme
-  // engine, adapted to the single-canvas teardown model (farmThemeAnimation).
+  // Shared viewport canvas keeps background effects independent of page layout.
   const canvas = document.createElement('canvas');
   canvas.className = 'farm-bg-effect-canvas';
   canvas.setAttribute('aria-hidden', 'true');
   document.body.prepend(canvas);
   const ctx = canvas.getContext('2d');
-  const state = { canvas, ctx, frame: null, resizeCleanup: null };
+  if (!ctx) { canvas.remove(); return; }
+  const state = { canvas, ctx, loop: null, resizeCleanup: null };
   farmThemeAnimation = state;
   const alive = () => farmThemeAnimation === state;
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -8243,7 +8335,7 @@ function startFarmThemeAnimation(effect) {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   };
   const bindResize = (extra) => {
-    const handler = () => { sizeCanvas(); if (extra) extra(); };
+    const handler = () => { sizeCanvas(); if (extra) extra(); state.loop?.redraw(); };
     window.addEventListener('resize', handler, { passive: true });
     state.resizeCleanup = () => window.removeEventListener('resize', handler);
   };
@@ -8267,7 +8359,6 @@ function startFarmThemeAnimation(effect) {
     };
     const draw = () => {
       if (!alive()) return;
-      state.frame = requestAnimationFrame(draw);
       ctx.clearRect(0, 0, W, H);
       if (pulses.length < MAX_PULSES && Math.random() < 0.12) spawn();
       for (let i = pulses.length - 1; i >= 0; i--) {
@@ -8287,7 +8378,7 @@ function startFarmThemeAnimation(effect) {
       }
       ctx.globalAlpha = 1;
     };
-    draw();
+    state.loop = startFarmThemeFrameLoop(draw, alive);
   };
 
   // ── Rain — thin vertical streaks falling ──
@@ -8303,7 +8394,6 @@ function startFarmThemeAnimation(effect) {
     const speedMult = 0.35 + inten * 0.65;
     const draw = () => {
       if (!alive()) return;
-      state.frame = requestAnimationFrame(draw);
       ctx.clearRect(0, 0, W, H);
       if (drops.length < MAX_DROPS * inten && Math.random() < 0.6 * inten) spawn();
       for (let i = drops.length - 1; i >= 0; i--) {
@@ -8321,7 +8411,7 @@ function startFarmThemeAnimation(effect) {
       }
       ctx.globalAlpha = 1;
     };
-    draw();
+    state.loop = startFarmThemeFrameLoop(draw, alive);
   };
 
   // ── Constellations — drifting stars with proximity-connecting lines ──
@@ -8342,7 +8432,6 @@ function startFarmThemeAnimation(effect) {
     let t = 0;
     const draw = () => {
       if (!alive()) return;
-      state.frame = requestAnimationFrame(draw);
       t += 0.01;
       ctx.clearRect(0, 0, W, H);
       for (const s of stars) {
@@ -8370,7 +8459,7 @@ function startFarmThemeAnimation(effect) {
       }
       ctx.globalAlpha = 1;
     };
-    draw();
+    state.loop = startFarmThemeFrameLoop(draw, alive);
   };
 
   // ── Perlin Flow — particle streams following a noise field ──
@@ -8390,7 +8479,6 @@ function startFarmThemeAnimation(effect) {
     let t = 0;
     const draw = () => {
       if (!alive()) return;
-      state.frame = requestAnimationFrame(draw);
       ctx.fillStyle = fade;
       ctx.fillRect(0, 0, W, H);
       particles.forEach(p => {
@@ -8405,7 +8493,7 @@ function startFarmThemeAnimation(effect) {
       ctx.globalAlpha = 1;
       t++;
     };
-    draw();
+    state.loop = startFarmThemeFrameLoop(draw, alive);
   };
 
   // ── Petals — gentle falling flower petals ──
@@ -8422,7 +8510,6 @@ function startFarmThemeAnimation(effect) {
     sizeCanvas(); seed(); bindResize(seed);
     const draw = () => {
       if (!alive()) return;
-      state.frame = requestAnimationFrame(draw);
       ctx.clearRect(0, 0, W, H);
       petals.forEach(p => {
         p.y += p.vy; p.rot += p.vr; p.drift += p.driftSpeed;
@@ -8437,7 +8524,7 @@ function startFarmThemeAnimation(effect) {
       });
       ctx.globalAlpha = 1;
     };
-    draw();
+    state.loop = startFarmThemeFrameLoop(draw, alive);
   };
 
   // ── Sparkles — twinkling 4-point stars ──
@@ -8457,7 +8544,6 @@ function startFarmThemeAnimation(effect) {
     };
     const draw = () => {
       if (!alive()) return;
-      state.frame = requestAnimationFrame(draw);
       ctx.clearRect(0, 0, W, H);
       sparkles.forEach(s => {
         s.phase += s.speed;
@@ -8469,7 +8555,7 @@ function startFarmThemeAnimation(effect) {
       });
       ctx.globalAlpha = 1;
     };
-    draw();
+    state.loop = startFarmThemeFrameLoop(draw, alive);
   };
 
   // ── Embers — warm particles rising with glow and spark bursts ──
@@ -8485,7 +8571,6 @@ function startFarmThemeAnimation(effect) {
     sizeCanvas(); seed(); bindResize(seed);
     const draw = () => {
       if (!alive()) return;
-      state.frame = requestAnimationFrame(draw);
       ctx.globalCompositeOperation = 'destination-out';
       ctx.fillStyle = 'rgba(0,0,0,0.18)';
       ctx.fillRect(0, 0, W, H);
@@ -8526,7 +8611,7 @@ function startFarmThemeAnimation(effect) {
       }
       ctx.globalCompositeOperation = 'source-over';
     };
-    draw();
+    state.loop = startFarmThemeFrameLoop(draw, alive);
   };
 
   const runners = {
