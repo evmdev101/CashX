@@ -4618,11 +4618,14 @@
 <script src="./lib/burn-rankings.js?v=20261018-all-time"></script>
 <link rel="stylesheet" href="./styles/farm-changes.css?v=6aafa715bcd6">
 <script src="./lib/site-utilities.js?v=e957c18dd047"></script>
+<script src="./lib/transactions.js?v=20261029"></script>
+<script src="./lib/read-cache.js?v=20261029"></script>
 <link rel="stylesheet" href="./styles/site-utilities.css?v=a969ddfb835d">
 <link rel="stylesheet" href="./styles/navigation.css?v=20261017-larger-nav">
 <link rel="stylesheet" href="./styles/portfolio.css?v=20261024-stable-layout-2">
-<link rel="stylesheet" href="./styles/layout-stability.css?v=20261024-2">
+<link rel="stylesheet" href="./styles/layout-stability.css?v=20261030-rewards">
 <link rel="stylesheet" href="./styles/token-migration.css?v=20261027-2">
+<link rel="stylesheet" href="./styles/scrollbars.css?v=20261030">
 </head>
 <body>
 <div id="ls" aria-hidden="true">
@@ -9243,6 +9246,7 @@ const PULSE_ID     = 369;
   let vaultsLoading = false;
   let vaultRequestId = 0;
   let lastVaultResults = [];
+  let vaultResultsWallet = '';
   const vaultBrowseFilters = loadBrowsePreferences('vaults');
   const browseReadStatus = { farms: { at: 0, failed: false }, vaults: { at: 0, failed: false } };
   let claimAllBusy = false;
@@ -9541,7 +9545,7 @@ const PULSE_ID     = 369;
     farmsInitialized = true;
     renderFarmRankings();
     renderPlaceholderFarms(false);
-    fetchVaults();
+    if (farmProductView === 'vaults') fetchVaults();
     const provider = window.CashXWallets?.getActiveProvider?.() || window.ethereum;
     if (!provider) { showDisconnected(); return; }
     try {
@@ -9611,32 +9615,44 @@ const PULSE_ID     = 369;
     return map[key] || key || 'TOKEN';
   }
 
+  const publicContractReads = window.ReadCache.createCache();
   async function fetchTokenMeta(provider, address, fallbackSymbol) {
     const fallback = prettyFarmSymbol(fallbackSymbol);
     if (!provider || !address) return { symbol: fallback, decimals: 18 };
     try {
-      const tokenC = new ethers.Contract(address, TOKEN_META_ABI, provider);
-      const [decimals, symbol] = await Promise.all([
-        tokenC.decimals().catch(() => 18),
-        tokenC.symbol().catch(() => fallback)
-      ]);
-      return {
-        symbol: prettyFarmSymbol(symbol || fallback),
-        decimals: Number(decimals || 18)
-      };
-    } catch(e) {
-      return { symbol: fallback, decimals: 18 };
+      const meta = await publicContractReads.get(`369:meta:${address.toLowerCase()}`, async () => {
+        const token = new ethers.Contract(address, TOKEN_META_ABI, provider);
+        const [decimalsRead, symbolRead] = await Promise.allSettled([token.decimals(), token.symbol()]);
+        const digits = decimalsRead.status === 'fulfilled' ? Number(decimalsRead.value) : null;
+        const symbol = symbolRead.status === 'fulfilled' ? symbolRead.value : '';
+        const validDigits = digits !== null && Number.isInteger(digits) && digits >= 0 && digits <= 255;
+        if (!validDigits || typeof symbol !== 'string' || !symbol) {
+          throw Object.assign(Error('Token metadata unavailable'), {metadata:{decimals:validDigits ? digits : 18, symbol:typeof symbol === 'string' ? symbol : ''}});
+        }
+        return {decimals:digits, symbol};
+      });
+      return {decimals:meta.decimals, symbol:prettyFarmSymbol(meta.symbol)};
+    } catch (error) {
+      // Do not cache a fallback produced by a failed RPC read.
+      return {symbol:prettyFarmSymbol(error.metadata?.symbol || fallback), decimals:error.metadata?.decimals ?? 18};
     }
+  }
+
+  async function fetchLpMembers(provider, address) {
+    return publicContractReads.get(`369:members:${address.toLowerCase()}`, async () => {
+      const pair = new ethers.Contract(address, LP_ABI, provider);
+      const members = await Promise.all([pair.token0(), pair.token1()]);
+      if (!members.every(value => /^0x[0-9a-f]{40}$/i.test(String(value)))) throw Error('LP members unavailable');
+      return members;
+    });
   }
 
   async function deriveTokenPriceFromPair(provider, pairAddress, anchorAddress, anchorScaledPrice, targetAddress) {
     if (!provider || !pairAddress || !anchorAddress || !targetAddress || !(anchorScaledPrice > 0)) return null;
     try {
       const pairC = new ethers.Contract(pairAddress, LP_ABI, provider);
-      const [reserves, token0, token1] = await Promise.all([
-        pairC.getReserves(),
-        pairC.token0(),
-        pairC.token1()
+      const [reserves, [token0, token1]] = await Promise.all([
+        pairC.getReserves(), fetchLpMembers(provider, pairAddress)
       ]);
       const addresses = [String(token0).toLowerCase(), String(token1).toLowerCase()];
       const anchorIndex = addresses.indexOf(String(anchorAddress).toLowerCase());
@@ -9662,14 +9678,13 @@ const PULSE_ID     = 369;
 
   async function fetchLpBreakdown(provider, farm, lpAmount, token0Address = null, token1Address = null) {
     if (!provider || typeof lpAmount !== 'bigint') return null;
+    if (lpAmount === 0n) return null;
     if (farm.single) return null; // single-stake (e.g. DIVX) has no LP pair to break down
     try {
       const lpC = new ethers.Contract(farm.lp, LP_ABI, provider);
-      const [reserves, totalSupply, token0, token1] = await Promise.all([
-        lpC.getReserves(),
-        lpC.totalSupply(),
-        token0Address ? Promise.resolve(token0Address) : lpC.token0(),
-        token1Address ? Promise.resolve(token1Address) : lpC.token1()
+      const [[reserves, totalSupply], [token0, token1]] = await Promise.all([
+        publicContractReads.get(`369:reserves:${farm.lp.toLowerCase()}`, () => Promise.all([lpC.getReserves(), lpC.totalSupply()]), 1000),
+        token0Address && token1Address ? [token0Address, token1Address] : fetchLpMembers(provider, farm.lp)
       ]);
       if (typeof totalSupply !== 'bigint' || totalSupply <= 0n) return null;
       const reserve0 = BigInt(reserves.reserve0 ?? reserves[0] ?? 0);
@@ -9722,6 +9737,7 @@ const PULSE_ID     = 369;
   }
 
   function showDisconnected() {
+    resetVaultWallet();
     document.getElementById('rv-connected').style.display = 'flex';
     document.getElementById('rv-account-panels').style.display = 'none';
     document.getElementById('farms-wallet-connect-btn').style.display = '';
@@ -9751,7 +9767,7 @@ const PULSE_ID     = 369;
     cashxEcoNftState.userLoading = false;
     renderEcoNftFarmDom();
     refreshEcoNftPublicStats();
-    fetchVaults(true);
+    if (farmProductView === 'vaults') fetchVaults(true);
     setClaimAllStatus('');
     updateClaimAllButton([]);
   }
@@ -9802,6 +9818,7 @@ const PULSE_ID     = 369;
   }
 
   function onConnected() {
+    resetVaultWallet();
     window.sharedWalletAddr = wAddr;
     const t = trunc(wAddr);
     set('farms-wc-addr', t);
@@ -9812,7 +9829,7 @@ const PULSE_ID     = 369;
     fetchFarms();
     refreshNftFarmData();
     refreshEcoNftData();
-    fetchVaults(true);
+    if (farmProductView === 'vaults') fetchVaults(true);
   }
 
   function disconnectWallet() {
@@ -9824,7 +9841,7 @@ const PULSE_ID     = 369;
     showDisconnected();
   }
 
-  function refreshAll() { fetchBalances(); fetchRewards(); fetchFarms(); refreshNftFarmData(); refreshEcoNftData(); fetchVaults(true); }
+  function refreshAll() { fetchBalances(); fetchRewards(); fetchFarms(); refreshNftFarmData(); refreshEcoNftData(); if (farmProductView === 'vaults') fetchVaults(true); }
 
   async function fetchBalances() {
     if (!wProvider || !wAddr) return;
@@ -10293,6 +10310,8 @@ const PULSE_ID     = 369;
   }
 
   async function fetchVaults(force = false) {
+    resetVaultWallet();
+    if (!force && farmProductView !== 'vaults') return;
     if (vaultsLoading && !force) return;
     const requestId = ++vaultRequestId;
     const requestWallet = wAddr;
@@ -10400,7 +10419,18 @@ const PULSE_ID     = 369;
     }
   }
 
+  function resetVaultWallet() {
+    const wallet = String(wAddr || '').toLowerCase();
+    if (wallet === vaultResultsWallet) return;
+    vaultResultsWallet = wallet;
+    vaultRequestId++;
+    vaultsLoading = false;
+    lastVaultResults = [];
+    vaultMessages.clear();
+  }
+
   function setProductView(view) {
+    resetVaultWallet();
     farmProductView = view === 'vaults' ? 'vaults' : 'farms';
     const farmsPanel = document.getElementById('ecosystem-farms-panel');
     const vaultsPanel = document.getElementById('ecosystem-vaults-panel');
@@ -10441,20 +10471,6 @@ const PULSE_ID     = 369;
     try { return ethers.parseUnits(value, vault.stakeDecimals); } catch (error) { return null; }
   }
 
-  function setVaultBusy(id, busy) {
-    if (busy) {
-      vaultBusy.add(Number(id));
-      document.querySelectorAll(`#vault-card-${id} button, #vault-card-${id} input`).forEach(element => { element.disabled = true; });
-      return;
-    }
-    vaultBusy.delete(Number(id));
-    renderVaultResults();
-  }
-
-  async function waitForVaultTx(tx, id, label) {
-    return window.SiteUtilities.wait(tx, label, FARM_TX_WAIT_TIMEOUT_MS);
-  }
-
   function scheduleVaultRefresh() {
     fetchVaults(true);
     [2500, 7000, 15000, 30000].forEach(delay => setTimeout(() => {
@@ -10462,29 +10478,188 @@ const PULSE_ID     = 369;
     }, delay));
   }
 
-  async function approveVault(id) {
+  function trackedActionKey(wallet, kind, target, action) {
+    return `369:${wallet.toLowerCase()}:${kind}:${target}:${action}`;
+  }
+
+  function trackedActionButtons(record) {
+    const id = Number(record.target), action = record.action;
+    if (!Number.isInteger(id) || id < 0) return [];
+    let selectors = [];
+    if (record.kind === 'farm') {
+      const prefix = {approve:'farm-approve',stake:'farm-stake',unstake:'farm-unstake',claim:'farm-btn'}[action];
+      if (prefix) selectors = [`#${prefix}-${id}`];
+    } else if (record.kind === 'vault') {
+      const names = {approve:['ApproveVault'],deposit:['DepositVault'],withdraw:['WithdrawVault','WithdrawAllVault']}[action] || [];
+      selectors = names.map(name => `[onclick="farms${name}(${id})"]`);
+    } else if (record.kind === 'batch') selectors = ['#farms-claim-all-btn'];
+    else if (record.kind === 'nft' || record.kind === 'eco') {
+      const prefix = record.kind === 'nft' ? 'nft-farm' : 'cashx-eco-nft';
+      const suffix = {approve:'approve-btn',claim:'claim-btn',stake:'stake-btn',unstake:'unstake-btn'}[action];
+      if (suffix) selectors.push(`#${prefix}-${suffix}`);
+      const state = record.kind === 'nft' ? nftFarmState : cashxEcoNftState;
+      if (['stake','unstake'].includes(action) && state.mode === action) selectors.push(`#${prefix}-submit`);
+      if (action === 'stake') selectors.push(`#${prefix}-approve-btn`);
+    }
+    return selectors.flatMap(selector => [...document.querySelectorAll(selector)]);
+  }
+
+  function syncTrackedActions() {
+    const active = transactionTracker.pending().filter(r => r.wallet === String(wAddr).toLowerCase() &&
+      ['wallet','pending','uncertain'].includes(r.phase));
+    const buttons = new Map();
+    for (const record of active) {
+      for (const button of trackedActionButtons(record)) buttons.set(button, record);
+      if (record.kind === 'batch') for (const key of record.keys) {
+        const match = key.match(/:farm:(\d+):claim$/);
+        if (match) for (const button of document.querySelectorAll(`#farm-btn-${match[1]}`)) buttons.set(button, record);
+      }
+    }
+    document.querySelectorAll('[data-tracked-action]').forEach(button => {
+      if (buttons.has(button)) return;
+      button.disabled = button.dataset.txDisabled === 'true';
+      button.innerHTML = button.dataset.txLabel;
+      delete button.dataset.trackedAction; delete button.dataset.txLabel; delete button.dataset.txDisabled;
+    });
+    for (const [button, record] of buttons) {
+      if (!button.dataset.trackedAction) {
+        button.dataset.txLabel = button.innerHTML; button.dataset.txDisabled = String(button.disabled);
+        button.dataset.trackedAction = record.id;
+      }
+      button.disabled = true;
+      const text = record.phase === 'wallet' ? 'Check wallet…' : record.phase === 'uncertain' ? 'Checking…' : 'Pending…';
+      if (button.textContent !== text) button.textContent = text;
+    }
+    const statuses = new Map(active.map(record => [`${record.kind}:${record.target}`, record]));
+    for (const record of statuses.values()) {
+      if (!record.hash) continue;
+      const id = record.kind === 'farm' ? `farm-msg-${record.target}` : record.kind === 'vault' ? `vault-msg-${record.target}`
+        : record.kind === 'nft' ? 'nft-farm-transaction' : record.kind === 'eco' ? 'cashx-eco-nft-transaction' : 'farms-claim-all-status';
+      const status = document.getElementById(id);
+      if (status && !status.querySelector(`a[href="${pulseScanTxLink(record.hash)}"]`)) trackedActionStatus(record);
+    }
+  }
+
+  function trackedActionStatus(record) {
+    if (record.wallet !== String(wAddr).toLowerCase()) return;
+    if (record.phase === 'wallet') return;
+    const pending = ['wallet','pending','uncertain'].includes(record.phase);
+    if (!pending && !['confirmed','failed','cancelled'].includes(record.phase)) return;
+    const isError = ['failed','cancelled'].includes(record.phase);
+    const text = record.phase === 'wallet' ? 'Confirm in your wallet.' : record.phase === 'uncertain'
+      ? 'Checking submission in the background. You can keep using the site.'
+      : record.phase === 'cancelled' ? 'Cancelled in wallet.' : record.phase === 'failed'
+      ? 'Transaction reverted.' : record.phase === 'confirmed' ? 'Transaction confirmed.' : 'Transaction pending.';
+    const html = record.hash && /^0x[0-9a-f]{64}$/i.test(record.hash)
+      ? `${text} <a href="${pulseScanTxLink(record.hash)}" target="_blank" rel="noopener">View transaction ↗</a>` : text;
+    if (record.kind === 'farm') setFarmStatus(record.target, html, isError, true);
+    else if (record.kind === 'vault') vaultStatus(record.target, html, isError, true);
+    else if (record.kind === 'nft') setNftFarmStatus(text, isError, record.hash);
+    else if (record.kind === 'eco') setEcoNftStatus(text, isError, record.hash);
+    else if (record.kind === 'batch') {
+      setClaimAllStatus(text, isError);
+      const node = document.getElementById('farms-claim-all-status');
+      if (node) node.innerHTML = html;
+    }
+  }
+
+  const transactionTracker = window.SiteTransactions.createTracker({
+    storage: (() => {try {return localStorage;} catch (_) {return null;}})(),
+    readReceipt: record => readProvider().getTransactionReceipt(record.hash),
+    locateTransaction: async record => {
+      if (!Number.isInteger(record.block) || !Number.isInteger(record.nonce) || !record.to || !record.data) return null;
+      const reader = readProvider(), head = await reader.getBlockNumber();
+      // Advance a bounded scan without skipping blocks on transient RPC failures.
+      const last = Math.min(head, record.block + 19);
+      for (let block = record.block; block <= last; block++) {
+        const data = await reader.getBlock(block, true);
+        if (!data) break;
+        for (const tx of data.prefetchedTransactions) if (String(tx.from).toLowerCase() === record.wallet) {
+          const matches = String(tx.to).toLowerCase() === record.to && String(tx.data).toLowerCase() === record.data && String(tx.value) === record.value;
+          if (matches && (!record.nonceKnown || tx.nonce === record.nonce)) return {hash:tx.hash, nonce:tx.nonce};
+          if (record.nonceKnown && tx.nonce === record.nonce) return {hash:tx.hash, cancelled:true};
+        }
+        record.block = block + 1;
+      }
+      return null;
+    },
+    onChange(record) {trackedActionStatus(record); syncTrackedActions();},
+    onSettled(record) {
+      if (record.wallet !== String(wAddr).toLowerCase()) return;
+      if (record.kind === 'vault') scheduleVaultRefresh();
+      else if (record.kind === 'nft') scheduleNftFarmRefresh();
+      else if (record.kind === 'eco') scheduleEcoNftRefresh();
+      else if (record.kind === 'farm') scheduleFarmRefresh(Number(record.target));
+      else if (record.kind === 'batch') for (const key of record.keys) {
+        const match = key.match(/:farm:(\d+):claim$/); if (match) scheduleFarmRefresh(Number(match[1]));
+      }
+    }
+  });
+  // Reapply action states when filtering, switching views, or a balance refresh rebuilds a card.
+  let trackedRenderQueued = false;
+  new MutationObserver(() => {
+    if (trackedRenderQueued) return;
+    trackedRenderQueued = true;
+    queueMicrotask(() => {trackedRenderQueued = false; syncTrackedActions();});
+  }).observe(document.getElementById('farms-view'), {childList:true, subtree:true});
+
+  async function runTrackedAction(kind, target, action, operation) {
+    if (!wProvider || !wAddr) {await connectWallet(); if (!wProvider || !wAddr) return;}
+    const wallet = wAddr.toLowerCase(), provider = wProvider;
+    const keys = [trackedActionKey(wallet, kind, target, action)];
+    if (kind === 'batch') for (const result of farmClaimableResults()) keys.push(trackedActionKey(wallet, 'farm', result.pid, 'claim'));
+    if (['nft','eco'].includes(kind) && action === 'stake') keys.push(trackedActionKey(wallet, kind, target, 'approve'));
+    try {
+      return await transactionTracker.run({keys, wallet, chainId:369, kind, target, action,
+        isCurrent: () => String(wAddr).toLowerCase() === wallet && provider === wProvider,
+        async assertCurrent() {
+          if (String(wAddr).toLowerCase() !== wallet || provider !== wProvider) throw new Error('Wallet changed; transaction tracking continues for the original wallet');
+          const signer = await provider.getSigner();
+          if ((await signer.getAddress()).toLowerCase() !== wallet || Number((await provider.getNetwork()).chainId) !== 369) throw new Error('Wallet or network changed');
+        },
+        async checkpoint() {
+          const reader = readProvider();
+          const [nonce, block] = await Promise.all([reader.getTransactionCount(wallet, 'pending'), reader.getBlockNumber()]);
+          return {nonce, block};
+        }
+      }, operation);
+    } catch (error) {
+      if (String(wAddr).toLowerCase() !== wallet) return;
+      const text = window.SiteTransactions.cancelled(error) ? 'Cancelled in wallet.' : friendlyFarmError(error?.shortMessage || error?.message || '');
+      if (kind === 'farm') setFarmStatus(target, text, true);
+      else if (kind === 'vault') vaultStatus(target, text, true);
+      else if (kind === 'nft') setNftFarmStatus(text, true);
+      else if (kind === 'eco') setEcoNftStatus(text, true);
+      else setClaimAllStatus(text, true);
+    }
+  }
+
+  // Resume submitted hashes on page load without asking the wallet to send anything again.
+  queueMicrotask(() => transactionTracker.resume());
+
+  async function approveVault(id, txAction) {
+    if (!txAction) return runTrackedAction('vault', id, 'approve', context => approveVault(id, context));
     if (!await ensureVaultWallet()) return;
     const vault = vaultResult(id);
     if (!vault) return;
-    setVaultBusy(id, true);
     vaultStatus(id, '');
     try {
       const signer = await wProvider.getSigner();
       const token = new ethers.Contract(vault.stakeToken, LP_ABI, signer);
-      const tx = await window.SiteUtilities.send(() => token.approve(NEXION_FLUX_VAULT_MANAGER, ethers.MaxUint256));
-      const receipt = await waitForVaultTx(tx, id, 'Approval submitted');
+      const tx = await txAction.send(token, 'approve', [NEXION_FLUX_VAULT_MANAGER, ethers.MaxUint256]);
+      const receipt = await txAction.wait(tx, 'Approval submitted');
       if (receipt) {
         vaultStatus(id, '✓ LP spending approved');
         scheduleVaultRefresh();
       }
     } catch (error) {
+      if (!txAction.isCurrent()) return;
       vaultStatus(id, `✗ ${friendlyFarmError(error?.shortMessage || error?.reason || error?.message || '')}`, true);
-    } finally {
-      setVaultBusy(id, false);
     }
   }
 
-  async function depositVault(id) {
+  async function depositVault(id, txAction) {
+    if (!txAction) return runTrackedAction('vault', id, 'deposit', context => depositVault(id, context));
     if (!await ensureVaultWallet()) return;
     const vault = vaultResult(id);
     if (!vault) return;
@@ -10493,25 +10668,24 @@ const PULSE_ID     = 369;
     if (amount > vault.walletBalance) return vaultStatus(id, '✗ Amount exceeds your wallet balance', true);
     if (amount > vault.allowance) return vaultStatus(id, '✗ Approve this LP token before depositing', true);
     if (vault.paused) return vaultStatus(id, '✗ Nexion vault deposits are currently paused', true);
-    setVaultBusy(id, true);
     vaultStatus(id, '');
     try {
       const signer = await wProvider.getSigner();
       const manager = new ethers.Contract(NEXION_FLUX_VAULT_MANAGER, FLUX_VAULT_MANAGER_ABI, signer);
-      const tx = await window.SiteUtilities.send(() => manager.deposit(id, amount));
-      const receipt = await waitForVaultTx(tx, id, 'Vault deposit submitted');
+      const tx = await txAction.send(manager, 'deposit', [id, amount]);
+      const receipt = await txAction.wait(tx, 'Vault deposit submitted');
       if (receipt) {
         vaultStatus(id, '✓ Deposit confirmed');
         scheduleVaultRefresh();
       }
     } catch (error) {
+      if (!txAction.isCurrent()) return;
       vaultStatus(id, `✗ ${friendlyFarmError(error?.shortMessage || error?.reason || error?.message || '')}`, true);
-    } finally {
-      setVaultBusy(id, false);
     }
   }
 
-  async function withdrawVault(id) {
+  async function withdrawVault(id, txAction) {
+    if (!txAction) return runTrackedAction('vault', id, 'withdraw', context => withdrawVault(id, context));
     if (!await ensureVaultWallet()) return;
     const vault = vaultResult(id);
     if (!vault) return;
@@ -10522,43 +10696,40 @@ const PULSE_ID     = 369;
     let shares = assetAmount * vault.userShares / vault.userAssets;
     if (10000n * assetAmount >= 9999n * vault.userAssets || shares > vault.userShares) shares = vault.userShares;
     if (shares <= 0n) return vaultStatus(id, '✗ Amount is too small to withdraw', true);
-    setVaultBusy(id, true);
     vaultStatus(id, '');
     try {
       const signer = await wProvider.getSigner();
       const manager = new ethers.Contract(NEXION_FLUX_VAULT_MANAGER, FLUX_VAULT_MANAGER_ABI, signer);
-      const tx = await window.SiteUtilities.send(() => manager.withdraw(id, shares));
-      const receipt = await waitForVaultTx(tx, id, 'Vault withdrawal submitted');
+      const tx = await txAction.send(manager, 'withdraw', [id, shares]);
+      const receipt = await txAction.wait(tx, 'Vault withdrawal submitted');
       if (receipt) {
         vaultStatus(id, '✓ Withdrawal confirmed');
         scheduleVaultRefresh();
       }
     } catch (error) {
+      if (!txAction.isCurrent()) return;
       vaultStatus(id, `✗ ${friendlyFarmError(error?.shortMessage || error?.reason || error?.message || '')}`, true);
-    } finally {
-      setVaultBusy(id, false);
     }
   }
 
-  async function withdrawAllVault(id) {
+  async function withdrawAllVault(id, txAction) {
+    if (!txAction) return runTrackedAction('vault', id, 'withdraw', context => withdrawAllVault(id, context));
     if (!await ensureVaultWallet()) return;
     const vault = vaultResult(id);
     if (!vault || vault.userShares <= 0n) return vaultStatus(id, '✗ Nothing to withdraw', true);
-    setVaultBusy(id, true);
     vaultStatus(id, '');
     try {
       const signer = await wProvider.getSigner();
       const manager = new ethers.Contract(NEXION_FLUX_VAULT_MANAGER, FLUX_VAULT_MANAGER_ABI, signer);
-      const tx = await window.SiteUtilities.send(() => manager.withdrawAll(id));
-      const receipt = await waitForVaultTx(tx, id, 'Withdraw all submitted');
+      const tx = await txAction.send(manager, 'withdrawAll', [id]);
+      const receipt = await txAction.wait(tx, 'Withdraw all submitted');
       if (receipt) {
         vaultStatus(id, '✓ Full withdrawal confirmed');
         scheduleVaultRefresh();
       }
     } catch (error) {
+      if (!txAction.isCurrent()) return;
       vaultStatus(id, `✗ ${friendlyFarmError(error?.shortMessage || error?.reason || error?.message || '')}`, true);
-    } finally {
-      setVaultBusy(id, false);
     }
   }
 
@@ -10567,20 +10738,21 @@ const PULSE_ID     = 369;
   // keeps values consistent on every refresh — nothing gets rate-limited.
   async function fetchFarmPriceMaps(provider, matched) {
     const priceC = new ethers.Contract(NEXION_LP_CALCULATOR, NEXION_PRICE_ABI, provider);
-    const lpFarms = matched.filter(m => !m.farm.single);
-    const singleFarms = matched.filter(m => m.farm.single);
-    const rewardList = [...new Set(matched.map(m => String(farmRewardAddress(m.farm)).toLowerCase()))];
-    const [lpVals, singleVals, rewardVals] = await Promise.all([
-      lpFarms.length ? retry(() => priceC.getBatchLpValue(lpFarms.map(m => m.farm.lp))).catch(() => []) : [],
-      singleFarms.length ? retry(() => priceC.getBatchPrice(singleFarms.map(m => m.farm.lp))).catch(() => []) : [],
-      rewardList.length ? retry(() => priceC.getBatchPrice(rewardList)).catch(() => []) : []
+    const lpAddresses = [...new Set(matched.filter(m => !m.farm.single).map(m => m.farm.lp.toLowerCase()))].sort();
+    const tokenAddresses = [...new Set([
+      ...matched.filter(m => m.farm.single).map(m => m.farm.lp.toLowerCase()),
+      ...matched.map(m => String(farmRewardAddress(m.farm)).toLowerCase())
+    ])].sort();
+    const [lpVals, tokenVals] = await Promise.all([
+      lpAddresses.length ? publicContractReads.get(`369:lp-prices:${lpAddresses.join(',')}`,
+        () => retry(() => priceC.getBatchLpValue(lpAddresses)), 1000).catch(() => []) : [],
+      tokenAddresses.length ? publicContractReads.get(`369:token-prices:${tokenAddresses.join(',')}`,
+        () => retry(() => priceC.getBatchPrice(tokenAddresses)), 1000).catch(() => []) : []
     ]);
-    const stakePriceOf = new Map();
-    lpFarms.forEach((m, i) => stakePriceOf.set(m.farm.lp.toLowerCase(), lpVals[i]));
-    singleFarms.forEach((m, i) => stakePriceOf.set(m.farm.lp.toLowerCase(), singleVals[i]));
-    const rewardPriceOf = new Map();
-    rewardList.forEach((a, i) => rewardPriceOf.set(a, rewardVals[i]));
-    return { stakePriceOf, rewardPriceOf };
+    const tokenPrices = new Map(tokenAddresses.map((address, index) => [address, tokenVals[index]]));
+    const stakePriceOf = new Map(lpAddresses.map((address, index) => [address, lpVals[index]]));
+    for (const {farm} of matched) if (farm.single) stakePriceOf.set(farm.lp.toLowerCase(), tokenPrices.get(farm.lp.toLowerCase()));
+    return {stakePriceOf, rewardPriceOf:tokenPrices};
   }
   function prefetchedPrices(maps, farm) {
     return {
@@ -10628,7 +10800,7 @@ const PULSE_ID     = 369;
     const completed = new Map();
     return result => {
       completed.set(result.farm.label, result);
-      if (isCurrent() && completed.size % 8 === 0 && !document.activeElement?.closest('#farms-body input')) {
+      if (isCurrent() && (completed.size === 1 || completed.size % 8 === 0) && !document.activeElement?.closest('#farms-body input')) {
         renderFarmResults(lastFarmResults.map(r => completed.get(r.farm.label) || r));
         set('farm-refresh-status', `Updating farms · ${completed.size} of ${FARMS.length} checked`);
       }
@@ -10659,12 +10831,12 @@ const PULSE_ID     = 369;
       const results = await mapLimit(matched, 8, async ({ farm, pid }) => {
         try {
           const lpC = new ethers.Contract(farm.lp, LP_ABI, provider);
-          const [poolInfo, totalStaked, token0, token1] = await Promise.all([
+          const [poolInfo, totalStaked, members] = await Promise.all([
             retry(() => farmC.poolInfo(pid)).catch(() => null),
             lpC.balanceOf(FARM_CONTRACT).catch(() => null),
-            farm.single ? null : lpC.token0().catch(() => null),
-            farm.single ? null : lpC.token1().catch(() => null)
+            farm.single ? null : fetchLpMembers(provider, farm.lp).catch(() => null)
           ]);
+          const [token0, token1] = members || [];
           const valuation = await fetchNexionValuation(provider, farm, poolInfo, totalStaked, 0n, 0n, prefetchedPrices(priceMaps, farm));
           return publish({ farm, pid, readAt: Date.now(), staked: 0n, pending: 0n, walletLp: 0n, poolInfo, totalStaked, valuation, lpTokens: token0 && token1 ? [token0, token1] : null, countdownEnd: Number(poolInfo?.endTime ?? poolInfo?.[5] ?? 0) * 1000 || null, disconnected: true });
         } catch(e) {
@@ -10856,35 +11028,62 @@ const PULSE_ID     = 369;
         return;
       }
 
-      // Fetch every farm's prices in a few batched calls (fast + consistent).
-      const priceMaps = await fetchFarmPriceMaps(rp, matched);
-
-      // Step 4: Fetch user data + wallet LP balance for ALL matched farms
+      // Finish the small wallet reads before starting prices, LP reserves and metadata.
+      // Shared LPs across different pools reuse reads only within this pass, never across wallet refreshes.
+      const reads = new Map();
+      const shared = (key, load) => {
+        if (!reads.has(key)) reads.set(key, Promise.resolve().then(load));
+        return reads.get(key);
+      };
+      const publishBalances = farmBatchProgress(isCurrent);
+      const balances = await mapLimit(matched, 8, async ({farm, pid}) => {
+        const previous = lastFarmResults.find(r => r.farm.label === farm.label && r.walletAddress === shareWallet);
+        const readAt = Date.now();
+        try {
+          const lpC = new ethers.Contract(farm.lp, LP_ABI, rp);
+          const lpKey = farm.lp.toLowerCase();
+          const [userInfo, pending, walletLp, allowance] = await Promise.all([
+            farmC.userInfo(pid, shareWallet), farmC.pendingReward(pid, shareWallet),
+            shared(`wallet:${lpKey}`, () => lpC.balanceOf(shareWallet)),
+            shared(`allowance:${lpKey}`, () => lpC.allowance(shareWallet, FARM_CONTRACT))
+          ]);
+          const staked = userInfo.amount ?? userInfo[0] ?? 0n;
+          const valuation = {...(previous?.valuation || {}), userStaked:fmtFarm(staked),
+            pending:fmtFarmFixed(pending, 2, farmTokenDec(farmRewardAddress(farm))), userStakedUsd:'—', pendingUsd:'—'};
+          return publishBalances({...previous, farm, pid, walletAddress:shareWallet, readAt, staked, pending, walletLp, allowance,
+            valuation, cached:true, disconnected:false, detailsLoading:true, shareValid:false, error:null});
+        } catch (error) {
+          return publishBalances(previous ? {...previous, error:'Readings unavailable', detailsLoading:false}
+            : {farm, pid, walletAddress:shareWallet, staked:0n, pending:0n, walletLp:0n, error:'Readings unavailable'});
+        }
+      });
+      if (!isCurrent()) return;
+      renderFarmResults(balances);
+      set('farm-refresh-status', 'Balances updated · Calculating prices and farm details…');
+      const priceRequest = fetchFarmPriceMaps(rp, matched);
       const publish = farmBatchProgress(isCurrent);
-      const results = await mapLimit(matched, 8, async ({ farm, pid }) => {
-          try {
-            const lpC = new ethers.Contract(farm.lp, LP_ABI, rp);
-            const [userInfo, pending, walletLp, allowance, totalStaked, poolInfo, token0, token1] = await Promise.all([
-              farmC.userInfo(pid, shareWallet),
-              farmC.pendingReward(pid, shareWallet),
-              lpC.balanceOf(shareWallet),
-              lpC.allowance(shareWallet, FARM_CONTRACT),
-              lpC.balanceOf(FARM_CONTRACT).catch(() => null),
-              retry(() => farmC.poolInfo(pid)).catch(() => null),
-              farm.single ? null : lpC.token0().catch(() => null),
-              farm.single ? null : lpC.token1().catch(() => null)
-            ]);
-            const staked = userInfo.amount ?? userInfo[0] ?? 0n;
-            const [valuation, lpBreakdown] = await Promise.all([
-              fetchNexionValuation(rp, farm, poolInfo, totalStaked, staked, pending, prefetchedPrices(priceMaps, farm)),
-              fetchLpBreakdown(rp, farm, staked, token0, token1)
-            ]);
-            return publish({ farm, pid, walletAddress: shareWallet, readAt: Date.now(), staked, pending, walletLp, allowance, totalStaked, poolInfo, valuation, lpBreakdown, shareValid: typeof (userInfo.amount ?? userInfo[0]) === 'bigint', lpTokens: token0 && token1 ? [token0, token1] : null, countdownEnd: Number(poolInfo?.endTime ?? poolInfo?.[5] ?? 0) * 1000 || null, error: null });
-          } catch(err) {
-            console.error(`${farm.label} (pid=${pid}) FAILED:`, err.message || err);
-            const previous = lastFarmResults.find(r => r.farm.label === farm.label && r.walletAddress === shareWallet && r.valuation);
-            return publish(previous ? { ...previous, error: 'Readings unavailable' } : { farm, pid, walletAddress: shareWallet, staked: 0n, pending: 0n, walletLp: 0n, totalStaked: null, countdownEnd: null, error: 'Readings unavailable' });
-          }
+      const results = await mapLimit(balances, 8, async row => {
+        if (row.error) return publish(row);
+        const {farm, pid, staked, pending} = row;
+        try {
+          const lpC = new ethers.Contract(farm.lp, LP_ABI, rp);
+          const [poolInfo, totalStaked, members, priceMaps] = await Promise.all([
+            retry(() => farmC.poolInfo(pid)).catch(() => null),
+            shared(`supply:${farm.lp.toLowerCase()}`, () => lpC.balanceOf(FARM_CONTRACT)).catch(() => null),
+            farm.single ? null : fetchLpMembers(rp, farm.lp).catch(() => null), priceRequest
+          ]);
+          const [token0, token1] = members || [];
+          const [valuation, lpBreakdown] = await Promise.all([
+            fetchNexionValuation(rp, farm, poolInfo, totalStaked, staked, pending, prefetchedPrices(priceMaps, farm)),
+            fetchLpBreakdown(rp, farm, staked, token0, token1)
+          ]);
+          const newer = lastFarmResults.find(r => r.pid === pid && r.walletAddress === shareWallet && !r.cached && r.readAt > row.readAt);
+          if (newer) return publish(newer);
+          return publish({...row, cached:false, detailsLoading:false, shareValid:true, poolInfo, totalStaked, valuation, lpBreakdown,
+            lpTokens:members, countdownEnd:Number(poolInfo?.endTime ?? poolInfo?.[5] ?? 0) * 1000 || null});
+        } catch (error) {
+          return publish({...row, detailsLoading:false, error:'Farm details unavailable'});
+        }
       });
 
       // Step 5: Show ALL farms (not just staked ones)
@@ -11037,7 +11236,8 @@ const PULSE_ID     = 369;
       const rewardSymbol = farmRewardSymbol(farm, poolInfo);
       const rewardAddress = farmRewardAddress(farm, poolInfo);
       let stakeScaledPrice, rewardScaledPrice;
-      if (prefetched && prefetched.stakeScaledPrice != null && prefetched.rewardScaledPrice != null) {
+      if (prefetched) {
+        if (prefetched.stakeScaledPrice == null || prefetched.rewardScaledPrice == null) return null;
         // Use batched prices fetched once for all farms (fast + consistent).
         stakeScaledPrice = Number(prefetched.stakeScaledPrice);
         rewardScaledPrice = Number(prefetched.rewardScaledPrice);
@@ -11408,7 +11608,7 @@ const PULSE_ID     = 369;
         </div>
         ${claimRowHTML}
 
-        <span class="farm-tx-msg err" id="farm-read-msg-${r.pid}" role="status" style="display:${r.error ? 'flex' : 'none'}">${r.error ? 'Readings unavailable · retrying' : ''}</span>
+        <span class="farm-tx-msg err" id="farm-read-msg-${r.pid}" role="status" style="display:${r.error || r.detailsLoading ? 'flex' : 'none'}">${r.detailsLoading ? 'Balances updated · Prices updating…' : r.error ? 'Readings unavailable · retrying' : ''}</span>
         <span class="farm-tx-msg" id="farm-msg-${r.pid}"></span>
 
         <div class="farm-amount-wrap">
@@ -11667,7 +11867,7 @@ const PULSE_ID     = 369;
                   </div>
                 </div>
                 <div class="farm-table-controls">
-                  <span class="farm-tx-msg err" id="farm-read-msg-${r.pid}" role="status" style="display:${r.error ? 'flex' : 'none'}">${r.error ? 'Readings unavailable · retrying' : ''}</span>
+                  <span class="farm-tx-msg err" id="farm-read-msg-${r.pid}" role="status" style="display:${r.error || r.detailsLoading ? 'flex' : 'none'}">${r.detailsLoading ? 'Balances updated · Prices updating…' : r.error ? 'Readings unavailable · retrying' : ''}</span>
         <span class="farm-tx-msg" id="farm-msg-${r.pid}"></span>
                   <div class="farm-amount-wrap">
                     <input class="farm-amount-input" id="farm-input-${r.pid}"
@@ -11959,6 +12159,12 @@ const PULSE_ID     = 369;
   }
 
   function updateFarmSummaries(results = lastFarmResults) {
+    if (results.some(r => r.detailsLoading)) {
+      set('farms-total-claimable', '—');
+      set('farms-total-user-staked', '—');
+      updateClaimAllButton(results);
+      return;
+    }
     const lpFarmTvl = results.reduce((sum, r) => {
       const valuationTvl = r.valuation?.tvl;
       const metaTvl = farmMeta(r.farm).tvl;
@@ -12944,10 +13150,6 @@ const PULSE_ID     = 369;
     return 'Transaction failed. Nothing was moved; please try again.';
   }
 
-  async function waitForNftFarmTx(tx, label) {
-    return window.SiteUtilities.wait(tx, label, FARM_TX_WAIT_TIMEOUT_MS);
-  }
-
   function scheduleNftFarmRefresh() {
     refreshNftFarmData();
     [2500, 7000, 15000, 30000].forEach(delay => setTimeout(() => {
@@ -12955,13 +13157,13 @@ const PULSE_ID     = 369;
     }, delay));
   }
 
-  async function submitNftSelection() {
+  async function submitNftSelection(txAction) {
+    if (!txAction) return runTrackedAction('nft', 0, nftFarmState.mode, context => submitNftSelection(context));
     if (nftFarmState.busy || nftFarmState.selected.size === 0) return;
     if (!await ensureNftFarmWallet()) return;
     const tokenIds = [...nftFarmState.selected].map(value => BigInt(value));
     const mode = nftFarmState.mode;
     setNftFarmStatus('', false);
-    nftFarmState.busy = true;
     renderNftFarmDom();
     renderNftFarmModal();
     try {
@@ -12971,26 +13173,27 @@ const PULSE_ID     = 369;
         const nftC = new ethers.Contract(CASHMONEY_NFT_COLLECTION, CASHMONEY_NFT_ABI, signer);
         const approved = await nftC.isApprovedForAll(wAddr, NEXION_NFT_FARM_CONTRACT);
         if (!approved) {
-          const approvalTx = await window.SiteUtilities.send(() => nftC.setApprovalForAll(NEXION_NFT_FARM_CONTRACT, true));
-          const approvalReceipt = await waitForNftFarmTx(approvalTx, 'NFT approval');
+          const approvalTx = await txAction.send(nftC, 'setApprovalForAll', [NEXION_NFT_FARM_CONTRACT, true]);
+          const approvalReceipt = await txAction.wait(approvalTx, 'NFT approval');
           if (!approvalReceipt) return;
           nftFarmState.approved = true;
         } else {
           nftFarmState.approved = true;
         }
         const fee = await farmC.calculateDepositFee(NEXION_NFT_POOL_ID, tokenIds.length);
-        const stakeTx = await window.SiteUtilities.send(() => farmC.depositNFTs(NEXION_NFT_POOL_ID, tokenIds, { value: fee }));
-        const receipt = await waitForNftFarmTx(stakeTx, `Stake ${tokenIds.length} NFT${tokenIds.length === 1 ? '' : 's'}`);
+        const stakeTx = await txAction.send(farmC, 'depositNFTs', [NEXION_NFT_POOL_ID, tokenIds, { value: fee }]);
+        const receipt = await txAction.wait(stakeTx, `Stake ${tokenIds.length} NFT${tokenIds.length === 1 ? '' : 's'}`);
         if (!receipt) return;
       } else {
-        const unstakeTx = await window.SiteUtilities.send(() => farmC.withdrawNFTs(NEXION_NFT_POOL_ID, tokenIds));
-        const receipt = await waitForNftFarmTx(unstakeTx, `Unstake ${tokenIds.length} NFT${tokenIds.length === 1 ? '' : 's'}`);
+        const unstakeTx = await txAction.send(farmC, 'withdrawNFTs', [NEXION_NFT_POOL_ID, tokenIds]);
+        const receipt = await txAction.wait(unstakeTx, `Unstake ${tokenIds.length} NFT${tokenIds.length === 1 ? '' : 's'}`);
         if (!receipt) return;
       }
       nftFarmState.selected.clear();
       await refreshNftFarmData();
       loadNftMetadataForTokens(nftFarmTokenIds());
     } catch(err) {
+      if (!txAction.isCurrent()) return;
       console.error(`NFT ${mode} failed:`, err);
       setNftFarmStatus(nftFarmFriendlyError(err), true);
     } finally {
@@ -13001,18 +13204,19 @@ const PULSE_ID     = 369;
     }
   }
 
-  async function approveNftFarm() {
+  async function approveNftFarm(txAction) {
+    if (!txAction) return runTrackedAction('nft', 0, 'approve', context => approveNftFarm(context));
     if (nftFarmState.busy || nftFarmState.approved || !await ensureNftFarmWallet()) return;
     setNftFarmStatus('', false);
-    nftFarmState.busy = true;
     renderNftFarmDom();
     try {
       const signer = await wProvider.getSigner();
       const nftC = new ethers.Contract(CASHMONEY_NFT_COLLECTION, CASHMONEY_NFT_ABI, signer);
-      const tx = await window.SiteUtilities.send(() => nftC.setApprovalForAll(NEXION_NFT_FARM_CONTRACT, true));
-      const receipt = await waitForNftFarmTx(tx, 'NFT approval');
+      const tx = await txAction.send(nftC, 'setApprovalForAll', [NEXION_NFT_FARM_CONTRACT, true]);
+      const receipt = await txAction.wait(tx, 'NFT approval');
       if (receipt) nftFarmState.approved = true;
     } catch(err) {
+      if (!txAction.isCurrent()) return;
       console.error('NFT farm approval failed:', err);
       setNftFarmStatus(nftFarmFriendlyError(err), true);
     } finally {
@@ -13022,21 +13226,21 @@ const PULSE_ID     = 369;
     }
   }
 
-  async function claimNftRewards() {
+  async function claimNftRewards(txAction) {
+    if (!txAction) return runTrackedAction('nft', 0, 'claim', context => claimNftRewards(context));
     if (nftFarmState.busy || !await ensureNftFarmWallet()) return;
     if (!nftFarmState.pendingRewards.some(reward => reward.amount > 0n)) {
       setNftFarmStatus('No NFT farm rewards are currently claimable.', false);
       return;
     }
     setNftFarmStatus('', false);
-    nftFarmState.busy = true;
     renderNftFarmDom();
     try {
       const signer = await wProvider.getSigner();
       const farmC = new ethers.Contract(NEXION_NFT_FARM_CONTRACT, NEXION_NFT_FARM_ABI, signer);
-      const tx = await window.SiteUtilities.send(() => farmC.claimRewards(NEXION_NFT_POOL_ID));
+      const tx = await txAction.send(farmC, 'claimRewards', [NEXION_NFT_POOL_ID]);
       const rewardLabel = nftFarmState.rewards.map(reward => reward.symbol).filter(Boolean).join(' + ') || nftFarmState.rewardSymbol;
-      const receipt = await waitForNftFarmTx(tx, `Claim ${rewardLabel}`);
+      const receipt = await txAction.wait(tx, `Claim ${rewardLabel}`);
       if (receipt) {
         nftFarmState.pending = 0n;
         nftFarmState.pendingRewards = nftFarmState.pendingRewards.map(reward => ({ ...reward, amount: 0n }));
@@ -13044,6 +13248,7 @@ const PULSE_ID     = 369;
         updateFarmSummaries(lastFarmResults);
       }
     } catch(err) {
+      if (!txAction.isCurrent()) return;
       console.error('NFT reward claim failed:', err);
       setNftFarmStatus(nftFarmFriendlyError(err), true);
     } finally {
@@ -13486,10 +13691,10 @@ const PULSE_ID     = 369;
     }, delay));
   }
 
-  async function submitEcoNftSelection() {
+  async function submitEcoNftSelection(txAction) {
+    if (!txAction) return runTrackedAction('eco', 1, cashxEcoNftState.mode, context => submitEcoNftSelection(context));
     if (cashxEcoNftState.busy || cashxEcoNftState.selected.size === 0 || !await ensureNftFarmWallet()) return;
-    cashxEcoNftState.busy = true;
-    setEcoNftStatus('Confirm the transaction in your wallet.');
+    setEcoNftStatus('');
     const tokenIds = [...cashxEcoNftState.selected].map(value => BigInt(value));
     const mode = cashxEcoNftState.mode;
     try {
@@ -13498,16 +13703,16 @@ const PULSE_ID     = 369;
       if (mode === 'stake') {
         const nft = new ethers.Contract(CASHX_ECO_NFT_COLLECTION, CASHMONEY_NFT_ABI, signer);
         if (!await nft.isApprovedForAll(wAddr, NEXION_NFT_FARM_CONTRACT)) {
-          const approval = await window.SiteUtilities.send(() => nft.setApprovalForAll(NEXION_NFT_FARM_CONTRACT, true));
-          if (!await waitForNftFarmTx(approval, 'CashX Ecosystem NFT approval')) return;
+          const approval = await txAction.send(nft, 'setApprovalForAll', [NEXION_NFT_FARM_CONTRACT, true]);
+          if (!await txAction.wait(approval, 'CashX Ecosystem NFT approval')) return;
           cashxEcoNftState.approved = true;
         }
         const fee = await farm.calculateDepositFee(CASHX_ECO_NFT_POOL_ID, tokenIds.length);
-        const tx = await window.SiteUtilities.send(() => farm.depositNFTs(CASHX_ECO_NFT_POOL_ID, tokenIds, { value: fee }));
-        if (!await waitForNftFarmTx(tx, 'Stake CashX Ecosystem NFTs')) return;
+        const tx = await txAction.send(farm, 'depositNFTs', [CASHX_ECO_NFT_POOL_ID, tokenIds, { value: fee }]);
+        if (!await txAction.wait(tx, 'Stake CashX Ecosystem NFTs')) return;
       } else {
-        const tx = await window.SiteUtilities.send(() => farm.withdrawNFTs(CASHX_ECO_NFT_POOL_ID, tokenIds));
-        if (!await waitForNftFarmTx(tx, 'Unstake CashX Ecosystem NFTs')) return;
+        const tx = await txAction.send(farm, 'withdrawNFTs', [CASHX_ECO_NFT_POOL_ID, tokenIds]);
+        if (!await txAction.wait(tx, 'Unstake CashX Ecosystem NFTs')) return;
       }
       cashxEcoNftState.selected.clear();
       setEcoNftStatus(`${mode === 'stake' ? 'Stake' : 'Unstake'} confirmed.`);
@@ -13515,6 +13720,7 @@ const PULSE_ID     = 369;
       cashxEcoNftState.busy = false;
       closeEcoNftModal();
     } catch (error) {
+      if (!txAction.isCurrent()) return;
       console.error(`CashX Ecosystem NFT ${mode} failed:`, error);
       setEcoNftStatus(nftFarmFriendlyError(error), true);
     } finally {
@@ -13525,19 +13731,20 @@ const PULSE_ID     = 369;
     }
   }
 
-  async function approveEcoNftFarm() {
+  async function approveEcoNftFarm(txAction) {
+    if (!txAction) return runTrackedAction('eco', 1, 'approve', context => approveEcoNftFarm(context));
     if (cashxEcoNftState.busy || cashxEcoNftState.approved || !await ensureNftFarmWallet()) return;
-    cashxEcoNftState.busy = true;
-    setEcoNftStatus('Confirm NFT farm approval in your wallet.');
+    setEcoNftStatus('');
     try {
       const signer = await wProvider.getSigner();
       const nft = new ethers.Contract(CASHX_ECO_NFT_COLLECTION, CASHMONEY_NFT_ABI, signer);
-      const tx = await window.SiteUtilities.send(() => nft.setApprovalForAll(NEXION_NFT_FARM_CONTRACT, true));
-      if (await waitForNftFarmTx(tx, 'CashX Ecosystem NFT approval')) {
+      const tx = await txAction.send(nft, 'setApprovalForAll', [NEXION_NFT_FARM_CONTRACT, true]);
+      if (await txAction.wait(tx, 'CashX Ecosystem NFT approval')) {
         cashxEcoNftState.approved = true;
         setEcoNftStatus('NFT farm approved.');
       }
     } catch (error) {
+      if (!txAction.isCurrent()) return;
       setEcoNftStatus(nftFarmFriendlyError(error), true);
     } finally {
       cashxEcoNftState.busy = false;
@@ -13545,20 +13752,21 @@ const PULSE_ID     = 369;
     }
   }
 
-  async function claimEcoNftRewards() {
+  async function claimEcoNftRewards(txAction) {
+    if (!txAction) return runTrackedAction('eco', 1, 'claim', context => claimEcoNftRewards(context));
     if (cashxEcoNftState.busy || !await ensureNftFarmWallet()) return;
     if (!cashxEcoNftState.pendingRewards.some(reward => reward.amount > 0n)) return setEcoNftStatus('No rewards are currently claimable.');
-    cashxEcoNftState.busy = true;
-    setEcoNftStatus('Confirm reward claim in your wallet.');
+    setEcoNftStatus('');
     try {
       const signer = await wProvider.getSigner();
       const farm = new ethers.Contract(NEXION_NFT_FARM_CONTRACT, NEXION_NFT_FARM_ABI, signer);
-      const tx = await window.SiteUtilities.send(() => farm.claimRewards(CASHX_ECO_NFT_POOL_ID));
-      if (await waitForNftFarmTx(tx, 'Claim CashX Ecosystem NFT rewards')) {
+      const tx = await txAction.send(farm, 'claimRewards', [CASHX_ECO_NFT_POOL_ID]);
+      if (await txAction.wait(tx, 'Claim CashX Ecosystem NFT rewards')) {
         cashxEcoNftState.pendingRewards = cashxEcoNftState.pendingRewards.map(reward => ({ ...reward, amount: 0n }));
         setEcoNftStatus('Rewards claimed.');
       }
     } catch (error) {
+      if (!txAction.isCurrent()) return;
       setEcoNftStatus(nftFarmFriendlyError(error), true);
     } finally {
       cashxEcoNftState.busy = false;
@@ -13568,7 +13776,6 @@ const PULSE_ID     = 369;
   }
 
   // ── Helpers ────────────────────────────────────────────────────────────────
-  const FARM_TX_WAIT_TIMEOUT_MS = 90000;
 
   function setFarmStatus(pid, msg, isError, html = false) {
     const el = document.getElementById(`farm-msg-${pid}`);
@@ -13588,10 +13795,6 @@ const PULSE_ID     = 369;
     const shortHash = hash ? `${hash.slice(0, 6)}...${hash.slice(-4)}` : 'pending';
     const link = hash ? `<a href="${pulseScanTxLink(hash)}" target="_blank" rel="noopener">View ${shortHash}</a>` : '';
     return `⏳ ${label}${link ? ` · ${link}` : ''}`;
-  }
-
-  async function waitForFarmTx(tx, pid, label) {
-    return window.SiteUtilities.wait(tx, label, FARM_TX_WAIT_TIMEOUT_MS);
   }
 
   function scheduleFarmRefresh(pid) {
@@ -13678,15 +13881,6 @@ const PULSE_ID     = 369;
     } finally {
       farmRefreshRunning = false;
     }
-  }
-
-  function disableFarmBtns(pid, disabled) {
-    ['farm-btn', 'farm-stake', 'farm-unstake'].forEach(prefix => {
-      const el = document.getElementById(`${prefix}-${pid}`);
-      if (el) el.disabled = disabled;
-    });
-    const inp = document.getElementById(`farm-input-${pid}`);
-    if (inp) inp.disabled = disabled;
   }
 
   setInterval(updateFarmCountdowns, 1000);
@@ -13806,7 +14000,8 @@ const PULSE_ID     = 369;
     return 'Transaction failed — please try again';
   }
 
-  async function stakeFarm(pid) {
+  async function stakeFarm(pid, txAction) {
+    if (!txAction) return runTrackedAction('farm', pid, 'stake', context => stakeFarm(pid, context));
     const input = document.getElementById(`farm-input-${pid}`);
     const amountStr = input?.value?.trim();
     if (!amountStr || Number(amountStr) <= 0) {
@@ -13824,7 +14019,6 @@ const PULSE_ID     = 369;
       return;
     }
 
-    disableFarmBtns(pid, true);
     setFarmStatus(pid, '', false);
     try {
       const signer  = await wProvider.getSigner();
@@ -13837,8 +14031,8 @@ const PULSE_ID     = 369;
         return;
       }
 
-      const tx = await window.SiteUtilities.send(() => farmC.deposit(pid, amount));
-      const receipt = await waitForFarmTx(tx, pid, 'Stake submitted');
+      const tx = await txAction.send(farmC, 'deposit', [pid, amount]);
+      const receipt = await txAction.wait(tx, 'Stake submitted');
       if (!receipt) {
         setFarmStatus(pid, '', false);
         return;
@@ -13849,40 +14043,38 @@ const PULSE_ID     = 369;
       setFarmStatus(pid, '', false);
       scheduleFarmRefresh(pid);
     } catch(err) {
+      if (!txAction.isCurrent()) return;
       const reason = friendlyFarmError(err?.reason || err?.shortMessage || err?.message || '');
       setFarmStatus(pid, `✗ ${reason}`, true);
       setTimeout(() => setFarmStatus(pid, '', false), 6000);
-    } finally {
-      disableFarmBtns(pid, false);
     }
   }
 
-  async function approveFarm(pid) {
+  async function approveFarm(pid, txAction) {
+    if (!txAction) return runTrackedAction('farm', pid, 'approve', context => approveFarm(pid, context));
     const r = lastFarmResults.find(r => r.pid === pid);
     if (!r || !wProvider || !wAddr) return;
-    const approveBtn = document.getElementById(`farm-approve-${pid}`);
     const amountFromInput = inputAmountRaw(pid);
     const amount = amountFromInput > 0n ? amountFromInput : ethers.MaxUint256;
-    if (approveBtn) approveBtn.disabled = true;
     setFarmStatus(pid, '', false);
     try {
       const signer = await wProvider.getSigner();
       const lpC = new ethers.Contract(r.farm.lp, LP_ABI, signer);
-      const tx = await window.SiteUtilities.send(() => lpC.approve(FARM_CONTRACT, amount));
-      const receipt = await waitForFarmTx(tx, pid, 'Approval submitted');
+      const tx = await txAction.send(lpC, 'approve', [FARM_CONTRACT, amount]);
+      const receipt = await txAction.wait(tx, 'Approval submitted');
       if (!receipt) return;
       scheduleFarmRefresh(pid);
     } catch(err) {
+      if (!txAction.isCurrent()) return;
       const reason = friendlyFarmError(err?.reason || err?.shortMessage || err?.message || '');
       setFarmStatus(pid, `✗ ${reason}`, true);
       setTimeout(() => setFarmStatus(pid, '', false), 6000);
-    } finally {
-      if (approveBtn) approveBtn.disabled = false;
     }
   }
 
   // ── Unstake ────────────────────────────────────────────────────────────────
-  async function unstakeFarm(pid) {
+  async function unstakeFarm(pid, txAction) {
+    if (!txAction) return runTrackedAction('farm', pid, 'unstake', context => unstakeFarm(pid, context));
     const input = document.getElementById(`farm-input-${pid}`);
     const amountStr = input?.value?.trim();
     if (!amountStr || Number(amountStr) <= 0) {
@@ -13900,14 +14092,13 @@ const PULSE_ID     = 369;
       return;
     }
 
-    disableFarmBtns(pid, true);
     setFarmStatus(pid, '', false);
     try {
       const signer = await wProvider.getSigner();
       const farmC  = new ethers.Contract(FARM_CONTRACT, FARM_ABI, signer);
 
-      const tx = await window.SiteUtilities.send(() => farmC.withdraw(pid, amount));
-      const receipt = await waitForFarmTx(tx, pid, 'Unstake submitted');
+      const tx = await txAction.send(farmC, 'withdraw', [pid, amount]);
+      const receipt = await txAction.wait(tx, 'Unstake submitted');
       if (!receipt) {
         setFarmStatus(pid, '', false);
         return;
@@ -13918,40 +14109,11 @@ const PULSE_ID     = 369;
       setFarmStatus(pid, '', false);
       scheduleFarmRefresh(pid);
     } catch(err) {
+      if (!txAction.isCurrent()) return;
       const reason = friendlyFarmError(err?.reason || err?.shortMessage || err?.message || '');
       setFarmStatus(pid, `✗ ${reason}`, true);
       setTimeout(() => setFarmStatus(pid, '', false), 6000);
-    } finally {
-      disableFarmBtns(pid, false);
     }
-  }
-
-  function claimNonceSummary(state) {
-    if (!state) return '';
-    return `wallet ${state.walletLatest}/${state.walletPending}, chain ${state.chainLatest}/${state.chainPending}`;
-  }
-
-  async function readClaimNonceState(provider) {
-    const reader = readProvider();
-    const [walletLatestHex, walletPendingHex, chainLatest, chainPending] = await Promise.all([
-      provider.request({ method: 'eth_getTransactionCount', params: [wAddr, 'latest'] }),
-      provider.request({ method: 'eth_getTransactionCount', params: [wAddr, 'pending'] }),
-      reader.getTransactionCount(wAddr, 'latest'),
-      reader.getTransactionCount(wAddr, 'pending')
-    ]);
-    return {
-      walletLatest: BigInt(walletLatestHex),
-      walletPending: BigInt(walletPendingHex),
-      chainLatest: BigInt(chainLatest),
-      chainPending: BigInt(chainPending)
-    };
-  }
-
-  function requireMatchingClaimNonce(state) {
-    if (state.walletLatest === state.chainLatest && state.walletPending === state.chainPending) return;
-    const err = new Error(`Wallet RPC nonce mismatch (${claimNonceSummary(state)})`);
-    err.claimNonceState = state;
-    throw err;
   }
 
   function claimManyError(err) {
@@ -13970,9 +14132,6 @@ const PULSE_ID     = 369;
     const specific = String(nested || raw);
     if (specific.toLowerCase().includes('replacement transaction underpriced')) {
       return 'Transaction could not be submitted. Please try again';
-    }
-    if (err?.claimNonceState) {
-      return 'Wallet connection is out of sync. Reconnect and try again';
     }
     return friendlyFarmError(specific);
   }
@@ -14014,17 +14173,18 @@ const PULSE_ID     = 369;
     }
   }
 
-  async function claimAllPendingFarms() {
+  async function claimAllPendingFarms(txAction) {
+    if (!txAction) return runTrackedAction('batch', 0, 'claim', context => claimAllPendingFarms(context));
     if (claimAllBusy) return;
     claimAllBusy = true;
     try {
-      return await runClaimAllPendingFarms();
+      return await runClaimAllPendingFarms(txAction);
     } finally {
       claimAllBusy = false;
     }
   }
 
-  async function runClaimAllPendingFarms() {
+  async function runClaimAllPendingFarms(txAction) {
     let btn = document.getElementById('farms-claim-all-btn');
     if (btn?.classList.contains('claiming')) return;
 
@@ -14047,6 +14207,7 @@ const PULSE_ID     = 369;
         if (!provider?.request || !wProvider || !wAddr) return;
       }
     } catch(err) {
+      if (!txAction.isCurrent()) return;
       setClaimAllStatus(claimManyError(err), true);
       return;
     }
@@ -14065,7 +14226,6 @@ const PULSE_ID     = 369;
     }
 
     claimables.forEach(r => {
-      disableFarmBtns(r.pid, true);
       const farmBtn = document.getElementById(`farm-btn-${r.pid}`);
       if (farmBtn) farmBtn.classList.add('claiming');
       setFarmStatus(r.pid, 'Queued for Claim All', false);
@@ -14083,16 +14243,13 @@ const PULSE_ID     = 369;
         setClaimAllStatus(`Claiming ${preparedPids.length}; skipping ${skipped.length} unavailable position${skipped.length === 1 ? '' : 's'}`);
       }
 
-      const nonceState = await readClaimNonceState(provider);
-      requireMatchingClaimNonce(nonceState);
-      const tx = await window.SiteUtilities.send(() => farmC.claimMany(prepared.pids, {
-        gasLimit: prepared.gasLimit,
-        nonce: nonceState.walletPending
-      }));
+      const tx = await txAction.send(farmC, 'claimMany', [prepared.pids, {
+        gasLimit: prepared.gasLimit
+      }]);
       setClaimAllStatus('Claim submitted');
       prepared.results.forEach(result => setFarmStatus(result.pid, 'Claim submitted', false));
 
-      const receipt = await window.SiteUtilities.wait(tx, 'Claim all', FARM_TX_WAIT_TIMEOUT_MS);
+      const receipt = await txAction.wait(tx, 'Claim all');
       if (!receipt) {
         setClaimAllStatus('Claim submitted. Refreshing rewards...');
         prepared.results.forEach(result => scheduleFarmRefresh(result.pid));
@@ -14105,6 +14262,7 @@ const PULSE_ID     = 369;
       setClaimAllStatus(`Claimed ${prepared.results.length} active position${prepared.results.length === 1 ? '' : 's'}`);
       claimables.forEach(r => scheduleFarmRefresh(r.pid));
     } catch(err) {
+      if (!txAction.isCurrent()) return;
       const reason = claimManyError(err);
       console.error('Claim all failed:', err);
       setClaimAllStatus(reason, true);
@@ -14116,7 +14274,6 @@ const PULSE_ID     = 369;
       claimables.forEach(r => {
         const farmBtn = document.getElementById(`farm-btn-${r.pid}`);
         if (farmBtn) farmBtn.classList.remove('claiming');
-        disableFarmBtns(r.pid, false);
       });
       if (btn) btn.classList.remove('claiming');
       updateClaimAllButton();
@@ -14124,20 +14281,20 @@ const PULSE_ID     = 369;
   }
 
   // ── Claim ──────────────────────────────────────────────────────────────────
-  async function claimFarm(pid, label) {
+  async function claimFarm(pid, label, txAction) {
+    if (!txAction) return runTrackedAction('farm', pid, 'claim', context => claimFarm(pid, label, context));
     const btn = document.getElementById(`farm-btn-${pid}`);
     if (!btn || !wProvider || !wAddr) return;
 
-    disableFarmBtns(pid, true);
     btn.classList.add('claiming');
     setFarmStatus(pid, '', false);
 
     try {
       const signer = await wProvider.getSigner();
       const farmC  = new ethers.Contract(FARM_CONTRACT, FARM_ABI, signer);
-      const tx     = await window.SiteUtilities.send(() => farmC.claim(pid));
+      const tx     = await txAction.send(farmC, 'claim', [pid]);
 
-      const receipt = await waitForFarmTx(tx, pid, 'Claim submitted');
+      const receipt = await txAction.wait(tx, 'Claim submitted');
       if (!receipt) {
         btn.classList.remove('claiming');
         setFarmStatus(pid, '', false);
@@ -14149,13 +14306,14 @@ const PULSE_ID     = 369;
       applyClaimedFarmState(pid);
       scheduleFarmRefresh(pid);
     } catch(err) {
+      if (!txAction.isCurrent()) return;
       console.error(`Claim failed for ${label}:`, err);
       btn.classList.remove('claiming');
       const reason = friendlyFarmError(err?.reason || err?.shortMessage || err?.message || '');
       setFarmStatus(pid, `✗ ${reason}`, true);
       setTimeout(() => setFarmStatus(pid, '', false), 6000);
     } finally {
-      disableFarmBtns(pid, false);
+      btn.classList.remove('claiming');
     }
   }
 
@@ -14187,6 +14345,7 @@ const PULSE_ID     = 369;
         walletProvider = walletProvider || window.CashXWallets?.getActiveProvider?.() || window.ethereum;
         if (walletProvider) wProvider = new ethers.BrowserProvider(walletProvider);
         wAddr = accs[0];
+        resetVaultWallet();
         set('farms-wc-addr', trunc(wAddr));
         set('rv-addr-display', trunc(wAddr));
         fetchBalances();
@@ -14194,7 +14353,7 @@ const PULSE_ID     = 369;
         fetchFarms();
         refreshNftFarmData();
         refreshEcoNftData();
-        fetchVaults(true);
+        if (farmProductView === 'vaults') fetchVaults(true);
       }
     });
     window.ethereum.on('chainChanged', () => { disconnectWallet(); showDisconnected(); });
@@ -15090,6 +15249,6 @@ function farmsClaimEcoNftRewards(){ return window.FarmsApp.claimEcoNftRewards();
 <div class="page-bg"></div>
 <script src="./lib/portfolio-model.js?v=20261011-farm-start"></script>
 <script src="./lib/portfolio-history.js?v=20261011-fast-rewards"></script>
-<script src="./lib/portfolio.js?v=20261027-navigation"></script>
+<script src="./lib/portfolio.js?v=20261027-breakdown"></script>
 </body>
 </html>

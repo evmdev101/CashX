@@ -29,7 +29,7 @@ body nav .nav-right > .h-wallet-chip { width:146px; white-space:nowrap }
 #farms-view .farm-rank-row { height:50px; min-height:50px; flex-shrink:0 }
 #farms-view .farm-rank-row:hover { transform:none }
 .farm-claimable-main { height:54px; overflow:auto }
-.farm-daily-projection { height:76px; overflow:auto; align-content:center }
+.farm-daily-projection { height:auto; min-height:76px; max-height:none; overflow:visible; align-content:center }
 .farm-claim-all-status { display:block; min-height:22px }
 .farm-design-proto .farm-hdr { min-height:64px }
 .farm-design-proto:not(.nexion-nft-farm):not(.cashx-eco-nft-farm):not(.vault-farm-card) .farm-proto-main { height:128px }

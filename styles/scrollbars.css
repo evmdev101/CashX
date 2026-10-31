@@ -1,0 +1,22 @@
+/* One quiet scrollbar style for the page and every scrollable panel. */
+:root {
+  --site-scrollbar-thumb: #748397;
+  --site-scrollbar-track: #101b2b;
+}
+* {
+  scrollbar-width: thin !important;
+  scrollbar-color: var(--site-scrollbar-thumb) var(--site-scrollbar-track) !important;
+}
+*::-webkit-scrollbar { width: 6px !important; height: 6px !important; }
+*::-webkit-scrollbar-track { background: var(--site-scrollbar-track) !important; }
+*::-webkit-scrollbar-thumb {
+  background: var(--site-scrollbar-thumb) !important;
+  border-radius: 999px !important;
+}
+*::-webkit-scrollbar-thumb:hover { background: #94a3b8 !important; }
+*::-webkit-scrollbar-corner { background: var(--site-scrollbar-track) !important; }
+.farm-daily-projection { scrollbar-width: none !important; }
+.farm-daily-projection::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
+@media (forced-colors: active) {
+  * { scrollbar-color: auto !important; }
+}

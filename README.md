@@ -31,6 +31,22 @@ DISTROX, DIVX and GSX now pay reflections and yield automatically. Their wallet 
 
 Run `node --test scripts/check-migration.cjs` for offline migration checks, and `node scripts/compare-nexion.cjs` for a read-only same-block valuation comparison. The verified pool snapshot is in `scripts/fixtures/migration-20261027.json`.
 
+## Farm transaction interaction
+
+Farm, vault and NFT actions use `lib/transactions.js`. Each action has its own wallet-request and mining state; navigation and unrelated actions remain available. Rejected wallet requests release immediately. Submitted hashes remain tracked through RPC errors and page reloads, and only a successful receipt updates claimed balances. Claim All reserves its individual pool claims as well, preventing overlapping claims.
+
+Pending actions are scoped by PulseChain, wallet, product, position and action. No transaction is automatically resubmitted. Wallet speed-ups and cancellations are followed; an unclear broadcast is checked against the intended destination, calldata and value before it can be treated as confirmed. The wallet selects its own nonce; the site does not require a nonce recovery workflow. Browser storage is optional, but tracking across page reloads requires it.
+
+Run `node --test scripts/check-transactions.cjs` for controlled wallet/RPC tests. These tests do not send real transactions.
+
+## Loading performance
+
+Wallet farm reads publish raw balances before prices, APR and LP breakdowns. Interim rows are labelled as updating, their controls wait for complete data, and they cannot replace complete saved snapshots. The public metadata cache shares concurrent requests and keeps successful token metadata / LP members for one hour. LP reserves and calculator prices share a one-second window; wallet balances, pending rewards and allowances are not kept in that cache. Duplicate LP balance and allowance reads are shared only within one wallet-loading pass.
+
+Vault data loads when its subtab opens. Wallet changes invalidate its previous account values even while the subtab is hidden. A newer post-transaction farm reading takes precedence over an older in-flight details pass.
+
+Run `node --test scripts/check-loading-performance.cjs scripts/check-fast-farms.cjs` for controlled checks. For the configured LP fixture, cold LP-detail contract reads fall from 480 to 260 and repeat-pass reads from 360 to 110. These are LP-detail call counts, not total-page request counts or measured real-world loading times.
+
 ## Current Structure
 
 | Path | Description |

@@ -48,6 +48,7 @@ function farmFixture(){
     renderPlaceholderFarms(){assert.fail('existing shell was replaced');},
     getCachedFarmPools:()=>({}),matchFarmPools:()=>farms.map(farm=>({farm,pid:farm.pid})),
     fetchFarmPriceMaps:async()=>({}),prefetchedPrices:()=>({}),retry:fn=>fn(),
+    fmtFarm:String,fmtFarmFixed:String,farmTokenDec:()=>18,farmRewardAddress:()=>addr(3),fetchLpMembers:async()=>null,
     mapLimit:(items,limit,fn)=>Promise.all(items.map(fn)),fetchLpBreakdown:async()=>null,fetchNexionValuation:async()=>({tvl:'$10'}),
     renderFarmResults(results){context.lastFarmResults=results;paints++;if(results.filter(r=>r.valuation).length===8)firstBatch.resolve();},
     ethers:{Contract:class{
@@ -75,4 +76,25 @@ test('switching wallets during a farm load prevents late results and snapshots f
   const painted=counts().paints;context.wAddr=addr(21);context.lastFarmResults=[];
   tail.resolve();await loading;
   assert.equal(counts().paints,painted);assert.equal(counts().writes,0);assert.equal(context.lastFarmResults.length,0);
+});
+
+test('fresh raw balances publish while all price calculations are still pending',async()=>{
+  const {context,tail,counts}=farmFixture(),prices=deferred();
+  context.fetchFarmPriceMaps=()=>prices.promise;
+  tail.resolve();const loading=context.fetchFarms();
+  await new Promise(setImmediate);
+  assert.equal(context.lastFarmResults[8].staked,9n);
+  assert.equal(context.lastFarmResults.every(r=>r.detailsLoading&&r.cached),true,'actions wait for complete details');
+  assert.equal(counts().writes,0,'interim balances never replace a complete saved snapshot');
+  prices.resolve({});await loading;
+  assert.equal(context.lastFarmResults.some(r=>r.detailsLoading),false);assert.equal(counts().writes,1);
+});
+
+test('an older details pass cannot overwrite a newer post-transaction reading',async()=>{
+  const {context,tail}=farmFixture(),prices=deferred();
+  context.fetchFarmPriceMaps=()=>prices.promise;tail.resolve();const loading=context.fetchFarms();
+  await new Promise(setImmediate);
+  context.lastFarmResults[0]={...context.lastFarmResults[0],cached:false,detailsLoading:false,staked:999n,readAt:Date.now()+1000};
+  prices.resolve({});await loading;
+  assert.equal(context.lastFarmResults[0].staked,999n);
 });

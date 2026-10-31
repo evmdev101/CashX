@@ -298,7 +298,7 @@ test('daily projections aggregate the new pools by reward token using each pool 
 test('staked filter still refreshes unshown farms for global statistics', async () => {
   const rows = [{ pid: 100, staked: 1n }, { pid: 104, staked: 0n }];
   const refreshed = [];
-  const ctx = context(section('  const staleFarmReads =', '  function disableFarmBtns('), {
+  const ctx = context(section('  const staleFarmReads =', '  setInterval(updateFarmCountdowns'), {
     document: { hidden: false }, window: { location: { hash: '#farms' } },
     wProvider: {}, wAddr: 'wallet', farmInitialLoading:false, saveFarmSnapshot(){}, farmProductView: 'farms', farmStakedOnly: true, lastFarmResults: rows,
     readProvider: () => ({}), fetchFarmPriceMaps: async () => ({}), hasStakedFarm: r => r.staked > 0n,
@@ -404,7 +404,7 @@ test('delayed chart-library initialization cannot render a stale token', async (
 
 test('public farm totals refresh without a wallet and pause on hidden tabs and Vaults', async () => {
   let reads = 0;
-  const ctx = context(section('  const staleFarmReads =', '  function disableFarmBtns('), {
+  const ctx = context(section('  const staleFarmReads =', '  setInterval(updateFarmCountdowns'), {
     document: { hidden: false }, window: { location: { hash: '#farms' } },
     wProvider: null, wAddr: null, farmInitialLoading:false, farmProductView: 'farms',
     fetchPublicFarmStats: async () => { reads++; },
@@ -419,7 +419,7 @@ test('public farm totals refresh without a wallet and pause on hidden tabs and V
 
 test('farm refresh cannot overlap and pauses on hidden tabs and Vaults', async () => {
   const request = deferred(); let passes = 0;
-  const ctx = context(section('  const staleFarmReads =', '  function disableFarmBtns('), {
+  const ctx = context(section('  const staleFarmReads =', '  setInterval(updateFarmCountdowns'), {
     document: { hidden: false }, window: { location: { hash: '#farms' } },
     wProvider: {}, wAddr: 'wallet', farmInitialLoading:false, saveFarmSnapshot(){}, farmProductView: 'farms',
     readProvider: () => ({}), fetchFarmPriceMaps: async () => ({}),
