@@ -4637,7 +4637,7 @@
 <script src="./lib/transactions.js?v=20261029"></script>
 <script src="./lib/read-cache.js?v=20261029"></script>
 <link rel="stylesheet" href="./styles/site-utilities.css?v=a969ddfb835d">
-<link rel="stylesheet" href="./styles/navigation.css?v=20261017-larger-nav">
+<link rel="stylesheet" href="./styles/navigation.css?v=20261101-theme-nav-2">
 <link rel="stylesheet" href="./styles/portfolio.css?v=20261024-stable-layout-2">
 <link rel="stylesheet" href="./styles/layout-stability.css?v=20261030-rewards">
 <link rel="stylesheet" href="./styles/token-migration.css?v=20261027-2">
@@ -8062,6 +8062,7 @@ function setFarmTheme(name, options = {}) {
   if (!root) return;
   currentFarmThemeName = key;
   root.dataset.farmTheme = key;
+  document.body.dataset.siteTheme = key;
   applyFarmThemeVars(root, theme);
   applyFarmThemeVars(document.body, theme);
   applyFarmThemeVars(document.getElementById('home-view'), theme);
