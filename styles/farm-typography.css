@@ -1,0 +1,132 @@
+/* Geist Latin variable font, as used by the HexBond reference. License: fonts/Geist-OFL.txt. */
+@font-face {
+  font-family:'Geist';
+  src:url('./fonts/geist-latin.woff2') format('woff2');
+  font-style:normal;
+  font-weight:100 900;
+  font-display:swap;
+}
+#farms-view .farm-item,
+#farms-view .farm-item :where(*) {
+  font-family:'Geist',Arial,sans-serif!important;
+  letter-spacing:normal;
+  -webkit-font-smoothing:antialiased;
+}
+#farms-view .farm-item .farm-hdr-name,
+#farms-view .farm-item .farm-pair-name,
+#farms-view .farm-item .ft-name { font-size:17px;font-weight:700;letter-spacing:-.3px; }
+#farms-view .farm-item .farm-proto-label { font-size:14px;font-weight:400;text-transform:none;letter-spacing:0; }
+#farms-view .farm-item .farm-proto-value { font-size:16px;font-weight:600;letter-spacing:-.2px; }
+#farms-view .farm-item .farm-proto-value.apr { font-size:25px;font-weight:700; }
+#farms-view .farm-item .farm-header-apr-label { font-size:12px;font-weight:400; }
+#farms-view .farm-item .farm-proto-sub,
+#farms-view .farm-item .farm-rewards-usd,
+#farms-view .farm-item .farm-footer-staked { font-size:13px;font-weight:400;letter-spacing:0; }
+#farms-view .farm-item .farm-rewards-tokenline { font-size:14px;font-weight:500; }
+#farms-view .farm-item .farm-footer-staked strong { font-weight:600; }
+#farms-view .farm-item .farm-claim-btn { font-size:14px;font-weight:600;text-transform:none;letter-spacing:0; }
+#farms-view .farm-item .farm-action-tabs > button,
+#farms-view .farm-item .farm-entry-action > button,
+#farms-view .vault-farm-card .farm-proto-actions > button { font-size:14px;letter-spacing:0; }
+#farms-view .farm-item .farm-amount-input { font-size:14px;font-weight:400; }
+
+/* Keep the main amounts bright and give supporting figures less emphasis. */
+#farms-view .farm-translucent {
+  --farm-detail-muted:color-mix(in srgb,var(--farm-theme-text) 49%,var(--farm-theme-bg));
+  --farm-detail-label:color-mix(in srgb,var(--farm-theme-text) 64%,var(--farm-theme-bg));
+  font-variant-numeric:tabular-nums;
+}
+#farms-view[data-farm-theme="obsidian"] .farm-translucent {
+  --farm-theme-text:#e9e9ed;
+  --farm-theme-muted:#92929d;
+  --farm-detail-label:#9b9ba6;
+  --farm-detail-muted:#82828e;
+}
+#farms-view .farm-translucent .farm-proto-grid :is(.farm-proto-label,.farm-proto-sub,.farm-rewards-usd,.farm-position-detail,.nft-staked-total),
+#farms-view[data-farm-theme] .farm-wallet-usd:not(:empty) + .farm-proto-value {
+  color:var(--farm-detail-muted);
+  font-weight:400;
+}
+#farms-view .farm-translucent .farm-proto-grid :is(.farm-proto-value,.farm-wallet-usd) {
+  line-height:1.25;
+  font-variant-numeric:tabular-nums;
+}
+#farms-view .farm-translucent .farm-proto-grid .farm-staked-components {
+  color:var(--farm-detail-label);
+  flex-wrap:wrap;
+  white-space:normal;
+}
+#farms-view .farm-translucent .farm-proto-grid .farm-staked-amount,
+#farms-view .farm-translucent .farm-proto-grid .farm-rewards-tokenline > span:not(.farm-reward-projection-wrap,.farm-token-fallback) {
+  font-family:'Geist',Arial,sans-serif!important;
+  font-size:14px;
+  font-weight:500;
+}
+#farms-view .farm-translucent .farm-proto-grid .farm-staked-amount {
+  color:inherit;
+  white-space:nowrap;
+}
+#farms-view .farm-translucent .farm-proto-grid .farm-staked-share :is(.farm-share-link,strong) {
+  color:var(--farm-theme-accent);
+  font-weight:600;
+  font-variant-numeric:tabular-nums;
+}
+#farms-view[data-farm-theme] .farm-translucent .farm-proto-grid .farm-wallet-usd:not(:empty) {
+  color:var(--farm-theme-text);
+  font-size:16px;
+  font-weight:600;
+}
+#farms-view .farm-translucent .farm-proto-grid :is(.farm-token-logo,.farm-token-fallback,.nft-reward-line img) {
+  width:15px;
+  height:15px;
+  flex-shrink:0;
+  box-shadow:none;
+  filter:none;
+}
+
+/* Use the same compact type scale for token farms, NFT farms and vaults. */
+#farms-view .farm-translucent:is([id^="farm-card-"],.nexion-nft-farm,.vault-farm-card) .farm-pair-name {
+  font-size:16px;
+  font-weight:650;
+  letter-spacing:-.2px;
+}
+#farms-view .farm-translucent:is([id^="farm-card-"],.nexion-nft-farm,.vault-farm-card) .farm-proto-grid :is(.farm-proto-value,.farm-wallet-usd:not(:empty)) {
+  font-size:15px;
+  font-weight:600;
+}
+#farms-view .farm-translucent:is([id^="farm-card-"],.nexion-nft-farm,.vault-farm-card) .farm-proto-grid .farm-proto-label {
+  color:var(--farm-detail-label);
+}
+#farms-view .farm-translucent[id^="farm-card-"] .farm-staked-components {
+  gap:3px;
+  font-size:13px;
+}
+#farms-view .farm-translucent[id^="farm-card-"] .farm-staked-components .farm-staked-symbol {
+  position:static;
+  width:auto;
+  height:auto;
+  margin:0;
+  overflow:visible;
+  clip-path:none;
+  white-space:nowrap;
+}
+
+/* Larger card type follows the reference without changing logo sizes. */
+#farms-view .farm-translucent:is([id^="farm-card-"],.nexion-nft-farm,.vault-farm-card) .farm-pair-name { font-size:19px; }
+#farms-view .farm-translucent:is([id^="farm-card-"],.nexion-nft-farm,.vault-farm-card) .farm-proto-grid :is(.farm-proto-value,.farm-wallet-usd:not(:empty)) { font-size:17px; }
+#farms-view .farm-translucent .farm-proto-grid .farm-proto-label { font-size:15px; }
+#farms-view .farm-translucent .farm-action-tabs > button,
+#farms-view .farm-translucent .farm-entry-action > button,
+#farms-view .farm-translucent .farm-amount-input { font-size:16px; }
+
+/* Make the underlying LP token balances as readable as the reference. */
+#farms-view .farm-translucent[id^="farm-card-"] .farm-proto-grid .farm-staked-components,
+#farms-view .farm-translucent[id^="farm-card-"] .farm-proto-grid .farm-staked-components :is(.farm-staked-amount,.farm-staked-symbol) {
+  font-size:16px;
+  font-weight:400;
+  line-height:1.4;
+}
+#farms-view .farm-translucent[id^="farm-card-"] .farm-proto-grid .farm-staked-components :is(.farm-token-logo,.farm-token-fallback) {
+  width:18px;
+  height:18px;
+}

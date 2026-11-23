@@ -1,0 +1,645 @@
+/* One next-step button replaces the separate approval row on token farms. */
+/* Transaction status and error banners stay out of cards and popups. */
+.farm-tx-msg,
+.farm-claim-all-status,
+.nexion-nft-transaction,
+.nft-farm-modal-tx {display:none!important;}
+/* A compact, translucent summary with the claim action at the right. */
+#farms-view .farm-claimable-summary {
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;
+  gap:12px 24px;padding:18px 20px;border-radius:14px;
+  border:1px solid color-mix(in srgb,var(--farm-theme-text) 10%,transparent);
+  background:color-mix(in srgb,var(--farm-theme-panel) 42%,transparent);
+  box-shadow:none;text-align:left;font-family:'Geist',Arial,sans-serif;
+  letter-spacing:0;text-transform:none;
+}
+#farms-view .farm-claimable-summary .farm-claimable-main {
+  justify-content:flex-start;gap:8px;min-width:0;height:32px;min-height:32px;max-width:none;overflow:visible;
+}
+#farms-view .farm-claimable-summary .farm-claimable-main>span:first-child {
+  font-size:13px;font-weight:400;letter-spacing:0;
+}
+#farms-view .farm-claimable-summary .farm-summary-value {
+  margin-left:0;font-family:inherit;font-size:21px;font-weight:650;
+}
+#farms-view .farm-claimable-summary .farm-daily-projection {
+  grid-column:1 / 3;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px 18px;
+}
+#farms-view .farm-claimable-summary .farm-daily-projection>span:first-child {
+  grid-column:1 / -1;font-size:12px;
+}
+#farms-view .farm-claimable-summary .farm-daily-reward-list {
+  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));width:100%;max-width:850px;gap:5px;
+}
+#farms-view .farm-claimable-summary .farm-daily-token {
+  width:100%;min-width:0;min-height:26px;padding:3px 7px;gap:5px;border-radius:6px;font-size:11px;
+}
+#farms-view .farm-claimable-summary .farm-daily-token>span:last-child {white-space:normal;overflow-wrap:anywhere;}
+#farms-view .farm-claimable-summary .farm-daily-token .farm-token-logo,
+#farms-view .farm-claimable-summary .farm-daily-token .farm-token-fallback {width:15px;height:15px;flex-shrink:0;}
+#farms-view .farm-claimable-summary .farm-daily-empty {grid-column:1 / -1;}
+#farms-view .farm-claimable-summary .farm-daily-usd {grid-column:2;align-self:center;margin:0;text-align:right;}
+#farms-view .farm-claimable-summary .farm-live-pending:has(#farms-pending-tokens:empty) {display:none;}
+#farms-view .farm-live-pending .farm-daily-reward-list {align-items:stretch;}
+#farms-view .farm-live-pending .farm-daily-token {color:#fff;}
+#farms-view .farm-live-pending .farm-pending-token-pls {display:block;font-weight:500;color:var(--farm-theme-muted,#82828e);}
+@media(max-width:1200px) {
+  #farms-view .farm-claimable-summary .farm-daily-reward-list {grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+#farms-view .farm-claimable-summary .farm-claim-all-wrap {
+  grid-column:3;grid-row:1 / span 2;flex-direction:column;justify-content:center;align-items:flex-end;gap:8px;
+}
+#farms-view .farm-claimable-summary .farm-claim-all-btn {order:0;}
+#farms-view .farm-claimable-summary .farm-positions-label {order:1;font-size:11px;font-weight:500;}
+#farms-view .farm-claimable-summary .farm-claim-all-status {order:2;}
+@media(max-width:1200px) {
+  #farms-view .farm-claimable-summary {grid-template-columns:repeat(2,minmax(0,1fr));}
+  #farms-view .farm-claimable-summary .farm-claimable-main {height:auto;}
+  #farms-view .farm-claimable-summary .farm-claim-all-wrap {
+    grid-column:1 / -1;grid-row:auto;flex-direction:row;justify-content:space-between;align-items:center;
+  }
+}
+@media(max-width:700px) {
+  #farms-view .farm-claimable-summary {grid-template-columns:minmax(0,1fr);padding:16px;gap:12px;}
+  #farms-view .farm-claimable-summary .farm-claimable-main {height:auto;}
+  #farms-view .farm-claimable-summary .farm-daily-projection {grid-column:1;}
+  #farms-view .farm-claimable-summary .farm-claim-all-wrap {grid-column:1;grid-row:auto;flex-direction:row;justify-content:space-between;align-items:center;}
+}
+.farm-item:not(.vault-farm-card) .farm-proto-grid > .farm-proto-rewards { grid-column:1 / -1; }
+#farms-view .farm-design-proto .farm-proto-metric.farm-rewards-horizontal {
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr);
+  grid-template-rows:auto auto;
+  align-items:center;
+  column-gap:14px;
+  row-gap:2px;
+  min-height:0;
+  height:auto;
+  padding:12px 13px;
+  overflow:visible;
+}
+#farms-view .farm-rewards-horizontal > .farm-proto-label { grid-column:1;grid-row:1 / 3;margin:0; }
+#farms-view .farm-rewards-horizontal > [id^="farm-pending-"] { grid-column:2;grid-row:1;min-width:0;text-align:right; }
+#farms-view .farm-rewards-horizontal .farm-rewards-tokenline { justify-content:flex-end;flex-wrap:wrap; }
+#farms-view .farm-rewards-horizontal > .farm-rewards-usd { grid-column:2;grid-row:2;margin:0;text-align:right; }
+.farm-header-actions { display:flex;flex-direction:column;align-items:flex-end;gap:6px;margin-left:auto;flex-shrink:0; }
+.farm-header-apr { display:flex;align-items:center;justify-content:flex-end;gap:7px;white-space:nowrap; }
+.farm-header-apr-label { color:var(--farm-theme-muted);font:11px 'DM Sans',Arial,sans-serif; }
+#farms-view .farm-header-apr .farm-proto-value.apr { color:var(--farm-theme-accent);font:700 25px 'DM Sans',Arial,sans-serif;min-height:0;line-height:1.2; }
+.farm-header-apr .farm-apr-popover { right:0;left:auto;transform:none; }
+.farm-header-apr .farm-apr-wrap { display:inline-flex;align-items:center;gap:5px; }
+#farms-view .farm-translucent.farm-design-proto .farm-hdr { flex-wrap:nowrap;align-items:flex-start;gap:10px; }
+#farms-view .farm-translucent .farm-hdr > div:first-child { flex:1;min-width:0; }
+#farms-view .farm-translucent .farm-hdr-name { flex:1 1 0;min-width:0;width:100%; }
+#farms-view .farm-translucent .farm-title { flex:1;min-width:0; }
+#farms-view .farm-translucent .farm-title-text { flex:1;min-width:0; }
+#farms-view .farm-translucent .farm-pair-name { white-space:normal;overflow-wrap:anywhere;text-overflow:clip; }
+#farms-view .farm-translucent.farm-design-proto .farm-hdr:has(.farm-pair-logos) {
+  flex-wrap:wrap;
+  row-gap:4px;
+}
+#farms-view .farm-translucent .farm-hdr > div:first-child:has(.farm-pair-logos) {
+  flex:1 1 auto;
+  width:max-content;
+  max-width:100%;
+}
+#farms-view .farm-translucent .farm-pair-logos + .farm-title-text .farm-pair-name {
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+#farms-view .farm-translucent .farm-header-actions { flex:0 0 auto;padding-top:6px; }
+#farms-view .farm-translucent.farm-design-proto[id^="farm-card-"] .farm-hdr {
+  flex-wrap:nowrap;
+  gap:6px;
+}
+#farms-view .farm-translucent[id^="farm-card-"] .farm-pair-logos + .farm-title-text .farm-pair-name {
+  white-space:normal;
+}
+#farms-view .farm-translucent[id^="farm-card-"] .farm-header-actions {
+  padding-top:0;
+}
+#farms-view .farm-translucent[id^="farm-card-"] .farm-header-apr {
+  align-items:baseline;
+}
+#farms-view .farm-translucent[id^="farm-card-"] .farm-header-apr .farm-apr-wrap {
+  display:inline-grid;
+  justify-items:end;
+}
+@media(max-width:500px) {
+  #farms-view .farm-translucent .farm-hdr .farm-token-logo,
+  #farms-view .farm-translucent .farm-hdr .farm-token-fallback { width:30px;height:30px; }
+  #farms-view .farm-translucent .farm-hdr .farm-pair-logos > * + * { margin-left:-8px; }
+  #farms-view .farm-translucent.farm-design-proto .farm-title { gap:8px; }
+  #farms-view .farm-translucent .farm-pair-main { gap:4px; }
+  #farms-view .farm-translucent .farm-header-apr .farm-proto-value.apr { font-size:22px; }
+  #farms-view .farm-translucent .farm-header-apr { gap:5px; }
+}
+.farm-action-tabs { display:flex;align-self:flex-start;gap:3px;padding:4px;margin-top:12px;border-radius:8px;background:var(--farm-theme-bg);width:fit-content; }
+.farm-action-tabs > button { font:600 13px 'DM Sans',Arial,sans-serif;color:var(--farm-theme-muted);background:transparent;border:0;border-radius:5px;padding:6px 12px;cursor:pointer; }
+.farm-action-tabs > button[aria-selected="true"] { background:var(--farm-theme-metric);color:var(--farm-theme-text); }
+.farm-entry-row { display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:9px;margin:12px 0; }
+#farms-view .farm-entry-row .farm-amount-wrap { margin:0;min-width:0;display:flex;align-items:center;padding-right:9px; }
+#farms-view .farm-entry-row .farm-amount-input { min-width:0;width:100%;padding:11px 10px; }
+.farm-entry-max { border:0;background:transparent;color:var(--farm-theme-accent);font:700 12px 'DM Sans',Arial,sans-serif;cursor:pointer;padding:8px 3px; }
+.farm-entry-max:disabled { opacity:.4;cursor:not-allowed; }
+.farm-entry-percent {
+  border:0;background:transparent;color:var(--farm-theme-muted);
+  font:500 14px 'DM Sans',Arial,sans-serif;padding:8px 3px;cursor:pointer;
+}
+.farm-entry-percent:hover:not(:disabled) {color:var(--farm-theme-text);}
+.farm-entry-percent:disabled {opacity:.7;cursor:not-allowed;}
+.farm-percent-options {
+  padding:6px;border:1px solid var(--farm-theme-border);border-radius:10px;
+  background:var(--farm-theme-panel);color:var(--farm-theme-text);
+}
+.farm-percent-options:popover-open {display:flex;gap:4px;position-area:block-end span-inline-start;}
+.farm-percent-options > button {
+  padding:8px 12px;border:0;border-radius:6px;background:var(--farm-theme-metric);
+  color:inherit;font-size:14px;cursor:pointer;
+}
+.farm-percent-options > button:hover {background:var(--control-hover);}
+.farm-entry-action > button { min-width:84px;max-width:150px; }
+.farm-entry-action > button[hidden] { display:none!important; }
+.farm-entry-row + .farm-claim-row { margin:0 0 12px; }
+.farm-action-tabs > button:focus-visible,.farm-entry-row :is(.farm-entry-max,.farm-entry-percent,.farm-percent-options > button):focus-visible { outline:2px solid var(--farm-theme-accent);outline-offset:2px; }
+.farm-bottom-links {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  width:100%;
+  margin-top:12px;
+  padding-top:14px;
+  border-top:1px solid var(--farm-theme-border);
+  font:12px 'DM Sans',Arial,sans-serif;
+}
+.farm-bottom-links > span { color:var(--farm-theme-muted); }
+.farm-bottom-links > a { color:var(--farm-theme-accent);font-weight:700;text-decoration:none;white-space:nowrap; }
+.farm-bottom-links > a:hover { text-decoration:underline; }
+.farm-bottom-links > a:focus-visible { outline:2px solid var(--farm-theme-accent);outline-offset:4px; }
+#farms-view .farm-item:not(.nexion-nft-farm):not(.cashx-eco-nft-farm):not(.vault-farm-card) .farm-stake-btn {
+  color:var(--farm-theme-text);
+  background:color-mix(in srgb,var(--farm-theme-accent) 22%,var(--farm-theme-panel));
+  border:1px solid color-mix(in srgb,var(--farm-theme-accent) 45%,var(--farm-theme-border));
+  font:700 12px 'DM Sans',Arial,sans-serif;
+  min-height:42px;
+  padding:10px 12px;
+  text-transform:none;
+  letter-spacing:0;
+}
+#farms-view .farm-item:not(.nexion-nft-farm):not(.cashx-eco-nft-farm):not(.vault-farm-card) .farm-stake-btn:hover:not(:disabled) {
+  background:color-mix(in srgb,var(--farm-theme-accent) 35%,var(--farm-theme-panel));
+  border-color:var(--farm-theme-accent);
+}
+#farms-view .farm-item:not(.nexion-nft-farm):not(.cashx-eco-nft-farm):not(.vault-farm-card) .farm-stake-btn:disabled {
+  opacity:.45;
+  cursor:not-allowed;
+}
+#farms-view .farm-item:not(.nexion-nft-farm):not(.cashx-eco-nft-farm):not(.vault-farm-card) .farm-unstake-btn {
+  min-height:42px;
+  font:600 12px 'DM Sans',Arial,sans-serif;
+  text-transform:none;
+  letter-spacing:0;
+}
+
+/* Let the page background show through without changing the card layout. */
+#farms-view .farm-item.farm-rich.farm-design-proto.farm-translucent {
+  background:color-mix(in srgb,var(--farm-theme-card) 55%,transparent);
+  overflow:visible;
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+  box-shadow:none;
+}
+#farms-view .farm-translucent.farm-design-proto .farm-proto-metric,
+#farms-view .farm-translucent.farm-design-proto .farm-amount-input {
+  background:color-mix(in srgb,var(--farm-theme-bg) 45%,transparent);
+  border-color:color-mix(in srgb,var(--farm-theme-text) 7%,transparent);
+}
+#farms-view .farm-translucent.farm-design-proto .farm-action-tabs {
+  background:color-mix(in srgb,var(--farm-theme-bg) 55%,transparent);
+}
+#farms-view .farm-translucent.farm-design-proto .farm-claim-btn,
+#farms-view .farm-translucent.farm-design-proto .farm-claim-btn:not(:disabled) {
+  background:color-mix(in srgb,var(--farm-theme-text) 5%,transparent);
+  border-color:color-mix(in srgb,var(--farm-theme-text) 8%,transparent);
+  color:var(--farm-theme-text);
+  box-shadow:none;
+}
+#farms-view .farm-translucent.farm-design-proto .farm-claim-btn:hover:not(:disabled) {
+  background:color-mix(in srgb,var(--farm-theme-text) 9%,transparent);
+  border-color:color-mix(in srgb,var(--farm-theme-text) 16%,transparent);
+}
+
+#farms-view[data-farm-theme] .farm-item.farm-rich.farm-design-proto.farm-translucent {
+  --farm-card-inset:color-mix(in srgb,var(--farm-theme-bg) 78%,transparent);
+  border:1px solid color-mix(in srgb,var(--farm-theme-text) 10%,transparent);
+  border-radius:14px;
+}
+#farms-view[data-farm-theme="obsidian"] .farm-item.farm-rich.farm-design-proto.farm-translucent {
+  --farm-card-inset:rgba(8,8,13,.38);
+  background:rgb(255 255 255 / 2.7%);
+  border-color:rgb(255 255 255 / 7%);
+}
+#farms-view[data-farm-theme] .farm-translucent.farm-design-proto .farm-proto-metric {
+  background:var(--farm-card-inset);
+  border-color:color-mix(in srgb,var(--farm-theme-text) 6%,transparent);
+  border-radius:8px;
+}
+
+/* Group farm balances and rewards on one inset surface. */
+#farms-view[data-farm-theme] .farm-translucent:is([id^="farm-card-"],.nexion-nft-farm,.vault-farm-card) .farm-proto-grid {
+  grid-template-columns:minmax(0,1fr);
+  gap:8px;
+  padding:10px 12px;
+  border:1px solid color-mix(in srgb,var(--farm-theme-text) 7%,transparent);
+  border-radius:8px;
+  background:var(--farm-card-inset);
+}
+#farms-view[data-farm-theme] .farm-translucent:is([id^="farm-card-"],.nexion-nft-farm,.vault-farm-card) .farm-proto-grid > .farm-proto-metric {
+  min-height:0;
+  height:auto;
+  padding:0;
+  border:0;
+  background:transparent;
+  overflow:visible;
+}
+#farms-view[data-farm-theme] .farm-translucent:is([id^="farm-card-"],.nexion-nft-farm,.vault-farm-card) .farm-proto-grid > .farm-proto-metric:not(.farm-proto-rewards) {
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr);
+  align-items:baseline;
+  gap:3px 10px;
+}
+#farms-view[data-farm-theme] .farm-translucent[id^="farm-card-"] .farm-staked-heading {
+  display:contents;
+}
+#farms-view[data-farm-theme] .farm-translucent:is([id^="farm-card-"],.nexion-nft-farm,.vault-farm-card) .farm-proto-grid .farm-proto-label {
+  margin:0;
+}
+#farms-view[data-farm-theme] .farm-translucent:is([id^="farm-card-"],.nexion-nft-farm,.vault-farm-card) .farm-balance-value-row {
+  justify-content:flex-end;
+  flex-wrap:wrap;
+  overflow-wrap:anywhere;
+  text-align:right;
+}
+#farms-view[data-farm-theme] .farm-translucent:is([id^="farm-card-"],.nexion-nft-farm,.vault-farm-card) .farm-proto-grid .farm-proto-sub {
+  grid-column:1 / -1;
+  margin:0;
+  text-align:right;
+}
+.farm-position-detail {
+  display:none;
+}
+#farms-view[data-farm-theme] .farm-translucent:is([id^="farm-card-"],.nexion-nft-farm,.vault-farm-card) .farm-wallet-metric {
+  order:1;
+}
+#farms-view[data-farm-theme] .farm-translucent:is([id^="farm-card-"],.nexion-nft-farm,.vault-farm-card) .farm-proto-rewards {
+  order:2;
+  align-items:baseline;
+}
+#farms-view[data-farm-theme] .farm-translucent[id^="farm-card-"] .farm-position-detail:not(:empty) {
+  display:inline;
+  color:var(--farm-theme-muted);
+  font-size:12px;
+}
+#farms-view[data-farm-theme] .farm-wallet-metric .farm-wallet-usd:not(:empty) {
+  color:var(--farm-theme-text);
+  font-size:14px;
+  font-weight:600;
+}
+#farms-view[data-farm-theme] .farm-wallet-usd:not(:empty) + .farm-proto-value {
+  color:var(--farm-theme-muted);
+  font-size:12px;
+  font-weight:400;
+}
+#farms-view[data-farm-theme] .farm-wallet-usd:not(:empty) + .farm-proto-value::after {
+  content:" LP";
+}
+#farms-view[data-farm-theme] .farm-wallet-metric:has(.farm-wallet-usd:not(:empty)) > .farm-proto-sub {
+  display:none;
+}
+#farms-view[data-farm-theme] .farm-translucent:is([id^="farm-card-"],.nexion-nft-farm,.vault-farm-card) .farm-staked-share {
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:8px;
+  margin-top:8px;
+}
+#farms-view[data-farm-theme] .farm-translucent:is([id^="farm-card-"],.nexion-nft-farm,.vault-farm-card) .farm-proto-rewards .farm-rewards-tokenline {
+  color:var(--farm-theme-text);
+  font-weight:600;
+}
+#farms-view[data-farm-theme] .farm-translucent:is([id^="farm-card-"],.nexion-nft-farm,.vault-farm-card) .farm-header-apr .farm-proto-value.apr {
+  font-size:21px;
+}
+#farms-view[data-farm-theme] .farm-translucent[id^="farm-card-"] .farm-header-apr .farm-proto-value.apr {
+  font-size:21px;
+}
+#farms-view[data-farm-theme] .nexion-nft-farm .nft-staked-main {
+  justify-content:flex-end;
+  flex-wrap:wrap;
+}
+#farms-view[data-farm-theme] :is(.nexion-nft-farm,.vault-farm-card) .farm-proto-grid .farm-staked-share {
+  margin-top:5px;
+}
+#farms-view[data-farm-theme] :is(.nexion-nft-farm,.vault-farm-card) .farm-staked-share strong {
+  color:var(--farm-theme-accent);
+}
+#farms-view[data-farm-theme] .vault-farm-card .vault-share-price-metric {
+  order:3;
+}
+#farms-view[data-farm-theme] .vault-farm-card .farm-proto-metric > .farm-proto-value {
+  justify-content:flex-end;
+  text-align:right;
+}
+#farms-view[data-farm-theme] .vault-farm-card .farm-proto-rewards {
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr);
+  gap:3px 10px;
+}
+#farms-view[data-farm-theme] .vault-farm-card .farm-rewards-tokenline {
+  justify-content:flex-end;
+  flex-wrap:wrap;
+}
+#farms-view[data-farm-theme] .vault-farm-card .farm-rewards-usd {
+  grid-column:2;
+  margin:0;
+  text-align:right;
+}
+
+/* Roomier cards sized to match the farm reference. */
+#farms-view {
+  --farm-grid-columns:3;
+  --farm-card-width:420px;
+  --farm-grid-gap:20px;
+}
+/* Rankings, controls and summaries share the card grid's outer edges. */
+#farms-view .rv-wrap {
+  max-width:calc(var(--farm-card-width) * var(--farm-grid-columns) + var(--farm-grid-gap) * (var(--farm-grid-columns) - 1));
+  margin-inline:auto;
+}
+#farms-view :is(#farms-body,#vaults-body) .farm-row {
+  grid-template-columns:repeat(var(--farm-grid-columns),minmax(0,1fr));
+  justify-content:center;
+  align-items:start;
+  gap:var(--farm-grid-gap);
+}
+@media(max-width:1400px) {
+  #farms-view { --farm-grid-columns:2; }
+}
+@media(max-width:650px) {
+  #farms-view { --farm-grid-columns:1; }
+}
+#farms-view .farm-item.farm-translucent {
+  box-sizing:border-box;
+  display:flex;
+  flex-direction:column;
+  height:auto;
+  min-height:0;
+  gap:6px;
+  padding:20px;
+}
+#farms-view .farm-translucent > :not(.farm-card-body) { flex-shrink:0; }
+#farms-view .farm-card-body {
+  display:flex;
+  flex-direction:column;
+  flex:none;
+  min-width:0;
+  min-height:0;
+  gap:6px;
+  overflow:visible;
+}
+#farms-view .farm-card-body > * { flex-shrink:0; }
+/* Keep reward projections within the viewport. */
+#farms-view .farm-card-body .farm-reward-projection-popover {
+  position:fixed;
+  inset:50% auto auto 50%;
+  transform:translate(-50%,-50%);
+  max-height:calc(100vh - 40px);
+  overflow:auto;
+}
+#farms-view[data-farm-theme] .farm-translucent:is([id^="farm-card-"],.nexion-nft-farm) .farm-proto-grid {
+  padding:4px 2px;
+  gap:6px;
+  border:0;
+  background:transparent;
+}
+#farms-view .farm-translucent[id^="farm-card-"] .farm-rewards-usd {
+  color:var(--farm-theme-muted);
+  font-weight:400;
+}
+#farms-view .farm-translucent .farm-hdr {
+  min-height:46px;
+  padding-bottom:4px;
+}
+#farms-view .farm-translucent .farm-title { gap:8px; }
+#farms-view .farm-translucent .farm-pair-main { gap:4px; }
+#farms-view .farm-translucent .farm-header-apr { gap:4px; }
+#farms-view .farm-translucent .farm-apr-wrap { gap:3px; }
+#farms-view .farm-translucent .farm-proto-grid .farm-proto-sub {
+  min-height:0;
+  max-height:none;
+  overflow:visible;
+}
+#farms-view .farm-translucent[id^="farm-card-"] .farm-staked-amount {
+  min-width:0;
+  white-space:normal;
+  overflow-wrap:anywhere;
+}
+#farms-view .farm-translucent .farm-hdr .farm-pair-logos :is(.farm-token-logo,.farm-token-fallback) {
+  width:28px;
+  height:28px;
+  box-shadow:none;
+}
+#farms-view .farm-translucent[id^="farm-card-"] .farm-hdr .farm-pair-logos :is(.farm-token-logo,.farm-token-fallback) {
+  width:36px;
+  height:36px;
+  border:1px solid color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 52%,transparent);
+  box-shadow:0 8px 22px color-mix(in srgb,var(--farm-theme-accent,#9b6dff) 9%,transparent);
+}
+#farms-view .farm-translucent .farm-action-tabs {
+  margin-top:8px;
+}
+#farms-view .farm-translucent .farm-entry-row {
+  margin:16px 0;
+}
+#farms-view .farm-entry-row {
+  --farm-entry-accent:var(--farm-theme-accent);
+  gap:8px;
+}
+#farms-view[data-farm-theme="obsidian"] .farm-entry-row {
+  --farm-entry-accent:#f5b13c;
+}
+#farms-view .farm-translucent .farm-entry-row .farm-amount-wrap {
+  gap:4px;
+  min-height:42px;
+  border:1px solid color-mix(in srgb,var(--farm-theme-text) 9%,transparent);
+  border-radius:8px;
+  background:color-mix(in srgb,var(--farm-theme-bg) 55%,transparent);
+}
+#farms-view .farm-translucent .farm-entry-row .farm-amount-wrap:focus-within {
+  border-color:var(--farm-entry-accent);
+}
+#farms-view .farm-translucent .farm-entry-row .farm-amount-input {
+  flex:1 1 0;
+  width:0;
+  padding:8px 12px;
+  border:0;
+  background:transparent;
+  font-size:16px;
+  font-weight:500;
+}
+#farms-view .farm-entry-row .farm-entry-max {
+  --control-text:var(--farm-entry-accent);
+  --control-hover:transparent;
+  font-size:14px;
+  font-weight:500;
+}
+#farms-view .farm-entry-row .farm-entry-max:disabled {
+  opacity:.7;
+}
+#farms-view .farm-item .farm-entry-action > button {
+  min-width:78px;
+  min-height:42px;
+  padding:8px 12px;
+  border-radius:12px;
+  font-size:16px;
+  font-weight:700;
+  text-transform:none;
+}
+#farms-view .farm-entry-action > .farm-stake-btn {
+  --control-bg:var(--farm-entry-accent);
+  --control-hover:color-mix(in srgb,var(--farm-entry-accent) 85%,white);
+  --control-text:#17130e;
+  --control-border:transparent;
+  --control-border-hover:transparent;
+}
+#farms-view .farm-entry-action > .farm-stake-btn:disabled {
+  --control-bg:color-mix(in srgb,var(--farm-entry-accent) 28%,var(--farm-theme-bg));
+  --control-text:var(--farm-theme-muted);
+  opacity:1;
+}
+#farms-view .farm-item[id^="farm-card-"] .farm-action-tabs > button {
+  padding:6px 13px;
+  font-size:16px;
+  line-height:19px;
+}
+#farms-view .farm-entry-row + .farm-claim-row .farm-claim-btn {
+  --control-bg:color-mix(in srgb,var(--farm-theme-text) 5%,transparent);
+  --control-border:color-mix(in srgb,var(--farm-theme-text) 8%,transparent);
+  min-height:40px;
+  padding:8px 12px;
+  border-radius:12px;
+  font-size:16px;
+  font-weight:700;
+}
+#farms-view .farm-translucent .farm-proto-footer + .farm-bottom-links {
+  margin-top:0;
+}
+#farms-view .farm-total-metric {
+  order:-1;
+}
+#farms-view .farm-total-metric > .farm-proto-value {
+  text-align:right;
+}
+
+/* NFT farms use the same action order as token farms. */
+#farms-view .farm-translucent.nexion-nft-farm .nexion-nft-header-art { width:50px;height:50px;flex-basis:50px; }
+#farms-view .farm-translucent.nexion-nft-farm .nft-reward-panel {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,2fr);
+  gap:8px;
+  height:auto;
+  min-height:70px;
+  padding:12px 13px;
+  overflow:visible;
+}
+#farms-view .nft-reward-panel > .farm-proto-label { margin:0;align-self:start; }
+#farms-view .nft-reward-panel .nft-rewards-stack { min-width:0;gap:8px; }
+#farms-view .nft-reward-panel .nft-reward-line {
+  display:grid;
+  justify-items:end;
+  gap:2px;
+  text-align:right;
+}
+#farms-view .nft-reward-panel .nft-reward-line .farm-rewards-tokenline { justify-content:flex-end; }
+#farms-view .nft-reward-panel .farm-rewards-tokenline { overflow:visible;font-size:13px; }
+#farms-view .nft-reward-panel .farm-rewards-usd { margin:0;font-size:12px;font-weight:400; }
+#farms-view .nft-farm-selection { display:grid;grid-template-columns:1fr;margin:8px 0; }
+#farms-view .farm-translucent.nexion-nft-farm .nft-farm-selection > button {
+  min-height:42px;
+  padding:10px 12px;
+  font-size:14px;
+  text-transform:none;
+  letter-spacing:0;
+  color:var(--farm-theme-text);
+  background:color-mix(in srgb,var(--farm-theme-accent) 22%,var(--farm-theme-panel));
+  border:1px solid color-mix(in srgb,var(--farm-theme-accent) 45%,var(--farm-theme-border));
+}
+#farms-view .farm-translucent.nexion-nft-farm .nft-farm-selection > button:disabled { opacity:.45;cursor:not-allowed; }
+#farms-view .nft-farm-selection > button[hidden],
+#farms-view .nexion-nft-farm .farm-approve-max-btn[hidden] { display:none!important; }
+#farms-view .farm-translucent.nexion-nft-farm .farm-approve-max-btn { background:color-mix(in srgb,var(--farm-theme-bg) 45%,transparent);border-color:color-mix(in srgb,var(--farm-theme-text) 8%,transparent);margin:0 0 6px; }
+@media(max-width:500px) {
+  #farms-view .farm-translucent.nexion-nft-farm .nexion-nft-header-art { width:50px;height:50px;flex-basis:50px; }
+}
+
+/* Match LP reward alignment while leaving space for multiple reward tokens. */
+#farms-view[data-farm-theme] .vault-farm-card .farm-proto-grid { gap:6px; }
+#farms-view :is(.nexion-nft-farm,.vault-farm-card) .farm-footer-staked {
+  min-height:0;
+  max-height:none;
+  overflow:visible;
+}
+#farms-view .vault-farm-card .farm-proto-value.long { min-height:0; }
+#farms-view .vault-secondary-actions { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px; }
+#farms-view .vault-secondary-actions .farm-approve-max-btn { min-width:0;padding:10px 8px;font-size:12px; }
+#farms-view .vault-farm-card .farm-hdr-name { display:block; }
+#farms-view .vault-farm-card .farm-hdr-name .farm-title { width:100%; }
+#farms-view .nexion-nft-farm .nft-card-actions {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:6px;
+}
+#farms-view .nft-card-actions > * { grid-column:1 / -1; }
+#farms-view .nft-card-actions > .farm-claim-row { margin:0; }
+#farms-view .nexion-nft-farm .farm-footer-rank { margin-inline-start:auto; }
+#farms-view .nft-card-actions > .farm-approve-max-btn:not([hidden]) {
+  grid-column:1;
+  margin:0;
+  min-width:0;
+  padding:10px 8px;
+  font-size:12px;
+}
+#farms-view .nft-card-actions > .farm-approve-max-btn:not([hidden]) + .farm-claim-row { grid-column:2; }
+
+
+/* Give farm details and controls the breathing room of the reference cards. */
+#farms-view .farm-item.farm-translucent { padding:24px;gap:12px; }
+#farms-view .farm-card-body { gap:12px; }
+#farms-view[data-farm-theme] .farm-translucent:is([id^="farm-card-"],.nexion-nft-farm,.vault-farm-card) .farm-proto-grid {
+  padding:12px 2px;
+  gap:14px;
+}
+#farms-view .farm-translucent .farm-hdr { min-height:54px; }
+#farms-view .farm-translucent .farm-action-tabs { margin-top:14px; }
+#farms-view .farm-translucent .farm-entry-row { margin:18px 0; }
+@media(min-width:901px) {
+  #farms-view .farm-translucent[id^="farm-card-"] { min-height:620px; }
+  #farms-view .farm-translucent[id^="farm-card-"] .farm-card-body { flex:1; }
+  #farms-view .farm-translucent[id^="farm-card-"] .farm-action-tabs { margin-top:auto; }
+}
+@media(min-width:651px) and (max-width:960px) {
+  #farms-view { --farm-grid-columns:1; }
+}
+@media(max-width:500px) {
+  #farms-view .farm-item.farm-translucent { padding:20px; }
+}
+
+/* Keep LP balances and their underlying token pair together. */
+#farms-view .farm-translucent[id^="farm-card-"] .farm-total-components {
+  flex-direction:row;
+  align-items:center;
+  justify-content:flex-end;
+  flex-wrap:wrap;
+  column-gap:4px;
+}

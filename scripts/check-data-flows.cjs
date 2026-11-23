@@ -71,36 +71,31 @@ test('transaction handling preserves confirmation, reverts and timeouts without 
   assert.equal(await api.wait({...tx,wait:()=>new Promise(()=>{})},'Stake',1),null);
 });
 
-test('farm search combines words, reward, staked and favorites filters', () => {
+test('farm search combines words, reward and staked filters', () => {
   const entries = [
     { key: 'a', name: 'GSX / CASHX', label: '#253', address: '0xABCD', rewards: ['GSX'], staked: true },
     { key: 'b', name: 'GSX', label: '#257', address: '0xDEFA', rewards: ['PLSX'], staked: false },
     { key: 'nft', name: 'CashX ECO NFT', label: '#1', rewards: ['GSX', 'CASHX'], staked: true },
   ];
-  const favorites = new Set(['a', 'nft']);
-  const keys = filters => browse.select(entries, filters, favorites).map(e => e.key);
+  const keys = filters => browse.select(entries, filters).map(e => e.key);
   assert.deepEqual(keys({ query: 'gsx #253' }), ['a']);
   assert.deepEqual(keys({ query: '0xabcd' }), ['a']);
   assert.deepEqual(keys({ reward: 'plsx' }), ['b']);
-  assert.deepEqual(keys({ reward: 'gsx', favoritesOnly: true, stakedOnly: true }), ['a', 'nft']);
+  assert.deepEqual(keys({ reward: 'gsx', stakedOnly: true }), ['a', 'nft']);
   assert.deepEqual(keys({ query: 'missing' }), []);
-  assert.deepEqual(keys({}), ['a', 'nft', 'b']);
+  assert.deepEqual(keys({}), ['a', 'b', 'nft']);
   assert.deepEqual(entries.map(e => e.key), ['a', 'b', 'nft']);
 });
 
-test('favorites survive reload and tolerate corrupt or blocked browser storage', () => {
-  let value;
-  const storage = { getItem: () => value, setItem: (_, next) => { value = next; } };
-  assert.equal(browse.save(storage, new Set(['farm:1', 'nft:0'])), true);
-  assert.deepEqual([...browse.load(storage)], ['farm:1', 'nft:0']);
-  value = 'broken'; assert.equal(browse.load(storage).size, 0);
-  value = '{}'; assert.equal(browse.load(storage).size, 0);
-  const blocked = { getItem() { throw Error('blocked'); }, setItem() { throw Error('blocked'); } };
-  assert.equal(browse.load(blocked).size, 0);
-  assert.equal(browse.save(blocked, new Set(['farm:1'])), false);
+test('retired favorites preferences cannot hide farms or pin their order', () => {
+  const storage = {getItem: () => JSON.stringify({favoritesOnly:true, query:'', sort:'default'})};
+  const filters = browse.loadPreferences(storage, 'farms');
+  assert.equal('favoritesOnly' in filters, false);
+  const entries = [{key:'a',rewards:[]},{key:'b',rewards:[]}];
+  assert.deepEqual(browse.select(entries, {...filters,favoritesOnly:true}, new Set(['b'])).map(e=>e.key), ['a','b']);
 });
 
-test('sorts put favorites first and unknown values last without changing source data', () => {
+test('sorts put unknown values last without changing source data', () => {
   const future = Date.now() / 1000 + 10000;
   const entries = [
     { key: 'a', rewards: [], rate: 10, deposit: 300, end: future + 30 },
@@ -111,7 +106,7 @@ test('sorts put favorites first and unknown values last without changing source 
   assert.deepEqual(ids('rate'), ['b','a','c']);
   assert.deepEqual(ids('deposit'), ['a','b','c']);
   assert.deepEqual(ids('ending'), ['b','a','c']);
-  assert.deepEqual(ids('rate', new Set(['a'])), ['a','b','c']);
+  assert.deepEqual(ids('rate', new Set(['a'])), ['b','a','c']);
   assert.deepEqual(entries.map(e => e.key), ['a','b','c']);
 });
 
@@ -151,20 +146,20 @@ test('ending badges respect seven-day boundary and unknown schedules', () => {
   assert.equal(browse.ending(now, now), 'Rewards ended');
 });
 
-test('vault filters keep favorite identity and use the wrapped farm schedule', () => {
+test('vault filters use the wrapped farm schedule', () => {
   const ctx = context(section('  function vaultBrowseEntry(', '  function setVaultBrowseFilter('), {
     NEXION_FLUX_VAULT_MANAGER: '0xManager',
     vaultFarmResult: () => ({ poolInfo: { endTime: 2000000 }, countdownEnd: 3000000000 }),
     poolValue: (p, key) => p?.[key], vaultPairName: v => v.name,
     ecosystemVaultSymbol: value => value, vaultApy: v => v.apy, vaultUsd: () => 0,
-    window: { FarmListTools: browse }, farmFavorites: new Set(['369:0xmanager:vault:2']),
+    window: { FarmListTools: browse },
     vaultBrowseFilters: {}, lastVaultResults: [
       { vaultId: 1, name: 'GSX/WPLS LP', stakeToken: '0xABC', rewardToken: 'DIVX', userShares: 0n, endTime: 1000000, wrapsFarm: true, apy: 90 },
       { vaultId: 2, name: 'DIVX/WPLS LP', stakeToken: '0xDEF', rewardToken: 'GSX', userShares: 1n, endTime: 1500000, wrapsFarm: false, apy: 30 },
     ],
   });
   const ids = () => Array.from(ctx.visibleVaultEntries(), e => e.result.vaultId);
-  assert.deepEqual(ids(), [2, 1]);
+  assert.deepEqual(ids(), [1, 2]);
   assert.equal(ctx.vaultBrowseEntry(ctx.lastVaultResults[0]).end, 2000000);
   assert.equal(ctx.vaultBrowseEntry(ctx.lastVaultResults[1]).end, 1500000);
   ctx.vaultBrowseFilters.reward = 'DIVX'; assert.deepEqual(ids(), [1]);
@@ -252,7 +247,7 @@ test('all four new farms contribute to totals, wallet rewards, positions and ran
     FARMS: farms, lastFarmResults: results, farmMeta: () => ({}), farmUsdNumber: n => Number(n || 0),
     nftFarmState: { tvlUsd: 10 }, cashxEcoNftState: { tvlUsd: 20 },
     nftFarmClaimableUsd: () => 0, ecoNftClaimableUsd: () => 0, fmtUsd: String,
-    set: (id, value) => { displayed[id] = value; }, updateDailyRewardSummary() {}, updateTvlChange() {}, updateClaimAllButton() {},
+    set: (id, value) => { displayed[id] = value; }, updateLivePendingSummary() {}, updateTvlChange() {}, updateClaimAllButton() {},
   });
   ctx.updateFarmSummaries();
   assert.equal(displayed['nexion-farms-count'], '65 farms');
@@ -293,6 +288,36 @@ test('daily projections aggregate the new pools by reward token using each pool 
   assert.equal(rewards.find(r => r.symbol === 'CASHX').raw, ethers.parseEther('10'));
   assert.equal(rewards.find(r => r.symbol === 'BURNX').raw, ethers.parseEther('10'));
   assert.equal(rewards.reduce((sum, r) => sum + r.usd, 0), 80);
+});
+
+test('pending summary retains Nexion valuation and confirmed token amounts instead of market projections', () => {
+  const results = [
+    { farm: {}, walletAddress: 'wallet', pending: ethers.parseEther('10'),
+      valuation: { rewardScaledPrice: 1e18, pendingUsdValue: 5, rewardDec: 18 } },
+    { farm: {}, walletAddress: 'wallet', pending: ethers.parseEther('4'),
+      valuation: { rewardScaledPrice: 1e18, pendingUsdValue: 0, rewardDec: 18 } },
+  ];
+  const nft = { userAddress: 'wallet', rewards: [{ token: 'TOKEN', symbol: 'TOKEN', scaledPrice: 1e18, decimals: 18 }],
+    pendingRewards: [{ token: 'TOKEN', amount: ethers.parseEther('2') }] };
+  const displayed = {};
+  const ctx = context(section('  function dailyRewardProjectionEntries(', '  function formatDailyRewardAmount(') +
+    section('  function updateLivePendingSummary(', '  function updateFarmSummaries(') +
+    section('  function rawUsd(', '  // pHEX'), {
+    ethers, lastFarmResults: results, wAddr: 'wallet', nftFarmState: nft,
+    cashxEcoNftState: { userAddress: '', stakedTokens: [] },
+    farmRewardAddress: () => 'TOKEN', farmRewardSymbol: () => 'TOKEN', farmTokenDec: () => 18,
+    rewardProjectionRaw() { throw new Error('Pending must not include estimated accrual'); },
+    set: (id, value) => { displayed[id] = value; }, fmtUsd: String,
+    pendingPlsLabel: String, document: { getElementById: () => null },
+  });
+  const entries = ctx.dailyRewardProjectionEntries(results, true);
+  assert.equal(entries.length, 1);
+  assert.equal(entries[0].raw, ethers.parseEther('16'));
+  assert.equal(entries[0].usd, 7); // $5 + $0 compatible farm values, plus $2 NFT rewards.
+  ctx.updateLivePendingSummary(results);
+  assert.equal(displayed['farms-total-claimable'], '7');
+  results[0].valuation.pendingUsdValue = null;
+  assert.equal(ctx.dailyRewardProjectionEntries(results, true)[0].missingPrice, true);
 });
 
 test('staked filter still refreshes unshown farms for global statistics', async () => {

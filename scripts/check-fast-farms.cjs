@@ -59,6 +59,7 @@ function farmFixture(){
     }}
   });
   vm.runInContext(section('  function farmBatchProgress(', '  let farmLoadId'),context);
+  vm.runInContext(section('  async function farmRefreshValuation(', '  function formatCountdown('),context);
   vm.runInContext(section('  async function fetchFarms(', '  function metaOrLive('),context);
   return {context,tail,firstBatch,counts:()=>({writes,paints})};
 }
@@ -84,7 +85,7 @@ test('fresh raw balances publish while all price calculations are still pending'
   tail.resolve();const loading=context.fetchFarms();
   await new Promise(setImmediate);
   assert.equal(context.lastFarmResults[8].staked,9n);
-  assert.equal(context.lastFarmResults.every(r=>r.detailsLoading&&r.cached),true,'actions wait for complete details');
+  assert.equal(context.lastFarmResults.every(r=>r.detailsLoading&&!r.cached),true,'successful wallet balances and allowances do not wait for prices');
   assert.equal(counts().writes,0,'interim balances never replace a complete saved snapshot');
   prices.resolve({});await loading;
   assert.equal(context.lastFarmResults.some(r=>r.detailsLoading),false);assert.equal(counts().writes,1);

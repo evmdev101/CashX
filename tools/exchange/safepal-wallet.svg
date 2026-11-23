@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">SafePal Wallet</title>
+  <defs>
+    <linearGradient id="safePalGradient" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7b3ff2"/>
+      <stop offset="1" stop-color="#3c13c8"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#safePalGradient)"/>
+  <path fill="#fff" d="M19 16h31l-8 9H27l-4 4H10l9-13Zm22 19h13L45 48H14l8-9h15l4-4Z"/>
+</svg>

@@ -4,3 +4,6 @@ dist/
 # IPFS / kubo temp
 kubo/
 kubo.tar.gz
+
+# Shared build dependencies for the imported original apps.
+node_modules/

@@ -36,8 +36,7 @@ body nav .nav-right > .h-wallet-chip { width:146px; white-space:nowrap }
 .farm-design-proto .farm-proto-metric.farm-proto-compact { height:76px; min-height:76px }
 .farm-design-proto .farm-proto-sub { min-height:30px; max-height:30px; overflow:auto }
 .farm-design-proto .farm-proto-value.long { min-height:24px }
-.farm-design-proto [id^="farm-read-msg-"] { display:flex !important; height:31px; min-height:31px; margin:0; overflow:auto }
-.farm-design-proto [id^="farm-read-msg-"][style*="none"] { visibility:hidden }
+.farm-design-proto [id^="farm-read-msg-"] { margin:0; overflow:auto }
 .nexion-nft-farm .farm-proto-metric:not(.farm-proto-compact),
 .cashx-eco-nft-farm .farm-proto-metric:not(.farm-proto-compact) { height:180px; overflow:auto }
 .farm-footer-staked { display:block; min-height:40px; max-height:40px; overflow:auto }

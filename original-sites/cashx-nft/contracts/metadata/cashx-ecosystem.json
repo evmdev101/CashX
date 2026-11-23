@@ -1,0 +1,19 @@
+{
+  "name": "CashX Ecosystem NFT",
+  "description": "A CashX Ecosystem NFT for staking through the approved Nexion experience.",
+  "image": "ipfs://bafybeigh4xrxvp3kly56ezepomltbxlfgxs4rz3dllquf4qxixhm4tpupy",
+  "attributes": [
+    {
+      "trait_type": "Collection",
+      "value": "CashX Ecosystem"
+    },
+    {
+      "trait_type": "Edition artwork",
+      "value": "Shared"
+    },
+    {
+      "trait_type": "Network",
+      "value": "PulseChain"
+    }
+  ]
+}

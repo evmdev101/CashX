@@ -1,0 +1,125 @@
+/* Interaction colors stay neutral across themes; financial accents keep their theme color. */
+:root {
+  --control-text:#f4f4f5;
+  --control-muted:#99999f;
+  --control-bg:#202025;
+  --control-hover:#2b2b31;
+  --control-border:rgba(255,255,255,.14);
+  --control-border-hover:rgba(255,255,255,.25);
+}
+
+body :is(.nav-tab,.top-nav-item,.cx-tab,.farm-product-tab,.fvt-btn,.tab-btn,.reflection-mini-tab,.farm-theme-tab),
+body :is(.farm-action-tabs,.original-collection-tabs,.pf-chart-tabs,.pool-tabs,.mint-tabs,.nft-tabs,.mint-section-tabs) > button {
+  color:var(--control-muted)!important;
+  box-shadow:none!important;
+}
+body :is(.nav-tab,.top-nav-item,.cx-tab,.farm-product-tab,.fvt-btn,.tab-btn,.reflection-mini-tab,.farm-theme-tab):is(:hover,.active),
+body :is(.farm-action-tabs,.original-collection-tabs,.pf-chart-tabs,.pool-tabs,.mint-tabs,.nft-tabs,.mint-section-tabs) > button:is(:hover,.active,[aria-selected="true"],[aria-pressed="true"]) {
+  color:var(--control-text)!important;
+  background:var(--control-bg)!important;
+  border-color:var(--control-border)!important;
+  box-shadow:none!important;
+}
+body :is(.farm-product-tab,.farm-theme-tab).active::after,
+body :is(.pool-tabs,.mint-tabs,.nft-tabs,.mint-section-tabs) > button.active::after {
+  background:var(--control-text)!important;
+  box-shadow:none!important;
+}
+
+/* Primary actions, including NFT selection and vault deposits. Keep disabled opacity. */
+body :is(.farm-stake-btn,.farm-unstake-btn,.farm-approve-max-btn,.farm-claim-btn,.farm-claim-all-btn,
+  .farm-reward-chart-btn,.nft-farm-mini-btn,.nft-farm-submit,.nft-farm-modal-close,
+  .btn-filled,.btn-pill,.hero-farms-cta,.ipfs-modal-link,.rv-connect-btn,.cb-copy,.cta-buy,.bm-btn-primary,
+  .reflections-btn,.eco-nfts-primary,.ex-primary,.exchange-button,.quick-exchange-button,.btn-accent,.mint-button,.compact-mint-button) {
+  color:var(--control-text)!important;
+  background:var(--control-bg)!important;
+  border-color:var(--control-border)!important;
+  box-shadow:none!important;
+}
+body :is(.farm-stake-btn,.farm-unstake-btn,.farm-approve-max-btn,.farm-claim-btn,.farm-claim-all-btn,
+  .farm-reward-chart-btn,.nft-farm-mini-btn,.nft-farm-submit,.nft-farm-modal-close,
+  .btn-filled,.btn-pill,.hero-farms-cta,.ipfs-modal-link,.rv-connect-btn,.cb-copy,.cta-buy,.bm-btn-primary,
+  .reflections-btn,.eco-nfts-primary,.ex-primary,.exchange-button,.quick-exchange-button,.btn-accent,.mint-button,.compact-mint-button):hover:not(:disabled) {
+  background:var(--control-hover)!important;
+  border-color:var(--control-border-hover)!important;
+  box-shadow:none!important;
+}
+body :is(.nav-dash-btn,.h-wallet-chip,.nav-theme-btn,.nav-icon,.eco-button,.eco-tool,.btn-ghost,.wallet-button,
+  .social-icon,.pair-selector-trigger,.farm-entry-max,.farm-theme-apply):hover:not(:disabled) {
+  color:var(--control-text)!important;
+  background:var(--control-hover)!important;
+  border-color:var(--control-border-hover)!important;
+  box-shadow:none!important;
+}
+body :is(.farm-entry-max,.max-button) {
+  color:var(--control-text)!important;
+}
+body .max-button {
+  background:var(--control-bg)!important;
+}
+body :is(.stepper,.compact-stepper) button,
+body .steps .current,
+body .transaction-progress-step.active,
+body .transaction-progress-arrow {
+  color:var(--control-text)!important;
+}
+body .transaction-progress-step.active { background:var(--control-bg)!important; }
+body .transaction-progress-step.active .transaction-progress-number {
+  color:var(--control-text)!important;
+  border-color:var(--control-border-hover)!important;
+  box-shadow:none!important;
+}
+
+/* Neutral hover surfaces in rankings, menus, and browse controls. */
+body #farms-view .farm-rank-row:hover,
+body .pair-selector-menu > button:is(:hover,[aria-selected="true"]),
+body .farm-browse-controls button[aria-pressed="true"] {
+  background:var(--control-bg)!important;
+  border-color:var(--control-border-hover)!important;
+  box-shadow:none!important;
+}
+body .farm-browse-controls button[aria-pressed="true"] { color:var(--control-text)!important; }
+body #farms-view .farm-staked-toggle {
+  background:var(--control-bg)!important;
+  color:var(--control-text)!important;
+  border-color:var(--control-border)!important;
+  box-shadow:none!important;
+}
+body #farms-view .farm-staked-toggle:hover { background:var(--control-hover)!important; }
+body #farms-view .farm-toggle-orb {
+  background:#111115!important;
+  border-color:var(--control-border-hover)!important;
+  box-shadow:none!important;
+}
+body #farms-view .farm-staked-toggle input:checked + .farm-toggle-orb {
+  background:var(--control-text)!important;
+  border-color:var(--control-text)!important;
+  box-shadow:inset 0 0 0 3px var(--control-bg)!important;
+}
+
+body #dashboard-view :is(.dash-chart-controls,.dash-chart-panel) .chart-btn.active,
+body #dashboard-view .chart-btn.active,
+body #dashboard-view :is(.cb-copy,.cta-buy) {
+  background:var(--control-bg)!important;
+  color:var(--control-text)!important;
+  border-color:var(--control-border)!important;
+  box-shadow:none!important;
+}
+body #dashboard-view .chart-btn:hover {
+  background:var(--control-hover)!important;
+  color:var(--control-text)!important;
+  border-color:var(--control-border-hover)!important;
+}
+body #dashboard-view :is(.chart-toggles,.tab-nav),
+body :is(.nft-farm-modal-controls,.farm-theme-apply) { border-color:var(--control-border)!important; }
+
+/* Selection remains clear without adding a gold tint to the artwork. */
+body .nft-farm-token:is(:hover,.selected) { border-color:var(--control-text)!important; }
+body .nft-farm-token.selected { box-shadow:0 0 0 2px var(--control-border-hover)!important; }
+body .nft-farm-token-check { background:var(--control-text)!important;color:#111115!important; }
+body :is(.farm-theme-swatch:hover,.farm-theme-swatch.active) { border-color:var(--control-text)!important; }
+body .farm-theme-swatch.active { box-shadow:0 0 0 2px var(--control-border-hover)!important; }
+body :is(button,[role="tab"],.farm-card-body):focus-visible {
+  outline:2px solid var(--control-text)!important;
+  outline-offset:3px;
+}

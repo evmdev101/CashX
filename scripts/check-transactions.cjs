@@ -125,7 +125,9 @@ test('the real farm stake handler preserves calldata, deduplicates clicks and re
     transactionTracker:f.tracker,trackedActionKey:(w,k,id,a)=>`369:${w}:${k}:${id}:${a}`,readProvider:()=>({getTransactionCount:async()=>0,getBlockNumber:async()=>100}),
     document:{getElementById:id=>id==='farm-input-3'?input:null},lastFarmResults:[{pid:3,farm:{lp:'token'},walletLp:100n,allowance:100n}],
     ethers:{parseUnits:value=>BigInt(value),Contract:function(){this.target='farm';this.interface={getFunction:()=>({inputs:[{},{}]}),encodeFunctionData:()=> '0x1234'};
+      this.allowance=async()=>100n;
       this.deposit=async(...args)=>{sent.push(args);return {hash,wait:()=>mining.promise};};}},FARM_CONTRACT:'farm',FARM_ABI:[],
+    LP_ABI:[],
     setFarmStatus(){},updateApproveLabel(){},scheduleFarmRefresh:id=>refreshed.push(id),friendlyFarmError:e=>e, setTimeout:()=>0,
   });
   vm.runInContext(slice('  async function runTrackedAction(', '  // Resume submitted hashes')+

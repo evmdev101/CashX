@@ -35,17 +35,63 @@ Run `node --test scripts/check-migration.cjs` for offline migration checks, and 
 
 Farm, vault and NFT actions use `lib/transactions.js`. Each action has its own wallet-request and mining state; navigation and unrelated actions remain available. Rejected wallet requests release immediately. Submitted hashes remain tracked through RPC errors and page reloads, and only a successful receipt updates claimed balances. Claim All reserves its individual pool claims as well, preventing overlapping claims.
 
+Token farm cards and table controls use a single next-step button. Enter an
+amount to see **Approve amount** when allowance is insufficient, or **Stake**
+when it is sufficient. Approval grants exactly the entered amount and leaves
+staking as a separate explicit confirmation. The entered amount remains in the
+field after approval. Staking checks live allowance before submitting a deposit;
+approval and stake share their pending-action locks. Unstaking needs no token
+approval. The separate unlimited-approval row is removed from token farm cards.
+
 Pending actions are scoped by PulseChain, wallet, product, position and action. No transaction is automatically resubmitted. Wallet speed-ups and cancellations are followed; an unclear broadcast is checked against the intended destination, calldata and value before it can be treated as confirmed. The wallet selects its own nonce; the site does not require a nonce recovery workflow. Browser storage is optional, but tracking across page reloads requires it.
 
 Run `node --test scripts/check-transactions.cjs` for controlled wallet/RPC tests. These tests do not send real transactions.
 
 ## Loading performance
 
+Farm and vault updates retain their existing cards and controls through
+`lib/live-view.js`. Background reads update values without replacing the list,
+clearing typed amounts, closing management rows, or reordering existing cards.
+Explicit sort/filter changes still apply immediately. Selecting the current tab
+or refreshing Farms preserves the browsing position. NFT reward and LP detail
+fragments use the same retained-node updates. Pending transaction controls are
+reapplied after rendering.
+
+Run `node --test scripts/check-farm-live-updates.cjs` for navigation regressions.
+The local browser fixture `scripts/fixtures/farm-live-updates.html` exercises
+card identity, entered values, focus/caret, expanded rows, live values, explicit
+sorting, and scroll anchoring without connecting a wallet or sending transactions.
+
 Wallet farm reads publish raw balances before prices, APR and LP breakdowns. Interim rows are labelled as updating, their controls wait for complete data, and they cannot replace complete saved snapshots. The public metadata cache shares concurrent requests and keeps successful token metadata / LP members for one hour. LP reserves and calculator prices share a one-second window; wallet balances, pending rewards and allowances are not kept in that cache. Duplicate LP balance and allowance reads are shared only within one wallet-loading pass.
 
 Vault data loads when its subtab opens. Wallet changes invalidate its previous account values even while the subtab is hidden. A newer post-transaction farm reading takes precedence over an older in-flight details pass.
 
 Run `node --test scripts/check-loading-performance.cjs scripts/check-fast-farms.cjs` for controlled checks. For the configured LP fixture, cold LP-detail contract reads fall from 480 to 260 and repeat-pass reads from 360 to 110. These are LP-detail call counts, not total-page request counts or measured real-world loading times.
+
+## Ecosystem tabs
+
+Home, Portfolio, Burns, and Farms remain separate. The ecosystem Dashboard page
+has been removed, and old `#dashboard` links redirect to Home. `#burns` and
+`dashboard.html` still open Burns. `#exchange` and `#nfts` now show locally built
+copies of the original apps, preserving their layouts and features rather than
+the earlier redesign. Each app loads only on first visit. The two NFT collections
+have their own selector and retain their state when switching tabs.
+
+Original source is in `original-sites/{exchange,cashx-nft,cashmoney}`; the static
+builds served by the main site are in `tools/`. Run `node original-sites/build.mjs`
+after changing an original app (shared packages are installed in `original-sites`).
+The build adapter preserves the original Exchange mint, holders, activity, stats,
+FAQ; its duplicate Farms page and Mint/Farms navigation are removed. Both NFT apps
+also omit their duplicate farm/staking pages and extra navigation bars. CashX keeps
+its mint, holders and activity; CashMoney keeps its carousel and collection views.
+CashMoney's retired mint is replaced with a notice directing staking to the main
+Farms tab. `lib/original-site-bridge.js` shares the main site's selected wallet and
+palette with these same-origin pages; silent account restoration never requests
+authorization or switches networks. The main Farms tab remains unchanged.
+
+Validate the ecosystem additions with
+`node --test scripts/check-ecosystem-*.cjs scripts/check-site-navigation.cjs`
+and preview `index.html#exchange` or `index.html#nfts`.
 
 ## Current Structure
 

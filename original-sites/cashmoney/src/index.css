@@ -1,0 +1,1526 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Theme colors arrive as CSS variables set by src/themes.js (same
+   variable names as odysseus: --bg, --fg, --panel, --border, --red). */
+
+:root {
+  --bg: #282c34;
+  --fg: #9cdef2;
+  --panel: #111111;
+  --border: #355a66;
+  --red: #e06c75;
+}
+
+@layer base {
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Fira Code', ui-monospace, 'Cascadia Code', Consolas, monospace;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Content sits above the fixed background-effect canvases (z-index 0) */
+  #root {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+/* ── Background patterns + frosted glass (from odysseus) ─────
+   Unlayered on purpose so they beat the layered component styles. */
+
+body.bg-pattern-dots {
+  background-image: radial-gradient(color-mix(in srgb, var(--bg-effect-color, var(--fg)) calc(5% * var(--bg-effect-intensity, 1)), transparent) 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-attachment: fixed;
+}
+
+body.bg-pattern-synapse {
+  /* CSS grid as base, canvas pulses overlay */
+  background-image: linear-gradient(color-mix(in srgb, var(--bg-effect-color, var(--fg)) calc(3.5% * var(--bg-effect-intensity, 1)), transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--bg-effect-color, var(--fg)) calc(3.5% * var(--bg-effect-intensity, 1)), transparent) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-attachment: fixed;
+}
+
+body.theme-frosted .panel {
+  background-color: color-mix(in srgb, var(--panel) 32%, transparent);
+  background-image: linear-gradient(180deg,
+    color-mix(in srgb, var(--fg) 14%, transparent) 0%,
+    color-mix(in srgb, var(--fg) 4%, transparent) 26%,
+    transparent 55%);
+  backdrop-filter: blur(24px) saturate(170%);
+  -webkit-backdrop-filter: blur(24px) saturate(170%);
+  border-color: color-mix(in srgb, var(--fg) 22%, transparent);
+}
+
+.font-cashx-brand {
+  font-family: 'Permanent Marker', cursive;
+  font-weight: 400;
+  letter-spacing: 0.015em;
+}
+
+.font-cashx-display {
+  font-family: 'Barlow Condensed', sans-serif;
+}
+
+.font-cashx-ui {
+  font-family: 'DM Sans', sans-serif;
+}
+
+@layer components {
+  @keyframes countdown-number-pulse {
+    0% { transform: translateY(-2px) scale(1.035); text-shadow: 0 0 28px color-mix(in srgb, var(--red) 45%, transparent); }
+    100% { transform: translateY(0) scale(1); text-shadow: 0 0 18px rgba(255, 255, 255, 0.16); }
+  }
+
+  @keyframes countdown-separator-blink {
+    50% { opacity: 0.35; }
+  }
+
+  .countdown-number {
+    animation: countdown-number-pulse 520ms ease-out;
+    text-shadow: 0 0 18px rgba(255, 255, 255, 0.16);
+  }
+
+  .raise-number {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    animation: countdown-number-pulse 700ms ease-out;
+    text-shadow: 0 0 18px color-mix(in srgb, var(--red) 18%, transparent);
+  }
+
+  .countdown-separator span {
+    animation: countdown-separator-blink 1s steps(2, end) infinite;
+  }
+
+  .activity-row {
+    background-image: linear-gradient(90deg,
+      color-mix(in srgb, var(--red) 5%, var(--panel)),
+      var(--panel) 38%);
+    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  }
+
+  .activity-row:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--red) 48%, var(--border));
+    box-shadow: 0 10px 30px color-mix(in srgb, var(--bg) 42%, transparent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .countdown-number,
+    .raise-number,
+    .countdown-separator span { animation: none; }
+  }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+    border-radius: 9px;
+  }
+
+  .btn-accent {
+    border: 1px solid var(--red);
+    background: color-mix(in srgb, var(--red) 18%, var(--panel));
+    color: var(--fg);
+    border-radius: 7px;
+    transition: background 0.16s, box-shadow 0.16s;
+  }
+  .btn-accent:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--red) 32%, var(--panel));
+    box-shadow: 0 0 18px color-mix(in srgb, var(--red) 30%, transparent);
+  }
+  .btn-accent:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .btn-ghost {
+    border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+    background: var(--panel);
+    color: var(--fg);
+    border-radius: 7px;
+    transition: border-color 0.16s, color 0.16s;
+  }
+  .btn-ghost:hover:not(:disabled) {
+    border-color: var(--red);
+    color: var(--red);
+  }
+  .btn-ghost:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .muted {
+    color: color-mix(in srgb, var(--fg) 62%, transparent);
+  }
+
+  .accent {
+    color: var(--red);
+  }
+
+  /* ── CashX-style nav ─────────────────────────────────────── */
+
+  .cx-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    height: 78px;
+    padding: 0 40px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    background: linear-gradient(90deg,
+      color-mix(in srgb, var(--bg) 82%, transparent),
+      color-mix(in srgb, var(--panel) 60%, transparent),
+      color-mix(in srgb, var(--bg) 82%, transparent));
+    backdrop-filter: blur(22px) saturate(160%);
+    -webkit-backdrop-filter: blur(22px) saturate(160%);
+    border-bottom: 1px solid color-mix(in srgb, var(--red) 34%, transparent);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  }
+
+  .cx-nav-left { display: flex; align-items: center; gap: 10px; }
+  .cx-nav-center { display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .cx-nav-right { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
+
+  .cx-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.92);
+    color: #000;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    box-shadow: 0 0 18px rgba(255, 255, 255, 0.08);
+    transition: background 0.2s, transform 0.2s;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+  .cx-icon:hover { transform: translateY(-1px); background: rgba(255, 255, 255, 0.85); }
+
+  .cx-tab {
+    font-weight: 800;
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 10px 20px;
+    color: color-mix(in srgb, var(--fg) 72%, transparent);
+    background: color-mix(in srgb, var(--fg) 4.5%, transparent);
+    border: 1px solid color-mix(in srgb, var(--fg) 12%, transparent);
+    border-radius: 999px;
+    transition: color 0.2s, background 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    white-space: nowrap;
+  }
+  .cx-tab:hover {
+    color: var(--fg);
+    background: color-mix(in srgb, var(--red) 18%, transparent);
+    border-color: color-mix(in srgb, var(--red) 34%, transparent);
+    transform: translateY(-1px);
+  }
+  .cx-tab.active {
+    color: #fff;
+    background: linear-gradient(135deg, var(--red), color-mix(in srgb, var(--red) 55%, #1a1a2e));
+    border-color: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 0 24px color-mix(in srgb, var(--red) 32%, transparent);
+  }
+
+  .cx-nav-right .btn-ghost,
+  .cx-nav-right .btn-accent { border-radius: 999px; }
+
+  @media (max-width: 800px) {
+    .cx-nav { height: auto; min-height: 78px; padding: 12px 14px; gap: 8px; grid-template-columns: 1fr; }
+    .cx-nav-left, .cx-nav-right { justify-content: center; }
+    .cx-icon { width: 32px; height: 32px; }
+    .cx-tab { font-size: 0.68rem; padding: 8px 12px; letter-spacing: 0.08em; }
+  }
+
+  /* ── Pack reveal (Session 5) ─────────────────────────────── */
+
+  .pr-pack-shell {
+    border: 1px solid color-mix(in srgb, var(--red) 62%, #d7a93c);
+    background: #07090d;
+    box-shadow:
+      0 30px 90px rgba(0, 0, 0, 0.75),
+      0 0 70px color-mix(in srgb, var(--red) 26%, transparent),
+      inset 0 0 45px rgba(0, 0, 0, 0.72);
+    clip-path: polygon(2% 0, 98% 0, 100% 2%, 99% 98%, 96% 100%, 4% 100%, 1% 98%, 0 2%);
+  }
+
+  .pr-pack-foil {
+    background:
+      radial-gradient(circle at 72% 20%, color-mix(in srgb, var(--red) 24%, transparent), transparent 34%),
+      radial-gradient(circle at 22% 78%, rgba(215, 169, 60, 0.13), transparent 35%),
+      repeating-linear-gradient(118deg, transparent 0 10px, rgba(255,255,255,0.018) 11px 12px),
+      linear-gradient(145deg, #111823 0%, #05070a 46%, #13100b 100%);
+  }
+
+  .pr-pack-foil::before {
+    content: '';
+    position: absolute;
+    inset: -35% -60%;
+    background: linear-gradient(105deg, transparent 42%, rgba(255,255,255,0.13) 49%, transparent 56%);
+    transform: translateX(-32%);
+    animation: pr-foil-shine 3.2s ease-in-out infinite;
+  }
+
+  .pr-pack-foil::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.3;
+    background-image: radial-gradient(rgba(255,255,255,0.22) 0.7px, transparent 0.7px);
+    background-size: 5px 5px;
+    mix-blend-mode: overlay;
+  }
+
+  .pr-pack-seam {
+    position: absolute;
+    z-index: 4;
+    top: 8px;
+    bottom: 8px;
+    width: 12px;
+    background: repeating-linear-gradient(180deg, rgba(255,255,255,0.18) 0 2px, rgba(0,0,0,0.45) 2px 5px);
+    opacity: 0.38;
+  }
+
+  .pr-pack-seam-left { left: 5px; }
+  .pr-pack-seam-right { right: 5px; }
+
+  .pr-pack-top-band {
+    z-index: 6;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    transform: skewY(-3deg);
+    border-top: 1px solid rgba(255,255,255,0.28);
+    border-bottom: 1px solid rgba(255,255,255,0.18);
+    background: linear-gradient(90deg, #d6aa3d, color-mix(in srgb, var(--red) 68%, #151515));
+    color: #07090d;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+  }
+
+  .pr-pack-kicker {
+    color: color-mix(in srgb, var(--red) 70%, white);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+  }
+
+  .pr-pack-emblem {
+    margin-top: 18px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(7rem, 20vh, 10rem);
+    font-weight: 800;
+    line-height: 0.82;
+    color: transparent;
+    background: linear-gradient(160deg, #fff5cc 0%, #d4a72f 42%, color-mix(in srgb, var(--red) 72%, white) 86%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    filter: drop-shadow(0 0 24px color-mix(in srgb, var(--red) 32%, transparent));
+  }
+
+  .pr-pack-edition {
+    color: rgba(255,255,255,0.76);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.32em;
+  }
+
+  .pr-pack-chip {
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 999px;
+    padding: 5px 9px;
+    background: rgba(255,255,255,0.035);
+  }
+
+  .pr-pack-vertical {
+    position: absolute;
+    z-index: 5;
+    right: 15px;
+    bottom: 52px;
+    writing-mode: vertical-rl;
+    color: rgba(255,255,255,0.13);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+  }
+
+  .pr-pack-bottom-seal {
+    z-index: 7;
+    border-top: 1px solid rgba(255,255,255,0.16);
+    background:
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.16) 0 3px, rgba(0,0,0,0.35) 3px 7px),
+      linear-gradient(180deg, #171b21, #07080a);
+  }
+
+  .pr-tear-strip {
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--red) 65%, #d6aa3d);
+    border-bottom: 0;
+    background:
+      repeating-linear-gradient(115deg, transparent 0 12px, rgba(255,255,255,0.045) 12px 14px),
+      linear-gradient(180deg, color-mix(in srgb, var(--red) 62%, #252a31), #10141a);
+    box-shadow: inset 0 9px 16px rgba(255,255,255,0.06);
+  }
+
+  .pr-tear-grip {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    width: 22px;
+    height: 12px;
+    border: 1px solid rgba(255,255,255,0.48);
+    border-radius: 2px;
+    transform: translateY(-50%);
+  }
+
+  .pr-tear-grip::before,
+  .pr-tear-grip::after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    right: 4px;
+    height: 1px;
+    background: rgba(255,255,255,0.38);
+  }
+
+  .pr-tear-grip::before { top: 3px; }
+  .pr-tear-grip::after { bottom: 3px; }
+
+  .pr-tear-perforation {
+    height: 2px;
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.65) 0 7px, transparent 7px 13px);
+  }
+
+  .pr-pack-drop {
+    animation: pr-drop 0.7s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+  }
+
+  .pr-pack-idle {
+    animation: pr-idle 2s ease-in-out infinite;
+  }
+
+  .pr-strip-torn {
+    animation: pr-tear 0.45s ease-in both;
+  }
+
+  .pr-card {
+    container-type: inline-size;
+    transition: transform 0.65s cubic-bezier(0.34, 1.45, 0.64, 1);
+  }
+
+  .pr-card-back {
+    border: 1px solid color-mix(in srgb, var(--red) 55%, #8c98a8);
+    background:
+      radial-gradient(circle at 78% 75%, color-mix(in srgb, var(--red) 12%, transparent), transparent 35%),
+      linear-gradient(155deg, #242b34 0%, #11161d 48%, #090d12 100%);
+    box-shadow:
+      0 18px 50px rgba(0,0,0,0.62),
+      0 0 24px color-mix(in srgb, var(--red) 18%, transparent),
+      inset 0 0 0 1px rgba(255,255,255,0.055);
+  }
+
+  .pr-card-back::before {
+    content: '';
+    position: absolute;
+    z-index: 7;
+    inset: -45% -80%;
+    pointer-events: none;
+    background: linear-gradient(110deg, transparent 42%, rgba(255,255,255,0.12) 49%, transparent 56%);
+    transform: translateX(-28%);
+    animation: pr-card-sheen 3.1s ease-in-out infinite;
+  }
+
+  .pr-card-back::after {
+    content: '';
+    position: absolute;
+    z-index: 6;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    box-shadow: inset 0 0 28px rgba(0,0,0,0.58);
+  }
+
+  .pr-card-rail {
+    position: absolute;
+    z-index: 5;
+    top: 1.8cqw;
+    bottom: 1.8cqw;
+    width: 5.5cqw;
+    border: 1px solid rgba(255,255,255,0.13);
+    background: linear-gradient(90deg, #2b333e, #586270 48%, #202630);
+    box-shadow: inset 0 0 7px rgba(0,0,0,0.55);
+  }
+
+  .pr-card-rail-left {
+    left: 1.6cqw;
+    border-radius: 2.8cqw 0 0 2.8cqw;
+  }
+
+  .pr-card-rail-right {
+    right: 1.6cqw;
+    border-radius: 0 2.8cqw 2.8cqw 0;
+  }
+
+  .pr-card-texture {
+    position: absolute;
+    z-index: 2;
+    left: 7cqw;
+    right: 7cqw;
+    top: 3cqw;
+    height: 38%;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 0;
+    border-radius: 2.4cqw 2.4cqw 0 0;
+    background:
+      radial-gradient(circle, color-mix(in srgb, var(--red) 68%, white) 0 1.1cqw, transparent 1.2cqw) 0 0 / 7cqw 7cqw,
+      radial-gradient(circle, rgba(255,255,255,0.3) 0 0.8cqw, transparent 0.9cqw) 3.5cqw 3.5cqw / 7cqw 7cqw,
+      linear-gradient(145deg, #303947, #171d26);
+    box-shadow: inset 0 -18px 30px rgba(0,0,0,0.28);
+  }
+
+  .pr-card-texture span {
+    position: absolute;
+    left: 4cqw;
+    top: 3.5cqw;
+    color: rgba(255,255,255,0.52);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 3.2cqw;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+  }
+
+  .pr-card-divider {
+    position: absolute;
+    z-index: 4;
+    left: 7cqw;
+    right: 7cqw;
+    top: 38%;
+    height: 1.4cqw;
+    min-height: 2px;
+    background: linear-gradient(90deg, #596574, color-mix(in srgb, var(--red) 65%, #8995a5), #343d48);
+    box-shadow: 0 2px 9px rgba(0,0,0,0.65);
+  }
+
+  .pr-card-seal {
+    position: absolute;
+    z-index: 6;
+    left: 10cqw;
+    top: 38%;
+    display: flex;
+    width: 18cqw;
+    aspect-ratio: 1;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(-50%);
+    border: 1.6cqw solid #252d37;
+    border-radius: 999px;
+    background: radial-gradient(circle, #cbd3dd 0 12%, color-mix(in srgb, var(--red) 72%, #b7c1ce) 14% 48%, #303945 50% 62%, #aeb9c6 64% 70%, #171d25 72%);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.7), 0 0 15px color-mix(in srgb, var(--red) 34%, transparent);
+  }
+
+  .pr-card-seal span {
+    color: #0d1218;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 4.6cqw;
+    font-weight: 800;
+  }
+
+  .pr-card-back-content {
+    position: absolute;
+    z-index: 3;
+    inset: 42% 9cqw 12%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pr-card-shield {
+    position: relative;
+    display: flex;
+    width: 34cqw;
+    aspect-ratio: 0.82;
+    align-items: center;
+    justify-content: center;
+    clip-path: polygon(50% 0, 91% 16%, 84% 74%, 50% 100%, 16% 74%, 9% 16%);
+    background: linear-gradient(150deg, color-mix(in srgb, var(--red) 78%, white), color-mix(in srgb, var(--red) 58%, #2b3440));
+    filter: drop-shadow(0 5px 8px rgba(0,0,0,0.55));
+  }
+
+  .pr-card-shield::before {
+    content: '';
+    position: absolute;
+    width: 29cqw;
+    aspect-ratio: 0.82;
+    clip-path: inherit;
+    background: #131922;
+  }
+
+  .pr-card-shield span {
+    position: relative;
+    z-index: 1;
+    color: color-mix(in srgb, var(--red) 72%, white);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16cqw;
+    font-weight: 800;
+    line-height: 1;
+    text-shadow: 0 0 12px color-mix(in srgb, var(--red) 45%, transparent);
+  }
+
+  .pr-card-brand {
+    margin-top: 5cqw;
+    color: #f0f3f7;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 8cqw;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .pr-card-subtitle {
+    margin-top: 1cqw;
+    color: color-mix(in srgb, var(--red) 65%, #aeb8c5);
+    font-size: 2.8cqw;
+    font-weight: 800;
+    letter-spacing: 0.22em;
+  }
+
+  .pr-card-serial {
+    position: absolute;
+    z-index: 5;
+    left: 0;
+    right: 0;
+    bottom: 4cqw;
+    color: rgba(255,255,255,0.32);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 2.8cqw;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-align: center;
+  }
+
+  .pr-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .pr-card-inner.pr-flip {
+    transform: rotateY(180deg);
+  }
+
+  .pr-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    overflow: hidden;
+  }
+
+  .pr-face-front {
+    transform: rotateY(180deg);
+  }
+}
+
+@keyframes pr-drop {
+  from { transform: translateY(-120vh) rotate(-8deg); }
+  to   { transform: translateY(0) rotate(0deg); }
+}
+
+@keyframes pr-idle {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-6px) rotate(-1deg); }
+}
+
+@keyframes pr-tear {
+  40%  { transform: translateX(45px) rotate(5deg); opacity: 1; }
+  100% { transform: translateX(340px) translateY(-130px) rotate(28deg); opacity: 0; }
+}
+
+@keyframes pr-foil-shine {
+  0%, 22% { transform: translateX(-34%); opacity: 0; }
+  42%     { opacity: 1; }
+  68%, 100% { transform: translateX(34%); opacity: 0; }
+}
+
+@keyframes pr-card-sheen {
+  0%, 30% { transform: translateX(-30%); opacity: 0; }
+  48%     { opacity: 1; }
+  70%, 100% { transform: translateX(30%); opacity: 0; }
+}
+
+.cx-fade-in {
+  animation: cx-fade 0.5s ease both;
+}
+
+@keyframes cx-fade {
+  from { opacity: 0.25; }
+  to   { opacity: 1; }
+}
+
+/* ── Pro-tip drag demo (from odysseus tourHints) ─────────────
+   Cursor approaches the title bar, drags right, the modal snaps into a
+   right-half zone, holds, then returns. 3.2s loop. */
+.th-cursor { animation: th-cursor 3.2s ease-in-out infinite; transform-origin: 0 0; }
+.th-modal-group { animation: th-modal-slide 3.2s ease-in-out infinite; transform-origin: 39px 31px; }
+.th-zone { animation: th-zone-flash 3.2s ease-in-out infinite; }
+
+@keyframes th-cursor {
+  0%, 5%    { transform: translate(35px, 32px); }
+  18%       { transform: translate(35px, 22px); }
+  48%       { transform: translate(80px, 22px); }
+  72%       { transform: translate(80px, 22px); }
+  90%, 100% { transform: translate(35px, 32px); }
+}
+@keyframes th-modal-slide {
+  0%, 18%   { transform: translate(0, 0) scale(1, 1); }
+  48%       { transform: translate(45px, 0) scale(1, 1); }
+  58%       { transform: translate(30px, -19px) scale(1.4, 2.4); }
+  72%       { transform: translate(30px, -19px) scale(1.4, 2.4); }
+  90%, 100% { transform: translate(0, 0) scale(1, 1); }
+}
+@keyframes th-zone-flash {
+  0%, 38%   { opacity: 0; }
+  48%       { opacity: 0.22; }
+  58%, 72%  { opacity: 0; }
+  100%      { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .th-cursor, .th-modal-group, .th-zone { animation: none !important; }
+}
+
+/* ── Nexion CashMoney NFT farm (adapted from evmdev101/CashX) ── */
+
+.stake-farm-page {
+  width: min(540px, 100%);
+  color: var(--fg);
+}
+
+.stake-farm-page-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 18px;
+  margin-bottom: 14px;
+}
+
+.stake-farm-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.stake-farm-total span {
+  color: color-mix(in srgb, var(--fg) 56%, transparent);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.stake-farm-total strong {
+  color: color-mix(in srgb, var(--fg) 78%, white);
+  font-size: 1rem;
+}
+
+.stake-connect-strip,
+.stake-read-error {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px 13px;
+  border: 1px solid color-mix(in srgb, var(--red) 42%, var(--border));
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--red) 10%, var(--panel));
+  color: var(--fg);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.stake-connect-strip {
+  cursor: pointer;
+  transition: background 160ms, border-color 160ms;
+}
+
+.stake-connect-strip:hover:not(:disabled) {
+  border-color: var(--red);
+  background: color-mix(in srgb, var(--red) 18%, var(--panel));
+}
+
+.stake-connect-strip.warning,
+.stake-read-error {
+  border-color: rgba(248, 113, 113, 0.42);
+  background: rgba(248, 113, 113, 0.08);
+  color: #ffb4b4;
+}
+
+.stake-farm-card {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 9px;
+  overflow: visible;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--red) 42%, var(--border));
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--panel) 96%, #080b10);
+  box-shadow:
+    0 22px 58px rgba(0, 0, 0, 0.44),
+    0 0 28px color-mix(in srgb, var(--red) 15%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.stake-farm-card:focus-within,
+.stake-farm-card:hover {
+  z-index: 20;
+}
+
+.stake-farm-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 8px;
+}
+
+.stake-farm-title {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+  gap: 13px;
+}
+
+.stake-farm-title img {
+  width: 56px;
+  height: 56px;
+  flex: 0 0 56px;
+  border: 1px solid color-mix(in srgb, var(--red) 52%, transparent);
+  border-radius: 50%;
+  background: var(--panel);
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--red) 18%, transparent);
+  object-fit: cover;
+  object-position: center 35%;
+}
+
+.stake-farm-title strong {
+  overflow: hidden;
+  color: color-mix(in srgb, var(--fg) 74%, white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.94rem;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stake-farm-card-head > a {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 15px;
+  border: 1px solid color-mix(in srgb, var(--red) 54%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--red) 22%, transparent);
+  color: var(--red);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 160ms, color 160ms;
+  white-space: nowrap;
+}
+
+.stake-farm-card-head > a:hover {
+  background: color-mix(in srgb, var(--red) 34%, var(--panel));
+  color: color-mix(in srgb, var(--fg) 70%, white);
+}
+
+.stake-metric-grid {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.stake-metric {
+  min-width: 0;
+  min-height: 86px;
+  overflow: visible;
+  padding: 14px 13px;
+  border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--fg) 7%, var(--panel));
+}
+
+.stake-apr-metric {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  min-height: 68px;
+  grid-column: 1 / -1;
+  flex-direction: column;
+  justify-content: center;
+  padding: 9px 12px;
+  text-align: center;
+}
+
+.stake-metric-label {
+  display: block;
+  margin-bottom: 8px;
+  color: color-mix(in srgb, var(--fg) 58%, transparent);
+  font-size: 0.68rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.stake-apr-metric .stake-metric-label {
+  margin-bottom: 6px;
+}
+
+.stake-metric > strong,
+.stake-balance-row strong,
+.stake-staked-row strong {
+  color: color-mix(in srgb, var(--fg) 70%, white);
+  font-size: 1rem;
+}
+
+.stake-metric-long {
+  display: block;
+  overflow: hidden;
+  font-size: clamp(0.68rem, 2.4vw, 0.82rem) !important;
+  letter-spacing: -0.035em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stake-metric-sub,
+.stake-reward-usd {
+  display: block;
+  margin-top: 8px;
+  color: color-mix(in srgb, var(--fg) 60%, transparent);
+  font-size: 0.78rem;
+  line-height: 1.15;
+}
+
+.stake-apr-value {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.stake-apr-value > strong {
+  color: #18d98b;
+  font-size: 1.38rem;
+  line-height: 1.15;
+}
+
+.stake-balance-row,
+.stake-staked-row,
+.stake-reward-line {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.stake-balance-row button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: color-mix(in srgb, var(--fg) 68%, transparent);
+  font-size: 0.66rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.stake-balance-row button:hover:not(:disabled) { color: var(--fg); }
+.stake-balance-row button:disabled { opacity: 0.32; cursor: default; }
+
+.stake-staked-row span {
+  color: color-mix(in srgb, var(--fg) 56%, transparent);
+  font-size: 0.7rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.stake-rewards-metric { overflow: visible; }
+
+.stake-reward-line {
+  align-items: center;
+  color: color-mix(in srgb, var(--fg) 70%, white);
+  font-size: 0.86rem;
+}
+
+.stake-reward-line > strong {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 0.86rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stake-reward-list {
+  display: grid;
+  gap: 10px;
+}
+
+.stake-reward-entry + .stake-reward-entry {
+  padding-top: 9px;
+  border-top: 1px solid color-mix(in srgb, var(--border) 42%, transparent);
+}
+
+.stake-reward-icon {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  border-radius: 50%;
+  box-shadow: 0 0 14px rgba(87, 245, 221, 0.24);
+  object-fit: cover;
+}
+
+.stake-reward-icon-fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f59b3c, #7d351e);
+  color: #fff4dc;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.stake-popover-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.stake-popover-button {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--bg) 55%, var(--panel));
+  color: color-mix(in srgb, var(--fg) 76%, #b8d2ff);
+  cursor: pointer;
+}
+
+.stake-popover-button:hover,
+.stake-popover-button:focus {
+  border-color: color-mix(in srgb, var(--red) 60%, var(--border));
+  outline: none;
+}
+
+.stake-popover-button svg { width: 14px; height: 14px; }
+.stake-apr-calc { color: #ffb24a; }
+
+.stake-popover {
+  position: absolute;
+  z-index: 50;
+  display: block;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+  border-radius: 7px;
+  background: #030507;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.58);
+  color: #e8edf2;
+  opacity: 0;
+  pointer-events: none;
+  text-align: left;
+  transform: translateY(4px);
+  transition: opacity 160ms, transform 160ms;
+}
+
+.stake-apr-popover {
+  top: calc(100% + 10px);
+  left: 50%;
+  width: 178px;
+  transform: translateX(-50%) translateY(-4px);
+}
+
+.stake-reward-popover {
+  right: 0;
+  bottom: calc(100% + 10px);
+  width: 314px;
+  max-width: calc(100vw - 32px);
+}
+
+.stake-popover-wrap:hover .stake-popover,
+.stake-popover-wrap:focus-within .stake-popover {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.stake-popover-wrap:hover .stake-apr-popover,
+.stake-popover-wrap:focus-within .stake-apr-popover {
+  transform: translateX(-50%) translateY(0);
+}
+
+.stake-popover-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-bottom: 1px solid rgba(139, 161, 184, 0.15);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.stake-popover-title svg { width: 18px; height: 18px; }
+
+.stake-popover-rows {
+  display: grid;
+  gap: 5px;
+  padding: 12px;
+  font-size: 0.62rem;
+}
+
+.stake-popover-rows > span {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.stake-popover-rows strong { color: #18d98b; }
+
+.stake-projection-rows > span {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  align-items: start;
+  gap: 8px;
+}
+
+.stake-projection-rows strong {
+  color: #39ff7e;
+  line-height: 1.28;
+  overflow-wrap: anywhere;
+}
+
+.stake-claim-button,
+.stake-approve-button,
+.stake-action-row button {
+  width: 100%;
+  min-height: 42px;
+  padding: 12px 14px;
+  border-radius: 6px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  transition: background 160ms, border-color 160ms, color 160ms, opacity 160ms;
+}
+
+.stake-claim-button {
+  border: 1px solid color-mix(in srgb, var(--red) 58%, transparent);
+  background: linear-gradient(135deg, var(--red), color-mix(in srgb, var(--red) 68%, #4f8ef7));
+  color: #fff;
+  cursor: pointer;
+}
+
+.stake-claim-button:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.stake-action-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.stake-action-row button,
+.stake-approve-button {
+  border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+  background: color-mix(in srgb, var(--fg) 7%, var(--panel));
+  color: color-mix(in srgb, var(--fg) 58%, transparent);
+  cursor: pointer;
+}
+
+.stake-action-row button:hover:not(:disabled),
+.stake-approve-button:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--red) 58%, var(--border));
+  background: color-mix(in srgb, var(--red) 12%, var(--panel));
+  color: var(--fg);
+}
+
+.stake-approve-button { background: transparent; color: var(--fg); text-transform: none; }
+
+.stake-claim-button:disabled,
+.stake-action-row button:disabled,
+.stake-approve-button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.stake-transaction-status {
+  display: flex;
+  min-height: 30px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--red) 10%, transparent);
+  color: color-mix(in srgb, var(--fg) 75%, white);
+  font-size: 0.64rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.stake-transaction-status.error { background: rgba(239, 68, 68, 0.08); color: #ff9b9b; }
+.stake-transaction-status a { color: var(--fg); text-decoration: underline; text-underline-offset: 2px; }
+
+.stake-farm-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid color-mix(in srgb, var(--border) 55%, transparent);
+  color: color-mix(in srgb, var(--fg) 58%, transparent);
+  font-size: 0.7rem;
+  white-space: nowrap;
+}
+
+.stake-farm-footer strong { color: var(--fg); font-size: 0.78rem; }
+.stake-farm-footer > span:last-child { color: color-mix(in srgb, var(--fg) 46%, transparent); }
+
+.stake-approval-note {
+  margin: 10px auto 0;
+  padding: 0 8px;
+  color: color-mix(in srgb, var(--fg) 48%, transparent);
+  font-size: 0.58rem;
+  line-height: 1.55;
+  text-align: center;
+}
+
+/* Full-screen NFT picker */
+
+.stake-nft-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10020;
+  overflow: auto;
+  background:
+    radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--red) 14%, transparent), transparent 34%),
+    color-mix(in srgb, var(--bg) 96%, #000);
+  backdrop-filter: blur(18px);
+}
+
+.stake-nft-dialog {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 24px clamp(18px, 4vw, 64px) 34px;
+  color: var(--fg);
+}
+
+.stake-nft-dialog::before {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+  background-size: 28px 28px;
+  content: '';
+  mask-image: linear-gradient(to bottom, #000, transparent 58%);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.stake-nft-modal-head,
+.stake-nft-modal-status,
+.stake-nft-grid-wrap {
+  position: relative;
+  width: min(1180px, 100%);
+  margin: 0 auto;
+}
+
+.stake-nft-modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 12px 0 9px;
+}
+
+.stake-nft-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding: 6px 10px;
+  border: 1px solid color-mix(in srgb, var(--red) 42%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--red) 10%, transparent);
+  color: var(--red);
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.stake-nft-eyebrow span { color: var(--fg); }
+
+.stake-nft-modal-head h2 {
+  margin: 0;
+  color: color-mix(in srgb, var(--fg) 56%, #fff);
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(1.55rem, 3vw, 2.35rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.stake-nft-modal-head p {
+  margin: 7px 0 0;
+  color: color-mix(in srgb, var(--fg) 62%, transparent);
+  font-size: 0.75rem;
+  line-height: 1.55;
+}
+
+.stake-nft-close {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border: 1px solid color-mix(in srgb, var(--red) 42%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--red) 9%, transparent);
+  color: var(--red);
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: background 180ms, transform 180ms;
+}
+
+.stake-nft-close:hover:not(:disabled) { background: color-mix(in srgb, var(--red) 20%, transparent); transform: rotate(8deg); }
+.stake-nft-close:disabled { opacity: 0.35; cursor: default; }
+
+.stake-nft-modal-status {
+  min-height: 20px;
+  padding: 0 0 8px;
+  color: var(--fg);
+  font-size: 0.67rem;
+  font-weight: 700;
+}
+
+.stake-nft-modal-status.error { color: #ff9b9b; }
+
+.stake-nft-controls {
+  position: relative;
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 4px auto 8px;
+  padding: 12px 18px;
+  border: 1px solid color-mix(in srgb, var(--red) 24%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--panel) 76%, transparent);
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(16px);
+}
+
+.stake-nft-controls > div {
+  order: -1;
+  width: 100%;
+  color: color-mix(in srgb, var(--fg) 70%, white);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.stake-nft-controls button {
+  min-height: 38px;
+  padding: 0 16px;
+  border: 1px solid color-mix(in srgb, var(--red) 32%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--panel) 82%, transparent);
+  color: color-mix(in srgb, var(--fg) 62%, transparent);
+  font-size: 0.63rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.stake-nft-controls button:hover:not(:disabled) { border-color: var(--red); color: var(--fg); }
+.stake-nft-controls button:disabled { opacity: 0.35; cursor: default; }
+
+.stake-nft-grid-wrap {
+  min-height: 360px;
+  flex: 1;
+  padding: 12px 0 8px;
+}
+
+.stake-nft-grid {
+  display: grid;
+  width: min(1024px, 100%);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: start;
+  gap: 12px;
+}
+
+.stake-nft-empty {
+  display: grid;
+  min-height: 240px;
+  grid-column: 1 / -1;
+  place-items: center;
+  padding: 24px;
+  color: color-mix(in srgb, var(--fg) 62%, transparent);
+  font-size: 0.76rem;
+  font-weight: 600;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.stake-nft-token {
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+  border-radius: 9px;
+  background: var(--panel);
+  color: var(--fg);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 180ms, box-shadow 180ms, transform 180ms;
+}
+
+.stake-nft-token:hover:not(:disabled) { border-color: color-mix(in srgb, var(--red) 58%, var(--border)); transform: translateY(-2px); }
+.stake-nft-token.selected { border-color: var(--red); box-shadow: 0 0 0 2px color-mix(in srgb, var(--red) 28%, transparent), 0 10px 30px rgba(0, 0, 0, 0.28); }
+.stake-nft-token:disabled { cursor: default; }
+
+.stake-nft-art {
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  place-items: center;
+  background: color-mix(in srgb, var(--fg) 8%, var(--panel));
+}
+
+.stake-nft-art img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+.stake-nft-art-placeholder {
+  color: color-mix(in srgb, var(--fg) 22%, transparent);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 4rem;
+  font-weight: 800;
+}
+
+.stake-nft-id {
+  display: flex;
+  min-height: 28px;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 4px 8px;
+  color: color-mix(in srgb, var(--fg) 62%, transparent);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.stake-nft-check {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 3;
+  display: flex;
+  width: 26px;
+  height: 26px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 50%;
+  background: linear-gradient(100deg, var(--red), color-mix(in srgb, var(--red) 48%, var(--fg)));
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 900;
+  opacity: 0;
+  transform: scale(0.75);
+  transition: opacity 160ms, transform 160ms;
+}
+
+.stake-nft-token.selected .stake-nft-check { opacity: 1; transform: scale(1); }
+
+.stake-nft-modal-footer {
+  position: relative;
+  width: min(760px, 100%);
+  margin: 0 auto;
+  padding: 14px 0 6px;
+}
+
+.stake-nft-submit {
+  width: 100%;
+  min-height: 58px;
+  border: 1px solid color-mix(in srgb, var(--fg) 25%, transparent);
+  border-radius: 12px;
+  background: linear-gradient(100deg, var(--red), color-mix(in srgb, var(--red) 50%, var(--fg)));
+  box-shadow: 0 12px 30px color-mix(in srgb, var(--red) 24%, transparent);
+  color: #fff;
+  font-size: 0.84rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: box-shadow 180ms, transform 180ms;
+}
+
+.stake-nft-submit:hover:not(:disabled) { box-shadow: 0 16px 38px color-mix(in srgb, var(--red) 38%, transparent); transform: translateY(-2px); }
+.stake-nft-submit:disabled { box-shadow: none; cursor: default; filter: saturate(0.35); opacity: 0.42; }
+
+@media (max-width: 1023px) {
+  .stake-nft-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 639px) {
+  .stake-farm-total { width: 100%; justify-content: space-between; }
+  .stake-farm-title img { width: 48px; height: 48px; flex-basis: 48px; }
+  .stake-farm-title strong { font-size: 0.82rem; }
+  .stake-farm-card-head > a { min-height: 30px; padding: 0 11px; font-size: 0.62rem; }
+  .stake-metric { padding: 12px 10px; }
+  .stake-farm-footer { align-items: flex-start; flex-wrap: wrap; font-size: 0.62rem; }
+  .stake-farm-footer > span:nth-child(2) { margin-left: auto; }
+  .stake-nft-dialog { min-height: 100svh; padding: 14px 14px 22px; }
+  .stake-nft-modal-head { padding: 8px 0; }
+  .stake-nft-modal-head h2 { font-size: 1.45rem; }
+  .stake-nft-controls { border-radius: 18px; padding: 11px 13px; }
+  .stake-nft-grid-wrap { min-height: 300px; padding: 14px 0 4px; }
+  .stake-nft-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stake-nft-check { top: 6px; right: 6px; width: 23px; height: 23px; }
+  .stake-nft-modal-footer { padding: 12px 0 0; }
+}

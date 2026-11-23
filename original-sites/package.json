@@ -1,0 +1,1 @@
+{"private":true,"type":"module","scripts":{"build":"node build.mjs"},"dependencies":{"@tailwindcss/postcss":"^4.2.1","@vitejs/plugin-react":"6.0.2","autoprefixer":"^10.4.20","ethers":"6.15.0","react":"19.2.6","react-dom":"19.2.6","tailwindcss":"^4.2.1","tailwindcss3":"npm:tailwindcss@^3.4.17","viem":"2.55.10","vite":"8.0.13"}}

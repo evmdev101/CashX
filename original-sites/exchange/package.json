@@ -1,0 +1,35 @@
+{
+  "name": "limited-exchange",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "start": "vite preview",
+    "preview": "vite preview",
+    "test": "hardhat test solidity && node scripts/compile-contracts.mjs && vite build",
+    "test:contracts": "hardhat test solidity",
+    "contracts:compile": "node scripts/compile-contracts.mjs",
+    "contracts:check-production": "node scripts/check-production-addresses.mjs"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.6.1",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "viem": "^2.55.10"
+  },
+  "devDependencies": {
+    "@types/node": "22.19.19",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.2",
+    "hardhat": "^3.12.0",
+    "solc": "^0.8.36",
+    "typescript": "5.9.3",
+    "vite": "8.0.13"
+  },
+  "type": "module"
+}

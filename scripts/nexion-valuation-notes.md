@@ -23,6 +23,7 @@ The screenshots alone do not establish the exact cause of the small TVL discrepa
 ## Local behavior
 
 - Farm card and summary claimable USD follow the Nexion convention.
+- The pending token breakdown and its USD/PLS totals use the latest fetched pending amounts. Regular farm entries retain their Nexion-compatible `pendingUsdValue`; NFT entries use their fetched reward amounts and prices. The summary does not add projected accrual between reads or replace regular farm values with direct token-price estimates. Daily reward projections remain separate.
 - The user requested removal of the comparison and My positions panels. No alternative market estimate is displayed or retained in valuation results.
 - The token-stake subtotal excludes NFT mint-value estimates, consistent with the Nexion summary scope.
 - No signing or transaction behavior was changed for this comparison.

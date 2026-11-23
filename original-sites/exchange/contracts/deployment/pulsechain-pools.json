@@ -1,0 +1,36 @@
+{
+  "chainId": 369,
+  "network": "PulseChain",
+  "owner": "0x175750eA3aDed69d2375ffe044BFb6E46ec90702",
+  "pulseXRouter": "0x165C3410fC91EF562C50559f7d2289fEbed552d9",
+  "wrappedPls": "0xA1077a294dDE1B09bB078844df40758a5D0f9a27",
+  "treasury": "0x175750eA3aDed69d2375ffe044BFb6E46ec90702",
+  "managementWallet": "0xDBA19652f7Ed3f3AE6266c91669C6083ba8cE557",
+  "burnSink": "0x000000000000000000000000000000000000dEaD",
+  "pools": {
+    "cashx": {
+      "contract": "CashXLCashXMintExchange",
+      "originalToken": "0x510c547318032275e41D1362A465783320d8152f",
+      "limitedToken": "0x57cBC908078b291117242385Fe7C0cf3582fA460",
+      "burnExchange": "0xE346B08433BE131A7964a7e1F46c6fC28eC69003"
+    },
+    "distrox": {
+      "contract": "DistroXLDistroXMintExchange",
+      "originalToken": "0xec03E43e21B337F60F6a63944bC7b61B531c035F",
+      "limitedToken": "0xfC961146971679Cc4E731F60D72B60eb3dd8b036",
+      "burnExchange": "0x3EbC49f2e89260655D957774E73440e20e942934"
+    },
+    "divx": {
+      "contract": "DivXLDivXMintExchange",
+      "originalToken": "0xB528AFfc72Dfc7Da5d3184C4e233Fc9fc156c4E0",
+      "limitedToken": "0x8DbD0923c0c2dd4973806B655036251610aE11BC",
+      "burnExchange": "0x2b199B79E84f74e06c1E08baf92249Be4003EBa0"
+    },
+    "gsx": {
+      "contract": "GSXLGSXMintExchange",
+      "originalToken": "0xFA490c52FD934c7b8629E30Ea4c14683ee000b5d",
+      "limitedToken": "0xCc6A42F028905096c76E5631aed78e20f5CDDFBa",
+      "burnExchange": "0x9548c4b026b5B4026C60edd39D17D72EABa97093"
+    }
+  }
+}

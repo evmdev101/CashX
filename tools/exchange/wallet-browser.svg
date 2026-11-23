@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-labelledby="title">
+  <title id="title">Browser wallet</title>
+  <defs>
+    <linearGradient id="wallet-gradient" x1="6" y1="5" x2="42" y2="43" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#9B6DFF"/>
+      <stop offset="1" stop-color="#24D6FF"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="#111312"/>
+  <path d="M9 15.5A5.5 5.5 0 0 1 14.5 10h20A4.5 4.5 0 0 1 39 14.5V18H15a3 3 0 0 0 0 6h24v9.5a4.5 4.5 0 0 1-4.5 4.5h-20A5.5 5.5 0 0 1 9 32.5v-17Z" fill="none" stroke="url(#wallet-gradient)" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M15 18h24v9H15a4.5 4.5 0 0 1 0-9Z" fill="#181B1A" stroke="url(#wallet-gradient)" stroke-width="3"/>
+  <circle cx="33.5" cy="22.5" r="1.75" fill="#24D6FF"/>
+</svg>

@@ -1,0 +1,47 @@
+#exchange-content{font-family:'DM Sans',Arial,sans-serif;color:var(--farm-theme-text)}
+#exchange-content .ex-layout{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);gap:24px;align-items:start}
+#exchange-content .ex-trade,#exchange-content .ex-card{border:1px solid var(--farm-theme-border);border-radius:18px;background:var(--farm-theme-panel);padding:28px}
+#exchange-content .ex-trade h2{font-size:clamp(32px,4vw,48px);line-height:1.06;letter-spacing:-1.5px;margin:14px 0}
+#exchange-content .ex-eyebrow{color:var(--farm-theme-accent);font-size:11px;font-weight:700;letter-spacing:1.5px}
+#exchange-content .ex-intro{color:var(--farm-theme-muted);line-height:1.6;margin-bottom:24px;max-width:340px}
+#exchange-content .ex-label{display:block;font-size:13px;font-weight:700;margin-bottom:8px}
+#exchange-content select,#exchange-content input{color:var(--farm-theme-text);background:var(--farm-theme-bg);border:1px solid var(--farm-theme-border);border-radius:10px;max-width:100%;font:inherit;padding:13px;width:100%}
+#exchange-content select option{background:var(--farm-theme-bg)}
+#exchange-content .ex-amount-box{background:var(--farm-theme-bg);border:1px solid var(--farm-theme-border);border-radius:12px;padding:18px;margin-top:18px}
+#exchange-content .ex-field-head{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px}
+#exchange-content .ex-amount-box input{border:0;padding:10px 0;font-size:32px;outline-offset:3px;font-family:'Space Mono',monospace}
+#exchange-content button{cursor:pointer;font:inherit}
+#exchange-content .ex-field-head button,#exchange-content .ex-card-head button{border:1px solid var(--farm-theme-border);border-radius:6px;background:transparent;color:var(--farm-theme-accent);font-size:12px;padding:5px 10px}
+#exchange-content .ex-note{font-size:12px;color:var(--farm-theme-muted);line-height:1.6;margin:10px 0 0}
+#exchange-content .ex-direction{text-align:center;color:var(--farm-theme-accent);font-size:24px;line-height:36px}
+#exchange-content .ex-receive{border:1px solid var(--farm-theme-border);background:color-mix(in srgb,var(--farm-theme-accent) 6%,var(--farm-theme-bg));padding:18px;border-radius:12px;display:grid;grid-template-columns:1fr auto;gap:10px;overflow-wrap:anywhere}
+#exchange-content .ex-receive>span{grid-column:1/-1;color:var(--farm-theme-muted);font-size:13px}
+#exchange-content .ex-receive strong{font-family:'Space Mono',monospace;font-size:24px;min-width:0;overflow-wrap:anywhere}
+#exchange-content .ex-receive b{align-self:center;color:var(--farm-theme-accent)}
+#exchange-content .ex-receive small{grid-column:1/-1;font-size:12px;color:var(--farm-theme-muted)}
+#exchange-content .ex-tolerance{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:20px;font-size:12px}
+#exchange-content .ex-tolerance select{width:auto;padding:8px;font-size:12px}
+#exchange-content .ex-primary{width:100%;min-height:50px;margin-top:22px;border:1px solid var(--farm-theme-accent);border-radius:10px;background:var(--farm-theme-accent);color:var(--farm-theme-bg);font-weight:800}
+#exchange-content button:disabled,#exchange-content input:disabled,#exchange-content select:disabled{opacity:.5;cursor:default}
+#exchange-content .ex-status{min-height:48px;font-size:13px;line-height:1.6;margin-top:14px;color:var(--farm-theme-muted);overflow-wrap:anywhere}
+#exchange-content a{color:var(--farm-theme-accent)}
+#exchange-content .ex-details{display:grid;gap:18px}
+#exchange-content .ex-card h3{font-size:17px;margin:0 0 20px}
+#exchange-content .ex-split{height:10px;display:flex;gap:4px;margin:0 0 20px;border-radius:8px;overflow:hidden}
+#exchange-content .ex-split span:first-child{background:var(--farm-theme-accent)}
+#exchange-content .ex-split span:last-child{background:color-mix(in srgb,var(--farm-theme-accent) 28%,var(--farm-theme-text))}
+#exchange-content .ex-split-row{display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:center;margin-bottom:16px;font-size:13px;line-height:1.5}
+#exchange-content .ex-split-row b{font-size:22px}
+#exchange-content .ex-card-head{display:flex;justify-content:space-between;gap:15px;align-items:start}
+#exchange-content .ex-state{font-size:12px;line-height:1.5;color:var(--farm-theme-accent);margin-bottom:14px}
+#exchange-content .ex-stats{margin:0}
+#exchange-content .ex-stats div{display:flex;justify-content:space-between;gap:18px;padding:13px 0;border-top:1px solid var(--farm-theme-border);font-size:13px}
+#exchange-content .ex-stats dt{color:var(--farm-theme-muted)}
+#exchange-content .ex-stats dd{margin:0;text-align:right;overflow-wrap:anywhere;min-width:0}
+#exchange-content summary{cursor:pointer;font-weight:700;font-size:14px}
+#exchange-content .ex-contracts{display:grid;gap:12px;margin:20px 0}
+#exchange-content .ex-contracts a{display:flex;justify-content:space-between;gap:12px;font-size:12px;text-decoration:none}
+#exchange-content .ex-contracts+ a{font-size:12px}
+#exchange-content :is(button,input,select,summary,a):focus-visible{outline:2px solid var(--farm-theme-accent);outline-offset:3px}
+@media(max-width:850px){#exchange-content .ex-layout{grid-template-columns:1fr}#exchange-content .ex-trade,#exchange-content .ex-card{padding:22px}}
+@media(max-width:420px){#exchange-content .ex-tolerance{align-items:start;flex-direction:column}#exchange-content .ex-tolerance select{width:100%}#exchange-content .ex-receive strong{font-size:20px}}

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head><script src="../../lib/original-site-bridge.js?v=20261109-neutral"></script>
+    <meta charset="UTF-8" />
+    <meta name="color-scheme" content="dark" />
+    <style>
+      :root { color-scheme: dark; background: var(--bg, #0d1117); }
+      body { margin: 0; background: var(--bg, #0d1117); }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      // Restore the palette before the browser paints, rather than after React mounts.
+      try {
+        const saved = JSON.parse(localStorage.getItem("limited-exchange-theme-v2"));
+        if (saved && saved.colors && saved.background) {
+          for (const key of ["bg", "fg", "panel", "border", "red"]) {
+            const value = saved.colors[key];
+            if (typeof value === "string" && CSS.supports("color", value)) {
+              document.documentElement.style.setProperty(`--${key}`, value);
+            }
+          }
+          const rgb = /^#([\da-f]{2})([\da-f]{2})([\da-f]{2})$/i.exec(saved.colors.bg);
+          if (rgb) {
+            const brightness = parseInt(rgb[1], 16) * 299 + parseInt(rgb[2], 16) * 587 + parseInt(rgb[3], 16) * 114;
+            document.documentElement.style.colorScheme = brightness >= 128000 ? "light" : "dark";
+          }
+        }
+      } catch { /* The default palette also works without local storage. */ }
+    </script>
+    <meta
+      name="description"
+      content="Burn supported tokens and receive their limited counterparts at a transparent 1:1 rate on PulseChain."
+    />
+    <meta property="og:title" content="Limited Exchange" />
+    <meta
+      property="og:description"
+      content="Burn supported tokens and receive their limited counterparts at a transparent 1:1 rate on PulseChain."
+    />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/png" href="./tokens/cashx.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&family=Permanent+Marker&display=optional"
+      rel="stylesheet"
+    />
+    <title>Limited Exchange</title>
+    <script type="module" crossorigin src="./assets/index-4Hdxn7VJ.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-CuitIUqW.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  <script src="../../lib/no-hover-titles.js"></script>
+  </body>
+</html>

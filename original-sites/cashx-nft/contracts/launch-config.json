@@ -1,0 +1,45 @@
+{
+  "status": "mainnet-deployment-candidate",
+  "collection": {
+    "name": "CashX Ecosystem",
+    "symbol": "CASHXNFT",
+    "maximumSupply": 10000,
+    "mainnetMintPricePLS": "1000000",
+    "testnetV4MintPriceTPLS": "0.1"
+  },
+  "treasury": {
+    "address": "0x8875b605ad560792FC8420F901235961d863F62e",
+    "provided": true,
+    "controlVerified": false
+  },
+  "deployment": {
+    "mainnetChainId": 369,
+    "testnetV4ChainId": 943,
+    "ownerAddress": "0xc684B8024A1A852F6707ba01081fB55ABCC5E74d",
+    "tokenURI": "ipfs://bafkreihz5r3riranvj2wciy2w2xcfgznojpznb3cd2h3t4mqqsfxnf24pm",
+    "testnetV4": {
+      "contractAddress": "0x54Fa3D2FF523417D0887625BA5fc01F8063a5104",
+      "deploymentBlock": 25142463,
+      "saleActive": true,
+      "firstMintTransaction": "0xd70362d43ecd99b528f8654ff1361e7aa20b5ad2bffef32b8976201a6892c544",
+      "treasuryForwardingVerified": true
+    },
+    "mainnet": {
+      "contractAddress": "0x744351E2846498D040B649D694CAB21f32f14AFe",
+      "deploymentTransaction": "0x65c69aa507a7736897e5008b5dfcc10578228d7c5af09495f27c81a43d5c27e4",
+      "deploymentBlock": 27306495,
+      "saleActive": false
+    }
+  },
+  "validation": {
+    "date": "2026-08-16",
+    "compiler": "0.8.24",
+    "evmVersion": "paris",
+    "optimizerRuns": 200,
+    "contractTestsPassed": 11,
+    "contractTestsFailed": 0,
+    "deployedBytecodeBytes": 8078,
+    "testnetExecutableMatchAfterImmutableNormalization": true,
+    "independentReviewCompleted": false
+  }
+}

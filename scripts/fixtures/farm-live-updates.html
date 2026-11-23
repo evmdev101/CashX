@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Farm live update browser regressions</title>
+<style>
+body{font:15px system-ui,sans-serif;margin:0;background:#10151c;color:#e5edf8}header{position:fixed;inset:0 0 auto;background:#1c2839;padding:16px;z-index:10;border-bottom:1px solid #506480}h1{font-size:18px;margin:0 0 10px}button{padding:8px 14px;cursor:pointer}#results{margin:12px 0 0;font-size:13px;line-height:1.6;white-space:pre-wrap}main{padding:190px 24px 100px}article{box-sizing:border-box;min-height:340px;padding:24px;margin:16px 0;border:1px solid #6983a2;background:#182334}input{padding:12px;font:inherit}details{margin:15px 0}.pass{color:#87e4a7}.fail{color:#ff9d9d}table{width:100%;padding:20px}td{padding:10px}.spacer{height:1400px}
+</style>
+<header><h1>Farm live updates: real browser regression checks</h1><button id="run" type="button">Run browser regressions</button><output id="results">Ready. This fixture uses no wallet or network calls.</output></header>
+<main><div class="spacer"></div><div id="host"></div><div class="spacer"></div></main>
+<script src="../../lib/live-view.js"></script>
+<script>
+(() => {
+  const host=document.getElementById('host'),results=document.getElementById('results');
+  const failures=[];let checks=0;
+  function assert(condition,message){checks++;if(!condition)failures.push(message);}
+  function markup(order=['a','b'],version=1){return order.map(key=>`<article ${key==='a'?'id="farm-card-1"':'data-live-key="farm:'+key+'"'}><h2>Farm ${key}</h2><span class="live-value">${version}</span>${key==='a'?`<label>Amount <input id="amount-1" value="server-${version}"></label><button id="claim-1" ${version>1?'disabled':''}>Claim</button><details id="details-1"><summary>LP breakdown</summary><p>Reserves ${version}</p></details><table><tbody><tr id="farm-table-detail-1" data-live-expanded hidden><td>Manage position ${version}</td></tr></tbody></table>`:''}</article>`).join('');}
+  host.innerHTML=markup();
+  document.getElementById('run').addEventListener('click',()=>{
+    failures.length=0;checks=0;results.className='';
+    if(!window.LiveView?.update){results.textContent='FAIL: LiveView.update is unavailable.';results.className='fail';return;}
+    host.innerHTML=markup();
+    const original=host.querySelector('#farm-card-1'),keyed=host.querySelector('[data-live-key="farm:b"]'),input=document.getElementById('amount-1');
+    input.value='12.34567';input.focus({preventScroll:true});input.setSelectionRange(2,5);
+    document.getElementById('details-1').open=true;
+    const detail=document.getElementById('farm-table-detail-1');detail.hidden=false;detail.dataset.liveExpanded='true';
+    window.LiveView.update(host,markup(['b','a'],2),{stableOrder:true,preserveScroll:true});
+    assert(host.querySelector('#farm-card-1')===original,'Existing farm card identity was replaced.');
+    assert(host.querySelector('[data-live-key="farm:b"]')===keyed,'data-live-key identity was replaced.');
+    assert(document.getElementById('amount-1')===input,'Amount input identity was replaced.');
+    assert(input.value==='12.34567','Typed amount was overwritten by refreshed markup.');
+    assert(input.selectionStart===2&&input.selectionEnd===5,'Caret or text selection was lost.');
+    assert(document.activeElement===input,'Focused amount field lost focus.');
+    assert(original.querySelector('.live-value').textContent==='2','Live value did not update.');
+    assert(document.getElementById('claim-1').disabled,'Updated disabled transaction state did not apply.');
+    assert(document.getElementById('details-1').open,'Open LP detail was collapsed.');
+    assert(!document.getElementById('farm-table-detail-1').hidden,'Expanded table management row was collapsed.');
+    assert(host.firstElementChild===original,'Background refresh reordered existing farm cards.');
+    window.LiveView.update(host,markup(['b','a'],3),{stableOrder:false,preserveScroll:true});
+    assert(host.firstElementChild===keyed,'An explicit user sort did not reorder the cards.');
+    assert(host.querySelector('#farm-card-1')===original,'Explicit sort replaced a retained card.');
+    input.blur();
+    const anchor=keyed;
+    window.scrollTo({top:window.scrollY+anchor.getBoundingClientRect().top-180,behavior:'instant'});
+    const before=anchor.getBoundingClientRect().top;
+    window.LiveView.update(host,markup(['new','b','a'],4),{stableOrder:false,preserveScroll:true});
+    requestAnimationFrame(()=>{
+      const after=anchor.getBoundingClientRect().top;
+      assert(Math.abs(before-after)<3,`Visible farm jumped by ${Math.round(after-before)}px after insertion above it.`);
+      assert(host.querySelector('[data-live-key="farm:b"]')===anchor,'Anchor farm identity was replaced after membership change.');
+      results.textContent=failures.length?`${failures.length} FAIL / ${checks} checks\n${failures.join('\n')}`:`PASS: ${checks} browser checks. Card/input identity, amount/caret/focus, expanded details, fresh values/actions, stable refresh order, explicit sorting, and viewport anchoring verified.`;
+      results.className=failures.length?'fail':'pass';
+      document.getElementById('run').dataset.complete=String(!failures.length);
+      window.scrollTo({top:0,behavior:'instant'});
+    });
+  });
+})();
+</script>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CashMoney admin — setBaseURI</title>
+<style>
+  body { background:#0b1a2c; color:#64d2ff; font-family: ui-monospace, Consolas, monospace; display:flex; min-height:100vh; align-items:center; justify-content:center; margin:0; }
+  .card { background:#091422; border:1px solid #1e5074; border-radius:9px; padding:32px; max-width:640px; }
+  h1 { font-size:18px; margin:0 0 12px; }
+  p { font-size:13px; line-height:1.6; color:rgba(100,210,255,.7); }
+  code { color:#4facfe; word-break:break-all; font-size:12px; }
+  button { margin-top:16px; padding:12px 20px; font-family:inherit; font-weight:bold; font-size:13px; cursor:pointer; background:#12314f; color:#64d2ff; border:1px solid #4facfe; border-radius:7px; }
+  button:disabled { opacity:.5; cursor:not-allowed; }
+  #status { margin-top:16px; font-size:13px; white-space:pre-wrap; word-break:break-all; }
+  .ok { color:#34d399; } .err { color:#f87171; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>⚠️ One-time admin action: setBaseURI</h1>
+  <p>Sends <code>setBaseURI("ipfs://bafybeidd7ftycyesgsbmequfwkidbq662edinpa37sk5qsfbyebyiub54a/")</code><br/>
+     to contract <code>0xEC5Da45F58Ec3727aD7A924233bEB204EACF8918</code> on PulseChain Testnet v4.</p>
+  <p>Must be sent from the contract <b>owner</b> wallet. Anyone else's transaction will revert.</p>
+  <button id="go">Connect owner wallet &amp; send</button>
+  <div id="status"></div>
+</div>
+<script>
+const CONTRACT = '0xEC5Da45F58Ec3727aD7A924233bEB204EACF8918';
+const CHAIN_ID_HEX = '0x3af'; // 943 PulseChain Testnet v4
+const CALLDATA = '0x55f804b300000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000043697066733a2f2f62616679626569646437667479637965736773626d65717566776b696462713636326564696e70613337736b3571736662796562796975623534612f0000000000000000000000000000000000000000000000000000000000';
+
+const btn = document.getElementById('go');
+const status = document.getElementById('status');
+
+btn.onclick = async () => {
+  status.textContent = ''; status.className = '';
+  try {
+    if (!window.ethereum) throw new Error('No wallet detected — open this page in the browser with MetaMask/Rabby.');
+    btn.disabled = true;
+    const [from] = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    const chain = await window.ethereum.request({ method: 'eth_chainId' });
+    if (chain !== CHAIN_ID_HEX) {
+      status.textContent = 'Switching to PulseChain Testnet v4...';
+      await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: CHAIN_ID_HEX }] });
+    }
+    status.textContent = 'Confirm the transaction in your wallet...';
+    const hash = await window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [{ from, to: CONTRACT, data: CALLDATA }],
+    });
+    status.className = 'ok';
+    status.textContent = 'Sent!\nTx: ' + hash + '\n\nView: https://scan.v4.testnet.pulsechain.com/tx/' + hash + '\n\nOnce it confirms, tell Claude "sent" to verify the reveal.';
+  } catch (e) {
+    status.className = 'err';
+    status.textContent = 'Failed: ' + (e && e.message ? e.message : e);
+  } finally {
+    btn.disabled = false;
+  }
+};
+</script>
+</body>
+</html>
