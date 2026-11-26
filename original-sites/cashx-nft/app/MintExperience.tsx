@@ -1418,10 +1418,10 @@ export function MintExperience() {
           <h1 id="mint-overview-title">Mint Overview</h1>
           <div className="overview-grid" aria-label="Collection facts">
             <OverviewMetric
-              label="Price per NFT"
-              value={formatPls(mintPrice)}
-              unit={CASHX_NETWORK.nativeCurrency.symbol}
-              long
+              label="Total minted"
+              value={formatNumber(minted)}
+              unit="NFTs"
+              note={saleActive ? `${formatNumber(remaining)} remaining` : "Sale awaiting owner activation"}
             />
             <OverviewMetric
               label="PLS raised"
@@ -1430,10 +1430,10 @@ export function MintExperience() {
               note={`Goal · ${formatCompactPls(raiseGoal)} ${CASHX_NETWORK.nativeCurrency.symbol}`}
             />
             <OverviewMetric
-              label="Total minted"
-              value={formatNumber(minted)}
-              unit="NFTs"
-              note={saleActive ? `${formatNumber(remaining)} remaining` : "Sale awaiting owner activation"}
+              label="Price per NFT"
+              value={formatPls(mintPrice)}
+              unit={CASHX_NETWORK.nativeCurrency.symbol}
+              long
             />
           </div>
         </section>
